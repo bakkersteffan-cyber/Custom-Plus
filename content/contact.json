@@ -1,0 +1,81 @@
+{
+  "pagehead": {
+    "kicker": "Start a project",
+    "headingMain": "Tell us what you're building.",
+    "headingSub": "We'll tell you what it takes."
+  },
+  "promise": {
+    "lead": "One answer, from Steffan, before"
+  },
+  "recipient": {
+    "role": "Founder. He reads every brief himself.",
+    "toLabel": "To:"
+  },
+  "restartLabel": "Start over",
+  "doors": {
+    "label": "Where are you right now?",
+    "rows": [
+      {
+        "title": "I want to build a product from an idea",
+        "subtitle": "A few questions build your brief while you answer."
+      },
+      {
+        "title": "I already have files or a quote",
+        "subtitle": "Two questions, then it goes straight into a technical read."
+      },
+      {
+        "title": "Not sure where to start",
+        "subtitle": "Run the two minute scope check first."
+      }
+    ]
+  },
+  "questions": {
+    "category": {
+      "label": "What kind of product?"
+    },
+    "stage": {
+      "label": "Where does the design stand?"
+    },
+    "volume": {
+      "label": "First production volume?"
+    },
+    "message": {
+      "label": "Anything else we should know?",
+      "help": "Prefer a call? Say so here, and Steffan suggests two times in his reply.",
+      "placeholder": "Materials, target price, timeline, links to references…"
+    },
+    "have": {
+      "label": "What do you already have?",
+      "placeholder": "A CAD file, a spec sheet, a BOM, a working prototype, an existing factory quote…"
+    },
+    "need": {
+      "label": "What do you need from us?",
+      "placeholder": "A second opinion, a like for like quote, a factory that answers…"
+    }
+  },
+  "flow": {
+    "donePrompt": "Your brief is ready. Send it below.",
+    "placeholder": "Your answers will read back here.",
+    "fastReadback": "A scoped read of what you already have",
+    "btnOne": "One answer to go",
+    "btnMany": "{n} answers to go",
+    "btnReady": "Send",
+    "addLabel": "Add to the brief",
+    "skipLabel": "Skip this"
+  },
+  "band": {
+    "kicker": "Your brief"
+  },
+  "how": {
+    "toggle": "How sending works",
+    "line1": "Your brief becomes a normal email, sent from your own email app and your own address.",
+    "line2": "This page stores nothing and uploads nothing. Your idea never touches a server.",
+    "line3": "Files: attach them in the email once it opens."
+  },
+  "sent": {
+    "heading": "Sent.",
+    "calendar": "Add to my calendar",
+    "fallbackNote": "Nothing opened? Copy your brief instead.",
+    "fallbackCopy": "Copy brief"
+  }
+}

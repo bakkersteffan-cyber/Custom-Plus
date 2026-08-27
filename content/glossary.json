@@ -1,0 +1,62 @@
+{
+  "pagehead": {
+    "kicker": "Glossary",
+    "heading": "The acronyms, explained once.",
+    "lead": "Every acronym used across this site, gathered in one place, with a link back to where it actually matters in your project."
+  },
+  "closingCta": {
+    "heading": "Term we did not cover?"
+  },
+  "terms": [
+    {
+      "id": "aql",
+      "term": "AQL",
+      "full": "Acceptable Quality Limit",
+      "def": "IQC, IPQC and FQC checkpoints during the run, with statistical sampling against the golden sample, not just one glance after thousands of units are already boxed.",
+      "thresholds": "Critical 0 · Major 2.5 · Minor 4.0",
+      "contextHref": "#/why-china#risk-quality"
+    },
+    {
+      "id": "dfm",
+      "term": "DFM",
+      "full": "Design For Manufacturability",
+      "def": "A CAD file that looks finished and a part that can actually be produced are not the same thing. Every design is re engineered against the realities of the process that will build it, before tooling is cut, not after.",
+      "contextHref": "#/services/1"
+    },
+    {
+      "id": "fqc",
+      "term": "FQC",
+      "full": "Final Inspection",
+      "def": "The pre shipment check on a finished production batch: the final check before the batch ships, measured against the same golden sample the run started from.",
+      "contextHref": "#/why-china#risk-quality"
+    },
+    {
+      "id": "ipqc",
+      "term": "IPQC",
+      "full": "In Process Inspection",
+      "def": "Checks carried out during the run, not just at the end, so a defect is caught while it is still cheap to fix.",
+      "contextHref": "#/why-china#risk-quality"
+    },
+    {
+      "id": "iqc",
+      "term": "IQC",
+      "full": "Pre Production Inspection",
+      "def": "Incoming materials checked before production starts.",
+      "contextHref": "#/why-china#risk-quality"
+    },
+    {
+      "id": "moq",
+      "term": "MOQ",
+      "full": "Minimum Order Quantity",
+      "def": "The smallest volume a factory will run, typically higher for injection molded parts than for CNC or sheet metal parts, because of tooling amortization.",
+      "contextHref": "#/faq#faq-budget"
+    },
+    {
+      "id": "nnn",
+      "term": "NNN",
+      "full": "Non Disclosure, Non Use, Non Circumvention",
+      "def": "A contract drafted for enforceability in Chinese courts, signed before any file moves. A Western NDA alone is commonly not enforceable in Chinese courts, which is exactly why an NNN is the actual instrument, not a formality.",
+      "contextHref": "#/why-china#risk-theft"
+    }
+  ]
+}

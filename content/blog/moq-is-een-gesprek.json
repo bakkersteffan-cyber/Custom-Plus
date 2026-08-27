@@ -1,0 +1,94 @@
+{
+  "title": "MOQ is een gesprek, geen wet",
+  "slug": "moq-is-een-gesprek",
+  "lang": "nl",
+  "date": "2026-08-13",
+  "updated": "",
+  "category": "sourcing",
+  "dek": "Die duizend stuks minimum op de leverancierspagina is een openingsbod. Waarom een MOQ bestaat, waar de rek zit, en wat je beter niet kunt proberen.",
+  "photo": "",
+  "ogImage": "",
+  "series": "",
+  "seriesPart": 0,
+  "seriesTotal": 0,
+  "ctaPath": "brief",
+  "relatedTerms": [
+    "MOQ",
+    "NNN"
+  ],
+  "relatedService": 2,
+  "body": [
+    {
+      "type": "p",
+      "text": "Op bijna elke leverancierspagina staat het: MOQ 1.000 stuks. Veel starters lezen dat als een wet en haken af, of bestellen met tegenzin drie keer meer dan ze kwijt kunnen. Zonde van het geld en nergens voor nodig. Een minimale afname is in de praktijk een openingsbod, en zoals elk openingsbod is het bespreekbaar, als je begrijpt waar het vandaan komt."
+    },
+    {
+      "type": "h2",
+      "text": "Waarom een MOQ bestaat"
+    },
+    {
+      "type": "p",
+      "text": "Een fabriek verdient niet aan stuks maar aan draaiende lijnen. Elke order heeft vaste kosten: de lijn ombouwen, materiaal bestellen, arbeid inplannen, kwaliteitscontrole opzetten. Die kosten zijn bij tweehonderd stuks bijna even hoog als bij tweeduizend. Daarnaast hebben grondstoffen hun eigen minimum: een verfbad voor stof heeft een minimale badgrootte, een kunststofleverancier verkoopt per zak van 25 kilo, een printplaat wordt per paneel gefabriceerd. De MOQ is het punt waarop dat allemaal optelt tot een order waar de fabriek niet over hoeft na te denken."
+    },
+    {
+      "type": "quote",
+      "text": "MOQ 1.000 betekent meestal: vanaf duizend stuks hoef ik niet meer te rekenen aan mijn marge."
+    },
+    {
+      "type": "h2",
+      "text": "Wat de fabriek eigenlijk zegt"
+    },
+    {
+      "type": "p",
+      "text": "Precies daarom is er rek. De fabriek zegt niet dat achthonderd stuks onmogelijk is; ze zegt dat achthonderd stuks meer denkwerk kost. Wie dat denkwerk uit handen neemt, bijvoorbeeld door standaardmaterialen te kiezen, door flexibel te zijn op levertijd, door een geloofwaardig vervolg te schetsen, krijgt vaak een lagere drempel. Wie alleen maar vraagt om minder stuks voor dezelfde prijs, krijgt nee."
+    },
+    {
+      "type": "h2",
+      "text": "Vijf knoppen waar je aan kunt draaien"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Betaal iets meer per stuk. Een kleinere order tegen een hogere stukprijs is voor de fabriek vaak prima; jij koopt er risicoreductie voor.",
+        "Kies standaardmaterialen en standaardkleuren. Het materiaalminimum is vaak de echte drempel, niet de arbeid.",
+        "Combineer varianten op één basis. Drie kleuren van hetzelfde product op dezelfde lijn tellen samen voor de MOQ.",
+        "Bied een gefaseerde afname: nu vijfhonderd, over drie maanden de rest. Zet de intentie op papier, niet als belofte maar als planning.",
+        "Vraag naar restcapaciteit. Fabrieken met een gat in de planning zijn ineens verrassend flexibel."
+      ]
+    },
+    {
+      "type": "stat",
+      "value": "15%",
+      "label": "hogere stukprijs bij de helft van de MOQ, in ruil voor de helft minder kapitaal en voorraadrisico",
+      "source": "illustratief rekenvoorbeeld, 500 in plaats van 1.000 stuks"
+    },
+    {
+      "type": "p",
+      "text": "Die vijftien procent voelt als verlies tot je de andere kant van de rekensom maakt. Bij een eerste productie is de kans reëel dat je iets wilt aanpassen na de eerste verkopen. Duizend stuks van een product dat je nog wilt verbeteren is geen voorraad, dat is ballast."
+    },
+    {
+      "type": "h2",
+      "text": "Wat je beter niet doet"
+    },
+    {
+      "type": "p",
+      "text": "Lieg niet over je vervolgorders. Een fabriek die de MOQ verlaagt op basis van een verzonnen forecast, komt daar bij order twee achter, en dan begint elke onderhandeling daarna met een achterstand. Speel ook geen fabrieken tegen elkaar uit met prijzen die je niet zwart op wit hebt. Die wereld is kleiner dan je denkt; inkopers en verkopers kennen elkaar, en een reputatie reist sneller dan een container."
+    },
+    {
+      "type": "h2",
+      "text": "Bescherm je ontwerp vóór het gesprek"
+    },
+    {
+      "type": "p",
+      "text": "Onderhandelen over een MOQ betekent tekeningen delen, en soms met meerdere fabrieken tegelijk. Doe dat niet blanco. Een NNN overeenkomst (niet delen, niet gebruiken, niet om je heen werken) is in China afdwingbaar als hij naar Chinees recht is opgesteld, in het Chinees, met de juiste bedrijfsnaam en het bedrijfsstempel. Een Engelstalige geheimhoudingsverklaring naar westers model is dat meestal niet. Regel dit voordat het gesprek interessant wordt, niet erna."
+    },
+    {
+      "type": "h2",
+      "text": "De korte versie"
+    },
+    {
+      "type": "p",
+      "text": "Behandel een MOQ als het begin van een gesprek over risicoverdeling. De fabriek wil zekerheid over haar vaste kosten, jij wilt niet stikken in je voorraad. Daar zit bijna altijd een uitkomst tussen, en de fabriek die star vasthoudt aan een rond getal zonder uit te leggen waarom, vertelt je daarmee ook iets."
+    }
+  ]
+}

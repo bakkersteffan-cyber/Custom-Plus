@@ -1,0 +1,73 @@
+{
+  "pagehead": {
+    "kicker": "Field notes",
+    "headingMain": "Notes from the factory floor.",
+    "headingSub": "Written between sample rooms and sea freight.",
+    "lead": "What we learn while getting products made in China: costs, pitfalls and the honest numbers behind each step. Written by the person who answers your mail."
+  },
+  "labels": {
+    "all": "All",
+    "minRead": "min read",
+    "updated": "Updated",
+    "back": "All articles",
+    "contents": "Contents",
+    "sections": "sections",
+    "writtenBy": "Written by",
+    "series": "Series",
+    "part": "Part",
+    "follows": "Follows",
+    "readMark": "Read",
+    "related": "Keep reading",
+    "inTopic": "Further in this topic",
+    "viewService": "See the service",
+    "copied": "Copied",
+    "copyQuote": "Copy quote",
+    "mailThis": "Mail this",
+    "copyLink": "Copy link",
+    "share": "Share this article",
+    "empty": "No articles here yet.",
+    "categories": {
+      "ontwerp": "Design",
+      "sourcing": "Sourcing",
+      "sampling": "Sampling",
+      "productie": "Production",
+      "kwaliteit": "Quality",
+      "logistiek": "Logistics",
+      "ondernemen": "Running the business"
+    }
+  },
+  "author": {
+    "name": "Steffan Bakker",
+    "role": "Founder, CUSTOM+",
+    "credentials": [
+      "Exit from Customforyou at twenty",
+      "Years on factory floors in Asia",
+      "Reads and answers every brief himself"
+    ],
+    "cta": "Put your question to Steffan",
+    "photo": "images/founder.jpg"
+  },
+  "cta": {
+    "scope": {
+      "kicker": "Next step",
+      "headingMain": "Not sure what your idea takes?",
+      "headingSub": "The two minute scope check tells you.",
+      "btn": "Start the scope check",
+      "href": "#/scope"
+    },
+    "brief": {
+      "kicker": "Next step",
+      "headingMain": "Bring us the sketch.",
+      "headingSub": "We'll bring the factory floor.",
+      "btn": "Start a project",
+      "href": "#/contact"
+    },
+    "download": {
+      "kicker": "Next step",
+      "headingMain": "Take the checklists with you.",
+      "headingSub": "Real templates, no email wall.",
+      "btn": "See the downloads",
+      "href": "#/resources"
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "pagehead": {
+    "kicker": "Services",
+    "headingMain": "Six disciplines.",
+    "headingSub": "One accountable team."
+  },
+  "intro": {
+    "lead": "Each stage below is a real discipline your product passes through, not a menu of upsells. We run all six, or slot into the ones you're missing. Select a stage to see what happens inside it."
+  },
+  "samplingLoop": {
+    "kicker": "The one step people don't expect",
+    "heading": "Sampling loops back until it's right. Production doesn't start until it does.",
+    "lead": "Design and sampling aren't sequential: they're a loop. Staged sample rounds (T0, T1, T2) feed back into engineering until the physical object matches spec. A golden sample is signed off as the standard every production unit is measured against."
+  },
+  "timeline": {
+    "kicker": "One example, mapped out",
+    "heading": "What roughly 24 weeks actually looks like.",
+    "lead": "A mid complexity injection molded product, first order 2,000 units. Your product will move faster or slower: this is what \"faster or slower\" gets measured against. Select a stage."
+  },
+  "planner": {
+    "kicker": "The deadline you haven't done the math on",
+    "heading": "Work backward from the date you actually need stock.",
+    "lead": "Built from the timeline above, plus two real, fixed dates on the Chinese calendar most first timers don't factor in."
+  },
+  "paygate": {
+    "kicker": "Where the money actually sits",
+    "heading": "You approve before you pay, not the other way around.",
+    "lead": "A different kind of timeline: not when things happen, but what has to be true before your money moves. Click a gate."
+  },
+  "closingCta": {
+    "heading": "Not sure which stages you need?"
+  },
+  "steps": [
+    {
+      "num": "01",
+      "title": "Concept & Industrial Design",
+      "dur": "1–2 weeks",
+      "short": "A sketch, a reference, or a half formed idea, resolved into manufacturable design.",
+      "desc": "A sketch, a reference product, or a half formed idea, resolved into manufacturable industrial design. Form, ergonomics, material, and mechanism worked out before a single tool is cut.",
+      "caps": [
+        "Sketch & CAD development (SolidWorks / Fusion 360)",
+        "Material & finish selection against cost and durability targets",
+        "Mechanism & assembly logic for moving or multi part products",
+        "3D printed proof of concept models"
+      ]
+    },
+    {
+      "num": "02",
+      "title": "Design for Manufacturability",
+      "dur": "2–4 weeks",
+      "short": "Mold flow, tolerance stacking, draft angles, fixed before tooling, not after.",
+      "desc": "A CAD file that looks finished and a part that can actually be produced are not the same thing. Every design is re engineered against the realities of the process that will build it, before tooling is cut, not after.",
+      "caps": [
+        "Tolerance stack up analysis against critical dimensions",
+        "Mold flow & draft angle review for injection molded parts",
+        "Cost down engineering without silent spec compromises",
+        "DFM report reviewed and signed off with you before tooling"
+      ]
+    },
+    {
+      "num": "03",
+      "title": "Factory Sourcing & Vetting",
+      "dur": "2–3 weeks",
+      "short": "Audited factories, an NNN in place, and multi factory quotes to benchmark cost.",
+      "desc": "We don't post your spec to a directory and wait for bids. Your product is matched to a factory built for it, audited on capability, capacity, and compliance history, with terms negotiated to protect you, not just the price.",
+      "caps": [
+        "On site or third party factory audits",
+        "NNN agreements executed before any drawing leaves our hands",
+        "Multi factory quoting to benchmark tooling and unit cost",
+        "Payment terms and milestones structured to protect you"
+      ]
+    },
+    {
+      "num": "04",
+      "title": "Tooling, Sampling & Iteration",
+      "dur": "4–10 weeks",
+      "short": "Staged sample rounds until the physical object earns your sign off.",
+      "desc": "Tooling is the largest fixed cost and the largest risk, and the easiest place to get burned, approving a sample that looks right in photos but isn't. We hold the sign off line until the object matches the intent.",
+      "caps": [
+        "Tooling specification and mold build oversight",
+        "Staged sample rounds (T0 / T1 / T2) with documented deviations",
+        "Physical sign off sample shipped to you before mass production",
+        "Tooling ownership and amortization terms negotiated in writing"
+      ]
+    },
+    {
+      "num": "05",
+      "title": "Mass Production & Quality Control",
+      "dur": "4–8 weeks",
+      "short": "IQC, IPQC and FQC inspection stages, with AQL sampling on every run.",
+      "desc": "Production is supervised, not assumed. In process checks and independent AQL inspections run at every stage, so the 500th unit off the line still matches the sample you approved on day one.",
+      "caps": [
+        "Pre production (IQC), in process (IPQC), and final (FQC) inspection",
+        "AQL based statistical sampling on every production run",
+        "Line supervision during first run production",
+        "Photo and video production reporting on a fixed cadence"
+      ]
+    },
+    {
+      "num": "06",
+      "title": "Compliance & Logistics",
+      "dur": "3–6 weeks",
+      "short": "CE, FCC, RoHS and REACH testing, then freight and customs to your door.",
+      "desc": "A product that can't clear customs or pass certification isn't finished. We test for the markets you're shipping to and coordinate freight from the factory floor to your door.",
+      "caps": [
+        "CE, FCC, RoHS, and REACH certification testing",
+        "FOB, freight forwarding, and customs documentation",
+        "Import duty and landed cost planning before you commit to volume",
+        "Fulfillment coordination to a 3PL or your own warehouse"
+      ]
+    }
+  ],
+  "paygates": [
+    {
+      "pct": "25%",
+      "label": "Design sign off",
+      "title": "Released when: you approve the final CAD and spec sheet.",
+      "body": "Nothing is owed before there is a design both sides have agreed to build to. This covers DFM and the concept work that gets you there."
+    },
+    {
+      "pct": "35%",
+      "label": "Tooling start",
+      "title": "Released when: the factory is selected and the tooling quote is confirmed in writing.",
+      "body": "Covers mold or fixture build. Tooling ownership terms are documented before this gate opens: you know what you own before you pay for it."
+    },
+    {
+      "pct": "25%",
+      "label": "Golden sample approval",
+      "title": "Released when: you physically approve the pre production sample.",
+      "body": "Not a photo, not a promise: the actual object in hand, checked against spec, and signed off by you before mass production starts."
+    },
+    {
+      "pct": "15%",
+      "label": "Pre shipment QC pass",
+      "title": "Released when: AQL inspection passes on the finished run.",
+      "body": "The balance moves only after the batch is checked against the golden sample and passes the agreed defect threshold, not on a shipping date."
+    }
+  ]
+}

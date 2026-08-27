@@ -1,0 +1,43 @@
+{
+  "pagehead": {
+    "kicker": "Ecommerce brands",
+    "headingMain": "The store is live.",
+    "headingSub": "The product still needs a factory.",
+    "lead": "For Shopify, Amazon, and DTC brands. First contact through production, plus a wide white label network when speed matters more than a from scratch build.",
+    "ctaStart": "Start your ecommerce brief",
+    "scopeCheckLink": "Not sure yet? Run the two minute scope check"
+  },
+  "twoWays": {
+    "kicker": "However fast you need to move",
+    "heading": "Two ways in.",
+    "fastTag": "Fast",
+    "fastTitle": "Our white label network",
+    "fastBody": "A wide, vetted network of white label and private label factories across categories: customized, branded, and shipping under your name in weeks, not months.",
+    "customTag": "Custom",
+    "customTitle": "Full product development"
+  },
+  "statement": {
+    "kicker": "From scratch",
+    "heading": "We develop your entirely new product.",
+    "aiIntro": "Describe your idea. You get a first read on the likely material, the expected MOQ and the logical first step.",
+    "aiNote": "A first read by AI, not a quote. Steffan reads every brief himself.",
+    "aiBriefCta": "Start your briefing",
+    "aiTitle": "Product check"
+  },
+  "pipeline": {
+    "kicker": "From first contact onward",
+    "heading": "One accountable pipeline, start to finish.",
+    "breakdownLink": "See the full breakdown of every stage"
+  },
+  "trust": {
+    "kicker": "Before you take our word for it",
+    "heading": "The short version of how we protect you.",
+    "noHiddenFees": "No hidden fees: one flat rate, never a cut of what a factory charges you.",
+    "milestonePayments": "Milestone payments. Never one deposit and silence.",
+    "readMoreLink": "Read the full about us page"
+  },
+  "cta": {
+    "headingMain": "Bring us the listing you have outgrown.",
+    "headingSub": "We'll bring the factory floor."
+  }
+}

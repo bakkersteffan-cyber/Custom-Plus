@@ -1,0 +1,249 @@
+{
+  "pagehead": {
+    "kicker": "Corporate gifting",
+    "headingMain": "One box, designed once.",
+    "headingSub": "Produced five thousand times.",
+    "lead": "Branded gift packages for companies that order in the hundreds: end of year boxes, onboarding kits, event gifts, engineered, produced and assembled through the same vetted factory network as everything else we build.",
+    "ctaPrimary": "Start your gifting brief",
+    "foldCaption": "This is a dieline: the flat drawing every box starts as. Yours gets one too."
+  },
+  "scale": {
+    "kicker": "Volume is the design constraint",
+    "heading": "What your quantity unlocks.",
+    "intro": "Minimums are where gifting quotes go wrong. So here they are, in the open, including what your quantity does not unlock yet.",
+    "unlockedLabel": "At this quantity",
+    "lockedLabel": "Not yet at this quantity",
+    "tiers": [
+      {
+        "min": 50,
+        "title": "50+",
+        "unlocked": [
+          "Curated catalog products",
+          "Printed sleeve, ribbon or sticker branding",
+          "One assembly run, delivered to one address"
+        ],
+        "locked": [
+          "Custom printed boxes: printing minimums start around 250",
+          "Custom developed products: tooling needs roughly 1,000+"
+        ]
+      },
+      {
+        "min": 250,
+        "title": "250+",
+        "unlocked": [
+          "Fully printed custom box with insert",
+          "Pantone matched brand colors",
+          "Mixed contents per recipient group"
+        ],
+        "locked": [
+          "Custom developed products: tooling needs roughly 1,000+"
+        ]
+      },
+      {
+        "min": 1000,
+        "title": "1,000+",
+        "unlocked": [
+          "Custom product development becomes realistic",
+          "Per address delivery programs",
+          "Multiple box variants in one run"
+        ],
+        "locked": [
+          "Dedicated production runs: the economics really open up at 5,000+"
+        ]
+      },
+      {
+        "min": 5000,
+        "title": "5,000+",
+        "unlocked": [
+          "Dedicated production runs",
+          "Tooling cost per unit approaches zero",
+          "Full container logistics: the cheapest freight there is"
+        ],
+        "locked": []
+      }
+    ],
+    "lockedEmpty": "Nothing left. At this volume the whole menu is open."
+  },
+  "fears": {
+    "kicker": "The three ways gifting goes wrong",
+    "heading": "Name the fear. Check the mechanism.",
+    "intro": "You cannot buy certainty with promises. You can buy it with mechanisms you get to verify. Flip each fear over.",
+    "flipHint": "Tap to flip",
+    "cards": [
+      {
+        "fear": "Too late",
+        "mechanism": "Backward planning with the factory calendar built in, an order by date in writing, and weekly photos from every factory on your run. If a week slips, you hear it that week, not in December."
+      },
+      {
+        "fear": "Feels cheap",
+        "mechanism": "One golden sample, approved by you, locked as the standard. AQL inspection on the assembled boxes against that sample before anything ships. You see the report, not a reassurance."
+      },
+      {
+        "fear": "Surprise costs",
+        "mechanism": "One quote that names every line: product, print, assembly, freight, duties, our fee. Payments move in milestones after proof moments, never one deposit and silence."
+      }
+    ],
+    "milestonesHeading": "When money actually moves",
+    "milestonesNote": "The exact split is set in your quote. The shape never changes: proof first, payment after.",
+    "milestones": [
+      "Order confirmed",
+      "Golden sample approved",
+      "Inspection report passed",
+      "Delivered"
+    ],
+    "modesHeading": "What we inspect for on a gifting run",
+    "modes": [
+      "Wrong item count inside the box",
+      "Color drift between factories",
+      "Print errors on the card or sleeve",
+      "Dented or crushed cartons",
+      "The wrong language card in a region's box",
+      "Batteries that cannot fly, flagged before freight booking, not at the airport"
+    ]
+  },
+  "sample": {
+    "kicker": "Start smaller than a quote",
+    "heading": "Sample the idea before you order the batch.",
+    "body": "Any factory in our network can build a single sample of your actual product, not a preset box, for a sample development fee, credited in full against your order. You hold the real thing in two to three weeks, before a single unit is batch produced.",
+    "honestNote": "Honest frame: a single sample usually means digital print or a placeholder finish. Techniques like embossing or screen printing only become available at production scale. We tell you exactly which is which when your sample arrives.",
+    "cta": "Request a sample",
+    "replyNote": "We reply within one working day.",
+    "steps": [
+      "Tell us your product idea",
+      "A matching factory samples it",
+      "It lands on your desk in 2 to 3 weeks"
+    ]
+  },
+  "honest": {
+    "kicker": "Why there are no testimonials here",
+    "heading": "Quotes we write ourselves prove nothing.",
+    "body": "CUSTOM+ is a young company. I would rather tell you that than decorate this page with five star reviews you cannot check. The logos below come from real production work. If you want to know what working with us is actually like, I will connect you to a client and you can ask them anything.",
+    "signature": "Steffan Bakker, founder",
+    "logosHeading": "Previously worked with",
+    "cta": "Ask for a reference call"
+  },
+  "occasions": {
+    "kicker": "Occasions that already justify a box",
+    "heading": "Every year gives you a reason. Here are ten.",
+    "intro": "Flip a card to see the idea. Open it for how we would actually run it.",
+    "filterAll": "All",
+    "categories": {
+      "seasonal": "Seasonal",
+      "milestone": "Company milestones",
+      "culture": "Team & culture",
+      "client": "Client relations"
+    },
+    "cards": [
+      {
+        "category": "seasonal",
+        "title": "Christmas closing",
+        "date": "Mid December",
+        "idea": "A box that goes further than a bottle of wine.",
+        "detail": "The busiest gifting week of the year, and the one most likely to hit a factory closure if briefed late.",
+        "icon": "tree",
+        "photo": "images/occ-christmas.jpg"
+      },
+      {
+        "category": "seasonal",
+        "title": "New year",
+        "date": "Early January",
+        "idea": "Something useful for the new work year, not a calendar.",
+        "detail": "A quieter moment to open the year with clients or teams, without the December rush.",
+        "icon": "flute",
+        "photo": "images/occ-newyear.jpg"
+      },
+      {
+        "category": "milestone",
+        "title": "Company anniversary",
+        "date": "5, 10, 25 years",
+        "idea": "A numbered piece, not a mug with a logo on it.",
+        "detail": "Round numbers deserve something that will not end up in a drawer.",
+        "icon": "pennant",
+        "photo": "images/occ-anniversary.jpg"
+      },
+      {
+        "category": "milestone",
+        "title": "Product launch",
+        "date": "Launch week",
+        "idea": "A preview kit for press or early customers.",
+        "detail": "Timed to land before the announcement, not after it.",
+        "icon": "rocket",
+        "photo": "images/occ-launch.jpg"
+      },
+      {
+        "category": "milestone",
+        "title": "Contract renewal",
+        "date": "Anytime",
+        "idea": "A personal thank you, not a standard fruit basket.",
+        "detail": "The moment a client re signs is the moment they are most open to noticing you.",
+        "icon": "signing",
+        "photo": "images/occ-renewal.jpg"
+      },
+      {
+        "category": "milestone",
+        "title": "Opening",
+        "date": "Opening day",
+        "idea": "One box that marks the day the doors open, for the team and the first guests.",
+        "detail": "A new location, store or office deserves its own box: something branded for the team on day one, plus a smaller version to hand to the first visitors.",
+        "icon": "door",
+        "photo": "images/occ-opening.jpg"
+      },
+      {
+        "category": "client",
+        "title": "New client welcome",
+        "date": "Kickoff",
+        "idea": "A first impression as sharp as the proposal.",
+        "detail": "Sets the tone before the first invoice does.",
+        "icon": "door",
+        "photo": "images/occ-newclient.jpg"
+      },
+      {
+        "category": "client",
+        "title": "Trade show & events",
+        "date": "Event season",
+        "idea": "A giveaway that survives the walk back to the hotel.",
+        "detail": "Built to be picked, not just picked up.",
+        "icon": "ticket",
+        "photo": "images/occ-events.jpg"
+      },
+      {
+        "category": "client",
+        "title": "Project thank you",
+        "date": "On delivery",
+        "idea": "Something that makes the project itself memorable.",
+        "detail": "Sent at the exact moment the client is already thinking well of you.",
+        "icon": "sparkle",
+        "photo": "images/occ-thankyou.jpg"
+      },
+      {
+        "category": "seasonal",
+        "title": "Sinterklaas",
+        "date": "December 5",
+        "idea": "A themed surprise box, no clichés, no coal.",
+        "detail": "Playful and seasonal, delivered before the fifth. Timing is the whole point here.",
+        "icon": "gift",
+        "photo": "images/occ-sinterklaas.jpg"
+      }
+    ],
+    "otherCard": {
+      "title": "Something else?",
+      "idea": "Tell us the occasion.",
+      "detail": "Not every reason to send a gift fits a card. Describe yours and we will tell you honestly whether it works."
+    },
+    "flipHint": "Tap to flip",
+    "modal": {
+      "sizeLabel": "About how many people",
+      "sizeOptions": [
+        "Under 20",
+        "20 to 100",
+        "100+"
+      ],
+      "emailNowCta": "Ask about this",
+      "addCta": "Add to my list",
+      "addedCta": "Added",
+      "collectBarLabel": "{n} occasions selected",
+      "collectBarCta": "Ask about all {n}",
+      "openCta": "See how we would run it"
+    }
+  }
+}

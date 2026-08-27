@@ -1,0 +1,57 @@
+{
+  "generated": "2026-08-20",
+  "articles": [
+    {
+      "slug": "wat-een-sample-echt-kost",
+      "title": "Wat een sample echt kost",
+      "lang": "nl",
+      "date": "2026-08-20",
+      "category": "sampling",
+      "dek": "Vierhonderd euro voor één stuk voelt scheef als de stukprijs straks drie euro is. Toch klopt die factuur meestal: hier is de uitsplitsing, plus wanneer je het geld terugziet.",
+      "photo": "",
+      "readMin": 3,
+      "words": 658,
+      "series": "Van schets tot zeecontainer",
+      "seriesPart": 1
+    },
+    {
+      "slug": "moq-is-een-gesprek",
+      "title": "MOQ is een gesprek, geen wet",
+      "lang": "nl",
+      "date": "2026-08-13",
+      "category": "sourcing",
+      "dek": "Die duizend stuks minimum op de leverancierspagina is een openingsbod. Waarom een MOQ bestaat, waar de rek zit, en wat je beter niet kunt proberen.",
+      "photo": "",
+      "readMin": 3,
+      "words": 601,
+      "series": "",
+      "seriesPart": 0
+    },
+    {
+      "slug": "de-containerrekensom",
+      "title": "De containerrekensom",
+      "lang": "nl",
+      "date": "2026-08-06",
+      "category": "logistiek",
+      "dek": "De stukprijs uit de fabriek is niet je kostprijs. Wat er onderweg bij komt, waarom je doos meer bepaalt dan je vrachttarief, en de rekensom die je vooraf maakt.",
+      "photo": "",
+      "readMin": 3,
+      "words": 591,
+      "series": "Van schets tot zeecontainer",
+      "seriesPart": 2
+    },
+    {
+      "slug": "aql-zonder-jargon",
+      "title": "AQL zonder jargon",
+      "lang": "nl",
+      "date": "2026-07-30",
+      "category": "kwaliteit",
+      "dek": "Hoe weet je of vijfduizend stuks lijken op het ene sample dat je goedkeurde? Daar is een systeem voor. Wat AQL wel en niet belooft, uitgelegd zonder tabellenmagie.",
+      "photo": "",
+      "readMin": 3,
+      "words": 609,
+      "series": "",
+      "seriesPart": 0
+    }
+  ]
+}

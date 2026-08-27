@@ -1,0 +1,21 @@
+{
+  "scopeTeaser": {
+    "body": "Not sure where to start? **Think out loud with us for two minutes**: your product, why China, why now. We'll tell you what it takes.",
+    "cta": "Start the scope check"
+  },
+  "footer": {
+    "newsletterKicker": "Field notes",
+    "newsletterHeading": "Notes on manufacturing, sent occasionally.",
+    "newsletterLead": "No newsletter fluff. Just what we learn running real projects through Chinese factories.",
+    "brandTagline": "From sketch to shipping container: one accountable process, with someone on the factory floor who answers to you.",
+    "copyright": "© 2026 CUSTOM+ Studio"
+  },
+  "callBooking": {
+    "url": "https://cal.com/steffan-bakker-isqvg1/30min",
+    "subtitle": "A short call with Steffan, book a time that works.",
+    "fallbackLabel": "Open in a new tab",
+    "notReadyBody": "Call booking isn't switched on yet. Start a project instead and Steffan will suggest a time in his reply.",
+    "notReadyCta": "Start a project",
+    "loadingLabel": "Loading the calendar…"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "title": "AQL zonder jargon",
+  "slug": "aql-zonder-jargon",
+  "lang": "nl",
+  "date": "2026-07-30",
+  "updated": "",
+  "category": "kwaliteit",
+  "dek": "Hoe weet je of vijfduizend stuks lijken op het ene sample dat je goedkeurde? Daar is een systeem voor. Wat AQL wel en niet belooft, uitgelegd zonder tabellenmagie.",
+  "photo": "",
+  "ogImage": "",
+  "series": "",
+  "seriesPart": 0,
+  "seriesTotal": 0,
+  "ctaPath": "scope",
+  "relatedTerms": [
+    "AQL"
+  ],
+  "relatedService": 4,
+  "body": [
+    {
+      "type": "p",
+      "text": "Je hebt één sample goedgekeurd. De fabriek maakt er nu vijfduizend. Niemand gaat die vijfduizend stuks één voor één bekijken, want dat zou langer duren dan de productie zelf en het zou de prijs verdubbelen. Dus keurt de wereld al zeventig jaar op een steekproef, volgens een systeem dat AQL heet. Het is minder ingewikkeld dan de tabellen doen vermoeden, en je hoeft er maar drie dingen van te begrijpen."
+    },
+    {
+      "type": "h2",
+      "text": "Wat AQL echt is"
+    },
+    {
+      "type": "p",
+      "text": "AQL is een afspraak vooraf: hoeveel afwijkingen accepteer jij in een partij voordat je de hele partij afkeurt. Uit die afspraak plus de ordergrootte rolt een steekproefgrootte en een grens: zoveel fouten mag de steekproef bevatten, daarboven is het afgekeurd. Het is dus geen belofte dat elk stuk perfect is. Het is een meetlat die vastlegt wat jullie samen een acceptabele partij noemen, vóórdat er ruzie over kan ontstaan."
+    },
+    {
+      "type": "quote",
+      "text": "AQL zegt niet dat er nul fouten zijn. Het zegt hoeveel fouten jij vooraf acceptabel hebt verklaard."
+    },
+    {
+      "type": "h2",
+      "text": "Kritiek, groot, klein"
+    },
+    {
+      "type": "p",
+      "text": "Niet elke fout is even erg, dus AQL werkt met drie klassen. Een kritieke fout maakt het product onveilig of onverkoopbaar: een scherpe rand, een kapotte stekker, een ontbrekend onderdeel. Daarvoor is de norm nul. Een grote fout ziet de klant en leidt tot retour: een kras op de zichtbare kant, een scheve print, een rits die hapert. Een kleine fout ziet de klant waarschijnlijk niet eens: een draadje aan de binnenkant, een kras op de onderzijde. Jij bepaalt zelf, het liefst met foto's, welke fout in welke klasse valt voor jouw product. Dat lijstje is de helft van het werk."
+    },
+    {
+      "type": "h2",
+      "text": "Hoe een inspectie er in de praktijk uitziet"
+    },
+    {
+      "type": "p",
+      "text": "Een inspecteur komt bij de fabriek als de order klaar en ingepakt is, kiest willekeurig dozen uit de stapel (niet de dozen die klaarstaan bij de deur) en keurt daaruit het voorgeschreven aantal stuks tegen jouw foutenlijst en je referentiesample. Dit heet FQC, de eindcontrole. Er bestaan ook eerdere momenten: IQC controleert inkomend materiaal en IPQC kijkt mee tijdens de productie, wat vooral bij een eerste order met een nieuwe fabriek het geld waard is. Fouten die je tijdens de run vangt, kun je nog herstellen; fouten in de eindcontrole kun je alleen nog uitsorteren."
+    },
+    {
+      "type": "stat",
+      "value": "200",
+      "label": "stuks steekproef bij een order van 5.000, bij algemeen keuringsniveau II",
+      "source": "ISO 2859, steekproeftabel algemeen niveau II"
+    },
+    {
+      "type": "h2",
+      "text": "Welk niveau kies je"
+    },
+    {
+      "type": "p",
+      "text": "De gangbare keuze voor consumentenproducten is AQL 2,5 voor grote fouten en 4,0 voor kleine, met nul tolerantie op kritieke fouten. Strenger kan altijd, bijvoorbeeld 1,5 of zelfs 0,65 voor grote fouten, maar streng is niet gratis: een strengere grens betekent meer afgekeurde partijen, meer herstelrondes en uiteindelijk een hogere stukprijs. Voor een product van tien euro is 2,5 bijna altijd verstandig; voor iets dat op de huid wordt gedragen of waar een kind mee speelt, mag het strenger. Kies bewust in plaats van de standaard te accepteren omdat die er stond."
+    },
+    {
+      "type": "h2",
+      "text": "Wat je zelf regelt"
+    },
+    {
+      "type": "p",
+      "text": "Drie dingen, allemaal vooraf. Eén: zet het AQL niveau en je foutenlijst in de order zelf, niet in een losse mail achteraf. Twee: laat het referentiesample verzegeld bij de fabriek achter en houd zelf een identiek exemplaar, zodat een discussie over kleur of afwerking naast een fysiek stuk gevoerd wordt en niet naast een herinnering. Drie: koppel je laatste betaling aan een goedgekeurde inspectie. Niet als dreigement, maar als volgorde: een fabriek die daar moeilijk over doet, vertelt je iets."
+    },
+    {
+      "type": "p",
+      "text": "Een onafhankelijke inspectie kost een paar honderd euro per dag. Op een order van tienduizenden euro's is dat de goedkoopste verzekering die er bestaat. Niet omdat fabrieken willen sjoemelen, maar omdat vijfduizend stuks maken zonder één afwijking simpelweg niet bestaat, en jij wilt vooraf bepaald hebben wat er dan gebeurt."
+    }
+  ]
+}

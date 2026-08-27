@@ -1,0 +1,953 @@
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: simple
+media_folder: "images"
+public_folder: "images"
+
+site_url: https://customplus.io
+display_url: https://customplus.io
+logo_url: ""
+
+collections:
+  - name: "content"
+    label: "Website content"
+    files:
+
+      - name: "global"
+        label: "Site-wide (popup, footer)"
+        file: "content/global.json"
+        fields:
+          - label: "Call booking (used by the popup and the home page calendar)"
+            name: callBooking
+            widget: object
+            fields:
+              - { label: "Cal.com booking link", name: url, widget: string, required: false, hint: "e.g. https://cal.com/steffanbakker/intro. Leave empty to show the fallback message instead of a broken calendar." }
+              - { label: "Subtitle under the title", name: subtitle, widget: string }
+              - { label: "Fallback link label (opens the same page in a new tab)", name: fallbackLabel, widget: string }
+              - { label: "Message shown when no link is set yet", name: notReadyBody, widget: text }
+              - { label: "Fallback button label", name: notReadyCta, widget: string }
+              - { label: "Loading label (shown briefly while the calendar loads)", name: loadingLabel, widget: string }
+          - label: "Scope-check popup"
+            name: scopeTeaser
+            widget: object
+            fields:
+              - { label: "Text (use **word** for bold)", name: body, widget: string }
+              - { label: "Button label", name: cta, widget: string }
+          - label: "Footer"
+            name: footer
+            widget: object
+            fields:
+              - { label: "Newsletter kicker", name: newsletterKicker, widget: string }
+              - { label: "Newsletter heading", name: newsletterHeading, widget: string }
+              - { label: "Newsletter subtext", name: newsletterLead, widget: string }
+              - { label: "Brand tagline", name: brandTagline, widget: string }
+              - { label: "Copyright line", name: copyright, widget: string }
+
+      - name: "home"
+        label: "Home page"
+        file: "content/home.json"
+        fields:
+          - { label: "SEO description (shown in Google + link previews)", name: metaDescription, widget: text }
+          - label: "Hero"
+            name: hero
+            widget: object
+            fields:
+              - { label: "Headline", name: headline, widget: string }
+              - { label: "Subhead", name: subhead, widget: string }
+          - { label: "Canvas band caption", name: pulseLabel, widget: string }
+          - label: "Services teaser"
+            name: services
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+          - label: "Who we build for"
+            name: who
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+              - { label: "Column 1 heading", name: col1Heading, widget: string }
+              - label: "Column 1 rows"
+                name: col1Rows
+                widget: list
+                fields:
+                  - { label: "Title", name: title, widget: string }
+                  - { label: "Description", name: desc, widget: string }
+              - { label: "Column 2 heading", name: col2Heading, widget: string }
+              - label: "Column 2 rows"
+                name: col2Rows
+                widget: list
+                fields:
+                  - { label: "Title", name: title, widget: string }
+                  - { label: "Description", name: desc, widget: string }
+          - label: "Why China teaser"
+            name: why
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Open network / collaborators"
+            name: collab
+            widget: object
+            fields:
+              - { label: "Label", name: label, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Body", name: body, widget: text }
+          - label: "Book a call section (real calendar, not a popup)"
+            name: callBooking
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Body", name: body, widget: text }
+          - label: "Closing banner"
+            name: cta
+            widget: object
+            fields:
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+
+      - name: "services"
+        label: "Services page"
+        file: "content/services.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+          - label: "Intro"
+            name: intro
+            widget: object
+            fields:
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Sampling loop section"
+            name: samplingLoop
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Timeline section"
+            name: timeline
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Production planner section"
+            name: planner
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Payment gate section"
+            name: paygate
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+          - label: "The 6 service stages"
+            name: steps
+            widget: list
+            fields:
+              - { label: "Number (do not change — must stay 01–06 and match the case studies' \"Stages run\" field exactly)", name: num, widget: string, hint: "Keep as 01–06, in order" }
+              - { label: "Title", name: title, widget: string }
+              - { label: "Duration", name: dur, widget: string }
+              - { label: "Short description (home page)", name: short, widget: text }
+              - { label: "Full description (services page)", name: desc, widget: text }
+              - { label: "Capabilities (bullet list)", name: caps, widget: list, field: { label: "Bullet", name: item, widget: string } }
+          - label: "Payment gates"
+            name: paygates
+            widget: list
+            fields:
+              - { label: "Percentage (e.g. 25%)", name: pct, widget: string }
+              - { label: "Label", name: label, widget: string }
+              - { label: "\"Released when\" line", name: title, widget: string }
+              - { label: "Body", name: body, widget: text }
+
+      - name: "ecommerce"
+        label: "Ecommerce page"
+        file: "content/ecommerce.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+              - { label: "Primary button label", name: ctaStart, widget: string }
+              - { label: "Scope-check link text", name: scopeCheckLink, widget: string }
+          - label: "\"Two ways in\""
+            name: twoWays
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Fast path tag", name: fastTag, widget: string }
+              - { label: "Fast path title", name: fastTitle, widget: string }
+              - { label: "Fast path body", name: fastBody, widget: text }
+              - { label: "Custom path tag", name: customTag, widget: string }
+              - { label: "Custom path title", name: customTitle, widget: string, hint: "Body text for this card contains a link and stays in the code — edit it there if needed" }
+          - label: "Statement section"
+            name: statement
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "AI popup title", name: aiTitle, widget: string }
+              - { label: "AI intro line", name: aiIntro, widget: text }
+              - { label: "AI honesty note", name: aiNote, widget: string }
+              - { label: "AI brief button", name: aiBriefCta, widget: string }
+          - label: "Pipeline section"
+            name: pipeline
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "\"See full breakdown\" link text", name: breakdownLink, widget: string }
+          - label: "Trust recap"
+            name: trust
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "No hidden fees line", name: noHiddenFees, widget: string }
+              - { label: "Milestone payments line", name: milestonePayments, widget: string }
+              - { label: "\"Read full about us page\" link text", name: readMoreLink, widget: string }
+          - label: "Closing banner"
+            name: cta
+            widget: object
+            fields:
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+
+      - name: "gifting"
+        label: "Corporate gifting page"
+        file: "content/gifting.json"
+        fields:
+          - label: "Hero"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+              - { label: "Primary button", name: ctaPrimary, widget: string }
+              - { label: "Caption under the folding box", name: foldCaption, widget: string }
+          - label: "Occasion flip cards"
+            name: occasions
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Intro", name: intro, widget: text }
+              - { label: "\"All\" filter label", name: filterAll, widget: string }
+              - label: "Category labels (keys must stay seasonal / milestone / culture / client)"
+                name: categories
+                widget: object
+                fields:
+                  - { label: "Seasonal", name: seasonal, widget: string }
+                  - { label: "Company milestones", name: milestone, widget: string }
+                  - { label: "Team & culture", name: culture, widget: string }
+                  - { label: "Client relations", name: client, widget: string }
+              - label: "Occasion cards"
+                name: cards
+                widget: list
+                summary: "{{title}}"
+                fields:
+                  - { label: "Category (seasonal / milestone / culture / client)", name: category, widget: select, options: ["seasonal", "milestone", "culture", "client"] }
+                  - { label: "Occasion name", name: title, widget: string }
+                  - { label: "Date or timing", name: date, widget: string }
+                  - { label: "Idea (back of the card, one line)", name: idea, widget: string }
+                  - { label: "Detail (shown when opened)", name: detail, widget: text }
+                  - { label: "Photo (optional, shown on the card front instead of the icon)", name: photo, widget: image, required: false }
+              - label: "\"Something else\" card"
+                name: otherCard
+                widget: object
+                fields:
+                  - { label: "Title", name: title, widget: string }
+                  - { label: "Idea line", name: idea, widget: string }
+                  - { label: "Detail", name: detail, widget: text }
+              - { label: "\"Tap to flip\" hint", name: flipHint, widget: string }
+              - label: "Modal"
+                name: modal
+                widget: object
+                fields:
+                  - { label: "\"About how many people\" label", name: sizeLabel, widget: string }
+                  - { label: "Size options (keep exactly 3)", name: sizeOptions, widget: list }
+                  - { label: "\"See how we would run it\" link on the back of a card", name: openCta, widget: string }
+                  - { label: "\"Ask about this\" button", name: emailNowCta, widget: string }
+                  - { label: "\"Add to my list\" button", name: addCta, widget: string }
+                  - { label: "\"Added\" button state", name: addedCta, widget: string }
+                  - { label: "Collection bar label (use {n} for the count)", name: collectBarLabel, widget: string }
+                  - { label: "Collection bar button (use {n} for the count)", name: collectBarCta, widget: string }
+          - label: "Quantity unlocks"
+            name: scale
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Intro", name: intro, widget: text }
+              - { label: "\"At this quantity\" label", name: unlockedLabel, widget: string }
+              - { label: "\"Not yet\" label", name: lockedLabel, widget: string }
+              - { label: "Text when nothing is locked anymore", name: lockedEmpty, widget: string }
+              - label: "Tiers (slider stops — keep exactly 4, in this order)"
+                name: tiers
+                widget: list
+                summary: "{{title}}"
+                fields:
+                  - { label: "Minimum (number, technical)", name: min, widget: number, hint: "Used by the code — leave as is unless the tier itself changes" }
+                  - { label: "Shown quantity", name: title, widget: string }
+                  - { label: "Unlocked at this tier", name: unlocked, widget: list }
+                  - { label: "Still locked at this tier", name: locked, widget: list, required: false }
+          - label: "Fears & mechanisms"
+            name: fears
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Intro", name: intro, widget: text }
+              - { label: "\"Tap to flip\" hint", name: flipHint, widget: string }
+              - label: "Fear cards"
+                name: cards
+                widget: list
+                summary: "{{fear}}"
+                fields:
+                  - { label: "The fear (big words on the front)", name: fear, widget: string }
+                  - { label: "The mechanism (back of the card)", name: mechanism, widget: text }
+              - { label: "Milestones heading", name: milestonesHeading, widget: string }
+              - { label: "Milestones footnote", name: milestonesNote, widget: string }
+              - { label: "Milestones (in order)", name: milestones, widget: list }
+              - { label: "Failure modes heading", name: modesHeading, widget: string }
+              - { label: "Failure modes", name: modes, widget: list }
+          - label: "Sample box"
+            name: sample
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Body", name: body, widget: text }
+              - { label: "Honest note", name: honestNote, widget: text }
+              - { label: "Button", name: cta, widget: string }
+              - { label: "Reply expectation", name: replyNote, widget: string }
+              - { label: "The three steps", name: steps, widget: list }
+          - label: "No testimonials block"
+            name: honest
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Body (first person)", name: body, widget: text }
+              - { label: "Signature", name: signature, widget: string }
+              - { label: "Logos heading", name: logosHeading, widget: string, hint: "The logos themselves are managed on the About us page" }
+              - { label: "Reference call link text", name: cta, widget: string }
+      - name: "why-china"
+        label: "Why China page"
+        file: "content/why-china.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Risk → Control intro"
+            name: riskControl
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Note", name: note, widget: string }
+              - { label: "(internal note — not shown on site)", name: _skipped, widget: text, required: false }
+            name: compare
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Note", name: note, widget: string }
+              - label: "Rows (5 cells each: label, us, direct, trading co, agent)"
+                name: rows
+                widget: list
+                field: { label: "Cell", name: cell, widget: list, field: { label: "Text", name: t, widget: string } }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+
+      - name: "faq"
+        label: "FAQ page"
+        file: "content/faq.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+          - label: "FAQ items"
+            name: items
+            widget: list
+            summary: "{{q}}"
+            fields:
+              - { label: "ID (do not change — used for links)", name: id, widget: string }
+              - { label: "Question", name: q, widget: string }
+              - { label: "Answer", name: a, widget: text }
+          - label: "Red-flag checker"
+            name: redflag
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+              - label: "Questions"
+                name: questions
+                widget: list
+                summary: "{{question}}"
+                fields:
+                  - { label: "Key (do not change)", name: key, widget: string }
+                  - { label: "Question", name: question, widget: string }
+              - label: "Explanations (shown when answered 'Missing / unsure')"
+                name: explanations
+                widget: object
+                fields:
+                  - { label: "Tooling", name: tooling, widget: text }
+                  - { label: "Cavity", name: cavity, widget: text }
+                  - { label: "Payment", name: payment, widget: text }
+                  - { label: "IP", name: ip, widget: text }
+                  - { label: "AQL", name: aql, widget: text }
+                  - { label: "Ownership", name: ownership, widget: text }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+
+      - name: "trust"
+        label: "About us page"
+        file: "content/trust.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+          - label: "Founder"
+            name: founder
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Your photo", name: photo, widget: image, required: false, hint: "Square-ish, well-lit works best — it's cropped to a square on the page." }
+              - { label: "Your name", name: name, widget: string, hint: "Replace [Founder name] with your real name — the amber placeholder styling disappears automatically once this no longer starts with [" }
+              - { label: "Your bio (one entry per paragraph)", name: bio, widget: list }
+          - label: "Company logos (\"Previously worked with\")"
+            name: logos
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+              - label: "Companies"
+                name: items
+                widget: list
+                summary: "{{name}}"
+                required: false
+                fields:
+                  - { label: "Company name", name: name, widget: string }
+                  - { label: "Logo", name: logo, widget: image }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+
+      - name: "glossary"
+        label: "Glossary page"
+        file: "content/glossary.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+          - label: "Terms"
+            name: terms
+            widget: list
+            summary: "{{term}}"
+            fields:
+              - { label: "ID (do not change — used for links)", name: id, widget: string }
+              - { label: "Term (short)", name: term, widget: string }
+              - { label: "Full name", name: full, widget: string }
+              - { label: "Definition", name: def, widget: text }
+              - { label: "Thresholds (optional)", name: thresholds, widget: string, required: false }
+              - { label: "Context link (do not change)", name: contextHref, widget: string }
+
+      - name: "resources"
+        label: "Resources page"
+        file: "content/resources.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Closing CTA"
+            name: closingCta
+            widget: object
+            fields:
+              - { label: "Heading", name: heading, widget: string }
+          - label: "Tools"
+            name: items
+            widget: list
+            summary: "{{title}}"
+            fields:
+              - { label: "Title", name: title, widget: string }
+              - { label: "Description", name: desc, widget: string }
+              - { label: "Link (do not change)", name: href, widget: string }
+
+      - name: "contact"
+        label: "Contact / brief page"
+        file: "content/contact.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+          - label: "Promise line"
+            name: promise
+            widget: object
+            fields:
+              - { label: "Lead (the date is appended automatically)", name: lead, widget: string }
+          - label: "Recipient block (the letter header)"
+            name: recipient
+            widget: object
+            fields:
+              - { label: "Role line under the name", name: role, widget: string }
+              - { label: "\"To:\" label", name: toLabel, widget: string }
+          - { label: "\"Start over\" link label", name: restartLabel, widget: string }
+          - label: "Question zero: the three doors"
+            name: doors
+            widget: object
+            fields:
+              - { label: "Question", name: label, widget: string }
+              - label: "Rows (1 = from an idea, 2 = files or quote, 3 = scope check; order is fixed)"
+                name: rows
+                widget: list
+                allow_add: false
+                fields:
+                  - { label: "Title", name: title, widget: string }
+                  - { label: "Subtitle", name: subtitle, widget: string }
+          - label: "Questions (answer options stay in the code — other pages prefill by exact option)"
+            name: questions
+            widget: object
+            fields:
+              - label: "Product question"
+                name: category
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+              - label: "Stage question"
+                name: stage
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+              - label: "Volume question"
+                name: volume
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+              - label: "Free note question"
+                name: message
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+                  - { label: "Help line", name: help, widget: string }
+                  - { label: "Placeholder", name: placeholder, widget: string }
+              - label: "\"What do you have\" question (files or quote door)"
+                name: have
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+                  - { label: "Placeholder", name: placeholder, widget: string }
+              - label: "\"What do you need\" question (files or quote door)"
+                name: need
+                widget: object
+                fields:
+                  - { label: "Question", name: label, widget: string }
+                  - { label: "Placeholder", name: placeholder, widget: string }
+          - label: "Flow labels"
+            name: flow
+            widget: object
+            fields:
+              - { label: "All questions answered prompt", name: donePrompt, widget: string }
+              - { label: "Band placeholder before any answer", name: placeholder, widget: string }
+              - { label: "Band read back for the files or quote door", name: fastReadback, widget: string }
+              - { label: "Send button: one answer left", name: btnOne, widget: string }
+              - { label: "Send button: several answers left (use {n} for the count)", name: btnMany, widget: string }
+              - { label: "Send button: ready", name: btnReady, widget: string }
+              - { label: "\"Add to the brief\" button", name: addLabel, widget: string }
+              - { label: "\"Skip this\" link", name: skipLabel, widget: string }
+          - label: "Black band"
+            name: band
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+          - label: "\"How sending works\" disclosure"
+            name: how
+            widget: object
+            fields:
+              - { label: "Toggle label", name: toggle, widget: string }
+              - { label: "Line 1", name: line1, widget: string }
+              - { label: "Line 2", name: line2, widget: string }
+              - { label: "Line 3", name: line3, widget: string }
+          - label: "After sending"
+            name: sent
+            widget: object
+            fields:
+              - { label: "Heading word", name: heading, widget: string }
+              - { label: "Calendar button", name: calendar, widget: string }
+              - { label: "Fallback note", name: fallbackNote, widget: string }
+              - { label: "Fallback copy button", name: fallbackCopy, widget: string }
+
+      - name: "blog"
+        label: "Blog page"
+        file: "content/blog.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading (line 1)", name: headingMain, widget: string }
+              - { label: "Heading (line 2)", name: headingSub, widget: string }
+              - { label: "Lead paragraph", name: lead, widget: text }
+          - label: "Interface labels"
+            name: labels
+            widget: object
+            fields:
+              - { label: "Filter: all articles", name: all, widget: string }
+              - { label: "Reading time unit (shown after the number)", name: minRead, widget: string }
+              - { label: "Updated label", name: updated, widget: string }
+              - { label: "Back link (to the article list)", name: back, widget: string }
+              - { label: "Table of contents heading", name: contents, widget: string }
+              - { label: "Word for sections (shown after the number)", name: sections, widget: string }
+              - { label: "Written by", name: writtenBy, widget: string }
+              - { label: "Series label", name: series, widget: string }
+              - { label: "Part label", name: part, widget: string }
+              - { label: "Label for a series part that is not published yet", name: follows, widget: string }
+              - { label: "Read mark (article finished earlier)", name: readMark, widget: string }
+              - { label: "Related articles heading", name: related, widget: string }
+              - { label: "Topic rail heading", name: inTopic, widget: string }
+              - { label: "Service link label", name: viewService, widget: string }
+              - { label: "Copied confirmation", name: copied, widget: string }
+              - { label: "Copy quote button", name: copyQuote, widget: string }
+              - { label: "Mail button", name: mailThis, widget: string }
+              - { label: "Copy link button", name: copyLink, widget: string }
+              - { label: "Share button", name: share, widget: string }
+              - { label: "Empty state (no articles)", name: empty, widget: string }
+              - label: "Category names"
+                name: categories
+                widget: object
+                fields:
+                  - { label: "Design", name: ontwerp, widget: string }
+                  - { label: "Sourcing", name: sourcing, widget: string }
+                  - { label: "Sampling", name: sampling, widget: string }
+                  - { label: "Production", name: productie, widget: string }
+                  - { label: "Quality", name: kwaliteit, widget: string }
+                  - { label: "Logistics", name: logistiek, widget: string }
+                  - { label: "Running the business", name: ondernemen, widget: string }
+          - label: "Author block"
+            name: author
+            widget: object
+            fields:
+              - { label: "Name", name: name, widget: string }
+              - { label: "Role", name: role, widget: string }
+              - { label: "Photo (optional, shown instead of the initials)", name: photo, widget: image, required: false }
+              - label: "Credentials (keep exactly 3)"
+                name: credentials
+                widget: list
+                field: { label: "Credential", name: credential, widget: string }
+              - { label: "Button label", name: cta, widget: string }
+          - label: "Closing CTA variants"
+            name: cta
+            widget: object
+            fields:
+              - label: "Scope check"
+                name: scope
+                widget: object
+                fields:
+                  - { label: "Kicker", name: kicker, widget: string }
+                  - { label: "Heading (line 1)", name: headingMain, widget: string }
+                  - { label: "Heading (line 2)", name: headingSub, widget: string }
+                  - { label: "Button label", name: btn, widget: string }
+                  - { label: "Link (do not change)", name: href, widget: string }
+              - label: "Project brief"
+                name: brief
+                widget: object
+                fields:
+                  - { label: "Kicker", name: kicker, widget: string }
+                  - { label: "Heading (line 1)", name: headingMain, widget: string }
+                  - { label: "Heading (line 2)", name: headingSub, widget: string }
+                  - { label: "Button label", name: btn, widget: string }
+                  - { label: "Link (do not change)", name: href, widget: string }
+              - label: "Downloads"
+                name: download
+                widget: object
+                fields:
+                  - { label: "Kicker", name: kicker, widget: string }
+                  - { label: "Heading (line 1)", name: headingMain, widget: string }
+                  - { label: "Heading (line 2)", name: headingSub, widget: string }
+                  - { label: "Button label", name: btn, widget: string }
+                  - { label: "Link (do not change)", name: href, widget: string }
+      - name: "search"
+        label: "Search page"
+        file: "content/search.json"
+        fields:
+          - label: "Page head"
+            name: pagehead
+            widget: object
+            fields:
+              - { label: "Kicker", name: kicker, widget: string }
+              - { label: "Heading", name: heading, widget: string }
+
+      - name: "seo"
+        label: "SEO — page titles & descriptions"
+        file: "content/seo.json"
+        fields:
+          - label: "Services page"
+            name: page-services
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Ecommerce page"
+            name: page-ecommerce
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Corporate gifting page"
+            name: page-gifting
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Why China page"
+            name: page-why
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "FAQ page"
+            name: page-faq
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "About us page"
+            name: page-trust
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Contact page"
+            name: page-contact
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Glossary page"
+            name: page-glossary
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Resources page"
+            name: page-resources
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Search page"
+            name: page-search
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+          - label: "Blog page"
+            name: page-blog
+            widget: object
+            fields:
+              - { label: "Title", name: titleBase, widget: string }
+              - { label: "Description", name: description, widget: text }
+
+      - name: "scope-quiz"
+        label: "Scope-check quiz questions"
+        file: "content/scope-quiz.json"
+        fields:
+          - { label: "(internal note — not shown on site)", name: _note, widget: text, required: false }
+          - label: "Questions"
+            name: questions
+            widget: object
+            fields:
+              - { label: "Category", name: category, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Stage", name: stage, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Volume", name: volume, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Timeline", name: timeline, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Budget", name: budget, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Experience", name: experience, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Why China", name: why_china, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Worry", name: worry, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Why now", name: why_now, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+              - { label: "Contact step", name: contact, widget: object, fields: [{label: "Topic label", name: kicker, widget: string}, {label: "Question", name: q, widget: string}] }
+
+      - name: "downloads"
+        label: "Downloadable templates"
+        file: "content/downloads.json"
+        fields:
+          - { label: "NNN agreement template", name: nnnTemplate, widget: text }
+          - { label: "AQL inspection checklist", name: aqlChecklist, widget: text }
+          - { label: "DFM review checklist", name: dfmChecklist, widget: text }
+
+      - name: "sectors"
+        label: "Sector search (ecommerce page)"
+        file: "content/sectors.json"
+        fields:
+          - { label: "Heading", name: heading, widget: string }
+          - { label: "Intro", name: intro, widget: string }
+          - { label: "Search box placeholder", name: placeholder, widget: string }
+          - { label: "No match: heading (use {query} for what they typed)", name: noMatchHeading, widget: string }
+          - { label: "No match: body", name: noMatchBody, widget: text }
+          - { label: "No match: button label", name: noMatchCta, widget: string }
+          - { label: "Match: heading (use {sector} for the matched sector)", name: matchHeading, widget: string }
+          - { label: "Match: body", name: matchBody, widget: text }
+          - { label: "Match: button label", name: matchCta, widget: string }
+          - label: "Sectors"
+            name: sectors
+            widget: list
+            summary: "{{en}}"
+            fields:
+              - { label: "English", name: en, widget: string }
+              - { label: "Dutch", name: nl, widget: string }
+
+  - name: "blog"
+    label: "Blog articles"
+    label_singular: "Article"
+    folder: "content/blog"
+    create: true
+    format: "json"
+    extension: "json"
+    slug: "{{fields.slug}}"
+    summary: "{{title}}"
+    media_folder: "/images/blog"
+    public_folder: "images/blog"
+    fields:
+      - { label: "Title", name: title, widget: string }
+      - { label: "Slug (technical)", name: slug, widget: string, hint: "Same as the file name: lower case, words separated by hyphens. Do not change after publishing." }
+      - { label: "Language", name: lang, widget: select, options: ["nl", "en"], default: "nl" }
+      - { label: "Date", name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Updated (optional)", name: updated, widget: string, required: false, default: "", hint: "YYYY-MM-DD. Leave empty until the article gets a real revision." }
+      - label: "Category"
+        name: category
+        widget: select
+        options:
+          - { label: "Design", value: "ontwerp" }
+          - { label: "Sourcing", value: "sourcing" }
+          - { label: "Sampling", value: "sampling" }
+          - { label: "Production", value: "productie" }
+          - { label: "Quality", value: "kwaliteit" }
+          - { label: "Logistics", value: "logistiek" }
+          - { label: "Running the business", value: "ondernemen" }
+      - { label: "Dek (one or two sentences that honestly summarise the piece)", name: dek, widget: text }
+      - { label: "Card photo (optional — full bleed on the blog overview card)", name: photo, widget: image, required: false }
+      - { label: "OG image (optional — social share preview)", name: ogImage, widget: image, required: false }
+      - { label: "Series name (optional)", name: series, widget: string, required: false, default: "" }
+      - { label: "Series part (0 when not in a series)", name: seriesPart, widget: number, default: 0, value_type: int, required: false }
+      - { label: "Series total (0 when not in a series)", name: seriesTotal, widget: number, default: 0, value_type: int, required: false }
+      - { label: "Closing CTA", name: ctaPath, widget: select, options: ["scope", "brief", "download"], default: "brief" }
+      - label: "Related glossary terms (optional)"
+        name: relatedTerms
+        widget: list
+        required: false
+        hint: "Exact glossary term names, e.g. MOQ."
+        field: { label: "Term", name: term, widget: string }
+      - { label: "Related service (technical)", name: relatedService, widget: number, default: -1, value_type: int, hint: "Index in the services list. Leave -1 for automatic (based on the category)." }
+      - label: "Body"
+        name: body
+        widget: list
+        types:
+          - label: "Paragraph"
+            name: p
+            widget: object
+            fields:
+              - { label: "Text", name: text, widget: text }
+          - label: "Section heading (H2)"
+            name: h2
+            widget: object
+            fields:
+              - { label: "Text", name: text, widget: string }
+          - label: "Subheading (H3)"
+            name: h3
+            widget: object
+            fields:
+              - { label: "Text", name: text, widget: string }
+          - label: "Bullet list"
+            name: ul
+            widget: object
+            fields:
+              - label: "Items"
+                name: items
+                widget: list
+                field: { label: "Item", name: item, widget: string }
+          - label: "Quote"
+            name: quote
+            widget: object
+            fields:
+              - { label: "Text", name: text, widget: text }
+          - label: "Stat"
+            name: stat
+            widget: object
+            fields:
+              - { label: "Value (e.g. 38%)", name: value, widget: string }
+              - { label: "Label", name: label, widget: string }
+              - { label: "Source", name: source, widget: string, hint: "Required. A stat without a source is not shown on the site." }
+          - label: "Image"
+            name: img
+            widget: object
+            fields:
+              - { label: "Image", name: src, widget: image }
+              - { label: "Caption (required)", name: caption, widget: string }
+              - { label: "Credit (optional)", name: credit, widget: string, required: false }
+              - { label: "Width", name: width, widget: select, options: ["text", "wide", "full"], default: "text" }

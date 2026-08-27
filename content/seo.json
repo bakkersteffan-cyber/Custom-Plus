@@ -1,0 +1,46 @@
+{
+  "page-services": {
+    "titleBase": "China Product Development & Sourcing Services",
+    "description": "Concept design, DFM, factory sourcing and vetting, tooling, AQL quality control, compliance and logistics: the CUSTOM+ process end to end."
+  },
+  "page-ecommerce": {
+    "titleBase": "Ecommerce Product Development in China",
+    "description": "Product development for Shopify, Amazon, and DTC brands: from first contact through production, plus a white label network when speed matters."
+  },
+  "page-gifting": {
+    "titleBase": "Corporate Gifting at Volume, Produced in China",
+    "description": "Branded gift boxes for companies: end of year boxes, onboarding kits, event gifts. Honest minimums, backward planning around the factory calendar, AQL inspected assembly."
+  },
+  "page-why": {
+    "titleBase": "Why Manufacture in China: Risk, Vetting & Control",
+    "description": "China is the deepest manufacturing base in the world for speed and capacity. CUSTOM+ vets every factory, signs NNN contracts, and inspects every run."
+  },
+  "page-faq": {
+    "titleBase": "FAQ: China Manufacturing, MOQs & Quality Control",
+    "description": "Answers on protecting your IP, off spec runs, realistic budgets, timelines, compliance testing, and how CUSTOM+ differs from a sourcing agent."
+  },
+  "page-trust": {
+    "titleBase": "About Us: Who's Behind CUSTOM+",
+    "description": "Who's behind CUSTOM+, our legal registration, factory vetting standards, and refund terms: verifiable details, not testimonials."
+  },
+  "page-contact": {
+    "titleBase": "Start Your China Manufacturing Project",
+    "description": "Tell us what you are building and we will tell you what it takes: start your brief from scratch, or bring the files or quote you already have."
+  },
+  "page-glossary": {
+    "titleBase": "Manufacturing Glossary: AQL, DFM, MOQ & More",
+    "description": "Every manufacturing acronym used across this site, AQL, DFM, MOQ, NNN and more, explained once, linked back to where it matters in your project."
+  },
+  "page-resources": {
+    "titleBase": "Free Tools: Cost, Tolerance & Timeline Calculators",
+    "description": "Every interactive tool on CUSTOM+ in one place: payment milestone visualizer, production planner and more."
+  },
+  "page-search": {
+    "titleBase": "Search",
+    "description": "Search CUSTOM+ for answers on IP protection, budgets, timelines, quality control, and how sourcing in China works."
+  },
+  "page-blog": {
+    "titleBase": "Field Notes: Honest Lessons from Making Products in China",
+    "description": "Practical notes on getting products made in China: real cost breakdowns, sampling, MOQ negotiation, quality control and freight. Written by the founder who answers every brief."
+  }
+}

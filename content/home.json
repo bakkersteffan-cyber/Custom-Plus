@@ -1,0 +1,74 @@
+{
+  "metaDescription": "CUSTOM+ takes your product from sketch to shipping container: industrial design, DFM, vetted factory production in China, AQL quality control, and logistics.",
+  "hero": {
+    "headline": "CUSTOM+ turns ideas into manufactured products",
+    "subhead": "The made to spec standard in product development"
+  },
+  "pulseLabel": "From napkin sketch to shipping container",
+  "services": {
+    "kicker": "Services",
+    "heading": "Six disciplines. One accountable team."
+  },
+  "who": {
+    "kicker": "Who we build for",
+    "heading": "Most \"made in China\" failures are a translation problem. We sit in that gap on purpose.",
+    "lead": "Whether you're moving off a private label catalog, fixing a factory relationship that's drifting, or building your first fully custom product, every engagement gets one consistent team that reads CAD files and spec sheets for a living.",
+    "col1Heading": "Startups & DTC brands",
+    "col1Rows": [
+      {
+        "title": "Home fragrance",
+        "desc": "A refillable diffuser vessel, tooling shared across a mold family"
+      },
+      {
+        "title": "Outdoor gear",
+        "desc": "Camp cookware re engineered around nesting tolerances"
+      },
+      {
+        "title": "Consumer electronics",
+        "desc": "An IP rated housing with PCB sourcing managed alongside the enclosure"
+      },
+      {
+        "title": "Baby & child",
+        "desc": "Food contact silicone with certification built into the timeline from day one"
+      }
+    ],
+    "col2Heading": "Established brands",
+    "col2Rows": [
+      {
+        "title": "Furniture",
+        "desc": "Flat pack systems reworked for container efficiency"
+      },
+      {
+        "title": "Pet products",
+        "desc": "Enclosure tooling audited, moved, and rebuilt at an appliance grade partner"
+      },
+      {
+        "title": "Beauty & personal care",
+        "desc": "A pump mechanism isolated for independent leak testing"
+      },
+      {
+        "title": "FMCG & packaging",
+        "desc": "Closures engineered to survive parcel networks, not just retail shelves"
+      }
+    ]
+  },
+  "why": {
+    "kicker": "Why China, done right",
+    "heading": "The capability is real. So is the risk. We exist to hold the second part down.",
+    "lead": "The deepest manufacturing base in the world, and the horror stories that exist alongside it. The risk was never the country: it's going in without vetting, without contracts, and without inspection standards."
+  },
+  "collab": {
+    "label": "Open network",
+    "heading": "Independent industrial designers and QC inspectors. We'd like to meet you.",
+    "body": "CUSTOM+ is new and building its bench. If you work in CAD, tooling, or on inspection floors in Guangdong or Zhejiang, introduce yourself."
+  },
+  "cta": {
+    "headingMain": "Bring us the sketch.",
+    "headingSub": "We'll bring the factory floor."
+  },
+  "callBooking": {
+    "kicker": "Prefer to talk first?",
+    "heading": "Pick a slot, right here.",
+    "body": "No forms, no back and forth. Grab a time that works and Steffan takes it from there."
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "pagehead": {
+    "kicker": "About us",
+    "headingMain": "Nothing here you can't check yourself.",
+    "headingSub": "Exactly who and what you'd be dealing with."
+  },
+  "founder": {
+    "kicker": "Who's actually doing this work",
+    "photo": "images/founder.jpg",
+    "name": "Steffan Bakker",
+    "bio": [
+      "Steffan Bakker is a serial entrepreneur and Asia expert with a strong focus on real estate development, sourcing, and product development. After his exit from Customforyou at the age of twenty, he built years of experience in Asia, where he worked on real estate development and on guiding entrepreneurs through developing and sourcing their own products.",
+      "His passion for negotiating, finding the right partners, and turning ideas into reality eventually brought him back to CUSTOM+, where he puts his knowledge and network to work helping others turn their dream products into reality.",
+      "From a first sketch to a fully developed product, from white label to a fully custom design: at CUSTOM+ almost anything is possible. With a strong network of manufacturers and years of experience in Asia, Steffan helps entrepreneurs not just come up with ideas, but actually make them happen."
+    ]
+  },
+  "logos": {
+    "heading": "Previously worked with",
+    "items": [
+      {
+        "name": "OGER",
+        "logo": "images/logos/oger.png"
+      },
+      {
+        "name": "Newomij",
+        "logo": "images/logos/newomij.png"
+      },
+      {
+        "name": "Beelen.nl",
+        "logo": "images/logos/beelen.png"
+      },
+      {
+        "name": "van Duuren",
+        "logo": "images/logos/vanduuren.png"
+      },
+      {
+        "name": "Caliber",
+        "logo": "images/logos/caliber.png"
+      },
+      {
+        "name": "Inter College Amsterdam",
+        "logo": "images/logos/intercollege.png"
+      },
+      {
+        "name": "Berghoef",
+        "logo": "images/logos/berghoef.png"
+      },
+      {
+        "name": "De Nederlandse Ondernemersgroep",
+        "logo": "images/logos/ondernemersgroep.png"
+      }
+    ]
+  },
+  "closingCta": {
+    "heading": "Checked out and still have questions?"
+  }
+}

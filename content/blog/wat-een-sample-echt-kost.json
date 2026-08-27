@@ -1,0 +1,109 @@
+{
+  "title": "Wat een sample echt kost",
+  "slug": "wat-een-sample-echt-kost",
+  "lang": "nl",
+  "date": "2026-08-20",
+  "updated": "",
+  "category": "sampling",
+  "dek": "Vierhonderd euro voor één stuk voelt scheef als de stukprijs straks drie euro is. Toch klopt die factuur meestal: hier is de uitsplitsing, plus wanneer je het geld terugziet.",
+  "photo": "",
+  "ogImage": "",
+  "series": "Van schets tot zeecontainer",
+  "seriesPart": 1,
+  "seriesTotal": 3,
+  "ctaPath": "brief",
+  "relatedTerms": [
+    "DFM",
+    "MOQ"
+  ],
+  "relatedService": 3,
+  "body": [
+    {
+      "type": "p",
+      "text": "Het eerste bedrag dat schrikt in een offerte is zelden de stukprijs. Het is het sample. Vierhonderd euro voor één stuk, terwijl je straks een paar euro per stuk gaat betalen. Dat voelt scheef. Toch klopt het bijna altijd, en als je snapt waarom, onderhandel je daarna een stuk beter."
+    },
+    {
+      "type": "p",
+      "text": "Dit is deel 1 van de serie Van schets tot zeecontainer: het hele traject van idee naar levering, met eerlijke rekensommen. Deel 2 gaat over wat verschepen echt kost."
+    },
+    {
+      "type": "h2",
+      "text": "Een sample is geen product uit de lijn"
+    },
+    {
+      "type": "p",
+      "text": "Een productiestuk rolt uit een proces dat al draait. Een sample is dat proces bouwen. De fabriek koopt materiaal in kleine hoeveelheden in, vaak tegen een veel hogere meterprijs of kiloprijs dan bij bulk. Een technicus bouwt een machine om, schrijft een werkplan, mengt een kleur en maakt met de hand af wat de lijn straks automatisch doet. Voor één stuk. Alle vaste kosten die je bij vijfduizend stuks over vijfduizend stuks uitsmeert, landen nu op dat ene exemplaar."
+    },
+    {
+      "type": "p",
+      "text": "Daarom is de prijs van een sample geen voorspelling van je stukprijs. Het zijn twee verschillende producten die er toevallig hetzelfde uitzien."
+    },
+    {
+      "type": "h2",
+      "text": "Waar het geld heen gaat"
+    },
+    {
+      "type": "p",
+      "text": "Een samplefactuur van pakweg vijfhonderd euro valt meestal zo uiteen:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Arbeid: een ervaren technicus is er een dag of twee mee bezig, geen lijnwerker twintig seconden.",
+        "Setup: machines instellen, snijpatronen of programma's schrijven, testruns draaien.",
+        "Materiaal in minihoeveelheden: één meter stof of één staaf kunststof koop je tegen de hoogste prijs die er bestaat.",
+        "Koerier: een sample vliegt, en expresvracht vanuit China kost al snel vijftig tot honderd euro per zending."
+      ]
+    },
+    {
+      "type": "stat",
+      "value": "70%",
+      "label": "van een gemiddelde samplefactuur is arbeid en setup, geen materiaal",
+      "source": "illustratief rekenvoorbeeld, samplefactuur van 500 euro"
+    },
+    {
+      "type": "p",
+      "text": "Let op de koerier. Wie drie samplerondes doet met telkens een losse zending, betaalt soms meer aan vliegtickets voor dozen dan aan het sample zelf. Rondes combineren waar het kan scheelt echt geld."
+    },
+    {
+      "type": "h2",
+      "text": "Tooling is een apart gesprek"
+    },
+    {
+      "type": "p",
+      "text": "Voor spuitgietwerk of gegoten onderdelen komt er een mal bij, en dan praat je over duizenden euro's in plaats van honderden. Die mal hoort van jou te zijn, leg dat schriftelijk vast voordat je betaalt, en gaat daarna tienduizenden tot honderdduizenden stuks mee. Een goede fabriek doet vóór het snijden van de mal een DFM ronde: kan dit ontwerp überhaupt goed uit de matrijs komen, of lossen die hoeken niet? Elke wijziging ná de mal kost een veelvoud van dezelfde wijziging ervoor. Dat is geen verkooppraatje van de fabriek, dat is staal."
+    },
+    {
+      "type": "quote",
+      "text": "Een goedkoop sample dat niets bewijst is duurder dan een eerlijk sample dat alles bewijst."
+    },
+    {
+      "type": "h2",
+      "text": "Reken op meer dan één ronde"
+    },
+    {
+      "type": "p",
+      "text": "Het eerste sample is zelden meteen goed, en dat is niet erg. Twee tot drie rondes is normaal. De eerste ronde bewijst vorm en functie, de tweede materiaal en afwerking, en het laatste goedgekeurde stuk wordt je referentiesample: het stuk waartegen de hele productie straks wordt afgemeten. Bewaar dat stuk, fotografeer het, en laat de fabriek een identiek exemplaar houden."
+    },
+    {
+      "type": "p",
+      "text": "Plan die rondes ook in je tijdlijn. Elke ronde kost twee tot vier weken inclusief verzending. Wie in oktober in de winkel wil liggen en in augustus het eerste sample bestelt, heeft geen planning maar een gok."
+    },
+    {
+      "type": "h2",
+      "text": "Wanneer komt het geld terug"
+    },
+    {
+      "type": "p",
+      "text": "Veel fabrieken verrekenen de samplekosten met je eerste order. Dat is gebruik, geen recht. Vraag het dus vóór je betaalt en zet het in de mail: samplekosten worden gecrediteerd bij een order boven de MOQ. De meeste fabrieken vinden dat prima. Voor hen is een sample een investering in een nieuwe klant, geen verdienmodel. Een fabriek die op samples wil verdienen, is meestal geen fabriek maar een tussenpersoon."
+    },
+    {
+      "type": "h2",
+      "text": "De korte versie"
+    },
+    {
+      "type": "p",
+      "text": "Betaal zonder morren voor een goed sample, onderhandel vooraf over de verrekening, en wantrouw een sample dat verdacht goedkoop is. Ergens wordt dan op bespaard, en je ontdekt pas bij massaproductie waarop. Het sample is het goedkoopste moment in het hele traject om fouten te vinden. Elk station daarna, mal, productie, container, klant, maakt dezelfde fout een nul duurder."
+    }
+  ]
+}

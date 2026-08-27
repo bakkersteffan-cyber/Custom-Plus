@@ -1,0 +1,90 @@
+{
+  "pagehead": {
+    "kicker": "FAQ",
+    "heading": "Before you ask."
+  },
+  "items": [
+    {
+      "id": "faq-ip",
+      "q": "How do you protect our IP before a factory ever sees a drawing?",
+      "a": "We'll sign an NDA before any detailed disclosure on our side. Once a factory is involved, an NNN agreement is executed before drawings or spec sheets are shared, and disclosure is staged so tooling partners see only what they need to manufacture."
+    },
+    {
+      "id": "faq-offspec",
+      "q": "What happens if a production run comes back off spec?",
+      "a": "It doesn't ship. Every run is checked against AQL sampling standards before it leaves the factory; units outside the agreed defect threshold are reworked or rejected at the factory's cost, per terms set before production started."
+    },
+    {
+      "id": "faq-sketch",
+      "q": "We only have a rough sketch. Can you still help?",
+      "a": "Yes, that's the normal starting point. Concept and industrial design is the first phase of the engagement, not a prerequisite for it."
+    },
+    {
+      "id": "faq-budget",
+      "q": "What's a realistic budget, and how is CUSTOM+ priced?",
+      "a": "It depends on category, tooling complexity, and volume. Injection molded parts typically carry a higher minimum order quantity (MOQ) than CNC or sheet metal parts because of tooling amortization. Design and engineering are scoped per phase; production and logistics are priced against the factory quotes we negotiate on your behalf, with our fee disclosed separately, never buried inside a marked up unit cost."
+    },
+    {
+      "id": "faq-timeline",
+      "q": "How long does a typical project take?",
+      "a": "From first brief through the first sample round is usually 9 to 19 weeks depending on tooling complexity, with production and logistics adding 7 to 14 weeks on top. Simple products move faster; anything with tight tolerances takes the time it takes to get right."
+    },
+    {
+      "id": "faq-compliance",
+      "q": "How do you handle compliance like CE, FCC, or RoHS?",
+      "a": "Certification requirements are identified during design, not discovered after tooling. We coordinate testing with accredited labs for the markets you ship to and build the timeline into the production schedule."
+    },
+    {
+      "id": "faq-vs-agent",
+      "q": "How is this different from a sourcing agent?",
+      "a": "A sourcing agent finds you a factory and steps back. We stay through design, tooling, every sample round, production QC, and freight, paid to represent your interests, not to move volume for a factory."
+    },
+    {
+      "id": "faq-existing-factory",
+      "q": "Do you work with brands that already have a factory?",
+      "a": "Yes, sometimes the fix is design and QC oversight on an existing relationship, not a new factory. We'll tell you honestly which one your situation needs."
+    }
+  ],
+  "redflag": {
+    "kicker": "Already have a quote from somewhere else?",
+    "heading": "Stress test it. Six checks, no upload, thirty seconds.",
+    "lead": "These are the standard safeguards we check for on every quote we review, including ones that were never going to be ours.",
+    "questions": [
+      {
+        "key": "tooling",
+        "question": "Does it separate tooling cost from unit price?"
+      },
+      {
+        "key": "cavity",
+        "question": "Is the mold cavity count specified?"
+      },
+      {
+        "key": "payment",
+        "question": "Are payment terms staged, not 100% upfront?"
+      },
+      {
+        "key": "ip",
+        "question": "Is there a written IP or NNN clause?"
+      },
+      {
+        "key": "aql",
+        "question": "Does it specify an AQL or inspection standard?"
+      },
+      {
+        "key": "ownership",
+        "question": "Is tooling ownership stated in writing?"
+      }
+    ],
+    "explanations": {
+      "tooling": "Vague tooling versus unit pricing is a classic place a markup hides. Ask for tooling and unit cost as two separate lines.",
+      "cavity": "Without a stated cavity count, you can not verify the per unit price makes sense at your volume.",
+      "payment": "100% upfront removes your only real leverage if quality drops after the sample.",
+      "ip": "No NNN clause means nothing formally stops the factory from reproducing or reselling your design.",
+      "aql": "No inspection standard means \"good enough\" gets decided after the fact, not agreed in advance.",
+      "ownership": "Unclear tooling ownership can mean starting over, and paying again, if you ever switch factories."
+    }
+  },
+  "closingCta": {
+    "heading": "Still stuck on something specific?"
+  }
+}

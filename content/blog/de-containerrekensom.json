@@ -1,0 +1,102 @@
+{
+  "title": "De containerrekensom",
+  "slug": "de-containerrekensom",
+  "lang": "nl",
+  "date": "2026-08-06",
+  "updated": "",
+  "category": "logistiek",
+  "dek": "De stukprijs uit de fabriek is niet je kostprijs. Wat er onderweg bij komt, waarom je doos meer bepaalt dan je vrachttarief, en de rekensom die je vooraf maakt.",
+  "photo": "",
+  "ogImage": "",
+  "series": "Van schets tot zeecontainer",
+  "seriesPart": 2,
+  "seriesTotal": 3,
+  "ctaPath": "download",
+  "relatedTerms": [
+    "DFM",
+    "MOQ"
+  ],
+  "relatedService": 5,
+  "body": [
+    {
+      "type": "p",
+      "text": "De mooiste prijs in dit vak is de fabrieksprijs. Drie euro per stuk, zwart op wit. Het probleem: dat is niet wat het product jou kost. Tussen de fabriekspoort en jouw magazijn zit een rij kostenposten die samen makkelijk een vijfde van de fabrieksprijs optellen, en wie daar pas achter komt als de facturen binnenrollen, heeft zijn verkoopprijs op drijfzand gebouwd."
+    },
+    {
+      "type": "p",
+      "text": "Dit is deel 2 van de serie Van schets tot zeecontainer. Deel 1 ging over wat een sample echt kost; deel 3 volgt."
+    },
+    {
+      "type": "h2",
+      "text": "Van stukprijs naar totale kostprijs"
+    },
+    {
+      "type": "p",
+      "text": "Dit zijn de posten die er in een normaal traject bij komen:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Transport in China: van de fabriek naar de haven, inclusief documentatie en export.",
+        "Zeevracht: het containertarief zelf, plus toeslagen die per seizoen bewegen.",
+        "Verzekering: klein bedrag, groot verschil als er iets misgaat.",
+        "Invoerrechten: afhankelijk van de goederencode van je product, van nul tot ruim tien procent.",
+        "Btw bij invoer: verrekenbaar voor ondernemers, maar je moet het wel eerst voorschieten.",
+        "Afhandeling en transport in Nederland: haven, douaneagent, de vrachtwagen naar je magazijn.",
+        "Uitval: een klein percentage stuks dat je nooit kunt verkopen, hoe goed de controle ook was."
+      ]
+    },
+    {
+      "type": "stat",
+      "value": "22%",
+      "label": "bovenop de fabrieksprijs voordat een product verkoopklaar in het magazijn ligt",
+      "source": "illustratief rekenvoorbeeld, 5.000 stuks per zeecontainer naar Rotterdam"
+    },
+    {
+      "type": "h2",
+      "text": "De doos bepaalt meer dan je denkt"
+    },
+    {
+      "type": "p",
+      "text": "Zeevracht reken je niet per stuk af maar per kuub. Dat maakt je verpakking een kostenpost van de eerste orde. Een omdoos die net niet efficiënt in een container stapelt, betekent lucht verschepen, en lucht kost hetzelfde tarief als product. Dit is DFM voor je verpakking: ontwerp de doos rond de containermaat, niet andersom. Twee centimeter van een doos afhalen klinkt als gepriegel, tot je het over een hele container doorrekent."
+    },
+    {
+      "type": "stat",
+      "value": "7%",
+      "label": "meer stuks in dezelfde container door de omdoos twee centimeter lager te maken",
+      "source": "illustratief rekenvoorbeeld, doosmaat 40 bij 30 bij 28 naar 40 bij 30 bij 26 centimeter"
+    },
+    {
+      "type": "h2",
+      "text": "Deelcontainer of hele container"
+    },
+    {
+      "type": "p",
+      "text": "Onder de pakweg vijftien kuub deel je een container met andere verladers. Dat heet LCL en het is per kuub duurder, trager en gevoeliger voor schade en vertraging, omdat je lading twee keer extra wordt overgeladen. Boven dat punt wordt een eigen container al snel goedkoper én rustiger. Zit je er net onder, reken dan beide varianten door: soms is een iets grotere order per stuk goedkoper, puur door de vracht. Dat is ook een argument in je MOQ gesprek met de fabriek."
+    },
+    {
+      "type": "quote",
+      "text": "De goedkoopste kuub vracht is de kuub die je niet verscheept."
+    },
+    {
+      "type": "h2",
+      "text": "Incoterms in gewone taal"
+    },
+    {
+      "type": "p",
+      "text": "Drie afkortingen bepalen wie wat betaalt en wie waarvoor verantwoordelijk is. EXW: jij haalt het op bij de fabriekspoort en alles daarna is jouw probleem. FOB: de fabriek zet het aan boord in de Chinese haven, daarna is het van jou. Voor de meeste importeurs is dat het beste startpunt, omdat je de zeevracht dan zelf inkoopt bij een partij die jou vertegenwoordigt. DDP: de leverancier regelt alles tot je deur. Klinkt makkelijk, maar je koopt een dichte doos aan kosten en je hebt geen grip op de invoer die op jouw naam gebeurt."
+    },
+    {
+      "type": "h2",
+      "text": "De rekensom die je vooraf maakt"
+    },
+    {
+      "type": "p",
+      "text": "Maak vóór je bestelt één simpele tabel: fabrieksprijs, plus elke post hierboven, gedeeld door het aantal verkoopbare stuks. Dat getal, niet de fabrieksprijs, zet je tegenover je verkoopprijs. Reken daarna één pessimistisch scenario door: vrachttarief anderhalf keer zo hoog, drie procent uitval, vier weken vertraging. Kun je dat hebben, dan heb je een plan. Kun je dat niet hebben, dan weet je dat nu, en niet als de container al vaart."
+    },
+    {
+      "type": "p",
+      "text": "Volgende keer in deze serie: wat er gebeurt tussen goedgekeurd sample en volle container, en waarom dat het stuk is waar de meeste trajecten alsnog omvallen."
+    }
+  ]
+}

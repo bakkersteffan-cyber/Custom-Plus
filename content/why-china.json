@@ -1,0 +1,66 @@
+{
+  "pagehead": {
+    "kicker": "Why China, done right",
+    "headingMain": "The capability is real. So is the risk.",
+    "headingSub": "We exist to hold the second part down.",
+    "lead": "For ecommerce brands developing an entirely new product, and for established brands expanding a portfolio that already sells, China remains the deepest manufacturing base in the world for tooling speed, component sourcing, and factory capacity, across categories from injection molded plastics to precision electronics assembly. That's exactly why the horror stories exist alongside it. The risk was never the country: it's going in without vetting, without contracts, and without inspection standards, and finding out too late."
+  },
+  "riskControl": {
+    "kicker": "Risk → Control",
+    "heading": "Every failure mode has a control. We run all of them.",
+    "note": "Already picturing a specific worst case? Pick it, and we'll jump straight to the answer.",
+    "_skipped": "The 5 risk/control rows and their IP-stack/dossier/AQL-report detail panels are intentionally left out of the CMS — they're tightly interleaved with interactive JS (worst-case picker data-target wiring, expand/collapse toggles, inline term links) that has already been reviewed and hardened multiple times. Edit them directly in custom-plus.html if needed."
+  },
+  "compare": {
+    "kicker": "The honest comparison",
+    "heading": "What you're actually choosing between.",
+    "note": "Illustrative comparison based on how these models typically work, not a claim about any specific competitor.",
+    "rows": [
+      [
+        "Factory vetting",
+        "Audited before it reaches your shortlist",
+        "You vet it yourself, from abroad",
+        "Rarely: they relay orders, not judge floors",
+        "Sometimes, inconsistently"
+      ],
+      [
+        "IP protection",
+        "NNN agreement before any file moves",
+        "Whatever you can negotiate alone",
+        "Rarely offered as standard",
+        "Varies a lot by agent"
+      ],
+      [
+        "Design for manufacturability",
+        "Built into every engagement",
+        "You need your own engineer",
+        "Not offered",
+        "Not offered"
+      ],
+      [
+        "Quality control",
+        "AQL inspection on every production run",
+        "You arrange your own inspector",
+        "Usually self reported by the factory",
+        "Sometimes, at extra cost"
+      ],
+      [
+        "Who they work for",
+        "You: our fee disclosed separately",
+        "You, but entirely on your own",
+        "The factory (margin sits in your unit price)",
+        "Often paid by the factory, not you"
+      ],
+      [
+        "Support after tooling",
+        "Through production, QC, and logistics",
+        "Ends once you have an introduction",
+        "Ends at shipment",
+        "Usually ends once the deal is placed"
+      ]
+    ]
+  },
+  "closingCta": {
+    "heading": "Have a risk we didn't name?"
+  }
+}

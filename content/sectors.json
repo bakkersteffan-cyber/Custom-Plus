@@ -1,0 +1,1373 @@
+{
+  "heading": "Do we build in your sector?",
+  "intro": "Search your sector below — if it is on the list, we already know how to build in it.",
+  "placeholder": "Type your sector…",
+  "noMatchHeading": "We have not listed “{query}” by name.",
+  "noMatchBody": "Our range covers 300+ sectors, and not being listed by name does not mean we cannot help. Ask us directly and we will give you a straight answer.",
+  "noMatchCta": "Ask us directly",
+  "matchHeading": "Yes — we build in {sector}.",
+  "matchBody": "Starting something new here, or just have a question about this sector first? Either way, start the conversation now.",
+  "matchCta": "Start a project",
+  "sectors": [
+    {
+      "en": "Fashion & clothing",
+      "nl": "Mode & kleding"
+    },
+    {
+      "en": "Women's fashion",
+      "nl": "Damesmode"
+    },
+    {
+      "en": "Men's fashion",
+      "nl": "Herenmode"
+    },
+    {
+      "en": "Kids' clothing",
+      "nl": "Kinderkleding"
+    },
+    {
+      "en": "Baby clothing",
+      "nl": "Babykleding"
+    },
+    {
+      "en": "Sportswear",
+      "nl": "Sportkleding"
+    },
+    {
+      "en": "Streetwear",
+      "nl": "Streetwear"
+    },
+    {
+      "en": "Luxury fashion",
+      "nl": "Luxe mode"
+    },
+    {
+      "en": "Sustainable fashion",
+      "nl": "Duurzame mode"
+    },
+    {
+      "en": "Vintage & secondhand fashion",
+      "nl": "Vintage & tweedehands mode"
+    },
+    {
+      "en": "Underwear & lingerie",
+      "nl": "Ondergoed & lingerie"
+    },
+    {
+      "en": "Nightwear",
+      "nl": "Nachtkleding"
+    },
+    {
+      "en": "Swimwear",
+      "nl": "Zwemkleding"
+    },
+    {
+      "en": "Socks",
+      "nl": "Sokken"
+    },
+    {
+      "en": "Workwear",
+      "nl": "Werkkleding"
+    },
+    {
+      "en": "Suits & formal wear",
+      "nl": "Kostuums & formele kleding"
+    },
+    {
+      "en": "Shoes",
+      "nl": "Schoenen"
+    },
+    {
+      "en": "Sneakers",
+      "nl": "Sneakers"
+    },
+    {
+      "en": "Jewelry",
+      "nl": "Sieraden"
+    },
+    {
+      "en": "Watches",
+      "nl": "Horloges"
+    },
+    {
+      "en": "Bags",
+      "nl": "Tassen"
+    },
+    {
+      "en": "Glasses & sunglasses",
+      "nl": "Brillen & zonnebrillen"
+    },
+    {
+      "en": "Hats & caps",
+      "nl": "Hoeden & petten"
+    },
+    {
+      "en": "Belts",
+      "nl": "Riemen"
+    },
+    {
+      "en": "Fashion accessories",
+      "nl": "Modeaccessoires"
+    },
+    {
+      "en": "Beauty & cosmetics",
+      "nl": "Beauty & cosmetica"
+    },
+    {
+      "en": "Skincare",
+      "nl": "Huidverzorging"
+    },
+    {
+      "en": "Hair care",
+      "nl": "Haarverzorging"
+    },
+    {
+      "en": "Perfume & fragrance",
+      "nl": "Parfum & geuren"
+    },
+    {
+      "en": "Makeup",
+      "nl": "Makeup"
+    },
+    {
+      "en": "Nail care",
+      "nl": "Nagelverzorging"
+    },
+    {
+      "en": "Body care",
+      "nl": "Lichaamsverzorging"
+    },
+    {
+      "en": "Bath & shower products",
+      "nl": "Bad en doucheproducten"
+    },
+    {
+      "en": "Deodorant",
+      "nl": "Deodorant"
+    },
+    {
+      "en": "Sun care",
+      "nl": "Zonverzorging"
+    },
+    {
+      "en": "Self tanning",
+      "nl": "Zelfbruining"
+    },
+    {
+      "en": "Shaving products",
+      "nl": "Scheerproducten"
+    },
+    {
+      "en": "Beard care",
+      "nl": "Baardverzorging"
+    },
+    {
+      "en": "Men's grooming",
+      "nl": "Mannenverzorging"
+    },
+    {
+      "en": "Oral care",
+      "nl": "Mondverzorging"
+    },
+    {
+      "en": "Electric grooming devices",
+      "nl": "Elektrische verzorgingsapparaten"
+    },
+    {
+      "en": "Natural cosmetics",
+      "nl": "Natuurlijke cosmetica"
+    },
+    {
+      "en": "Professional beauty products",
+      "nl": "Professionele beautyproducten"
+    },
+    {
+      "en": "Health & wellness",
+      "nl": "Gezondheid & wellness"
+    },
+    {
+      "en": "Vitamins",
+      "nl": "Vitamines"
+    },
+    {
+      "en": "Dietary supplements",
+      "nl": "Voedingssupplementen"
+    },
+    {
+      "en": "Sports nutrition",
+      "nl": "Sportvoeding"
+    },
+    {
+      "en": "Protein products",
+      "nl": "Eiwitproducten"
+    },
+    {
+      "en": "Healthy food",
+      "nl": "Gezonde voeding"
+    },
+    {
+      "en": "Superfoods",
+      "nl": "Superfoods"
+    },
+    {
+      "en": "Weight loss & lifestyle products",
+      "nl": "Afslank en lifestyleproducten"
+    },
+    {
+      "en": "Sleep products",
+      "nl": "Slaapproducten"
+    },
+    {
+      "en": "Massage products",
+      "nl": "Massageproducten"
+    },
+    {
+      "en": "Wellness products",
+      "nl": "Wellnessproducten"
+    },
+    {
+      "en": "Meditation products",
+      "nl": "Meditatieproducten"
+    },
+    {
+      "en": "Ergonomic products",
+      "nl": "Ergonomische producten"
+    },
+    {
+      "en": "Home care products",
+      "nl": "Thuiszorgproducten"
+    },
+    {
+      "en": "Personal health devices",
+      "nl": "Persoonlijke gezondheidsapparatuur"
+    },
+    {
+      "en": "Sport & fitness",
+      "nl": "Sport & fitness"
+    },
+    {
+      "en": "Fitness equipment",
+      "nl": "Fitnessapparatuur"
+    },
+    {
+      "en": "Fitness accessories",
+      "nl": "Fitnessaccessoires"
+    },
+    {
+      "en": "Yoga",
+      "nl": "Yoga"
+    },
+    {
+      "en": "Pilates",
+      "nl": "Pilates"
+    },
+    {
+      "en": "Running",
+      "nl": "Hardlopen"
+    },
+    {
+      "en": "Cycling",
+      "nl": "Wielrennen"
+    },
+    {
+      "en": "Padel",
+      "nl": "Padel"
+    },
+    {
+      "en": "Tennis",
+      "nl": "Tennis"
+    },
+    {
+      "en": "Football",
+      "nl": "Voetbal"
+    },
+    {
+      "en": "Hockey",
+      "nl": "Hockey"
+    },
+    {
+      "en": "Golf",
+      "nl": "Golf"
+    },
+    {
+      "en": "Boxing & martial arts",
+      "nl": "Boksen & vechtsport"
+    },
+    {
+      "en": "Swimming",
+      "nl": "Zwemmen"
+    },
+    {
+      "en": "Watersports",
+      "nl": "Watersport"
+    },
+    {
+      "en": "Winter sports",
+      "nl": "Wintersport"
+    },
+    {
+      "en": "Camping",
+      "nl": "Kamperen"
+    },
+    {
+      "en": "Outdoor & hiking",
+      "nl": "Outdoor & hiking"
+    },
+    {
+      "en": "Climbing",
+      "nl": "Klimsport"
+    },
+    {
+      "en": "Equestrian",
+      "nl": "Paardensport"
+    },
+    {
+      "en": "Team sports gear",
+      "nl": "Teamsportartikelen"
+    },
+    {
+      "en": "Sports recovery products",
+      "nl": "Sportherstelproducten"
+    },
+    {
+      "en": "Home & interior",
+      "nl": "Wonen & interieur"
+    },
+    {
+      "en": "Furniture",
+      "nl": "Meubels"
+    },
+    {
+      "en": "Designer furniture",
+      "nl": "Designmeubels"
+    },
+    {
+      "en": "Home accessories",
+      "nl": "Woonaccessoires"
+    },
+    {
+      "en": "Lighting",
+      "nl": "Verlichting"
+    },
+    {
+      "en": "Lamps",
+      "nl": "Lampen"
+    },
+    {
+      "en": "Wall decor",
+      "nl": "Wanddecoratie"
+    },
+    {
+      "en": "Art & prints",
+      "nl": "Kunst & prints"
+    },
+    {
+      "en": "Photo frames",
+      "nl": "Fotolijsten"
+    },
+    {
+      "en": "Rugs",
+      "nl": "Vloerkleden"
+    },
+    {
+      "en": "Curtains & window decor",
+      "nl": "Gordijnen & raamdecoratie"
+    },
+    {
+      "en": "Cushions & textiles",
+      "nl": "Kussens & textiel"
+    },
+    {
+      "en": "Bedding",
+      "nl": "Beddengoed"
+    },
+    {
+      "en": "Mattresses",
+      "nl": "Matrassen"
+    },
+    {
+      "en": "Beds",
+      "nl": "Bedden"
+    },
+    {
+      "en": "Bedroom products",
+      "nl": "Slaapkamerproducten"
+    },
+    {
+      "en": "Bathroom products",
+      "nl": "Badkamerproducten"
+    },
+    {
+      "en": "Mirrors",
+      "nl": "Spiegels"
+    },
+    {
+      "en": "Storage products",
+      "nl": "Opbergproducten"
+    },
+    {
+      "en": "Scented candles",
+      "nl": "Geurkaarsen"
+    },
+    {
+      "en": "Home fragrance",
+      "nl": "Woongeuren"
+    },
+    {
+      "en": "Plants",
+      "nl": "Planten"
+    },
+    {
+      "en": "Flowers",
+      "nl": "Bloemen"
+    },
+    {
+      "en": "Artificial plants",
+      "nl": "Kunstplanten"
+    },
+    {
+      "en": "Kitchen products",
+      "nl": "Keukenproducten"
+    },
+    {
+      "en": "Cookware",
+      "nl": "Kookgerei"
+    },
+    {
+      "en": "Pans",
+      "nl": "Pannen"
+    },
+    {
+      "en": "Knives",
+      "nl": "Messen"
+    },
+    {
+      "en": "Kitchen appliances",
+      "nl": "Keukenapparatuur"
+    },
+    {
+      "en": "Tableware",
+      "nl": "Servies"
+    },
+    {
+      "en": "Glassware",
+      "nl": "Glaswerk"
+    },
+    {
+      "en": "Cutlery",
+      "nl": "Bestek"
+    },
+    {
+      "en": "Table accessories",
+      "nl": "Tafelaccessoires"
+    },
+    {
+      "en": "Bar accessories",
+      "nl": "Baraccessoires"
+    },
+    {
+      "en": "Coffee equipment",
+      "nl": "Koffieapparatuur"
+    },
+    {
+      "en": "Tea accessories",
+      "nl": "Theeaccessoires"
+    },
+    {
+      "en": "Baking products & bakeware",
+      "nl": "Bakproducten & bakgerei"
+    },
+    {
+      "en": "Food storage",
+      "nl": "Voedselopslag"
+    },
+    {
+      "en": "Drink bottles & thermos cups",
+      "nl": "Drinkflessen & thermosbekers"
+    },
+    {
+      "en": "Household products",
+      "nl": "Huishoudelijke producten"
+    },
+    {
+      "en": "Cleaning products",
+      "nl": "Schoonmaakmiddelen"
+    },
+    {
+      "en": "Laundry detergent",
+      "nl": "Wasmiddelen"
+    },
+    {
+      "en": "Dishwashing products",
+      "nl": "Afwasmiddelen"
+    },
+    {
+      "en": "Cleaning accessories",
+      "nl": "Schoonmaakaccessoires"
+    },
+    {
+      "en": "Vacuum cleaners",
+      "nl": "Stofzuigers"
+    },
+    {
+      "en": "Household appliances",
+      "nl": "Huishoudelijke apparatuur"
+    },
+    {
+      "en": "Ironing products",
+      "nl": "Strijkproducten"
+    },
+    {
+      "en": "Washing & drying accessories",
+      "nl": "Was en droogaccessoires"
+    },
+    {
+      "en": "Waste & recycling",
+      "nl": "Afval & recycling"
+    },
+    {
+      "en": "Sustainable household products",
+      "nl": "Duurzame huishoudproducten"
+    },
+    {
+      "en": "Garden & outdoor living",
+      "nl": "Tuin & buitenleven"
+    },
+    {
+      "en": "Garden furniture",
+      "nl": "Tuinmeubelen"
+    },
+    {
+      "en": "Garden decor",
+      "nl": "Tuindecoratie"
+    },
+    {
+      "en": "Garden tools",
+      "nl": "Tuingereedschap"
+    },
+    {
+      "en": "Plants & seeds",
+      "nl": "Planten & zaden"
+    },
+    {
+      "en": "Barbecues",
+      "nl": "Barbecues"
+    },
+    {
+      "en": "Outdoor kitchens",
+      "nl": "Buitenkeukens"
+    },
+    {
+      "en": "Swimming pools",
+      "nl": "Zwembaden"
+    },
+    {
+      "en": "Hot tubs & spas",
+      "nl": "Jacuzzi's & spa's"
+    },
+    {
+      "en": "Patio heaters",
+      "nl": "Terrasverwarming"
+    },
+    {
+      "en": "Outdoor lighting",
+      "nl": "Buitenverlichting"
+    },
+    {
+      "en": "Balcony products",
+      "nl": "Balkonproducten"
+    },
+    {
+      "en": "Consumer electronics",
+      "nl": "Consumentenelektronica"
+    },
+    {
+      "en": "Smartphones",
+      "nl": "Smartphones"
+    },
+    {
+      "en": "Phone accessories",
+      "nl": "Telefoonaccessoires"
+    },
+    {
+      "en": "Tablets",
+      "nl": "Tablets"
+    },
+    {
+      "en": "Computers & laptops",
+      "nl": "Computers & laptops"
+    },
+    {
+      "en": "Computer accessories",
+      "nl": "Computeraccessoires"
+    },
+    {
+      "en": "Monitors",
+      "nl": "Monitoren"
+    },
+    {
+      "en": "Gaming",
+      "nl": "Gaming"
+    },
+    {
+      "en": "Gaming accessories",
+      "nl": "Gamingaccessoires"
+    },
+    {
+      "en": "Audio",
+      "nl": "Audio"
+    },
+    {
+      "en": "Headphones",
+      "nl": "Koptelefoons"
+    },
+    {
+      "en": "Speakers",
+      "nl": "Speakers"
+    },
+    {
+      "en": "Televisions",
+      "nl": "Televisies"
+    },
+    {
+      "en": "Cameras",
+      "nl": "Camera's"
+    },
+    {
+      "en": "Photography accessories",
+      "nl": "Fotografieaccessoires"
+    },
+    {
+      "en": "Drones",
+      "nl": "Drones"
+    },
+    {
+      "en": "Smartwatches",
+      "nl": "Smartwatches"
+    },
+    {
+      "en": "Wearables",
+      "nl": "Wearables"
+    },
+    {
+      "en": "Smart home",
+      "nl": "Smart home"
+    },
+    {
+      "en": "Security equipment",
+      "nl": "Beveiligingsapparatuur"
+    },
+    {
+      "en": "Cables & chargers",
+      "nl": "Kabels & opladers"
+    },
+    {
+      "en": "Power banks",
+      "nl": "Powerbanks"
+    },
+    {
+      "en": "Electronic gadgets",
+      "nl": "Elektronische gadgets"
+    },
+    {
+      "en": "Food & delicatessen",
+      "nl": "Voeding & delicatessen"
+    },
+    {
+      "en": "Healthy snacks",
+      "nl": "Gezonde snacks"
+    },
+    {
+      "en": "Snacks",
+      "nl": "Snacks"
+    },
+    {
+      "en": "Candy",
+      "nl": "Snoep"
+    },
+    {
+      "en": "Chocolate",
+      "nl": "Chocolade"
+    },
+    {
+      "en": "Cookies & pastries",
+      "nl": "Koek & gebak"
+    },
+    {
+      "en": "Baking products",
+      "nl": "Bakproducten"
+    },
+    {
+      "en": "Breakfast products",
+      "nl": "Ontbijtproducten"
+    },
+    {
+      "en": "Granola & muesli",
+      "nl": "Granola & muesli"
+    },
+    {
+      "en": "Sauces",
+      "nl": "Sauzen"
+    },
+    {
+      "en": "Herbs & spices",
+      "nl": "Kruiden & specerijen"
+    },
+    {
+      "en": "Oil & vinegar",
+      "nl": "Olie & azijn"
+    },
+    {
+      "en": "Pasta & rice",
+      "nl": "Pasta & rijst"
+    },
+    {
+      "en": "Organic food",
+      "nl": "Biologische voeding"
+    },
+    {
+      "en": "Vegan food",
+      "nl": "Veganistische voeding"
+    },
+    {
+      "en": "Plant based food",
+      "nl": "Plantaardige voeding"
+    },
+    {
+      "en": "Gluten free food",
+      "nl": "Glutenvrije voeding"
+    },
+    {
+      "en": "Meal kits",
+      "nl": "Maaltijdboxen"
+    },
+    {
+      "en": "Ready meals",
+      "nl": "Kant en klare maaltijden"
+    },
+    {
+      "en": "Meat",
+      "nl": "Vlees"
+    },
+    {
+      "en": "Fish",
+      "nl": "Vis"
+    },
+    {
+      "en": "Cheese & dairy",
+      "nl": "Kaas & zuivel"
+    },
+    {
+      "en": "Coffee",
+      "nl": "Koffie"
+    },
+    {
+      "en": "Tea",
+      "nl": "Thee"
+    },
+    {
+      "en": "Soft drinks",
+      "nl": "Frisdranken"
+    },
+    {
+      "en": "Juices",
+      "nl": "Sappen"
+    },
+    {
+      "en": "Functional drinks",
+      "nl": "Functionele dranken"
+    },
+    {
+      "en": "Energy drinks",
+      "nl": "Energiedranken"
+    },
+    {
+      "en": "Water",
+      "nl": "Water"
+    },
+    {
+      "en": "Baby products",
+      "nl": "Babyproducten"
+    },
+    {
+      "en": "Baby care",
+      "nl": "Babyverzorging"
+    },
+    {
+      "en": "Baby food",
+      "nl": "Babyvoeding"
+    },
+    {
+      "en": "Diapers",
+      "nl": "Luiers"
+    },
+    {
+      "en": "Strollers",
+      "nl": "Kinderwagens"
+    },
+    {
+      "en": "Car seats",
+      "nl": "Autostoeltjes"
+    },
+    {
+      "en": "Baby furniture",
+      "nl": "Babymeubels"
+    },
+    {
+      "en": "Nursery",
+      "nl": "Kinderkamer"
+    },
+    {
+      "en": "Toys",
+      "nl": "Speelgoed"
+    },
+    {
+      "en": "Educational toys",
+      "nl": "Educatief speelgoed"
+    },
+    {
+      "en": "Outdoor toys",
+      "nl": "Buitenspeelgoed"
+    },
+    {
+      "en": "Plush toys",
+      "nl": "Knuffels"
+    },
+    {
+      "en": "Children's books",
+      "nl": "Kinderboeken"
+    },
+    {
+      "en": "School products",
+      "nl": "Schoolproducten"
+    },
+    {
+      "en": "Pet supplies",
+      "nl": "Dierenbenodigdheden"
+    },
+    {
+      "en": "Dog products",
+      "nl": "Hondenproducten"
+    },
+    {
+      "en": "Cat products",
+      "nl": "Kattenproducten"
+    },
+    {
+      "en": "Pet food",
+      "nl": "Dierenvoeding"
+    },
+    {
+      "en": "Dog treats",
+      "nl": "Hondensnacks"
+    },
+    {
+      "en": "Cat treats",
+      "nl": "Kattensnacks"
+    },
+    {
+      "en": "Pet care",
+      "nl": "Dierenverzorging"
+    },
+    {
+      "en": "Pet beds",
+      "nl": "Dierenmanden"
+    },
+    {
+      "en": "Collars & leashes",
+      "nl": "Halsbanden & riemen"
+    },
+    {
+      "en": "Pet toys",
+      "nl": "Dierenspeelgoed"
+    },
+    {
+      "en": "Aquarium products",
+      "nl": "Aquariumproducten"
+    },
+    {
+      "en": "Bird products",
+      "nl": "Vogelproducten"
+    },
+    {
+      "en": "Rodent products",
+      "nl": "Knaagdierproducten"
+    },
+    {
+      "en": "Horse products",
+      "nl": "Paardenproducten"
+    },
+    {
+      "en": "Car accessories",
+      "nl": "Autoaccessoires"
+    },
+    {
+      "en": "Car parts",
+      "nl": "Auto onderdelen"
+    },
+    {
+      "en": "Car care",
+      "nl": "Autoverzorging"
+    },
+    {
+      "en": "Motorcycle accessories",
+      "nl": "Motoraccessoires"
+    },
+    {
+      "en": "Motorcycle parts",
+      "nl": "Motoronderdelen"
+    },
+    {
+      "en": "Bicycles",
+      "nl": "Fietsen"
+    },
+    {
+      "en": "Electric bikes",
+      "nl": "Elektrische fietsen"
+    },
+    {
+      "en": "Bike accessories",
+      "nl": "Fietsaccessoires"
+    },
+    {
+      "en": "Bike parts",
+      "nl": "Fietsonderdelen"
+    },
+    {
+      "en": "Electric scooters",
+      "nl": "Elektrische scooters"
+    },
+    {
+      "en": "Kick scooters",
+      "nl": "Steps"
+    },
+    {
+      "en": "Mobility accessories",
+      "nl": "Mobiliteitsaccessoires"
+    },
+    {
+      "en": "EV accessories & charging products",
+      "nl": "EV accessoires & laadproducten"
+    },
+    {
+      "en": "Hobby & crafts",
+      "nl": "Hobby & creativiteit"
+    },
+    {
+      "en": "Craft supplies",
+      "nl": "Knutselartikelen"
+    },
+    {
+      "en": "Painting supplies",
+      "nl": "Schildermaterialen"
+    },
+    {
+      "en": "Drawing",
+      "nl": "Tekenen"
+    },
+    {
+      "en": "Sewing",
+      "nl": "Naaien"
+    },
+    {
+      "en": "Knitting & crochet",
+      "nl": "Breien & haken"
+    },
+    {
+      "en": "DIY kits",
+      "nl": "DIY kits"
+    },
+    {
+      "en": "Board games",
+      "nl": "Bordspellen"
+    },
+    {
+      "en": "Puzzles",
+      "nl": "Puzzels"
+    },
+    {
+      "en": "Card games",
+      "nl": "Kaartspellen"
+    },
+    {
+      "en": "Collectibles",
+      "nl": "Verzamelobjecten"
+    },
+    {
+      "en": "Trading cards",
+      "nl": "Trading cards"
+    },
+    {
+      "en": "Model building",
+      "nl": "Modelbouw"
+    },
+    {
+      "en": "Musical instruments",
+      "nl": "Muziekinstrumenten"
+    },
+    {
+      "en": "Music accessories",
+      "nl": "Muziekaccessoires"
+    },
+    {
+      "en": "Vinyl & music",
+      "nl": "Vinyl & muziek"
+    },
+    {
+      "en": "Books",
+      "nl": "Boeken"
+    },
+    {
+      "en": "Comic books",
+      "nl": "Stripboeken"
+    },
+    {
+      "en": "Office supplies",
+      "nl": "Kantoorartikelen"
+    },
+    {
+      "en": "Stationery",
+      "nl": "Schrijfwaren"
+    },
+    {
+      "en": "Notebooks",
+      "nl": "Notitieboeken"
+    },
+    {
+      "en": "Planners & diaries",
+      "nl": "Agenda's & planners"
+    },
+    {
+      "en": "School supplies",
+      "nl": "Schoolartikelen"
+    },
+    {
+      "en": "Desk accessories",
+      "nl": "Bureauaccessoires"
+    },
+    {
+      "en": "Ergonomic office products",
+      "nl": "Ergonomische kantoorproducten"
+    },
+    {
+      "en": "Printers & supplies",
+      "nl": "Printers & benodigdheden"
+    },
+    {
+      "en": "Business supplies",
+      "nl": "Zakelijke benodigdheden"
+    },
+    {
+      "en": "Travel accessories",
+      "nl": "Reisaccessoires"
+    },
+    {
+      "en": "Suitcases",
+      "nl": "Koffers"
+    },
+    {
+      "en": "Travel bags",
+      "nl": "Reistassen"
+    },
+    {
+      "en": "Backpacks",
+      "nl": "Rugzakken"
+    },
+    {
+      "en": "Packing accessories",
+      "nl": "Packing accessoires"
+    },
+    {
+      "en": "Travel gadgets",
+      "nl": "Reisgadgets"
+    },
+    {
+      "en": "Camping gear",
+      "nl": "Kampeerartikelen"
+    },
+    {
+      "en": "Beach gear",
+      "nl": "Strandartikelen"
+    },
+    {
+      "en": "Travel comfort products",
+      "nl": "Reiscomfortproducten"
+    },
+    {
+      "en": "Gifts",
+      "nl": "Cadeaus"
+    },
+    {
+      "en": "Personalized gifts",
+      "nl": "Gepersonaliseerde cadeaus"
+    },
+    {
+      "en": "Corporate gifts",
+      "nl": "Relatiegeschenken"
+    },
+    {
+      "en": "Gift boxes",
+      "nl": "Geschenkboxen"
+    },
+    {
+      "en": "Flower gifts",
+      "nl": "Bloemencadeaus"
+    },
+    {
+      "en": "Party supplies",
+      "nl": "Feestartikelen"
+    },
+    {
+      "en": "Birthday supplies",
+      "nl": "Verjaardagsartikelen"
+    },
+    {
+      "en": "Wedding products",
+      "nl": "Bruiloftsproducten"
+    },
+    {
+      "en": "Baby gifts",
+      "nl": "Geboortecadeaus"
+    },
+    {
+      "en": "Christmas products",
+      "nl": "Kerstproducten"
+    },
+    {
+      "en": "Seasonal products",
+      "nl": "Seizoensartikelen"
+    },
+    {
+      "en": "Greeting cards",
+      "nl": "Wenskaarten"
+    },
+    {
+      "en": "DIY",
+      "nl": "Doe het zelf"
+    },
+    {
+      "en": "Tools",
+      "nl": "Gereedschap"
+    },
+    {
+      "en": "Power tools",
+      "nl": "Elektrisch gereedschap"
+    },
+    {
+      "en": "Building materials",
+      "nl": "Bouwmaterialen"
+    },
+    {
+      "en": "Paint & painting supplies",
+      "nl": "Verf & schilderbenodigdheden"
+    },
+    {
+      "en": "Wallpaper",
+      "nl": "Behang"
+    },
+    {
+      "en": "Flooring",
+      "nl": "Vloeren"
+    },
+    {
+      "en": "Bathroom fixtures",
+      "nl": "Sanitair"
+    },
+    {
+      "en": "Electrical supplies",
+      "nl": "Elektra"
+    },
+    {
+      "en": "Fasteners",
+      "nl": "Bevestigingsmaterialen"
+    },
+    {
+      "en": "Door hardware",
+      "nl": "Deurbeslag"
+    },
+    {
+      "en": "Locks & security",
+      "nl": "Sloten & beveiliging"
+    },
+    {
+      "en": "Sustainable products",
+      "nl": "Duurzame producten"
+    },
+    {
+      "en": "Reusable products",
+      "nl": "Herbruikbare producten"
+    },
+    {
+      "en": "Zero waste products",
+      "nl": "Zero waste producten"
+    },
+    {
+      "en": "Plastic free products",
+      "nl": "Plasticvrije producten"
+    },
+    {
+      "en": "Eco friendly care products",
+      "nl": "Eco verzorgingsproducten"
+    },
+    {
+      "en": "Sustainable household products",
+      "nl": "Duurzame huishoudproducten"
+    },
+    {
+      "en": "Water saving products",
+      "nl": "Waterbesparende producten"
+    },
+    {
+      "en": "Energy saving products",
+      "nl": "Energiebesparende producten"
+    },
+    {
+      "en": "Refurbished products",
+      "nl": "Refurbished producten"
+    },
+    {
+      "en": "Secondhand products",
+      "nl": "Tweedehands producten"
+    },
+    {
+      "en": "Erotica & intimacy",
+      "nl": "Erotiek & intimiteit"
+    },
+    {
+      "en": "Tattoo & piercing",
+      "nl": "Tattoo & piercing"
+    },
+    {
+      "en": "Festival gear",
+      "nl": "Festivalartikelen"
+    },
+    {
+      "en": "Smoking accessories",
+      "nl": "Rookaccessoires"
+    },
+    {
+      "en": "Spiritual products",
+      "nl": "Spirituele producten"
+    },
+    {
+      "en": "Gemstones & crystals",
+      "nl": "Edelstenen & kristallen"
+    },
+    {
+      "en": "Astrology products",
+      "nl": "Astrologieproducten"
+    },
+    {
+      "en": "Religious products",
+      "nl": "Religieuze producten"
+    },
+    {
+      "en": "Magic & conjuring supplies",
+      "nl": "Magie & goochelartikelen"
+    },
+    {
+      "en": "Escape room products",
+      "nl": "Escape room producten"
+    },
+    {
+      "en": "Home security",
+      "nl": "Huisbeveiliging"
+    },
+    {
+      "en": "Safety products",
+      "nl": "Veiligheidsproducten"
+    },
+    {
+      "en": "Hospitality supplies",
+      "nl": "Horecabenodigdheden"
+    },
+    {
+      "en": "Restaurant supplies",
+      "nl": "Restaurantbenodigdheden"
+    },
+    {
+      "en": "Hotel supplies",
+      "nl": "Hotelbenodigdheden"
+    },
+    {
+      "en": "Hairdresser supplies",
+      "nl": "Kappersbenodigdheden"
+    },
+    {
+      "en": "Salon supplies",
+      "nl": "Salonbenodigdheden"
+    },
+    {
+      "en": "Professional cleaning products",
+      "nl": "Professionele schoonmaakproducten"
+    },
+    {
+      "en": "Packaging materials",
+      "nl": "Verpakkingsmaterialen"
+    },
+    {
+      "en": "Printed products",
+      "nl": "Bedrukte producten"
+    },
+    {
+      "en": "Promotional items",
+      "nl": "Promotieartikelen"
+    },
+    {
+      "en": "Print on demand",
+      "nl": "Print on demand"
+    },
+    {
+      "en": "Photo products",
+      "nl": "Fotoproducten"
+    },
+    {
+      "en": "Phone cases",
+      "nl": "Telefoonhoesjes"
+    },
+    {
+      "en": "Posters & wall art",
+      "nl": "Posters & muurkunst"
+    },
+    {
+      "en": "Personalized jewelry",
+      "nl": "Gepersonaliseerde sieraden"
+    },
+    {
+      "en": "Subscription boxes",
+      "nl": "Abonnementsboxen"
+    },
+    {
+      "en": "Mystery boxes",
+      "nl": "Mysteryboxen"
+    },
+    {
+      "en": "Merchandise",
+      "nl": "Merchandise"
+    },
+    {
+      "en": "Fan merchandise",
+      "nl": "Fanartikelen"
+    },
+    {
+      "en": "B2B webshops",
+      "nl": "B2B webshops"
+    },
+    {
+      "en": "Industrial supplies",
+      "nl": "Industriële benodigdheden"
+    },
+    {
+      "en": "Warehouse supplies",
+      "nl": "Magazijnbenodigdheden"
+    },
+    {
+      "en": "Agricultural & horticultural products",
+      "nl": "Landbouw en tuinbouwproducten"
+    },
+    {
+      "en": "Hospitality food & non food",
+      "nl": "Horeca food & non food"
+    }
+  ]
+}

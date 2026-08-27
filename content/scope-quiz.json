@@ -1,0 +1,45 @@
+{
+  "_note": "Only kicker/q (question text) is CMS-editable. The answer options (opts) are intentionally NOT here — they double as lookup keys elsewhere (ESTIMATES, brief-builder prefill, icon selection), so they stay hardcoded in custom-plus.html per the site owner's explicit choice to keep logic-coupled labels out of the CMS.",
+  "questions": {
+    "category": {
+      "kicker": "Product",
+      "q": "What kind of product are you building?"
+    },
+    "stage": {
+      "kicker": "Stage",
+      "q": "Where is your design right now?"
+    },
+    "volume": {
+      "kicker": "Volume",
+      "q": "What is your first production volume?"
+    },
+    "timeline": {
+      "kicker": "Timeline",
+      "q": "How fast do you want to move?"
+    },
+    "budget": {
+      "kicker": "Budget",
+      "q": "What is your rough tooling and first run budget?"
+    },
+    "experience": {
+      "kicker": "Experience",
+      "q": "Have you developed a physical product before?"
+    },
+    "why_china": {
+      "kicker": "Sourcing",
+      "q": "Why China, specifically?"
+    },
+    "worry": {
+      "kicker": "Risk",
+      "q": "What worries you most about manufacturing in China?"
+    },
+    "why_now": {
+      "kicker": "Motivation",
+      "q": "What is driving this right now?"
+    },
+    "contact": {
+      "kicker": "Your details",
+      "q": "Last thing: who do we send this to?"
+    }
+  }
+}

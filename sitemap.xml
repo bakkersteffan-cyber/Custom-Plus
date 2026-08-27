@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  NOTE: replace REPLACE-WITH-YOUR-DOMAIN.example below with your real deployed
+  domain once you know it (same placeholder as in robots.txt).
+
+  Also worth knowing: this site is a single-page app using # (hash) routes
+  (e.g. /#/services). Search engines only reliably crawl and index the root
+  URL (/) — hash-fragment "pages" below are included as a best-effort signal,
+  but Google does not guarantee treating them as separately indexable URLs.
+  The visible text of every page IS present in the single HTML response (so
+  it's not invisible to search engines), but each page competing for its own
+  distinct search result is not guaranteed with hash routing. If ranking
+  individual pages for their own keywords matters, the real fix is migrating
+  the router from hash-based (#/services) to real path-based routes
+  (/services) with a Netlify _redirects rule for SPA fallback — a bigger,
+  separate change from this sitemap.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/</loc><priority>1.0</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/services</loc><priority>0.9</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/ecommerce</loc><priority>0.8</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/gifting</loc><priority>0.8</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/why-china</loc><priority>0.8</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/faq</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/trust</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/glossary</loc><priority>0.5</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/resources</loc><priority>0.5</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/contact</loc><priority>0.9</priority></url>
+  <!-- blog:start -->
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/wat-een-sample-echt-kost</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/moq-is-een-gesprek</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/de-containerrekensom</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/aql-zonder-jargon</loc><priority>0.6</priority></url>
+  <!-- blog:end -->
+</urlset>

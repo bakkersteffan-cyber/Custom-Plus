@@ -1,0 +1,16 @@
+[build]
+  command = "node scripts/build-blog.mjs"
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/"
+  to = "/custom-plus.html"
+  status = 200
+
+[[headers]]
+  for = "/content/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
