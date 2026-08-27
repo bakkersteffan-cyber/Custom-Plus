@@ -11,1363 +11,2383 @@
   "sectors": [
     {
       "en": "Fashion & clothing",
-      "nl": "Mode & kleding"
+      "nl": "Mode & kleding",
+      "de": "Mode & Bekleidung",
+      "fr": "Mode & vêtements",
+      "es": "Moda y ropa"
     },
     {
       "en": "Women's fashion",
-      "nl": "Damesmode"
+      "nl": "Damesmode",
+      "de": "Damenmode",
+      "fr": "Mode femme",
+      "es": "Moda mujer"
     },
     {
       "en": "Men's fashion",
-      "nl": "Herenmode"
+      "nl": "Herenmode",
+      "de": "Herrenmode",
+      "fr": "Mode homme",
+      "es": "Moda hombre"
     },
     {
       "en": "Kids' clothing",
-      "nl": "Kinderkleding"
+      "nl": "Kinderkleding",
+      "de": "Kinderkleidung",
+      "fr": "Vêtements enfants",
+      "es": "Ropa infantil"
     },
     {
       "en": "Baby clothing",
-      "nl": "Babykleding"
+      "nl": "Babykleding",
+      "de": "Babykleidung",
+      "fr": "Vêtements bébé",
+      "es": "Ropa de bebé"
     },
     {
       "en": "Sportswear",
-      "nl": "Sportkleding"
+      "nl": "Sportkleding",
+      "de": "Sportbekleidung",
+      "fr": "Vêtements de sport",
+      "es": "Ropa deportiva"
     },
     {
       "en": "Streetwear",
-      "nl": "Streetwear"
+      "nl": "Streetwear",
+      "de": "Streetwear",
+      "fr": "Streetwear",
+      "es": "Streetwear"
     },
     {
       "en": "Luxury fashion",
-      "nl": "Luxe mode"
+      "nl": "Luxe mode",
+      "de": "Luxusmode",
+      "fr": "Mode de luxe",
+      "es": "Moda de lujo"
     },
     {
       "en": "Sustainable fashion",
-      "nl": "Duurzame mode"
+      "nl": "Duurzame mode",
+      "de": "Nachhaltige Mode",
+      "fr": "Mode durable",
+      "es": "Moda sostenible"
     },
     {
       "en": "Vintage & secondhand fashion",
-      "nl": "Vintage & tweedehands mode"
+      "nl": "Vintage & tweedehands mode",
+      "de": "Vintage- & Secondhand-Mode",
+      "fr": "Mode vintage & seconde main",
+      "es": "Moda vintage y de segunda mano"
     },
     {
       "en": "Underwear & lingerie",
-      "nl": "Ondergoed & lingerie"
+      "nl": "Ondergoed & lingerie",
+      "de": "Unterwäsche & Dessous",
+      "fr": "Sous-vêtements & lingerie",
+      "es": "Ropa interior y lencería"
     },
     {
       "en": "Nightwear",
-      "nl": "Nachtkleding"
+      "nl": "Nachtkleding",
+      "de": "Nachtwäsche",
+      "fr": "Vêtements de nuit",
+      "es": "Ropa de dormir"
     },
     {
       "en": "Swimwear",
-      "nl": "Zwemkleding"
+      "nl": "Zwemkleding",
+      "de": "Bademode",
+      "fr": "Maillots de bain",
+      "es": "Ropa de baño"
     },
     {
       "en": "Socks",
-      "nl": "Sokken"
+      "nl": "Sokken",
+      "de": "Socken",
+      "fr": "Chaussettes",
+      "es": "Calcetines"
     },
     {
       "en": "Workwear",
-      "nl": "Werkkleding"
+      "nl": "Werkkleding",
+      "de": "Arbeitskleidung",
+      "fr": "Vêtements de travail",
+      "es": "Ropa de trabajo"
     },
     {
       "en": "Suits & formal wear",
-      "nl": "Kostuums & formele kleding"
+      "nl": "Kostuums & formele kleding",
+      "de": "Anzüge & Festmode",
+      "fr": "Costumes & tenues habillées",
+      "es": "Trajes y ropa formal"
     },
     {
       "en": "Shoes",
-      "nl": "Schoenen"
+      "nl": "Schoenen",
+      "de": "Schuhe",
+      "fr": "Chaussures",
+      "es": "Calzado"
     },
     {
       "en": "Sneakers",
-      "nl": "Sneakers"
+      "nl": "Sneakers",
+      "de": "Sneaker",
+      "fr": "Baskets",
+      "es": "Zapatillas"
     },
     {
       "en": "Jewelry",
-      "nl": "Sieraden"
+      "nl": "Sieraden",
+      "de": "Schmuck",
+      "fr": "Bijoux",
+      "es": "Joyería"
     },
     {
       "en": "Watches",
-      "nl": "Horloges"
+      "nl": "Horloges",
+      "de": "Uhren",
+      "fr": "Montres",
+      "es": "Relojes"
     },
     {
       "en": "Bags",
-      "nl": "Tassen"
+      "nl": "Tassen",
+      "de": "Taschen",
+      "fr": "Sacs",
+      "es": "Bolsos"
     },
     {
       "en": "Glasses & sunglasses",
-      "nl": "Brillen & zonnebrillen"
+      "nl": "Brillen & zonnebrillen",
+      "de": "Brillen & Sonnenbrillen",
+      "fr": "Lunettes & lunettes de soleil",
+      "es": "Gafas y gafas de sol"
     },
     {
       "en": "Hats & caps",
-      "nl": "Hoeden & petten"
+      "nl": "Hoeden & petten",
+      "de": "Hüte & Mützen",
+      "fr": "Chapeaux & casquettes",
+      "es": "Sombreros y gorras"
     },
     {
       "en": "Belts",
-      "nl": "Riemen"
+      "nl": "Riemen",
+      "de": "Gürtel",
+      "fr": "Ceintures",
+      "es": "Cinturones"
     },
     {
       "en": "Fashion accessories",
-      "nl": "Modeaccessoires"
+      "nl": "Modeaccessoires",
+      "de": "Modeaccessoires",
+      "fr": "Accessoires de mode",
+      "es": "Accesorios de moda"
     },
     {
       "en": "Beauty & cosmetics",
-      "nl": "Beauty & cosmetica"
+      "nl": "Beauty & cosmetica",
+      "de": "Beauty & Kosmetik",
+      "fr": "Beauté & cosmétiques",
+      "es": "Belleza y cosmética"
     },
     {
       "en": "Skincare",
-      "nl": "Huidverzorging"
+      "nl": "Huidverzorging",
+      "de": "Hautpflege",
+      "fr": "Soins de la peau",
+      "es": "Cuidado de la piel"
     },
     {
       "en": "Hair care",
-      "nl": "Haarverzorging"
+      "nl": "Haarverzorging",
+      "de": "Haarpflege",
+      "fr": "Soins capillaires",
+      "es": "Cuidado del cabello"
     },
     {
       "en": "Perfume & fragrance",
-      "nl": "Parfum & geuren"
+      "nl": "Parfum & geuren",
+      "de": "Parfüm & Düfte",
+      "fr": "Parfums & fragrances",
+      "es": "Perfumes y fragancias"
     },
     {
       "en": "Makeup",
-      "nl": "Makeup"
+      "nl": "Makeup",
+      "de": "Make-up",
+      "fr": "Maquillage",
+      "es": "Maquillaje"
     },
     {
       "en": "Nail care",
-      "nl": "Nagelverzorging"
+      "nl": "Nagelverzorging",
+      "de": "Nagelpflege",
+      "fr": "Soins des ongles",
+      "es": "Cuidado de las uñas"
     },
     {
       "en": "Body care",
-      "nl": "Lichaamsverzorging"
+      "nl": "Lichaamsverzorging",
+      "de": "Körperpflege",
+      "fr": "Soins du corps",
+      "es": "Cuidado corporal"
     },
     {
       "en": "Bath & shower products",
-      "nl": "Bad en doucheproducten"
+      "nl": "Bad en doucheproducten",
+      "de": "Bad- & Duschprodukte",
+      "fr": "Produits de bain & douche",
+      "es": "Productos de baño y ducha"
     },
     {
       "en": "Deodorant",
-      "nl": "Deodorant"
+      "nl": "Deodorant",
+      "de": "Deodorant",
+      "fr": "Déodorant",
+      "es": "Desodorante"
     },
     {
       "en": "Sun care",
-      "nl": "Zonverzorging"
+      "nl": "Zonverzorging",
+      "de": "Sonnenpflege",
+      "fr": "Soins solaires",
+      "es": "Cuidado solar"
     },
     {
       "en": "Self tanning",
-      "nl": "Zelfbruining"
+      "nl": "Zelfbruining",
+      "de": "Selbstbräuner",
+      "fr": "Autobronzant",
+      "es": "Autobronceadores"
     },
     {
       "en": "Shaving products",
-      "nl": "Scheerproducten"
+      "nl": "Scheerproducten",
+      "de": "Rasierartikel",
+      "fr": "Produits de rasage",
+      "es": "Productos de afeitado"
     },
     {
       "en": "Beard care",
-      "nl": "Baardverzorging"
+      "nl": "Baardverzorging",
+      "de": "Bartpflege",
+      "fr": "Soins de la barbe",
+      "es": "Cuidado de la barba"
     },
     {
       "en": "Men's grooming",
-      "nl": "Mannenverzorging"
+      "nl": "Mannenverzorging",
+      "de": "Herrenpflege",
+      "fr": "Soins pour homme",
+      "es": "Cuidado masculino"
     },
     {
       "en": "Oral care",
-      "nl": "Mondverzorging"
+      "nl": "Mondverzorging",
+      "de": "Mundpflege",
+      "fr": "Soins bucco-dentaires",
+      "es": "Cuidado bucal"
     },
     {
       "en": "Electric grooming devices",
-      "nl": "Elektrische verzorgingsapparaten"
+      "nl": "Elektrische verzorgingsapparaten",
+      "de": "Elektrische Pflegegeräte",
+      "fr": "Appareils de soin électriques",
+      "es": "Aparatos eléctricos de cuidado personal"
     },
     {
       "en": "Natural cosmetics",
-      "nl": "Natuurlijke cosmetica"
+      "nl": "Natuurlijke cosmetica",
+      "de": "Naturkosmetik",
+      "fr": "Cosmétiques naturels",
+      "es": "Cosmética natural"
     },
     {
       "en": "Professional beauty products",
-      "nl": "Professionele beautyproducten"
+      "nl": "Professionele beautyproducten",
+      "de": "Professionelle Beautyprodukte",
+      "fr": "Produits de beauté professionnels",
+      "es": "Productos de belleza profesionales"
     },
     {
       "en": "Health & wellness",
-      "nl": "Gezondheid & wellness"
+      "nl": "Gezondheid & wellness",
+      "de": "Gesundheit & Wellness",
+      "fr": "Santé & bien-être",
+      "es": "Salud y bienestar"
     },
     {
       "en": "Vitamins",
-      "nl": "Vitamines"
+      "nl": "Vitamines",
+      "de": "Vitamine",
+      "fr": "Vitamines",
+      "es": "Vitaminas"
     },
     {
       "en": "Dietary supplements",
-      "nl": "Voedingssupplementen"
+      "nl": "Voedingssupplementen",
+      "de": "Nahrungsergänzungsmittel",
+      "fr": "Compléments alimentaires",
+      "es": "Suplementos alimenticios"
     },
     {
       "en": "Sports nutrition",
-      "nl": "Sportvoeding"
+      "nl": "Sportvoeding",
+      "de": "Sporternährung",
+      "fr": "Nutrition sportive",
+      "es": "Nutrición deportiva"
     },
     {
       "en": "Protein products",
-      "nl": "Eiwitproducten"
+      "nl": "Eiwitproducten",
+      "de": "Proteinprodukte",
+      "fr": "Produits protéinés",
+      "es": "Productos proteicos"
     },
     {
       "en": "Healthy food",
-      "nl": "Gezonde voeding"
+      "nl": "Gezonde voeding",
+      "de": "Gesunde Ernährung",
+      "fr": "Alimentation saine",
+      "es": "Alimentación saludable"
     },
     {
       "en": "Superfoods",
-      "nl": "Superfoods"
+      "nl": "Superfoods",
+      "de": "Superfoods",
+      "fr": "Superaliments",
+      "es": "Superalimentos"
     },
     {
       "en": "Weight loss & lifestyle products",
-      "nl": "Afslank en lifestyleproducten"
+      "nl": "Afslank en lifestyleproducten",
+      "de": "Abnehm- und Lifestyleprodukte",
+      "fr": "Produits minceur et lifestyle",
+      "es": "Productos para adelgazar y lifestyle"
     },
     {
       "en": "Sleep products",
-      "nl": "Slaapproducten"
+      "nl": "Slaapproducten",
+      "de": "Schlafprodukte",
+      "fr": "Produits pour le sommeil",
+      "es": "Productos para dormir"
     },
     {
       "en": "Massage products",
-      "nl": "Massageproducten"
+      "nl": "Massageproducten",
+      "de": "Massageprodukte",
+      "fr": "Produits de massage",
+      "es": "Productos de masaje"
     },
     {
       "en": "Wellness products",
-      "nl": "Wellnessproducten"
+      "nl": "Wellnessproducten",
+      "de": "Wellnessprodukte",
+      "fr": "Produits de bien-être",
+      "es": "Productos de bienestar"
     },
     {
       "en": "Meditation products",
-      "nl": "Meditatieproducten"
+      "nl": "Meditatieproducten",
+      "de": "Meditationsprodukte",
+      "fr": "Produits de méditation",
+      "es": "Productos de meditación"
     },
     {
       "en": "Ergonomic products",
-      "nl": "Ergonomische producten"
+      "nl": "Ergonomische producten",
+      "de": "Ergonomische Produkte",
+      "fr": "Produits ergonomiques",
+      "es": "Productos ergonómicos"
     },
     {
       "en": "Home care products",
-      "nl": "Thuiszorgproducten"
+      "nl": "Thuiszorgproducten",
+      "de": "Homecare-Produkte",
+      "fr": "Produits de soins à domicile",
+      "es": "Productos de cuidado a domicilio"
     },
     {
       "en": "Personal health devices",
-      "nl": "Persoonlijke gezondheidsapparatuur"
+      "nl": "Persoonlijke gezondheidsapparatuur",
+      "de": "Persönliche Gesundheitsgeräte",
+      "fr": "Dispositifs de santé personnelle",
+      "es": "Dispositivos de salud personal"
     },
     {
       "en": "Sport & fitness",
-      "nl": "Sport & fitness"
+      "nl": "Sport & fitness",
+      "de": "Sport & Fitness",
+      "fr": "Sport & fitness",
+      "es": "Deporte y fitness"
     },
     {
       "en": "Fitness equipment",
-      "nl": "Fitnessapparatuur"
+      "nl": "Fitnessapparatuur",
+      "de": "Fitnessgeräte",
+      "fr": "Équipement de fitness",
+      "es": "Equipamiento de fitness"
     },
     {
       "en": "Fitness accessories",
-      "nl": "Fitnessaccessoires"
+      "nl": "Fitnessaccessoires",
+      "de": "Fitnesszubehör",
+      "fr": "Accessoires de fitness",
+      "es": "Accesorios de fitness"
     },
     {
       "en": "Yoga",
-      "nl": "Yoga"
+      "nl": "Yoga",
+      "de": "Yoga",
+      "fr": "Yoga",
+      "es": "Yoga"
     },
     {
       "en": "Pilates",
-      "nl": "Pilates"
+      "nl": "Pilates",
+      "de": "Pilates",
+      "fr": "Pilates",
+      "es": "Pilates"
     },
     {
       "en": "Running",
-      "nl": "Hardlopen"
+      "nl": "Hardlopen",
+      "de": "Laufen",
+      "fr": "Course à pied",
+      "es": "Running"
     },
     {
       "en": "Cycling",
-      "nl": "Wielrennen"
+      "nl": "Wielrennen",
+      "de": "Radsport",
+      "fr": "Cyclisme",
+      "es": "Ciclismo"
     },
     {
       "en": "Padel",
-      "nl": "Padel"
+      "nl": "Padel",
+      "de": "Padel",
+      "fr": "Padel",
+      "es": "Pádel"
     },
     {
       "en": "Tennis",
-      "nl": "Tennis"
+      "nl": "Tennis",
+      "de": "Tennis",
+      "fr": "Tennis",
+      "es": "Tenis"
     },
     {
       "en": "Football",
-      "nl": "Voetbal"
+      "nl": "Voetbal",
+      "de": "Fußball",
+      "fr": "Football",
+      "es": "Fútbol"
     },
     {
       "en": "Hockey",
-      "nl": "Hockey"
+      "nl": "Hockey",
+      "de": "Hockey",
+      "fr": "Hockey",
+      "es": "Hockey"
     },
     {
       "en": "Golf",
-      "nl": "Golf"
+      "nl": "Golf",
+      "de": "Golf",
+      "fr": "Golf",
+      "es": "Golf"
     },
     {
       "en": "Boxing & martial arts",
-      "nl": "Boksen & vechtsport"
+      "nl": "Boksen & vechtsport",
+      "de": "Boxen & Kampfsport",
+      "fr": "Boxe & arts martiaux",
+      "es": "Boxeo y artes marciales"
     },
     {
       "en": "Swimming",
-      "nl": "Zwemmen"
+      "nl": "Zwemmen",
+      "de": "Schwimmen",
+      "fr": "Natation",
+      "es": "Natación"
     },
     {
       "en": "Watersports",
-      "nl": "Watersport"
+      "nl": "Watersport",
+      "de": "Wassersport",
+      "fr": "Sports nautiques",
+      "es": "Deportes acuáticos"
     },
     {
       "en": "Winter sports",
-      "nl": "Wintersport"
+      "nl": "Wintersport",
+      "de": "Wintersport",
+      "fr": "Sports d'hiver",
+      "es": "Deportes de invierno"
     },
     {
       "en": "Camping",
-      "nl": "Kamperen"
+      "nl": "Kamperen",
+      "de": "Camping",
+      "fr": "Camping",
+      "es": "Camping"
     },
     {
       "en": "Outdoor & hiking",
-      "nl": "Outdoor & hiking"
+      "nl": "Outdoor & hiking",
+      "de": "Outdoor & Wandern",
+      "fr": "Outdoor & randonnée",
+      "es": "Outdoor y senderismo"
     },
     {
       "en": "Climbing",
-      "nl": "Klimsport"
+      "nl": "Klimsport",
+      "de": "Klettersport",
+      "fr": "Escalade",
+      "es": "Escalada"
     },
     {
       "en": "Equestrian",
-      "nl": "Paardensport"
+      "nl": "Paardensport",
+      "de": "Reitsport",
+      "fr": "Équitation",
+      "es": "Equitación"
     },
     {
       "en": "Team sports gear",
-      "nl": "Teamsportartikelen"
+      "nl": "Teamsportartikelen",
+      "de": "Teamsportartikel",
+      "fr": "Équipement de sports collectifs",
+      "es": "Artículos de deportes de equipo"
     },
     {
       "en": "Sports recovery products",
-      "nl": "Sportherstelproducten"
+      "nl": "Sportherstelproducten",
+      "de": "Sport-Regenerationsprodukte",
+      "fr": "Produits de récupération sportive",
+      "es": "Productos de recuperación deportiva"
     },
     {
       "en": "Home & interior",
-      "nl": "Wonen & interieur"
+      "nl": "Wonen & interieur",
+      "de": "Wohnen & Interieur",
+      "fr": "Maison & décoration",
+      "es": "Hogar y decoración"
     },
     {
       "en": "Furniture",
-      "nl": "Meubels"
+      "nl": "Meubels",
+      "de": "Möbel",
+      "fr": "Meubles",
+      "es": "Muebles"
     },
     {
       "en": "Designer furniture",
-      "nl": "Designmeubels"
+      "nl": "Designmeubels",
+      "de": "Designmöbel",
+      "fr": "Mobilier design",
+      "es": "Muebles de diseño"
     },
     {
       "en": "Home accessories",
-      "nl": "Woonaccessoires"
+      "nl": "Woonaccessoires",
+      "de": "Wohnaccessoires",
+      "fr": "Accessoires pour la maison",
+      "es": "Accesorios para el hogar"
     },
     {
       "en": "Lighting",
-      "nl": "Verlichting"
+      "nl": "Verlichting",
+      "de": "Beleuchtung",
+      "fr": "Éclairage",
+      "es": "Iluminación"
     },
     {
       "en": "Lamps",
-      "nl": "Lampen"
+      "nl": "Lampen",
+      "de": "Lampen",
+      "fr": "Lampes",
+      "es": "Lámparas"
     },
     {
       "en": "Wall decor",
-      "nl": "Wanddecoratie"
+      "nl": "Wanddecoratie",
+      "de": "Wanddekoration",
+      "fr": "Décoration murale",
+      "es": "Decoración de pared"
     },
     {
       "en": "Art & prints",
-      "nl": "Kunst & prints"
+      "nl": "Kunst & prints",
+      "de": "Kunst & Drucke",
+      "fr": "Art & impressions",
+      "es": "Arte y láminas"
     },
     {
       "en": "Photo frames",
-      "nl": "Fotolijsten"
+      "nl": "Fotolijsten",
+      "de": "Bilderrahmen",
+      "fr": "Cadres photo",
+      "es": "Marcos de fotos"
     },
     {
       "en": "Rugs",
-      "nl": "Vloerkleden"
+      "nl": "Vloerkleden",
+      "de": "Teppiche",
+      "fr": "Tapis",
+      "es": "Alfombras"
     },
     {
       "en": "Curtains & window decor",
-      "nl": "Gordijnen & raamdecoratie"
+      "nl": "Gordijnen & raamdecoratie",
+      "de": "Gardinen & Fensterdeko",
+      "fr": "Rideaux & décoration de fenêtre",
+      "es": "Cortinas & decoración de ventanas"
     },
     {
       "en": "Cushions & textiles",
-      "nl": "Kussens & textiel"
+      "nl": "Kussens & textiel",
+      "de": "Kissen & Textilien",
+      "fr": "Coussins & textiles",
+      "es": "Cojines & textiles"
     },
     {
       "en": "Bedding",
-      "nl": "Beddengoed"
+      "nl": "Beddengoed",
+      "de": "Bettwäsche",
+      "fr": "Linge de lit",
+      "es": "Ropa de cama"
     },
     {
       "en": "Mattresses",
-      "nl": "Matrassen"
+      "nl": "Matrassen",
+      "de": "Matratzen",
+      "fr": "Matelas",
+      "es": "Colchones"
     },
     {
       "en": "Beds",
-      "nl": "Bedden"
+      "nl": "Bedden",
+      "de": "Betten",
+      "fr": "Lits",
+      "es": "Camas"
     },
     {
       "en": "Bedroom products",
-      "nl": "Slaapkamerproducten"
+      "nl": "Slaapkamerproducten",
+      "de": "Schlafzimmerprodukte",
+      "fr": "Produits pour la chambre",
+      "es": "Productos para dormitorio"
     },
     {
       "en": "Bathroom products",
-      "nl": "Badkamerproducten"
+      "nl": "Badkamerproducten",
+      "de": "Badezimmerprodukte",
+      "fr": "Produits pour la salle de bain",
+      "es": "Productos para baño"
     },
     {
       "en": "Mirrors",
-      "nl": "Spiegels"
+      "nl": "Spiegels",
+      "de": "Spiegel",
+      "fr": "Miroirs",
+      "es": "Espejos"
     },
     {
       "en": "Storage products",
-      "nl": "Opbergproducten"
+      "nl": "Opbergproducten",
+      "de": "Aufbewahrungsprodukte",
+      "fr": "Produits de rangement",
+      "es": "Productos de almacenaje"
     },
     {
       "en": "Scented candles",
-      "nl": "Geurkaarsen"
+      "nl": "Geurkaarsen",
+      "de": "Duftkerzen",
+      "fr": "Bougies parfumées",
+      "es": "Velas aromáticas"
     },
     {
       "en": "Home fragrance",
-      "nl": "Woongeuren"
+      "nl": "Woongeuren",
+      "de": "Raumdüfte",
+      "fr": "Parfums d'intérieur",
+      "es": "Ambientadores para el hogar"
     },
     {
       "en": "Plants",
-      "nl": "Planten"
+      "nl": "Planten",
+      "de": "Pflanzen",
+      "fr": "Plantes",
+      "es": "Plantas"
     },
     {
       "en": "Flowers",
-      "nl": "Bloemen"
+      "nl": "Bloemen",
+      "de": "Blumen",
+      "fr": "Fleurs",
+      "es": "Flores"
     },
     {
       "en": "Artificial plants",
-      "nl": "Kunstplanten"
+      "nl": "Kunstplanten",
+      "de": "Kunstpflanzen",
+      "fr": "Plantes artificielles",
+      "es": "Plantas artificiales"
     },
     {
       "en": "Kitchen products",
-      "nl": "Keukenproducten"
+      "nl": "Keukenproducten",
+      "de": "Küchenprodukte",
+      "fr": "Produits de cuisine",
+      "es": "Productos de cocina"
     },
     {
       "en": "Cookware",
-      "nl": "Kookgerei"
+      "nl": "Kookgerei",
+      "de": "Kochgeschirr",
+      "fr": "Batterie de cuisine",
+      "es": "Batería de cocina"
     },
     {
       "en": "Pans",
-      "nl": "Pannen"
+      "nl": "Pannen",
+      "de": "Pfannen",
+      "fr": "Poêles",
+      "es": "Sartenes"
     },
     {
       "en": "Knives",
-      "nl": "Messen"
+      "nl": "Messen",
+      "de": "Messer",
+      "fr": "Couteaux",
+      "es": "Cuchillos"
     },
     {
       "en": "Kitchen appliances",
-      "nl": "Keukenapparatuur"
+      "nl": "Keukenapparatuur",
+      "de": "Küchengeräte",
+      "fr": "Électroménager de cuisine",
+      "es": "Electrodomésticos de cocina"
     },
     {
       "en": "Tableware",
-      "nl": "Servies"
+      "nl": "Servies",
+      "de": "Geschirr",
+      "fr": "Vaisselle",
+      "es": "Vajilla"
     },
     {
       "en": "Glassware",
-      "nl": "Glaswerk"
+      "nl": "Glaswerk",
+      "de": "Glaswaren",
+      "fr": "Verrerie",
+      "es": "Cristalería"
     },
     {
       "en": "Cutlery",
-      "nl": "Bestek"
+      "nl": "Bestek",
+      "de": "Besteck",
+      "fr": "Couverts",
+      "es": "Cubertería"
     },
     {
       "en": "Table accessories",
-      "nl": "Tafelaccessoires"
+      "nl": "Tafelaccessoires",
+      "de": "Tischzubehör",
+      "fr": "Accessoires de table",
+      "es": "Accesorios de mesa"
     },
     {
       "en": "Bar accessories",
-      "nl": "Baraccessoires"
+      "nl": "Baraccessoires",
+      "de": "Barzubehör",
+      "fr": "Accessoires de bar",
+      "es": "Accesorios de bar"
     },
     {
       "en": "Coffee equipment",
-      "nl": "Koffieapparatuur"
+      "nl": "Koffieapparatuur",
+      "de": "Kaffeegeräte",
+      "fr": "Équipement pour café",
+      "es": "Equipos de café"
     },
     {
       "en": "Tea accessories",
-      "nl": "Theeaccessoires"
+      "nl": "Theeaccessoires",
+      "de": "Teezubehör",
+      "fr": "Accessoires à thé",
+      "es": "Accesorios de té"
     },
     {
       "en": "Baking products & bakeware",
-      "nl": "Bakproducten & bakgerei"
+      "nl": "Bakproducten & bakgerei",
+      "de": "Backprodukte & Backzubehör",
+      "fr": "Produits de pâtisserie & ustensiles de cuisson",
+      "es": "Productos de repostería & utensilios de horneado"
     },
     {
       "en": "Food storage",
-      "nl": "Voedselopslag"
+      "nl": "Voedselopslag",
+      "de": "Lebensmittelaufbewahrung",
+      "fr": "Conservation des aliments",
+      "es": "Almacenamiento de alimentos"
     },
     {
       "en": "Drink bottles & thermos cups",
-      "nl": "Drinkflessen & thermosbekers"
+      "nl": "Drinkflessen & thermosbekers",
+      "de": "Trinkflaschen & Thermobecher",
+      "fr": "Gourdes & mugs isothermes",
+      "es": "Botellas de agua & vasos térmicos"
     },
     {
       "en": "Household products",
-      "nl": "Huishoudelijke producten"
+      "nl": "Huishoudelijke producten",
+      "de": "Haushaltsprodukte",
+      "fr": "Produits ménagers",
+      "es": "Productos para el hogar"
     },
     {
       "en": "Cleaning products",
-      "nl": "Schoonmaakmiddelen"
+      "nl": "Schoonmaakmiddelen",
+      "de": "Reinigungsmittel",
+      "fr": "Produits de nettoyage",
+      "es": "Productos de limpieza"
     },
     {
       "en": "Laundry detergent",
-      "nl": "Wasmiddelen"
+      "nl": "Wasmiddelen",
+      "de": "Waschmittel",
+      "fr": "Lessive",
+      "es": "Detergente para ropa"
     },
     {
       "en": "Dishwashing products",
-      "nl": "Afwasmiddelen"
+      "nl": "Afwasmiddelen",
+      "de": "Spülmittel",
+      "fr": "Produits vaisselle",
+      "es": "Detergente lavavajillas"
     },
     {
       "en": "Cleaning accessories",
-      "nl": "Schoonmaakaccessoires"
+      "nl": "Schoonmaakaccessoires",
+      "de": "Reinigungszubehör",
+      "fr": "Accessoires de nettoyage",
+      "es": "Accesorios de limpieza"
     },
     {
       "en": "Vacuum cleaners",
-      "nl": "Stofzuigers"
+      "nl": "Stofzuigers",
+      "de": "Staubsauger",
+      "fr": "Aspirateurs",
+      "es": "Aspiradoras"
     },
     {
       "en": "Household appliances",
-      "nl": "Huishoudelijke apparatuur"
+      "nl": "Huishoudelijke apparatuur",
+      "de": "Haushaltsgeräte",
+      "fr": "Électroménager",
+      "es": "Electrodomésticos"
     },
     {
       "en": "Ironing products",
-      "nl": "Strijkproducten"
+      "nl": "Strijkproducten",
+      "de": "Bügelprodukte",
+      "fr": "Produits de repassage",
+      "es": "Productos para planchar"
     },
     {
       "en": "Washing & drying accessories",
-      "nl": "Was en droogaccessoires"
+      "nl": "Was en droogaccessoires",
+      "de": "Wasch- und Trockenzubehör",
+      "fr": "Accessoires de lavage et de séchage",
+      "es": "Accesorios de lavado y secado"
     },
     {
       "en": "Waste & recycling",
-      "nl": "Afval & recycling"
+      "nl": "Afval & recycling",
+      "de": "Abfall & Recycling",
+      "fr": "Déchets & recyclage",
+      "es": "Residuos & reciclaje"
     },
     {
       "en": "Sustainable household products",
-      "nl": "Duurzame huishoudproducten"
+      "nl": "Duurzame huishoudproducten",
+      "de": "Nachhaltige Haushaltsprodukte",
+      "fr": "Produits ménagers durables",
+      "es": "Productos sostenibles para el hogar"
     },
     {
       "en": "Garden & outdoor living",
-      "nl": "Tuin & buitenleven"
+      "nl": "Tuin & buitenleven",
+      "de": "Garten & Outdoor",
+      "fr": "Jardin & extérieur",
+      "es": "Jardín & exterior"
     },
     {
       "en": "Garden furniture",
-      "nl": "Tuinmeubelen"
+      "nl": "Tuinmeubelen",
+      "de": "Gartenmöbel",
+      "fr": "Mobilier de jardin",
+      "es": "Muebles de jardín"
     },
     {
       "en": "Garden decor",
-      "nl": "Tuindecoratie"
+      "nl": "Tuindecoratie",
+      "de": "Gartendekoration",
+      "fr": "Décoration de jardin",
+      "es": "Decoración de jardín"
     },
     {
       "en": "Garden tools",
-      "nl": "Tuingereedschap"
+      "nl": "Tuingereedschap",
+      "de": "Gartenwerkzeug",
+      "fr": "Outils de jardin",
+      "es": "Herramientas de jardín"
     },
     {
       "en": "Plants & seeds",
-      "nl": "Planten & zaden"
+      "nl": "Planten & zaden",
+      "de": "Pflanzen & Samen",
+      "fr": "Plantes & graines",
+      "es": "Plantas & semillas"
     },
     {
       "en": "Barbecues",
-      "nl": "Barbecues"
+      "nl": "Barbecues",
+      "de": "Grills",
+      "fr": "Barbecues",
+      "es": "Barbacoas"
     },
     {
       "en": "Outdoor kitchens",
-      "nl": "Buitenkeukens"
+      "nl": "Buitenkeukens",
+      "de": "Outdoor-Küchen",
+      "fr": "Cuisines d'extérieur",
+      "es": "Cocinas de exterior"
     },
     {
       "en": "Swimming pools",
-      "nl": "Zwembaden"
+      "nl": "Zwembaden",
+      "de": "Pools",
+      "fr": "Piscines",
+      "es": "Piscinas"
     },
     {
       "en": "Hot tubs & spas",
-      "nl": "Jacuzzi's & spa's"
+      "nl": "Jacuzzi's & spa's",
+      "de": "Whirlpools & Spas",
+      "fr": "Jacuzzis & spas",
+      "es": "Jacuzzis y spas"
     },
     {
       "en": "Patio heaters",
-      "nl": "Terrasverwarming"
+      "nl": "Terrasverwarming",
+      "de": "Terrassenheizungen",
+      "fr": "Chauffages de terrasse",
+      "es": "Calefactores de terraza"
     },
     {
       "en": "Outdoor lighting",
-      "nl": "Buitenverlichting"
+      "nl": "Buitenverlichting",
+      "de": "Außenbeleuchtung",
+      "fr": "Éclairage extérieur",
+      "es": "Iluminación exterior"
     },
     {
       "en": "Balcony products",
-      "nl": "Balkonproducten"
+      "nl": "Balkonproducten",
+      "de": "Balkonprodukte",
+      "fr": "Produits pour balcon",
+      "es": "Productos para balcón"
     },
     {
       "en": "Consumer electronics",
-      "nl": "Consumentenelektronica"
+      "nl": "Consumentenelektronica",
+      "de": "Unterhaltungselektronik",
+      "fr": "Électronique grand public",
+      "es": "Electrónica de consumo"
     },
     {
       "en": "Smartphones",
-      "nl": "Smartphones"
+      "nl": "Smartphones",
+      "de": "Smartphones",
+      "fr": "Smartphones",
+      "es": "Smartphones"
     },
     {
       "en": "Phone accessories",
-      "nl": "Telefoonaccessoires"
+      "nl": "Telefoonaccessoires",
+      "de": "Handyzubehör",
+      "fr": "Accessoires pour téléphones",
+      "es": "Accesorios para móviles"
     },
     {
       "en": "Tablets",
-      "nl": "Tablets"
+      "nl": "Tablets",
+      "de": "Tablets",
+      "fr": "Tablettes",
+      "es": "Tablets"
     },
     {
       "en": "Computers & laptops",
-      "nl": "Computers & laptops"
+      "nl": "Computers & laptops",
+      "de": "Computer & Laptops",
+      "fr": "Ordinateurs & PC portables",
+      "es": "Ordenadores y portátiles"
     },
     {
       "en": "Computer accessories",
-      "nl": "Computeraccessoires"
+      "nl": "Computeraccessoires",
+      "de": "Computerzubehör",
+      "fr": "Accessoires informatiques",
+      "es": "Accesorios de informática"
     },
     {
       "en": "Monitors",
-      "nl": "Monitoren"
+      "nl": "Monitoren",
+      "de": "Monitore",
+      "fr": "Écrans",
+      "es": "Monitores"
     },
     {
       "en": "Gaming",
-      "nl": "Gaming"
+      "nl": "Gaming",
+      "de": "Gaming",
+      "fr": "Gaming",
+      "es": "Gaming"
     },
     {
       "en": "Gaming accessories",
-      "nl": "Gamingaccessoires"
+      "nl": "Gamingaccessoires",
+      "de": "Gaming-Zubehör",
+      "fr": "Accessoires gaming",
+      "es": "Accesorios gaming"
     },
     {
       "en": "Audio",
-      "nl": "Audio"
+      "nl": "Audio",
+      "de": "Audio",
+      "fr": "Audio",
+      "es": "Audio"
     },
     {
       "en": "Headphones",
-      "nl": "Koptelefoons"
+      "nl": "Koptelefoons",
+      "de": "Kopfhörer",
+      "fr": "Casques audio",
+      "es": "Auriculares"
     },
     {
       "en": "Speakers",
-      "nl": "Speakers"
+      "nl": "Speakers",
+      "de": "Lautsprecher",
+      "fr": "Enceintes",
+      "es": "Altavoces"
     },
     {
       "en": "Televisions",
-      "nl": "Televisies"
+      "nl": "Televisies",
+      "de": "Fernseher",
+      "fr": "Téléviseurs",
+      "es": "Televisores"
     },
     {
       "en": "Cameras",
-      "nl": "Camera's"
+      "nl": "Camera's",
+      "de": "Kameras",
+      "fr": "Appareils photo",
+      "es": "Cámaras"
     },
     {
       "en": "Photography accessories",
-      "nl": "Fotografieaccessoires"
+      "nl": "Fotografieaccessoires",
+      "de": "Fotozubehör",
+      "fr": "Accessoires photo",
+      "es": "Accesorios de fotografía"
     },
     {
       "en": "Drones",
-      "nl": "Drones"
+      "nl": "Drones",
+      "de": "Drohnen",
+      "fr": "Drones",
+      "es": "Drones"
     },
     {
       "en": "Smartwatches",
-      "nl": "Smartwatches"
+      "nl": "Smartwatches",
+      "de": "Smartwatches",
+      "fr": "Montres connectées",
+      "es": "Smartwatches"
     },
     {
       "en": "Wearables",
-      "nl": "Wearables"
+      "nl": "Wearables",
+      "de": "Wearables",
+      "fr": "Wearables",
+      "es": "Wearables"
     },
     {
       "en": "Smart home",
-      "nl": "Smart home"
+      "nl": "Smart home",
+      "de": "Smart Home",
+      "fr": "Maison connectée",
+      "es": "Hogar inteligente"
     },
     {
       "en": "Security equipment",
-      "nl": "Beveiligingsapparatuur"
+      "nl": "Beveiligingsapparatuur",
+      "de": "Sicherheitstechnik",
+      "fr": "Équipements de sécurité",
+      "es": "Equipos de seguridad"
     },
     {
       "en": "Cables & chargers",
-      "nl": "Kabels & opladers"
+      "nl": "Kabels & opladers",
+      "de": "Kabel & Ladegeräte",
+      "fr": "Câbles & chargeurs",
+      "es": "Cables y cargadores"
     },
     {
       "en": "Power banks",
-      "nl": "Powerbanks"
+      "nl": "Powerbanks",
+      "de": "Powerbanks",
+      "fr": "Batteries externes",
+      "es": "Baterías externas"
     },
     {
       "en": "Electronic gadgets",
-      "nl": "Elektronische gadgets"
+      "nl": "Elektronische gadgets",
+      "de": "Elektronische Gadgets",
+      "fr": "Gadgets électroniques",
+      "es": "Gadgets electrónicos"
     },
     {
       "en": "Food & delicatessen",
-      "nl": "Voeding & delicatessen"
+      "nl": "Voeding & delicatessen",
+      "de": "Lebensmittel & Delikatessen",
+      "fr": "Alimentation & épicerie fine",
+      "es": "Alimentación y delicatessen"
     },
     {
       "en": "Healthy snacks",
-      "nl": "Gezonde snacks"
+      "nl": "Gezonde snacks",
+      "de": "Gesunde Snacks",
+      "fr": "Snacks sains",
+      "es": "Snacks saludables"
     },
     {
       "en": "Snacks",
-      "nl": "Snacks"
+      "nl": "Snacks",
+      "de": "Snacks",
+      "fr": "Snacks",
+      "es": "Snacks"
     },
     {
       "en": "Candy",
-      "nl": "Snoep"
+      "nl": "Snoep",
+      "de": "Süßwaren",
+      "fr": "Confiserie",
+      "es": "Golosinas"
     },
     {
       "en": "Chocolate",
-      "nl": "Chocolade"
+      "nl": "Chocolade",
+      "de": "Schokolade",
+      "fr": "Chocolat",
+      "es": "Chocolate"
     },
     {
       "en": "Cookies & pastries",
-      "nl": "Koek & gebak"
+      "nl": "Koek & gebak",
+      "de": "Kekse & Gebäck",
+      "fr": "Biscuits & pâtisseries",
+      "es": "Galletas y bollería"
     },
     {
       "en": "Baking products",
-      "nl": "Bakproducten"
+      "nl": "Bakproducten",
+      "de": "Backprodukte",
+      "fr": "Produits pour pâtisserie",
+      "es": "Productos para repostería"
     },
     {
       "en": "Breakfast products",
-      "nl": "Ontbijtproducten"
+      "nl": "Ontbijtproducten",
+      "de": "Frühstücksprodukte",
+      "fr": "Produits petit-déjeuner",
+      "es": "Productos para el desayuno"
     },
     {
       "en": "Granola & muesli",
-      "nl": "Granola & muesli"
+      "nl": "Granola & muesli",
+      "de": "Granola & Müsli",
+      "fr": "Granola & muesli",
+      "es": "Granola y muesli"
     },
     {
       "en": "Sauces",
-      "nl": "Sauzen"
+      "nl": "Sauzen",
+      "de": "Saucen",
+      "fr": "Sauces",
+      "es": "Salsas"
     },
     {
       "en": "Herbs & spices",
-      "nl": "Kruiden & specerijen"
+      "nl": "Kruiden & specerijen",
+      "de": "Kräuter & Gewürze",
+      "fr": "Herbes & épices",
+      "es": "Hierbas y especias"
     },
     {
       "en": "Oil & vinegar",
-      "nl": "Olie & azijn"
+      "nl": "Olie & azijn",
+      "de": "Öl & Essig",
+      "fr": "Huile & vinaigre",
+      "es": "Aceite y vinagre"
     },
     {
       "en": "Pasta & rice",
-      "nl": "Pasta & rijst"
+      "nl": "Pasta & rijst",
+      "de": "Pasta & Reis",
+      "fr": "Pâtes & riz",
+      "es": "Pasta y arroz"
     },
     {
       "en": "Organic food",
-      "nl": "Biologische voeding"
+      "nl": "Biologische voeding",
+      "de": "Bio-Lebensmittel",
+      "fr": "Alimentation bio",
+      "es": "Alimentación ecológica"
     },
     {
       "en": "Vegan food",
-      "nl": "Veganistische voeding"
+      "nl": "Veganistische voeding",
+      "de": "Vegane Lebensmittel",
+      "fr": "Alimentation végane",
+      "es": "Alimentación vegana"
     },
     {
       "en": "Plant based food",
-      "nl": "Plantaardige voeding"
+      "nl": "Plantaardige voeding",
+      "de": "Pflanzliche Lebensmittel",
+      "fr": "Alimentation végétale",
+      "es": "Alimentación vegetal"
     },
     {
       "en": "Gluten free food",
-      "nl": "Glutenvrije voeding"
+      "nl": "Glutenvrije voeding",
+      "de": "Glutenfreie Lebensmittel",
+      "fr": "Alimentation sans gluten",
+      "es": "Alimentación sin gluten"
     },
     {
       "en": "Meal kits",
-      "nl": "Maaltijdboxen"
+      "nl": "Maaltijdboxen",
+      "de": "Kochboxen",
+      "fr": "Kits repas",
+      "es": "Kits de comida"
     },
     {
       "en": "Ready meals",
-      "nl": "Kant en klare maaltijden"
+      "nl": "Kant en klare maaltijden",
+      "de": "Fertiggerichte",
+      "fr": "Plats préparés",
+      "es": "Comidas preparadas"
     },
     {
       "en": "Meat",
-      "nl": "Vlees"
+      "nl": "Vlees",
+      "de": "Fleisch",
+      "fr": "Viande",
+      "es": "Carne"
     },
     {
       "en": "Fish",
-      "nl": "Vis"
+      "nl": "Vis",
+      "de": "Fisch",
+      "fr": "Poisson",
+      "es": "Pescado"
     },
     {
       "en": "Cheese & dairy",
-      "nl": "Kaas & zuivel"
+      "nl": "Kaas & zuivel",
+      "de": "Käse & Milchprodukte",
+      "fr": "Fromage & produits laitiers",
+      "es": "Queso y lácteos"
     },
     {
       "en": "Coffee",
-      "nl": "Koffie"
+      "nl": "Koffie",
+      "de": "Kaffee",
+      "fr": "Café",
+      "es": "Café"
     },
     {
       "en": "Tea",
-      "nl": "Thee"
+      "nl": "Thee",
+      "de": "Tee",
+      "fr": "Thé",
+      "es": "Té"
     },
     {
       "en": "Soft drinks",
-      "nl": "Frisdranken"
+      "nl": "Frisdranken",
+      "de": "Erfrischungsgetränke",
+      "fr": "Boissons rafraîchissantes",
+      "es": "Refrescos"
     },
     {
       "en": "Juices",
-      "nl": "Sappen"
+      "nl": "Sappen",
+      "de": "Säfte",
+      "fr": "Jus",
+      "es": "Zumos"
     },
     {
       "en": "Functional drinks",
-      "nl": "Functionele dranken"
+      "nl": "Functionele dranken",
+      "de": "Funktionsgetränke",
+      "fr": "Boissons fonctionnelles",
+      "es": "Bebidas funcionales"
     },
     {
       "en": "Energy drinks",
-      "nl": "Energiedranken"
+      "nl": "Energiedranken",
+      "de": "Energydrinks",
+      "fr": "Boissons énergisantes",
+      "es": "Bebidas energéticas"
     },
     {
       "en": "Water",
-      "nl": "Water"
+      "nl": "Water",
+      "de": "Wasser",
+      "fr": "Eau",
+      "es": "Agua"
     },
     {
       "en": "Baby products",
-      "nl": "Babyproducten"
+      "nl": "Babyproducten",
+      "de": "Babyprodukte",
+      "fr": "Produits pour bébé",
+      "es": "Productos para bebés"
     },
     {
       "en": "Baby care",
-      "nl": "Babyverzorging"
+      "nl": "Babyverzorging",
+      "de": "Babypflege",
+      "fr": "Soin bébé",
+      "es": "Cuidado del bebé"
     },
     {
       "en": "Baby food",
-      "nl": "Babyvoeding"
+      "nl": "Babyvoeding",
+      "de": "Babynahrung",
+      "fr": "Alimentation bébé",
+      "es": "Alimentación infantil"
     },
     {
       "en": "Diapers",
-      "nl": "Luiers"
+      "nl": "Luiers",
+      "de": "Windeln",
+      "fr": "Couches",
+      "es": "Pañales"
     },
     {
       "en": "Strollers",
-      "nl": "Kinderwagens"
+      "nl": "Kinderwagens",
+      "de": "Kinderwagen",
+      "fr": "Poussettes",
+      "es": "Cochecitos"
     },
     {
       "en": "Car seats",
-      "nl": "Autostoeltjes"
+      "nl": "Autostoeltjes",
+      "de": "Kindersitze",
+      "fr": "Sièges auto",
+      "es": "Sillas de coche"
     },
     {
       "en": "Baby furniture",
-      "nl": "Babymeubels"
+      "nl": "Babymeubels",
+      "de": "Babymöbel",
+      "fr": "Mobilier bébé",
+      "es": "Muebles para bebés"
     },
     {
       "en": "Nursery",
-      "nl": "Kinderkamer"
+      "nl": "Kinderkamer",
+      "de": "Kinderzimmer",
+      "fr": "Chambre bébé",
+      "es": "Habitación infantil"
     },
     {
       "en": "Toys",
-      "nl": "Speelgoed"
+      "nl": "Speelgoed",
+      "de": "Spielzeug",
+      "fr": "Jouets",
+      "es": "Juguetes"
     },
     {
       "en": "Educational toys",
-      "nl": "Educatief speelgoed"
+      "nl": "Educatief speelgoed",
+      "de": "Lernspielzeug",
+      "fr": "Jouets éducatifs",
+      "es": "Juguetes educativos"
     },
     {
       "en": "Outdoor toys",
-      "nl": "Buitenspeelgoed"
+      "nl": "Buitenspeelgoed",
+      "de": "Outdoor-Spielzeug",
+      "fr": "Jouets d'extérieur",
+      "es": "Juguetes de exterior"
     },
     {
       "en": "Plush toys",
-      "nl": "Knuffels"
+      "nl": "Knuffels",
+      "de": "Kuscheltiere",
+      "fr": "Peluches",
+      "es": "Peluches"
     },
     {
       "en": "Children's books",
-      "nl": "Kinderboeken"
+      "nl": "Kinderboeken",
+      "de": "Kinderbücher",
+      "fr": "Livres pour enfants",
+      "es": "Libros infantiles"
     },
     {
       "en": "School products",
-      "nl": "Schoolproducten"
+      "nl": "Schoolproducten",
+      "de": "Schulbedarf",
+      "fr": "Fournitures scolaires",
+      "es": "Material escolar"
     },
     {
       "en": "Pet supplies",
-      "nl": "Dierenbenodigdheden"
+      "nl": "Dierenbenodigdheden",
+      "de": "Tierbedarf",
+      "fr": "Fournitures pour animaux",
+      "es": "Artículos para mascotas"
     },
     {
       "en": "Dog products",
-      "nl": "Hondenproducten"
+      "nl": "Hondenproducten",
+      "de": "Hundebedarf",
+      "fr": "Produits pour chiens",
+      "es": "Productos para perros"
     },
     {
       "en": "Cat products",
-      "nl": "Kattenproducten"
+      "nl": "Kattenproducten",
+      "de": "Katzenprodukte",
+      "fr": "Produits pour chats",
+      "es": "Productos para gatos"
     },
     {
       "en": "Pet food",
-      "nl": "Dierenvoeding"
+      "nl": "Dierenvoeding",
+      "de": "Tiernahrung",
+      "fr": "Alimentation animale",
+      "es": "Alimentación para mascotas"
     },
     {
       "en": "Dog treats",
-      "nl": "Hondensnacks"
+      "nl": "Hondensnacks",
+      "de": "Hundesnacks",
+      "fr": "Friandises pour chiens",
+      "es": "Snacks para perros"
     },
     {
       "en": "Cat treats",
-      "nl": "Kattensnacks"
+      "nl": "Kattensnacks",
+      "de": "Katzensnacks",
+      "fr": "Friandises pour chats",
+      "es": "Snacks para gatos"
     },
     {
       "en": "Pet care",
-      "nl": "Dierenverzorging"
+      "nl": "Dierenverzorging",
+      "de": "Tierpflege",
+      "fr": "Soins pour animaux",
+      "es": "Cuidado de mascotas"
     },
     {
       "en": "Pet beds",
-      "nl": "Dierenmanden"
+      "nl": "Dierenmanden",
+      "de": "Tierbetten",
+      "fr": "Paniers pour animaux",
+      "es": "Camas para mascotas"
     },
     {
       "en": "Collars & leashes",
-      "nl": "Halsbanden & riemen"
+      "nl": "Halsbanden & riemen",
+      "de": "Halsbänder & Leinen",
+      "fr": "Colliers & laisses",
+      "es": "Collares y correas"
     },
     {
       "en": "Pet toys",
-      "nl": "Dierenspeelgoed"
+      "nl": "Dierenspeelgoed",
+      "de": "Tierspielzeug",
+      "fr": "Jouets pour animaux",
+      "es": "Juguetes para mascotas"
     },
     {
       "en": "Aquarium products",
-      "nl": "Aquariumproducten"
+      "nl": "Aquariumproducten",
+      "de": "Aquaristik",
+      "fr": "Aquariophilie",
+      "es": "Acuariofilia"
     },
     {
       "en": "Bird products",
-      "nl": "Vogelproducten"
+      "nl": "Vogelproducten",
+      "de": "Vogelbedarf",
+      "fr": "Produits pour oiseaux",
+      "es": "Productos para aves"
     },
     {
       "en": "Rodent products",
-      "nl": "Knaagdierproducten"
+      "nl": "Knaagdierproducten",
+      "de": "Nagerbedarf",
+      "fr": "Produits pour rongeurs",
+      "es": "Productos para roedores"
     },
     {
       "en": "Horse products",
-      "nl": "Paardenproducten"
+      "nl": "Paardenproducten",
+      "de": "Pferdebedarf",
+      "fr": "Produits pour chevaux",
+      "es": "Productos para caballos"
     },
     {
       "en": "Car accessories",
-      "nl": "Autoaccessoires"
+      "nl": "Autoaccessoires",
+      "de": "Autozubehör",
+      "fr": "Accessoires auto",
+      "es": "Accesorios para coche"
     },
     {
       "en": "Car parts",
-      "nl": "Auto onderdelen"
+      "nl": "Auto onderdelen",
+      "de": "Autoteile",
+      "fr": "Pièces auto",
+      "es": "Piezas de coche"
     },
     {
       "en": "Car care",
-      "nl": "Autoverzorging"
+      "nl": "Autoverzorging",
+      "de": "Autopflege",
+      "fr": "Entretien auto",
+      "es": "Cuidado del coche"
     },
     {
       "en": "Motorcycle accessories",
-      "nl": "Motoraccessoires"
+      "nl": "Motoraccessoires",
+      "de": "Motorradzubehör",
+      "fr": "Accessoires moto",
+      "es": "Accesorios de moto"
     },
     {
       "en": "Motorcycle parts",
-      "nl": "Motoronderdelen"
+      "nl": "Motoronderdelen",
+      "de": "Motorradteile",
+      "fr": "Pièces moto",
+      "es": "Piezas de moto"
     },
     {
       "en": "Bicycles",
-      "nl": "Fietsen"
+      "nl": "Fietsen",
+      "de": "Fahrräder",
+      "fr": "Vélos",
+      "es": "Bicicletas"
     },
     {
       "en": "Electric bikes",
-      "nl": "Elektrische fietsen"
+      "nl": "Elektrische fietsen",
+      "de": "E-Bikes",
+      "fr": "Vélos électriques",
+      "es": "Bicicletas eléctricas"
     },
     {
       "en": "Bike accessories",
-      "nl": "Fietsaccessoires"
+      "nl": "Fietsaccessoires",
+      "de": "Fahrradzubehör",
+      "fr": "Accessoires vélo",
+      "es": "Accesorios para bicicletas"
     },
     {
       "en": "Bike parts",
-      "nl": "Fietsonderdelen"
+      "nl": "Fietsonderdelen",
+      "de": "Fahrradteile",
+      "fr": "Pièces vélo",
+      "es": "Piezas para bicicletas"
     },
     {
       "en": "Electric scooters",
-      "nl": "Elektrische scooters"
+      "nl": "Elektrische scooters",
+      "de": "E-Scooter",
+      "fr": "Trottinettes électriques",
+      "es": "Patinetes eléctricos"
     },
     {
       "en": "Kick scooters",
-      "nl": "Steps"
+      "nl": "Steps",
+      "de": "Tretroller",
+      "fr": "Trottinettes",
+      "es": "Patinetes"
     },
     {
       "en": "Mobility accessories",
-      "nl": "Mobiliteitsaccessoires"
+      "nl": "Mobiliteitsaccessoires",
+      "de": "Mobilitätszubehör",
+      "fr": "Accessoires de mobilité",
+      "es": "Accesorios de movilidad"
     },
     {
       "en": "EV accessories & charging products",
-      "nl": "EV accessoires & laadproducten"
+      "nl": "EV accessoires & laadproducten",
+      "de": "EV-Zubehör & Ladeprodukte",
+      "fr": "Accessoires VE & recharge",
+      "es": "Accesorios VE y productos de carga"
     },
     {
       "en": "Hobby & crafts",
-      "nl": "Hobby & creativiteit"
+      "nl": "Hobby & creativiteit",
+      "de": "Hobby & Basteln",
+      "fr": "Loisirs créatifs",
+      "es": "Hobby y manualidades"
     },
     {
       "en": "Craft supplies",
-      "nl": "Knutselartikelen"
+      "nl": "Knutselartikelen",
+      "de": "Bastelbedarf",
+      "fr": "Fournitures créatives",
+      "es": "Material de manualidades"
     },
     {
       "en": "Painting supplies",
-      "nl": "Schildermaterialen"
+      "nl": "Schildermaterialen",
+      "de": "Malbedarf",
+      "fr": "Matériel de peinture",
+      "es": "Material de pintura"
     },
     {
       "en": "Drawing",
-      "nl": "Tekenen"
+      "nl": "Tekenen",
+      "de": "Zeichnen",
+      "fr": "Dessin",
+      "es": "Dibujo"
     },
     {
       "en": "Sewing",
-      "nl": "Naaien"
+      "nl": "Naaien",
+      "de": "Nähen",
+      "fr": "Couture",
+      "es": "Costura"
     },
     {
       "en": "Knitting & crochet",
-      "nl": "Breien & haken"
+      "nl": "Breien & haken",
+      "de": "Stricken & Häkeln",
+      "fr": "Tricot & crochet",
+      "es": "Punto y ganchillo"
     },
     {
       "en": "DIY kits",
-      "nl": "DIY kits"
+      "nl": "DIY kits",
+      "de": "DIY-Sets",
+      "fr": "Kits DIY",
+      "es": "Kits DIY"
     },
     {
       "en": "Board games",
-      "nl": "Bordspellen"
+      "nl": "Bordspellen",
+      "de": "Brettspiele",
+      "fr": "Jeux de société",
+      "es": "Juegos de mesa"
     },
     {
       "en": "Puzzles",
-      "nl": "Puzzels"
+      "nl": "Puzzels",
+      "de": "Puzzles",
+      "fr": "Puzzles",
+      "es": "Puzles"
     },
     {
       "en": "Card games",
-      "nl": "Kaartspellen"
+      "nl": "Kaartspellen",
+      "de": "Kartenspiele",
+      "fr": "Jeux de cartes",
+      "es": "Juegos de cartas"
     },
     {
       "en": "Collectibles",
-      "nl": "Verzamelobjecten"
+      "nl": "Verzamelobjecten",
+      "de": "Sammlerstücke",
+      "fr": "Objets de collection",
+      "es": "Objetos de colección"
     },
     {
       "en": "Trading cards",
-      "nl": "Trading cards"
+      "nl": "Trading cards",
+      "de": "Trading Cards",
+      "fr": "Cartes à collectionner",
+      "es": "Cartas coleccionables"
     },
     {
       "en": "Model building",
-      "nl": "Modelbouw"
+      "nl": "Modelbouw",
+      "de": "Modellbau",
+      "fr": "Maquettisme",
+      "es": "Modelismo"
     },
     {
       "en": "Musical instruments",
-      "nl": "Muziekinstrumenten"
+      "nl": "Muziekinstrumenten",
+      "de": "Musikinstrumente",
+      "fr": "Instruments de musique",
+      "es": "Instrumentos musicales"
     },
     {
       "en": "Music accessories",
-      "nl": "Muziekaccessoires"
+      "nl": "Muziekaccessoires",
+      "de": "Musikzubehör",
+      "fr": "Accessoires de musique",
+      "es": "Accesorios musicales"
     },
     {
       "en": "Vinyl & music",
-      "nl": "Vinyl & muziek"
+      "nl": "Vinyl & muziek",
+      "de": "Vinyl & Musik",
+      "fr": "Vinyles & musique",
+      "es": "Vinilos y música"
     },
     {
       "en": "Books",
-      "nl": "Boeken"
+      "nl": "Boeken",
+      "de": "Bücher",
+      "fr": "Livres",
+      "es": "Libros"
     },
     {
       "en": "Comic books",
-      "nl": "Stripboeken"
+      "nl": "Stripboeken",
+      "de": "Comics",
+      "fr": "Bandes dessinées",
+      "es": "Cómics"
     },
     {
       "en": "Office supplies",
-      "nl": "Kantoorartikelen"
+      "nl": "Kantoorartikelen",
+      "de": "Büroartikel",
+      "fr": "Fournitures de bureau",
+      "es": "Material de oficina"
     },
     {
       "en": "Stationery",
-      "nl": "Schrijfwaren"
+      "nl": "Schrijfwaren",
+      "de": "Schreibwaren",
+      "fr": "Papeterie",
+      "es": "Papelería"
     },
     {
       "en": "Notebooks",
-      "nl": "Notitieboeken"
+      "nl": "Notitieboeken",
+      "de": "Notizbücher",
+      "fr": "Carnets",
+      "es": "Cuadernos"
     },
     {
       "en": "Planners & diaries",
-      "nl": "Agenda's & planners"
+      "nl": "Agenda's & planners",
+      "de": "Kalender & Terminplaner",
+      "fr": "Agendas & organiseurs",
+      "es": "Agendas y planificadores"
     },
     {
       "en": "School supplies",
-      "nl": "Schoolartikelen"
+      "nl": "Schoolartikelen",
+      "de": "Schulartikel",
+      "fr": "Fournitures scolaires",
+      "es": "Material escolar"
     },
     {
       "en": "Desk accessories",
-      "nl": "Bureauaccessoires"
+      "nl": "Bureauaccessoires",
+      "de": "Schreibtischzubehör",
+      "fr": "Accessoires de bureau",
+      "es": "Accesorios de escritorio"
     },
     {
       "en": "Ergonomic office products",
-      "nl": "Ergonomische kantoorproducten"
+      "nl": "Ergonomische kantoorproducten",
+      "de": "Ergonomische Büroprodukte",
+      "fr": "Produits de bureau ergonomiques",
+      "es": "Productos de oficina ergonómicos"
     },
     {
       "en": "Printers & supplies",
-      "nl": "Printers & benodigdheden"
+      "nl": "Printers & benodigdheden",
+      "de": "Drucker & Zubehör",
+      "fr": "Imprimantes & consommables",
+      "es": "Impresoras y consumibles"
     },
     {
       "en": "Business supplies",
-      "nl": "Zakelijke benodigdheden"
+      "nl": "Zakelijke benodigdheden",
+      "de": "Geschäftsbedarf",
+      "fr": "Fournitures professionnelles",
+      "es": "Suministros para empresas"
     },
     {
       "en": "Travel accessories",
-      "nl": "Reisaccessoires"
+      "nl": "Reisaccessoires",
+      "de": "Reisezubehör",
+      "fr": "Accessoires de voyage",
+      "es": "Accesorios de viaje"
     },
     {
       "en": "Suitcases",
-      "nl": "Koffers"
+      "nl": "Koffers",
+      "de": "Koffer",
+      "fr": "Valises",
+      "es": "Maletas"
     },
     {
       "en": "Travel bags",
-      "nl": "Reistassen"
+      "nl": "Reistassen",
+      "de": "Reisetaschen",
+      "fr": "Sacs de voyage",
+      "es": "Bolsas de viaje"
     },
     {
       "en": "Backpacks",
-      "nl": "Rugzakken"
+      "nl": "Rugzakken",
+      "de": "Rucksäcke",
+      "fr": "Sacs à dos",
+      "es": "Mochilas"
     },
     {
       "en": "Packing accessories",
-      "nl": "Packing accessoires"
+      "nl": "Packing accessoires",
+      "de": "Kofferorganizer",
+      "fr": "Organisateurs de valise",
+      "es": "Organizadores de maletas"
     },
     {
       "en": "Travel gadgets",
-      "nl": "Reisgadgets"
+      "nl": "Reisgadgets",
+      "de": "Reise-Gadgets",
+      "fr": "Gadgets de voyage",
+      "es": "Gadgets de viaje"
     },
     {
       "en": "Camping gear",
-      "nl": "Kampeerartikelen"
+      "nl": "Kampeerartikelen",
+      "de": "Campingausrüstung",
+      "fr": "Matériel de camping",
+      "es": "Equipo de camping"
     },
     {
       "en": "Beach gear",
-      "nl": "Strandartikelen"
+      "nl": "Strandartikelen",
+      "de": "Strandartikel",
+      "fr": "Articles de plage",
+      "es": "Artículos de playa"
     },
     {
       "en": "Travel comfort products",
-      "nl": "Reiscomfortproducten"
+      "nl": "Reiscomfortproducten",
+      "de": "Reisekomfortprodukte",
+      "fr": "Produits de confort de voyage",
+      "es": "Productos de confort de viaje"
     },
     {
       "en": "Gifts",
-      "nl": "Cadeaus"
+      "nl": "Cadeaus",
+      "de": "Geschenke",
+      "fr": "Cadeaux",
+      "es": "Regalos"
     },
     {
       "en": "Personalized gifts",
-      "nl": "Gepersonaliseerde cadeaus"
+      "nl": "Gepersonaliseerde cadeaus",
+      "de": "Personalisierte Geschenke",
+      "fr": "Cadeaux personnalisés",
+      "es": "Regalos personalizados"
     },
     {
       "en": "Corporate gifts",
-      "nl": "Relatiegeschenken"
+      "nl": "Relatiegeschenken",
+      "de": "Geschäftsgeschenke",
+      "fr": "Cadeaux d'entreprise",
+      "es": "Regalos corporativos"
     },
     {
       "en": "Gift boxes",
-      "nl": "Geschenkboxen"
+      "nl": "Geschenkboxen",
+      "de": "Geschenkboxen",
+      "fr": "Coffrets cadeaux",
+      "es": "Cajas de regalo"
     },
     {
       "en": "Flower gifts",
-      "nl": "Bloemencadeaus"
+      "nl": "Bloemencadeaus",
+      "de": "Blumengeschenke",
+      "fr": "Cadeaux floraux",
+      "es": "Regalos florales"
     },
     {
       "en": "Party supplies",
-      "nl": "Feestartikelen"
+      "nl": "Feestartikelen",
+      "de": "Partyartikel",
+      "fr": "Articles de fête",
+      "es": "Artículos de fiesta"
     },
     {
       "en": "Birthday supplies",
-      "nl": "Verjaardagsartikelen"
+      "nl": "Verjaardagsartikelen",
+      "de": "Geburtstagsartikel",
+      "fr": "Articles d'anniversaire",
+      "es": "Artículos de cumpleaños"
     },
     {
       "en": "Wedding products",
-      "nl": "Bruiloftsproducten"
+      "nl": "Bruiloftsproducten",
+      "de": "Hochzeitsartikel",
+      "fr": "Articles de mariage",
+      "es": "Artículos de boda"
     },
     {
       "en": "Baby gifts",
-      "nl": "Geboortecadeaus"
+      "nl": "Geboortecadeaus",
+      "de": "Geschenke zur Geburt",
+      "fr": "Cadeaux de naissance",
+      "es": "Regalos de nacimiento"
     },
     {
       "en": "Christmas products",
-      "nl": "Kerstproducten"
+      "nl": "Kerstproducten",
+      "de": "Weihnachtsartikel",
+      "fr": "Articles de Noël",
+      "es": "Artículos de Navidad"
     },
     {
       "en": "Seasonal products",
-      "nl": "Seizoensartikelen"
+      "nl": "Seizoensartikelen",
+      "de": "Saisonartikel",
+      "fr": "Articles saisonniers",
+      "es": "Artículos de temporada"
     },
     {
       "en": "Greeting cards",
-      "nl": "Wenskaarten"
+      "nl": "Wenskaarten",
+      "de": "Grußkarten",
+      "fr": "Cartes de vœux",
+      "es": "Tarjetas de felicitación"
     },
     {
       "en": "DIY",
-      "nl": "Doe het zelf"
+      "nl": "Doe het zelf",
+      "de": "Heimwerken",
+      "fr": "Bricolage",
+      "es": "Bricolaje"
     },
     {
       "en": "Tools",
-      "nl": "Gereedschap"
+      "nl": "Gereedschap",
+      "de": "Werkzeuge",
+      "fr": "Outils",
+      "es": "Herramientas"
     },
     {
       "en": "Power tools",
-      "nl": "Elektrisch gereedschap"
+      "nl": "Elektrisch gereedschap",
+      "de": "Elektrowerkzeuge",
+      "fr": "Outils électriques",
+      "es": "Herramientas eléctricas"
     },
     {
       "en": "Building materials",
-      "nl": "Bouwmaterialen"
+      "nl": "Bouwmaterialen",
+      "de": "Baumaterialien",
+      "fr": "Matériaux de construction",
+      "es": "Materiales de construcción"
     },
     {
       "en": "Paint & painting supplies",
-      "nl": "Verf & schilderbenodigdheden"
+      "nl": "Verf & schilderbenodigdheden",
+      "de": "Farben & Malerbedarf",
+      "fr": "Peinture & fournitures de peinture",
+      "es": "Pintura y material de pintura"
     },
     {
       "en": "Wallpaper",
-      "nl": "Behang"
+      "nl": "Behang",
+      "de": "Tapeten",
+      "fr": "Papier peint",
+      "es": "Papel pintado"
     },
     {
       "en": "Flooring",
-      "nl": "Vloeren"
+      "nl": "Vloeren",
+      "de": "Bodenbeläge",
+      "fr": "Revêtements de sol",
+      "es": "Suelos"
     },
     {
       "en": "Bathroom fixtures",
-      "nl": "Sanitair"
+      "nl": "Sanitair",
+      "de": "Sanitär",
+      "fr": "Sanitaire",
+      "es": "Sanitarios"
     },
     {
       "en": "Electrical supplies",
-      "nl": "Elektra"
+      "nl": "Elektra",
+      "de": "Elektro",
+      "fr": "Électricité",
+      "es": "Electricidad"
     },
     {
       "en": "Fasteners",
-      "nl": "Bevestigingsmaterialen"
+      "nl": "Bevestigingsmaterialen",
+      "de": "Befestigungsmaterial",
+      "fr": "Fixations",
+      "es": "Fijaciones"
     },
     {
       "en": "Door hardware",
-      "nl": "Deurbeslag"
+      "nl": "Deurbeslag",
+      "de": "Türbeschläge",
+      "fr": "Quincaillerie de porte",
+      "es": "Herrajes para puertas"
     },
     {
       "en": "Locks & security",
-      "nl": "Sloten & beveiliging"
+      "nl": "Sloten & beveiliging",
+      "de": "Schlösser & Sicherheit",
+      "fr": "Serrures & sécurité",
+      "es": "Cerraduras y seguridad"
     },
     {
       "en": "Sustainable products",
-      "nl": "Duurzame producten"
+      "nl": "Duurzame producten",
+      "de": "Nachhaltige Produkte",
+      "fr": "Produits durables",
+      "es": "Productos sostenibles"
     },
     {
       "en": "Reusable products",
-      "nl": "Herbruikbare producten"
+      "nl": "Herbruikbare producten",
+      "de": "Wiederverwendbare Produkte",
+      "fr": "Produits réutilisables",
+      "es": "Productos reutilizables"
     },
     {
       "en": "Zero waste products",
-      "nl": "Zero waste producten"
+      "nl": "Zero waste producten",
+      "de": "Zero-Waste-Produkte",
+      "fr": "Produits zéro déchet",
+      "es": "Productos cero residuos"
     },
     {
       "en": "Plastic free products",
-      "nl": "Plasticvrije producten"
+      "nl": "Plasticvrije producten",
+      "de": "Plastikfreie Produkte",
+      "fr": "Produits sans plastique",
+      "es": "Productos sin plástico"
     },
     {
       "en": "Eco friendly care products",
-      "nl": "Eco verzorgingsproducten"
+      "nl": "Eco verzorgingsproducten",
+      "de": "Öko-Pflegeprodukte",
+      "fr": "Produits de soin écologiques",
+      "es": "Productos de cuidado ecológico"
     },
     {
       "en": "Sustainable household products",
-      "nl": "Duurzame huishoudproducten"
+      "nl": "Duurzame huishoudproducten",
+      "de": "Nachhaltige Haushaltsprodukte",
+      "fr": "Produits ménagers durables",
+      "es": "Productos sostenibles para el hogar"
     },
     {
       "en": "Water saving products",
-      "nl": "Waterbesparende producten"
+      "nl": "Waterbesparende producten",
+      "de": "Wassersparprodukte",
+      "fr": "Produits économes en eau",
+      "es": "Productos de ahorro de agua"
     },
     {
       "en": "Energy saving products",
-      "nl": "Energiebesparende producten"
+      "nl": "Energiebesparende producten",
+      "de": "Energiesparprodukte",
+      "fr": "Produits économes en énergie",
+      "es": "Productos de ahorro de energía"
     },
     {
       "en": "Refurbished products",
-      "nl": "Refurbished producten"
+      "nl": "Refurbished producten",
+      "de": "Refurbished-Produkte",
+      "fr": "Produits reconditionnés",
+      "es": "Productos reacondicionados"
     },
     {
       "en": "Secondhand products",
-      "nl": "Tweedehands producten"
+      "nl": "Tweedehands producten",
+      "de": "Gebrauchtwaren",
+      "fr": "Produits d'occasion",
+      "es": "Productos de segunda mano"
     },
     {
       "en": "Erotica & intimacy",
-      "nl": "Erotiek & intimiteit"
+      "nl": "Erotiek & intimiteit",
+      "de": "Erotik & Intimität",
+      "fr": "Érotisme & intimité",
+      "es": "Erotismo e intimidad"
     },
     {
       "en": "Tattoo & piercing",
-      "nl": "Tattoo & piercing"
+      "nl": "Tattoo & piercing",
+      "de": "Tattoo & Piercing",
+      "fr": "Tatouage & piercing",
+      "es": "Tatuaje y piercing"
     },
     {
       "en": "Festival gear",
-      "nl": "Festivalartikelen"
+      "nl": "Festivalartikelen",
+      "de": "Festivalartikel",
+      "fr": "Articles de festival",
+      "es": "Artículos de festival"
     },
     {
       "en": "Smoking accessories",
-      "nl": "Rookaccessoires"
+      "nl": "Rookaccessoires",
+      "de": "Raucherzubehör",
+      "fr": "Accessoires pour fumeurs",
+      "es": "Accesorios para fumadores"
     },
     {
       "en": "Spiritual products",
-      "nl": "Spirituele producten"
+      "nl": "Spirituele producten",
+      "de": "Spirituelle Produkte",
+      "fr": "Produits spirituels",
+      "es": "Productos espirituales"
     },
     {
       "en": "Gemstones & crystals",
-      "nl": "Edelstenen & kristallen"
+      "nl": "Edelstenen & kristallen",
+      "de": "Edelsteine & Kristalle",
+      "fr": "Pierres précieuses & cristaux",
+      "es": "Piedras preciosas y cristales"
     },
     {
       "en": "Astrology products",
-      "nl": "Astrologieproducten"
+      "nl": "Astrologieproducten",
+      "de": "Astrologieprodukte",
+      "fr": "Produits d'astrologie",
+      "es": "Productos de astrología"
     },
     {
       "en": "Religious products",
-      "nl": "Religieuze producten"
+      "nl": "Religieuze producten",
+      "de": "Religiöse Artikel",
+      "fr": "Articles religieux",
+      "es": "Artículos religiosos"
     },
     {
       "en": "Magic & conjuring supplies",
-      "nl": "Magie & goochelartikelen"
+      "nl": "Magie & goochelartikelen",
+      "de": "Magie & Zauberartikel",
+      "fr": "Magie & articles de prestidigitation",
+      "es": "Magia y artículos de ilusionismo"
     },
     {
       "en": "Escape room products",
-      "nl": "Escape room producten"
+      "nl": "Escape room producten",
+      "de": "Escape-Room-Produkte",
+      "fr": "Produits d'escape game",
+      "es": "Productos de escape room"
     },
     {
       "en": "Home security",
-      "nl": "Huisbeveiliging"
+      "nl": "Huisbeveiliging",
+      "de": "Heimsicherheit",
+      "fr": "Sécurité domestique",
+      "es": "Seguridad del hogar"
     },
     {
       "en": "Safety products",
-      "nl": "Veiligheidsproducten"
+      "nl": "Veiligheidsproducten",
+      "de": "Sicherheitsprodukte",
+      "fr": "Produits de sécurité",
+      "es": "Productos de seguridad"
     },
     {
       "en": "Hospitality supplies",
-      "nl": "Horecabenodigdheden"
+      "nl": "Horecabenodigdheden",
+      "de": "Gastronomiebedarf",
+      "fr": "Fournitures pour l'hôtellerie-restauration",
+      "es": "Suministros para hostelería"
     },
     {
       "en": "Restaurant supplies",
-      "nl": "Restaurantbenodigdheden"
+      "nl": "Restaurantbenodigdheden",
+      "de": "Restaurantbedarf",
+      "fr": "Fournitures pour restaurants",
+      "es": "Suministros para restaurantes"
     },
     {
       "en": "Hotel supplies",
-      "nl": "Hotelbenodigdheden"
+      "nl": "Hotelbenodigdheden",
+      "de": "Hotelbedarf",
+      "fr": "Fournitures hôtelières",
+      "es": "Suministros para hoteles"
     },
     {
       "en": "Hairdresser supplies",
-      "nl": "Kappersbenodigdheden"
+      "nl": "Kappersbenodigdheden",
+      "de": "Friseurbedarf",
+      "fr": "Fournitures pour coiffeurs",
+      "es": "Suministros para peluquerías"
     },
     {
       "en": "Salon supplies",
-      "nl": "Salonbenodigdheden"
+      "nl": "Salonbenodigdheden",
+      "de": "Salonbedarf",
+      "fr": "Fournitures pour salons de beauté",
+      "es": "Suministros para salones de belleza"
     },
     {
       "en": "Professional cleaning products",
-      "nl": "Professionele schoonmaakproducten"
+      "nl": "Professionele schoonmaakproducten",
+      "de": "Professionelle Reinigungsprodukte",
+      "fr": "Produits d'entretien professionnels",
+      "es": "Productos de limpieza profesional"
     },
     {
       "en": "Packaging materials",
-      "nl": "Verpakkingsmaterialen"
+      "nl": "Verpakkingsmaterialen",
+      "de": "Verpackungsmaterial",
+      "fr": "Matériaux d'emballage",
+      "es": "Materiales de embalaje"
     },
     {
       "en": "Printed products",
-      "nl": "Bedrukte producten"
+      "nl": "Bedrukte producten",
+      "de": "Bedruckte Produkte",
+      "fr": "Produits imprimés",
+      "es": "Productos impresos"
     },
     {
       "en": "Promotional items",
-      "nl": "Promotieartikelen"
+      "nl": "Promotieartikelen",
+      "de": "Werbeartikel",
+      "fr": "Articles promotionnels",
+      "es": "Artículos promocionales"
     },
     {
       "en": "Print on demand",
-      "nl": "Print on demand"
+      "nl": "Print on demand",
+      "de": "Print on Demand",
+      "fr": "Impression à la demande",
+      "es": "Impresión bajo demanda"
     },
     {
       "en": "Photo products",
-      "nl": "Fotoproducten"
+      "nl": "Fotoproducten",
+      "de": "Fotoprodukte",
+      "fr": "Produits photo",
+      "es": "Productos fotográficos"
     },
     {
       "en": "Phone cases",
-      "nl": "Telefoonhoesjes"
+      "nl": "Telefoonhoesjes",
+      "de": "Handyhüllen",
+      "fr": "Coques de téléphone",
+      "es": "Fundas para móviles"
     },
     {
       "en": "Posters & wall art",
-      "nl": "Posters & muurkunst"
+      "nl": "Posters & muurkunst",
+      "de": "Poster & Wandkunst",
+      "fr": "Affiches & décoration murale",
+      "es": "Pósters y decoración de pared"
     },
     {
       "en": "Personalized jewelry",
-      "nl": "Gepersonaliseerde sieraden"
+      "nl": "Gepersonaliseerde sieraden",
+      "de": "Personalisierter Schmuck",
+      "fr": "Bijoux personnalisés",
+      "es": "Joyas personalizadas"
     },
     {
       "en": "Subscription boxes",
-      "nl": "Abonnementsboxen"
+      "nl": "Abonnementsboxen",
+      "de": "Abo-Boxen",
+      "fr": "Box par abonnement",
+      "es": "Cajas de suscripción"
     },
     {
       "en": "Mystery boxes",
-      "nl": "Mysteryboxen"
+      "nl": "Mysteryboxen",
+      "de": "Mystery-Boxen",
+      "fr": "Box mystère",
+      "es": "Cajas misteriosas"
     },
     {
       "en": "Merchandise",
-      "nl": "Merchandise"
+      "nl": "Merchandise",
+      "de": "Merchandise",
+      "fr": "Produits dérivés",
+      "es": "Merchandising"
     },
     {
       "en": "Fan merchandise",
-      "nl": "Fanartikelen"
+      "nl": "Fanartikelen",
+      "de": "Fanartikel",
+      "fr": "Articles pour fans",
+      "es": "Artículos para fans"
     },
     {
       "en": "B2B webshops",
-      "nl": "B2B webshops"
+      "nl": "B2B webshops",
+      "de": "B2B-Webshops",
+      "fr": "Boutiques en ligne B2B",
+      "es": "Tiendas online B2B"
     },
     {
       "en": "Industrial supplies",
-      "nl": "Industriële benodigdheden"
+      "nl": "Industriële benodigdheden",
+      "de": "Industriebedarf",
+      "fr": "Fournitures industrielles",
+      "es": "Suministros industriales"
     },
     {
       "en": "Warehouse supplies",
-      "nl": "Magazijnbenodigdheden"
+      "nl": "Magazijnbenodigdheden",
+      "de": "Lagerbedarf",
+      "fr": "Fournitures pour entrepôts",
+      "es": "Suministros para almacenes"
     },
     {
       "en": "Agricultural & horticultural products",
-      "nl": "Landbouw en tuinbouwproducten"
+      "nl": "Landbouw en tuinbouwproducten",
+      "de": "Landwirtschafts- und Gartenbauprodukte",
+      "fr": "Produits agricoles et horticoles",
+      "es": "Productos agrícolas y hortícolas"
     },
     {
       "en": "Hospitality food & non food",
-      "nl": "Horeca food & non food"
+      "nl": "Horeca food & non food",
+      "de": "Gastronomie Food & Non-Food",
+      "fr": "Restauration food & non food",
+      "es": "Hostelería food & non food"
     }
   ]
 }
