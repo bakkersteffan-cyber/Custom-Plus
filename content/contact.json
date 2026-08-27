@@ -64,13 +64,16 @@
     "skipLabel": "Skip this"
   },
   "band": {
-    "kicker": "Your brief"
+    "kicker": "Your brief",
+    "emailLabel": "Your email, so we can reply",
+    "emailError": "Enter a valid email address.",
+    "sendFallback": "Could not send automatically. Click to use your email app instead."
   },
   "how": {
     "toggle": "How sending works",
-    "line1": "Your brief becomes a normal email, sent from your own email app and your own address.",
-    "line2": "This page stores nothing and uploads nothing. Your idea never touches a server.",
-    "line3": "Files: attach them in the email once it opens."
+    "line1": "Your brief is sent straight from this page, no email app required.",
+    "line2": "We only use your email to reply. Nothing is shared or sold.",
+    "line3": "Got files to share? Reply to our confirmation once it lands in your inbox."
   },
   "sent": {
     "heading": "Sent.",

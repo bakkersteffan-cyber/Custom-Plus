@@ -11,9 +11,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CUSTOM+">
 <meta property="og:url" content="" id="og-url">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="images/og-share.jpg" id="og-image">
+<meta property="og:image:width" content="1731">
+<meta property="og:image:height" content="909">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="CUSTOM+ — The made to spec standard in product development" id="twitter-title">
 <meta name="twitter:description" content="From napkin sketch to shipping container: design, DFM, vetted factories, AQL inspection, and logistics — one accountable team." id="twitter-description">
+<meta name="twitter:image" content="images/og-share.jpg" id="twitter-image">
 <link rel="canonical" href="/" id="fl-canonical">
 <script type="application/ld+json" id="ld-organization">{"@context":"https://schema.org","@type":"Organization","@id":"/#organization","name":"CUSTOM+","url":"/","email":"steffan@customplus.nl","description":"CUSTOM+ takes your product from sketch to shipping container: industrial design, DFM, vetted factory production in China, AQL quality control, and logistics."}</script>
 <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='12'%20fill='%23000'/%3E%3Cpath%20d='M32%2018v28M18%2032h28'%20stroke='%23C7972A'%20stroke-width='6'%20stroke-linecap='round'/%3E%3C/svg%3E">
@@ -1448,6 +1452,20 @@ button.fl-quiz__opt.is-selected .fl-quiz__opt-check{ transform:translateY(-50%) 
 .fl-scopequiz__error{ font-size:12.5px; color:var(--critical,#d97654); margin-top:-6px; }
 @keyframes fl-shake{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-6px); } 75%{ transform:translateX(6px); } }
 
+button.fl-brief__send{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; border:1px solid transparent; border-radius:50px; padding:15px 32px;
+  background:var(--black); color:var(--white); font:inherit; font-size:14px; cursor:pointer;
+  transition:background .25s ease, opacity .25s ease;
+}
+button.fl-brief__send:hover{ background:var(--gray-33); }
+button.fl-brief__send .fl-btn-state{ display:inline-flex; align-items:center; gap:8px; }
+button.fl-brief__send .fl-btn-state--sent{ display:none; }
+button.fl-brief__send.is-sent{ cursor:default; pointer-events:none; }
+button.fl-brief__send.is-sent .fl-btn-state--idle{ display:none; }
+button.fl-brief__send.is-sent .fl-btn-state--sent{ display:inline-flex; }
+.fl-brief__send-check{ width:15px; height:15px; flex:none; }
+
 /* ---------- form resilience: resume banner, mailto fallback, sent panel ---------- */
 
 .fl-brief__replyby-steps{ list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:5px; font-size:12.5px; color:var(--gray-33); }
@@ -1466,6 +1484,27 @@ button.fl-quiz__opt.is-selected .fl-quiz__opt-check{ transform:translateY(-50%) 
 .fl-mailto-fallback[hidden]{ display:none; }
 .fl-mailto-fallback__copy{ font-size:11px; font-weight:500; letter-spacing:.3px; text-decoration:underline; text-underline-offset:3px; color:var(--black); }
 .fl-mailto-fallback--dark{ color:var(--gray-a7); }
+
+/* ---------- real send buttons: busy / failed states, shared everywhere ---------- */
+button.is-sending{ opacity:.65; cursor:wait; pointer-events:none; }
+button.is-failed{ border-color:var(--critical,#d97654) !important; }
+.fl-send-fallback{ display:inline-flex; margin-top:10px; font-size:12px; letter-spacing:.2px; color:var(--gray-69);
+  text-decoration:underline; text-underline-offset:3px; opacity:0; transform:translateY(-4px);
+  transition:opacity .3s ease, transform .3s ease; }
+.fl-send-fallback.is-visible{ opacity:1; transform:translateY(0); }
+.fl-send-fallback[hidden]{ display:none; }
+.fl-giftmodal__sent{ margin-top:20px; }
+.fl-giftmodal__sent p{ font-size:14px; line-height:1.6; color:var(--gray-69); }
+.fl-cf-band__email{ margin-top:clamp(18px,2.6vw,26px); }
+.fl-cf-band__email label{ display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.44px;
+  text-transform:uppercase; color:var(--gray-a7); margin-bottom:8px; }
+input.fl-cf-email{ width:100%; max-width:360px; border:0; border-bottom:1px solid var(--line-dark); background:transparent;
+  color:var(--white); padding:10px 0; font-size:15px; transition:border-color .25s ease; }
+input.fl-cf-email::placeholder{ color:var(--gray-9); }
+input.fl-cf-email:focus{ border-color:var(--white); outline:none; }
+input.fl-cf-email.is-invalid{ border-color:var(--critical,#d97654); animation:fl-shake .4s var(--ease-fl); }
+.fl-cf-band__emailerror{ margin-top:8px; font-size:12.5px; color:var(--critical,#d97654); }
+.fl-cf-band__emailerror[hidden]{ display:none; }
 .fl-mailto-fallback--dark .fl-mailto-fallback__copy{ color:var(--white); }
 .fl-mailto-fallback__hint{ font-size:12.5px; color:var(--critical,#d97654); margin:2px 0 0;
   opacity:0; transform:translateY(-4px); transition:opacity .3s ease, transform .3s ease; }
@@ -1572,6 +1611,12 @@ a.fl-term-link:hover{ text-decoration-color:var(--black); }
 .fl-ecom-statement h2.fl-reveal.is-visible{ transform:none; }
 .fl-ecom-statement .fl-clip > span{ transition-duration:1.1s; }
 .fl-ecom-statement h2.is-visible .fl-clip > span{ transform:translateY(0); }
+.fl-ecom-statement__row{ display:flex; align-items:center; justify-content:space-between; gap:clamp(32px,5vw,72px); flex-wrap:wrap; }
+.fl-ecom-statement__row .fl-ai{ margin:0; flex:none; }
+@media (max-width:860px){
+  .fl-ecom-statement__row{ flex-direction:column; align-items:stretch; text-align:center; }
+  .fl-ecom-statement__row .fl-ai{ margin:clamp(52px,6.5vw,96px) auto 0; }
+}
 
 /* -- boekingspopup: cal.com in een eigen modal, met een eerlijke fallback als er nog geen link is -- */
 .fl-cal-modal__card{ display:flex; flex-direction:column; width:min(760px, calc(100vw - 40px)); height:min(760px, 88vh); overflow:hidden; padding:clamp(20px,3vw,28px); }
@@ -2124,6 +2169,12 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
 <body>
 
 <div class="fl" id="fl-root">
+<form name="custom-plus-inquiry" data-netlify="true" netlify-honeypot="cp-hp" hidden>
+  <input type="text" name="subject" />
+  <input type="email" name="email" />
+  <textarea name="message"></textarea>
+  <input type="text" name="cp-hp" />
+</form>
 <a class="fl-skip" href="#main">Skip to content</a>
 
 <div class="fl-loader" id="fl-loader" aria-hidden="true"><span class="fl-loader__mark"><span>CUSTOM<em>+</em></span></span></div>
@@ -2336,7 +2387,7 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       <h2 data-ck="home.collab.heading">Independent industrial designers and QC inspectors — we'd like to meet you.</h2>
       <p data-ck="home.collab.body">CUSTOM+ is new and building its bench. If you work in CAD, tooling, or on inspection floors in Guangdong or Zhejiang, introduce yourself.</p>
     </div>
-    <a class="fl-btn fl-btn-black fl-reveal" href="mailto:steffan@customplus.nl" data-magnetic>Introduce yourself</a>
+    <a class="fl-btn fl-btn-black fl-reveal" href="#/contact" data-magnetic data-ck="home.collab.cta">Introduce yourself</a>
   </div>
 </section>
 
@@ -2503,9 +2554,11 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
   </section>
 
   <section class="fl-section fl-ecom-statement">
-    <div class="fl-container">
-      <span class="fl-kicker fl-reveal" data-ck="ecommerce.statement.kicker">From scratch</span>
-      <h2 class="fl-reveal"><span class="fl-clip"><span data-ck="ecommerce.statement.heading">We develop your entirely new product.</span></span></h2>
+    <div class="fl-container fl-ecom-statement__row">
+      <div class="fl-ecom-statement__text">
+        <span class="fl-kicker fl-reveal" data-ck="ecommerce.statement.kicker">From scratch</span>
+        <h2 class="fl-reveal"><span class="fl-clip"><span data-ck="ecommerce.statement.heading">We develop your entirely new product.</span></span></h2>
+      </div>
       <div class="fl-ai fl-reveal" id="ecom-ai">
         <div class="fl-ai__orb" id="ecom-ai-orb" aria-hidden="true"></div>
         <button class="fl-ai__bar fl-ai__trigger" id="ecom-ai-open" type="button">
@@ -2813,8 +2866,47 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       <span class="fl-giftmodal__badge" data-ck="gifting.sample.kicker">Start smaller than a quote</span>
       <h3 id="gift-sample-title" data-ck="gifting.sample.heading">Sample the idea before you order the batch.</h3>
       <p style="margin-top:12px; font-size:14px; line-height:1.65; color:var(--gray-69);" data-ck="gifting.sample.body">Any factory in our network can build a single sample of your actual product — not a preset box — for a sample development fee, credited in full against your order. You hold the real thing in two to three weeks, before a single unit is batch produced.</p>
-      <a class="fl-btn fl-btn-black" id="gift-sample-mailto" href="#" style="width:100%; justify-content:center; margin-top:20px;" data-magnetic><span data-ck="gifting.sample.cta">Request a sample</span></a>
+      <button class="fl-btn fl-btn-black" id="gift-sample-send" type="button" style="width:100%; justify-content:center; margin-top:20px;" data-magnetic><span data-ck="gifting.sample.cta">Request a sample</span></button>
       <p class="fl-note" style="margin-top:12px; text-align:center;" data-ck="gifting.sample.replyNote">We reply within one working day.</p>
+    </div>
+  </div>
+
+  <!-- shared: collects email + company + delivery address before sending any gifting inquiry -->
+  <div class="fl-giftmodal" id="gift-contact-modal" hidden>
+    <div class="fl-giftmodal__backdrop" data-gift-close></div>
+    <div class="fl-giftmodal__card" role="dialog" aria-modal="true" aria-labelledby="gift-contact-title">
+      <button class="fl-giftmodal__close" data-gift-close aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+      </button>
+      <span class="fl-giftmodal__badge" data-ck="gifting.contactModal.kicker">Almost there</span>
+      <h3 id="gift-contact-title" data-ck="gifting.contactModal.heading">A few details, then it is sent.</h3>
+      <div id="gift-contact-form">
+        <p style="margin-top:12px; font-size:14px; line-height:1.65; color:var(--gray-69);" data-ck="gifting.contactModal.body">So we know where to reply, and where the samples would ship.</p>
+        <div class="fl-scopequiz__contact" style="margin-top:20px;">
+          <div id="gift-contact-notes-wrap" hidden>
+            <label for="gift-contact-notes" id="gift-contact-notes-label" data-no-i18n></label>
+            <textarea id="gift-contact-notes" class="fl-gift-occ__othertext" data-no-i18n></textarea>
+          </div>
+          <div>
+            <label for="gift-contact-email" data-ck="gifting.contactModal.emailLabel">Your email</label>
+            <input type="email" id="gift-contact-email" autocomplete="email" placeholder="you@company.com" data-no-i18n>
+          </div>
+          <div>
+            <label for="gift-contact-company" data-ck="gifting.contactModal.companyLabel">Company</label>
+            <input type="text" id="gift-contact-company" autocomplete="organization">
+          </div>
+          <div>
+            <label for="gift-contact-address" data-ck="gifting.contactModal.addressLabel">Delivery address</label>
+            <input type="text" id="gift-contact-address" autocomplete="street-address">
+          </div>
+          <p class="fl-scopequiz__error" id="gift-contact-error" role="alert" hidden data-ck="gifting.contactModal.error">Enter a valid email address.</p>
+        </div>
+        <button class="fl-btn fl-btn-black" id="gift-contact-send" type="button" style="width:100%; justify-content:center; margin-top:20px;" data-magnetic><span data-send-label data-ck="gifting.contactModal.send">Send</span></button>
+        <a class="fl-send-fallback" id="gift-contact-fallback" href="#" hidden data-ck="contact.band.sendFallback">Could not send automatically — click to use your email app instead</a>
+      </div>
+      <div class="fl-giftmodal__sent" id="gift-contact-sent" hidden>
+        <p><strong data-ck="gifting.contactModal.sentHead">Sent.</strong> <span data-ck="gifting.contactModal.sentBody">We reply within one working day.</span></p>
+      </div>
     </div>
   </div>
 </div>
@@ -3132,10 +3224,16 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       <div class="fl-cf-band__pre" id="cf-band-pre">
         <span class="fl-kicker fl-cf-band__kicker" data-ck="contact.band.kicker">Your brief</span>
         <p class="fl-cf-band__readback" id="cf-readback" aria-live="polite"></p>
+        <div class="fl-cf-band__email">
+          <label for="cf-email" data-ck="contact.band.emailLabel">Your email, so we can reply</label>
+          <input type="email" id="cf-email" class="fl-cf-email" autocomplete="email" placeholder="you@company.com" data-no-i18n>
+          <p class="fl-cf-band__emailerror" id="cf-email-error" hidden data-ck="contact.band.emailError">Enter a valid email address.</p>
+        </div>
         <div class="fl-cf-band__act">
           <button type="button" class="fl-cf-band__send" id="cf-send" data-magnetic>
             <span class="fl-cf-band__send-label" id="cf-send-label" data-no-i18n></span>
           </button>
+          <a class="fl-send-fallback" id="cf-send-fallback" href="#" hidden data-ck="contact.band.sendFallback">Could not send automatically — click to use your email app instead</a>
         </div>
         <div class="fl-cf-how">
           <button type="button" class="fl-cf-how__toggle" id="cf-how-toggle" aria-expanded="false" aria-controls="collapse-how">
@@ -3287,7 +3385,7 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       </div>
       <div class="fl-footer__col">
         <h3>Connect</h3>
-        <ul><li><a href="#/contact">Start a project</a></li><li><a href="mailto:steffan@customplus.nl">steffan@customplus.nl</a></li></ul>
+        <ul><li><a href="#/contact">Start a project</a></li><li><a href="#/contact">steffan@customplus.nl</a></li></ul>
       </div>
     </div>
     <div class="fl-footer__bottom" style="align-items:center;">
@@ -5444,24 +5542,19 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     if(!art) return null;
     return { titleBase: art.title, description: art.dek || '' };
   }
-  var blogOgImageEls = null;
+  /* falls back to the site-wide default banner (set in <head>, resolved to
+     an absolute URL near DEFAULT_OG_IMAGE) whenever an article has no image
+     of its own, or the visitor leaves the article — a share should never
+     end up with no image at all. */
   function blogSyncOgImage(id, param){
     var src = null;
     if(id === 'page-blog' && param && param.indexOf('categorie/') !== 0){
       var art = blogCache.get('art:' + param);
       if(art && (art.ogImage || art.photo)) src = art.ogImage || art.photo;
     }
-    if(!src && !blogOgImageEls) return;
-    if(!blogOgImageEls){
-      var og = document.createElement('meta'); og.setAttribute('property', 'og:image');
-      var tw = document.createElement('meta'); tw.setAttribute('name', 'twitter:image');
-      document.head.appendChild(og); document.head.appendChild(tw);
-      blogOgImageEls = [og, tw];
-    }
-    var abs = src ? (location.origin + location.pathname.replace(/[^\/]*$/, '') + src) : null;
-    blogOgImageEls.forEach(function(m){
-      if(abs){ m.setAttribute('content', abs); } else { m.removeAttribute('content'); }
-    });
+    var abs = src ? (location.origin + location.pathname.replace(/[^\/]*$/, '') + src) : DEFAULT_OG_IMAGE;
+    if(ogImageEl) ogImageEl.setAttribute('content', abs);
+    if(twitterImageEl) twitterImageEl.setAttribute('content', abs);
   }
   function buildBlogJsonLd(param){
     var isCat = !!(param && param.indexOf('categorie/') === 0);
@@ -5831,12 +5924,18 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
   var ogTitleEl = document.getElementById('og-title');
   var ogDescEl = document.getElementById('og-description');
   var ogUrlEl = document.getElementById('og-url');
+  var ogImageEl = document.getElementById('og-image');
   var twitterTitleEl = document.getElementById('twitter-title');
   var twitterDescEl = document.getElementById('twitter-description');
+  var twitterImageEl = document.getElementById('twitter-image');
   var DEFAULT_TITLE = document.title;
   var DEFAULT_DESC = metaDescEl ? metaDescEl.getAttribute('content') : '';
   var SITE_URL = location.origin + location.pathname;
+  var SITE_BASE = location.origin + location.pathname.replace(/[^\/]*$/, '');
+  var DEFAULT_OG_IMAGE = ogImageEl ? SITE_BASE + ogImageEl.getAttribute('content') : '';
   var TITLE_SUFFIX = ' — CUSTOM+';
+  if(ogImageEl) ogImageEl.setAttribute('content', DEFAULT_OG_IMAGE);
+  if(twitterImageEl) twitterImageEl.setAttribute('content', DEFAULT_OG_IMAGE);
 
   // Both elements already exist as static fallbacks in <head> (so a
   // non-JS-executing crawler or link-preview bot still sees a canonical URL
@@ -6317,6 +6416,68 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     el.classList.add('is-invalid');
     setTimeout(function(){ el.classList.remove('is-invalid'); }, 500);
   }
+  /* ================= real server-side sending (Netlify Forms) ================= */
+  /* onderwerp/e-mail/bericht gaan direct naar Netlify Forms, die bij elke
+     inzending een mail stuurt naar steffan@customplus.nl (ingesteld in het
+     Netlify-dashboard, niet hier). Lukt de aanvraag niet — bijv. geen
+     internet, of Netlify Forms nog niet actief — dan valt de knop terug op
+     de oude mailto-link, zodat niemand vast komt te zitten: eerlijk over
+     zowel het gemak als de zeldzame keer dat het misgaat. */
+  function cpEncodeForm(data){
+    return Object.keys(data).map(function(k){
+      return encodeURIComponent(k) + '=' + encodeURIComponent(data[k] == null ? '' : data[k]);
+    }).join('&');
+  }
+  function cpSubmitInquiry(subject, email, message){
+    return fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: cpEncodeForm({ 'form-name': 'custom-plus-inquiry', subject: subject, email: email, message: message, 'cp-hp': '' })
+    }).then(function(r){
+      if(!r.ok) throw new Error('http ' + r.status);
+      return true;
+    });
+  }
+  /* generieke UI-choreografie voor één verzendknop: bezig -> gelukt/mislukt.
+     btn: de knop zelf. build(): geeft {subject,email,message} terug (of
+     null om de send af te breken, bv. bij ongeldige invoer — de aanroeper
+     toont zelf de validatiefout). onSent(): opgeroepen bij succes. mailtoHref:
+     kant en klare mailto: link als eerlijke terugval bij een mislukte poging.
+     failEl: element dat de terugval-link toont wanneer nodig. */
+  function cpWireSend(btn, build, onSent, mailtoHref, failEl){
+    if(!btn) return;
+    var busy = false;
+    var labelEl = btn.querySelector('[data-send-label]') || btn;
+    var restLabel = labelEl.textContent;
+    btn.addEventListener('click', function(e){
+      if(e && e.preventDefault) e.preventDefault();
+      if(busy) return;
+      var data = build();
+      if(!data) return;
+      busy = true;
+      btn.classList.remove('is-failed');
+      btn.classList.add('is-sending');
+      btn.disabled = true;
+      labelEl.textContent = i18nT('Sending…');
+      cpSubmitInquiry(data.subject, data.email, data.message).then(function(){
+        busy = false;
+        btn.classList.remove('is-sending');
+        onSent(data);
+      }).catch(function(){
+        busy = false;
+        btn.classList.remove('is-sending');
+        btn.classList.add('is-failed');
+        btn.disabled = false;
+        labelEl.textContent = restLabel;
+        if(failEl && mailtoHref){
+          failEl.hidden = false;
+          failEl.href = mailtoHref;
+          revealWithFallback(failEl, 'is-visible');
+        }
+      });
+    });
+  }
+
   function cpShowNote(el, text, autoHideMs){
     if(!el) return;
     el.textContent = text;
@@ -6397,8 +6558,8 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     if(!panelEl) return;
     panelEl.replaceChildren();
     var head = make('p', null);
-    head.appendChild(make('strong', null, 'Almost done. '));
-    head.appendChild(document.createTextNode('Send the email that just opened to confirm you want field notes.'));
+    head.appendChild(make('strong', null, 'Done. '));
+    head.appendChild(document.createTextNode('You are on the list.'));
     panelEl.appendChild(head);
     var a = document.createElement('a');
     a.className = 'fl-brief__replyby-link';
@@ -6494,28 +6655,39 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     });
   }
   if(signupForm){
+    var footerSubmitBtn = signupForm.querySelector('button[type="submit"]');
+    var footerSubmitLabel = footerSubmitBtn ? footerSubmitBtn.textContent : '';
     signupForm.addEventListener('submit', function(e){
       e.preventDefault();
-      if(signupForm.classList.contains('is-sent')) return;
+      if(signupForm.classList.contains('is-sent') || signupForm.classList.contains('is-sending')) return;
       var input = document.getElementById('footer-email');
       var note = document.getElementById('footer-signup-note');
       var email = input.value.trim();
       var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       if(!valid){
         input.reportValidity ? input.reportValidity() : null;
-        if(note){ note.textContent = 'That doesn’t look like a full email address.'; note.classList.add('is-visible'); }
+        if(note){ note.textContent = i18nT('That doesn’t look like a full email address.'); note.classList.add('is-visible'); }
         return;
       }
       footerLastEmail = email;
-      signupForm.classList.add('is-sent');
-      if(note){
-        note.textContent = 'Opening your email app to confirm — nothing sent until you hit send.';
-        note.classList.add('is-visible');
-      }
-      location.href = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent('Add me to field notes') +
+      var mailtoHref = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent('Add me to field notes') +
         '&body=' + encodeURIComponent('Please add ' + email + ' to the CUSTOM+ field notes list.');
-      cpPopulateFooterSentPanel(footerReplyByEl);
-      cpArmMailtoWatch(footerMailtoFallbackEl);
+      signupForm.classList.add('is-sending');
+      if(footerSubmitBtn){ footerSubmitBtn.disabled = true; footerSubmitBtn.textContent = i18nT('Sending…'); }
+      if(note){ note.hidden = true; note.classList.remove('is-visible'); }
+      cpSubmitInquiry('Add me to field notes', email, 'Please add ' + email + ' to the CUSTOM+ field notes list.').then(function(){
+        signupForm.classList.remove('is-sending');
+        signupForm.classList.add('is-sent');
+        cpPopulateFooterSentPanel(footerReplyByEl);
+      }).catch(function(){
+        signupForm.classList.remove('is-sending');
+        if(footerSubmitBtn){ footerSubmitBtn.disabled = false; footerSubmitBtn.textContent = footerSubmitLabel; }
+        if(note){ note.textContent = i18nT('Could not send automatically — use the link below instead.'); note.hidden = false; note.classList.add('is-visible'); }
+        footerMailtoFallbackEl.hidden = false;
+        footerMailtoFallbackEl.querySelector('span') && (footerMailtoFallbackEl.querySelector('span').setAttribute('data-no-i18n',''));
+        revealWithFallback(footerMailtoFallbackEl, 'is-visible');
+        location.href = mailtoHref;
+      });
     });
   }
 
@@ -6691,6 +6863,84 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       });
       return { open:open, close:close };
     }
+
+    /* ---- shared contact-details modal (email/company/address) used by every gifting send path ---- */
+    var giftContactModal = wireGiftModal(document.getElementById('gift-contact-modal'));
+    var giftContactForm = document.getElementById('gift-contact-form');
+    var giftContactSentEl = document.getElementById('gift-contact-sent');
+    var giftContactEmail = document.getElementById('gift-contact-email');
+    var giftContactCompany = document.getElementById('gift-contact-company');
+    var giftContactAddress = document.getElementById('gift-contact-address');
+    var giftContactNotesWrap = document.getElementById('gift-contact-notes-wrap');
+    var giftContactNotesLabel = document.getElementById('gift-contact-notes-label');
+    var giftContactNotes = document.getElementById('gift-contact-notes');
+    var giftContactError = document.getElementById('gift-contact-error');
+    var giftContactSend = document.getElementById('gift-contact-send');
+    var giftContactFallback = document.getElementById('gift-contact-fallback');
+    var giftContactPending = null;
+
+    /* opens the shared modal; lines: array of body lines (no Company/Delivery/Reply-to —
+       those are appended from the real fields on send). notesConfig: {label, placeholder}
+       to show an extra free-text field (e.g. "Product idea"), or omit to hide it. */
+    function giftOpenContactModal(subject, lines, onSent, notesConfig){
+      giftContactPending = { subject: subject, lines: lines, onSent: onSent, notes: !!notesConfig };
+      giftContactForm.hidden = false;
+      giftContactSentEl.hidden = true;
+      giftContactEmail.value = ''; giftContactCompany.value = ''; giftContactAddress.value = ''; giftContactNotes.value = '';
+      giftContactEmail.classList.remove('is-invalid');
+      giftContactError.hidden = true;
+      giftContactSend.classList.remove('is-failed', 'is-sending');
+      giftContactSend.disabled = false;
+      giftContactFallback.hidden = true;
+      giftContactNotesWrap.hidden = !notesConfig;
+      if(notesConfig){
+        giftContactNotesLabel.textContent = notesConfig.label;
+        giftContactNotes.placeholder = notesConfig.placeholder || '';
+      }
+      giftContactModal.open();
+    }
+
+    giftContactSend.addEventListener('click', function(){
+      if(!giftContactPending || giftContactSend.classList.contains('is-sending')) return;
+      var email = giftContactEmail.value.trim();
+      if(!cfValidEmail(email)){
+        giftContactEmail.classList.add('is-invalid');
+        giftContactError.hidden = false;
+        giftContactEmail.focus();
+        setTimeout(function(){ giftContactEmail.classList.remove('is-invalid'); }, 500);
+        return;
+      }
+      giftContactError.hidden = true;
+      var company = giftContactCompany.value.trim() || '—';
+      var address = giftContactAddress.value.trim() || '—';
+      var fullLines = giftContactPending.lines.slice();
+      if(giftContactPending.notes){
+        var notesVal = giftContactNotes.value.trim();
+        if(notesVal) fullLines = fullLines.concat([giftContactNotesLabel.textContent + ': ' + notesVal]);
+      }
+      fullLines = fullLines.concat(['', 'Company: ' + company, 'Delivery address: ' + address]);
+      var mailtoHref = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent(giftContactPending.subject) + '&body=' + encodeURIComponent(fullLines.concat(['', 'Reply to: ' + email]).join('\n'));
+      var labelEl = giftContactSend.querySelector('[data-send-label]');
+      var restLabel = labelEl.textContent;
+      giftContactSend.classList.add('is-sending');
+      giftContactSend.disabled = true;
+      labelEl.textContent = i18nT('Sending…');
+      cpSubmitInquiry(giftContactPending.subject, email, fullLines.join('\n')).then(function(){
+        giftContactSend.classList.remove('is-sending');
+        labelEl.textContent = restLabel;
+        giftContactForm.hidden = true;
+        giftContactSentEl.hidden = false;
+        if(giftContactPending.onSent) giftContactPending.onSent();
+      }).catch(function(){
+        giftContactSend.classList.remove('is-sending');
+        giftContactSend.classList.add('is-failed');
+        giftContactSend.disabled = false;
+        labelEl.textContent = restLabel;
+        giftContactFallback.hidden = false;
+        giftContactFallback.href = mailtoHref;
+        revealWithFallback(giftContactFallback, 'is-visible');
+      });
+    });
 
     /* ---- single-select chip groups ---- */
     function wireGiftChips(group, onPick){
@@ -7170,9 +7420,10 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
       giftOccEmailNow.addEventListener('click', function(){
         if(!giftOccActive) return;
         var isOther = giftOccActive === giftOcc.otherCard;
-        var lines = ['Hi CUSTOM+,', ''].concat(occMailLines(giftOccActive, isOther), ['', 'Company:', 'Delivery address:', '']);
+        var lines = ['Hi CUSTOM+,', ''].concat(occMailLines(giftOccActive, isOther));
         var subject = 'Corporate gifting — ' + (isOther ? 'a specific occasion' : giftOccActive.title);
-        location.href = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+        giftOccModal.close();
+        giftOpenContactModal(subject, lines);
       });
 
       function syncOccBar(){
@@ -7199,8 +7450,11 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
         giftOccCollected.forEach(function(item){
           lines.push('- ' + item.title + (item.size ? ' (about ' + item.size + ' people)' : ''));
         });
-        lines.push('', 'Company:', 'Delivery address:', '');
-        location.href = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent('Corporate gifting — ' + giftOccCollected.length + ' occasions') + '&body=' + encodeURIComponent(lines.join('\n'));
+        var subject = 'Corporate gifting — ' + giftOccCollected.length + ' occasions';
+        giftOpenContactModal(subject, lines, function(){
+          giftOccCollected = [];
+          syncOccBar();
+        });
       });
     }
 
@@ -7329,15 +7583,18 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
         giftSampleSteps.appendChild(li);
       });
       var giftSampleModal = wireGiftModal(document.getElementById('gift-sample-modal'));
-      var giftSampleMailto = document.getElementById('gift-sample-mailto');
+      var giftSampleSend = document.getElementById('gift-sample-send');
       giftSampleCta.addEventListener('click', function(){
-        var lines = [
-          'I would like to request a sample of my product idea.', '',
-          'Product idea:', '',
-          'Company:', 'Delivery address:', ''
-        ];
-        giftSampleMailto.setAttribute('href', 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent('Sample request — corporate gifting') + '&body=' + encodeURIComponent(lines.join('\n')));
         giftSampleModal.open();
+      });
+      giftSampleSend.addEventListener('click', function(){
+        giftSampleModal.close();
+        giftOpenContactModal(
+          'Sample request — corporate gifting',
+          ['I would like to request a sample of my product idea.'],
+          null,
+          { label: 'Product idea', placeholder: 'What should we sample?' }
+        );
       });
     }
 
@@ -7871,9 +8128,15 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
   if(cfMailtoCopyBtn) cpWireMailtoCopyButton(cfMailtoCopyBtn, cfLetterText);
   if(cfIcsBtn) cfIcsBtn.addEventListener('click', function(){ downloadReplyByICS(); });
 
+  var cfEmailInput = document.getElementById('cf-email');
+  var cfEmailError = document.getElementById('cf-email-error');
+  var cfSendFallback = document.getElementById('cf-send-fallback');
+  var cfSendLabelEl = document.getElementById('cf-send-label');
+  var cfSendRestLabel = null;
+  function cfValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
   if(cfSendBtn){
     cfSendBtn.addEventListener('click', function(){
-      if(cfSent) return;
+      if(cfSent || cfSendBtn.classList.contains('is-sending')) return;
       if(cfRemaining() > 0){
         /* not ready: walk them to the first open question instead of nagging */
         cfOpenKey = null;
@@ -7881,22 +8144,48 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
         cfStage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block:'center' });
         return;
       }
+      var email = cfEmailInput ? cfEmailInput.value.trim() : '';
+      if(!cfValidEmail(email)){
+        if(cfEmailInput){ cfEmailInput.classList.remove('is-invalid'); void cfEmailInput.offsetWidth; cfEmailInput.classList.add('is-invalid'); cfEmailInput.focus(); }
+        if(cfEmailError) cfEmailError.hidden = false;
+        return;
+      }
+      if(cfEmailError) cfEmailError.hidden = true;
       var subjectTail = brief.door === 'fast' ? i18nT(CF_T.subjectFast) : i18nT(brief.category || CF_T.subjectNew);
+      var subject = i18nT(CF_T.subject) + ' — ' + subjectTail;
       var body = cfLetterText();
-      location.href = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent(i18nT(CF_T.subject) + ' — ' + subjectTail) + '&body=' + encodeURIComponent(body);
-      cfSent = true;
-      cpState.brief = null; cpQueueSave();
-      cfRenderLetter();
-      cfBandPre.classList.add('is-hidden');
-      cfBandSent.hidden = false;
-      revealWithFallback(cfBandSent, 'is-open');
-      printRefCode(document.getElementById('cf-sent-refcode'));
-      cfSyncPromiseDates();
-      cpArmMailtoWatch(cfMailtoFallbackEl);
-      var cfFlowEl = document.getElementById('contact-flow');
-      if(cfFlowEl) cfFlowEl.classList.add('is-sent');
-      cfRenderQuestion(null);
-      cfStage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      var mailtoHref = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      if(cfSendRestLabel === null) cfSendRestLabel = cfSendLabelEl.textContent;
+      cfSendBtn.classList.remove('is-failed');
+      cfSendBtn.classList.add('is-sending');
+      cfSendBtn.disabled = true;
+      cfSendLabelEl.textContent = i18nT('Sending…');
+      if(cfSendFallback) cfSendFallback.hidden = true;
+      cpSubmitInquiry(subject, email, body + '\n\nReply to: ' + email).then(function(){
+        cfSendBtn.classList.remove('is-sending');
+        cfSent = true;
+        cpState.brief = null; cpQueueSave();
+        cfRenderLetter();
+        cfBandPre.classList.add('is-hidden');
+        cfBandSent.hidden = false;
+        revealWithFallback(cfBandSent, 'is-open');
+        printRefCode(document.getElementById('cf-sent-refcode'));
+        cfSyncPromiseDates();
+        var cfFlowEl = document.getElementById('contact-flow');
+        if(cfFlowEl) cfFlowEl.classList.add('is-sent');
+        cfRenderQuestion(null);
+        cfStage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      }).catch(function(){
+        cfSendBtn.classList.remove('is-sending');
+        cfSendBtn.classList.add('is-failed');
+        cfSendBtn.disabled = false;
+        cfSendLabelEl.textContent = cfSendRestLabel;
+        if(cfSendFallback){
+          cfSendFallback.href = mailtoHref;
+          cfSendFallback.hidden = false;
+          revealWithFallback(cfSendFallback, 'is-visible');
+        }
+      });
     });
   }
 
@@ -8089,6 +8378,7 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     scopeContactSeq += 1;
     var nameId = 'scope-name-' + scopeContactSeq;
     var phoneId = 'scope-phone-' + scopeContactSeq;
+    var emailId = 'scope-email-' + scopeContactSeq;
     var wrap = make('div', 'fl-scopequiz__contact');
     var nameWrap = make('div');
     var nameLabel = make('label', null, 'Your name');
@@ -8104,6 +8394,13 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     phoneInput.type = 'tel'; phoneInput.id = phoneId; phoneInput.autocomplete = 'tel'; phoneInput.placeholder = '+1 555 000 0000';
     phoneWrap.appendChild(phoneLabel); phoneWrap.appendChild(phoneInput);
 
+    var emailWrap = make('div');
+    var emailLabel = make('label', null, 'Your email');
+    emailLabel.setAttribute('for', emailId);
+    var emailInput = document.createElement('input');
+    emailInput.type = 'email'; emailInput.id = emailId; emailInput.autocomplete = 'email'; emailInput.placeholder = 'you@company.com';
+    emailWrap.appendChild(emailLabel); emailWrap.appendChild(emailInput);
+
     var errorEl = make('p', 'fl-scopequiz__error');
     errorEl.setAttribute('role', 'alert');
     errorEl.hidden = true;
@@ -8117,24 +8414,24 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     checkSvg.setAttribute('fill', 'none'); checkSvg.setAttribute('stroke', 'currentColor'); checkSvg.setAttribute('stroke-width', '2');
     var checkPath = document.createElementNS(SVG_NS, 'path'); checkPath.setAttribute('d', 'M4 12 l6 6 L20 6');
     checkSvg.appendChild(checkPath);
-    sentSpan.appendChild(checkSvg); sentSpan.appendChild(document.createTextNode('Opened in your email app'));
+    sentSpan.appendChild(checkSvg); sentSpan.appendChild(document.createTextNode('Sent'));
     submit.appendChild(idle); submit.appendChild(sentSpan);
 
     var mailtoFallback = make('div', 'fl-mailto-fallback');
     mailtoFallback.hidden = true;
     mailtoFallback.setAttribute('role', 'status');
-    mailtoFallback.appendChild(make('span', null, 'Nothing happened? Copy your message instead.'));
+    mailtoFallback.appendChild(make('span', null, 'Could not send automatically. Copy your message instead.'));
     var mailtoCopyBtn = make('button', 'fl-mailto-fallback__copy', 'Copy message');
     mailtoCopyBtn.type = 'button';
     mailtoFallback.appendChild(mailtoCopyBtn);
     cpWireMailtoCopyButton(mailtoCopyBtn, function(){
       return scopeContactLines(nameInput.value.trim() || '(not set)', phoneInput.value.trim() || '(not set)');
     });
-    submit.addEventListener('click', function(){ submitScopeContact(nameInput, phoneInput, errorEl, submit, mailtoFallback); });
+    submit.addEventListener('click', function(){ submitScopeContact(nameInput, phoneInput, emailInput, errorEl, submit, mailtoFallback); });
 
     var note = make('p', 'fl-scopequiz__note', 'Straight to a person, not a queue. No spam, no newsletter.');
 
-    wrap.appendChild(nameWrap); wrap.appendChild(phoneWrap); wrap.appendChild(errorEl); wrap.appendChild(submit); wrap.appendChild(mailtoFallback); wrap.appendChild(note);
+    wrap.appendChild(nameWrap); wrap.appendChild(phoneWrap); wrap.appendChild(emailWrap); wrap.appendChild(errorEl); wrap.appendChild(submit); wrap.appendChild(mailtoFallback); wrap.appendChild(note);
     return wrap;
   }
   function scopeContactLines(name, phone){
@@ -8146,36 +8443,55 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
     lines.push('', 'Sent from the CUSTOM+ scope check.');
     return lines.join('\n');
   }
-  function submitScopeContact(nameInput, phoneInput, errorEl, btn, mailtoFallback){
-    if(btn.classList.contains('is-sent')) return;
+  function submitScopeContact(nameInput, phoneInput, emailInput, errorEl, btn, mailtoFallback){
+    if(btn.classList.contains('is-sent') || btn.classList.contains('is-sending')) return;
     var stepAtSubmit = scopeIndex;
     var name = nameInput.value.trim();
     var phone = phoneInput.value.trim();
-    var ok = true;
+    var email = emailInput.value.trim();
     var nameOk = !!name && validScopeName(name);
     var phoneOk = !!phone && validScopePhone(phone);
+    var emailOk = !!email && cfValidEmail(email);
     nameInput.classList.toggle('is-invalid', !nameOk);
     nameInput.setAttribute('aria-invalid', String(!nameOk));
     phoneInput.classList.toggle('is-invalid', !phoneOk);
     phoneInput.setAttribute('aria-invalid', String(!phoneOk));
-    if(!nameOk || !phoneOk){ ok = false; }
-    if(!ok){
-      var msg = !nameOk && !phoneOk ? 'Enter your name and a valid phone number.' : (!nameOk ? 'Enter your name.' : 'Enter a valid phone number.');
+    emailInput.classList.toggle('is-invalid', !emailOk);
+    emailInput.setAttribute('aria-invalid', String(!emailOk));
+    if(!nameOk || !phoneOk || !emailOk){
+      var msg = !emailOk ? 'Enter a valid email address.' : (!nameOk && !phoneOk ? 'Enter your name and a valid phone number.' : (!nameOk ? 'Enter your name.' : 'Enter a valid phone number.'));
       if(errorEl){ errorEl.textContent = msg; errorEl.hidden = false; }
-      var firstInvalid = !nameOk ? nameInput : phoneInput;
+      var firstInvalid = !nameOk ? nameInput : (!phoneOk ? phoneInput : emailInput);
       firstInvalid.focus();
-      setTimeout(function(){ nameInput.classList.remove('is-invalid'); phoneInput.classList.remove('is-invalid'); }, 500);
+      setTimeout(function(){ nameInput.classList.remove('is-invalid'); phoneInput.classList.remove('is-invalid'); emailInput.classList.remove('is-invalid'); }, 500);
       return;
     }
     if(errorEl){ errorEl.hidden = true; }
-    scopeAnswers.name = name;
-    scopeAnswers.phone = phone;
-    cpSyncScopeState();
-    cpQueueSave();
-    location.href = 'mailto:steffan@customplus.nl?subject=' + encodeURIComponent('Scope check — ' + name) + '&body=' + encodeURIComponent(scopeContactLines(name, phone));
-    btn.classList.add('is-sent');
-    cpState.scope = null; cpQueueSave();
-    cpArmMailtoWatch(mailtoFallback);
+    var idle = btn.querySelector('.fl-btn-state--idle');
+    btn.classList.remove('is-failed');
+    btn.classList.add('is-sending');
+    var idleRestLabel = idle.textContent;
+    idle.textContent = i18nT('Sending…');
+    cpSubmitInquiry('Scope check — ' + name, email, scopeContactLines(name, phone) + '\n\nReply to: ' + email).then(function(){
+      scopeAnswers.name = name; scopeAnswers.phone = phone; scopeAnswers.email = email;
+      cpSyncScopeState();
+      cpQueueSave();
+      btn.classList.remove('is-sending');
+      idle.textContent = idleRestLabel;
+      btn.classList.add('is-sent');
+      cpState.scope = null; cpQueueSave();
+      scopeContactSendSettle(stepAtSubmit);
+    }).catch(function(){
+      btn.classList.remove('is-sending');
+      btn.classList.add('is-failed');
+      idle.textContent = idleRestLabel;
+      if(mailtoFallback){
+        mailtoFallback.hidden = false;
+        revealWithFallback(mailtoFallback, 'is-visible');
+      }
+    });
+  }
+  function scopeContactSendSettle(stepAtSubmit){
     setTimeout(function(){
       if(scopeIndex !== stepAtSubmit) return;
       showScopeResult();
