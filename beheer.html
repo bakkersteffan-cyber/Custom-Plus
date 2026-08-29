@@ -115,10 +115,12 @@ input, textarea, select{ font:inherit; color:var(--ink); }
 }
 .backbtn:hover{ color:var(--ink); }
 
+/* knopstijl van de site (.fl-btn): uppercase, 11px, .44px, pilvorm */
 .btn{
-  display:inline-flex; align-items:center; gap:8px;
-  background:var(--black); color:var(--white); font-weight:600; font-size:14px;
-  padding:9px 18px; border-radius:9px; border:1px solid var(--black);
+  display:inline-flex; align-items:center; gap:8px; justify-content:center;
+  background:var(--black); color:var(--white); font-weight:500; font-size:11px;
+  letter-spacing:.44px; text-transform:uppercase; line-height:normal;
+  padding:13px 26px; border-radius:50px; border:1px solid var(--black);
   transition:opacity .25s ease;
 }
 .btn:hover{ opacity:.82; }
@@ -128,7 +130,7 @@ input, textarea, select{ font:inherit; color:var(--ink); }
   transition:border-color .25s ease, background .25s ease;
 }
 .btn.ghost:hover{ opacity:1; border-color:var(--gray-a7); background:var(--gray-f9); }
-.btn.small{ font-size:13px; padding:6px 13px; border-radius:8px; }
+.btn.small{ font-size:10px; padding:8px 16px; border-radius:50px; }
 .btn.danger{ background:var(--white); color:var(--critical); border:1px solid var(--line); }
 .btn.danger:hover{ opacity:1; border-color:var(--critical); }
 .btn.wide{ width:100%; justify-content:center; }
