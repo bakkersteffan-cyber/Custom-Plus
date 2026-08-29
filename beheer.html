@@ -279,8 +279,38 @@ details.answered[open] summary::before{ content:'\2013'; }
 .logdetail{ flex:1; min-width:0; }
 .logproj{ font-family:var(--mono); font-size:11px; color:var(--gray-9); white-space:nowrap; }
 
+/* ---------- zendingen ---------- */
+details.shipdet summary{ list-style:none; cursor:pointer; }
+details.shipdet summary::-webkit-details-marker{ display:none; }
+.shiprow{
+  display:flex; align-items:center; gap:10px; padding:9px 18px;
+  border-top:1px dashed var(--line); font-size:13.5px;
+}
+.shiprow .ms-label{ flex:1; min-width:0; font-weight:600; }
+.shiprow.openms .ms-label{ color:var(--gray-9); font-weight:500; }
+.shiprow .ms-meta{ font-family:var(--mono); font-size:11px; color:var(--gray-9); white-space:nowrap; }
+.shipcheck{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  padding:10px 18px; border-top:1px dashed var(--line); background:var(--gray-f9);
+}
+.shipcheck .input{ width:auto; }
+.shipcheck .dt{ width:150px; }
+.shipcheck .loc{ width:150px; }
+.shipcheck .nt{ flex:1; min-width:140px; }
+.shipfoot{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:10px 18px; border-top:1px solid var(--line);
+}
+.nrhint{
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  color:var(--gray-69); margin:-6px 0 12px; min-height:1.2em;
+}
+.nrhint.ok{ color:var(--green); }
+.nrhint.bad{ color:var(--critical); }
+
 /* ---------- responsive ---------- */
 @media (max-width:820px){
+  .shipcheck .dt, .shipcheck .loc{ width:100%; }
   .shell{ flex-direction:column; }
   .side{ width:100%; flex:none; height:auto; position:static; border-right:0; border-bottom:1px solid var(--line); }
   .side-head{ padding:16px 18px 12px; border-bottom:0; }
@@ -319,6 +349,7 @@ details.answered[open] summary::before{ content:'\2013'; }
     </div>
     <nav aria-label="Hoofdnavigatie">
       <button type="button" class="navbtn" data-nav="clients">Klanten</button>
+      <button type="button" class="navbtn" data-nav="factories">Fabrieken</button>
       <button type="button" class="navbtn" data-nav="questions"><span>Vragen</span><span class="navbadge" id="qBadge" hidden>0</span></button>
       <button type="button" class="navbtn" data-nav="log">Logboek</button>
     </nav>
@@ -338,6 +369,7 @@ details.answered[open] summary::before{ content:'\2013'; }
 
 <script src="portal/config.js"></script>
 <script src="portal/demo-data.js"></script>
+<script src="portal/shipping.js"></script>
 <script>
 (function(){
 'use strict';
@@ -595,9 +627,21 @@ function makeDemoService(){
   }catch(e){ state = null; }
   if(!state || !Array.isArray(state.clients) || !Array.isArray(state.projects)) state = clone(window.CP_DEMO);
   /* schema-drift over apps/versies heen: ontbrekende collecties altijd aanvullen
-     in plaats van de hele state te laten crashen op de eerste .push()/.slice() */
-  ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories'].forEach(function(k){
-    if(!Array.isArray(state[k])) state[k] = [];
+     in plaats van de hele state te laten crashen op de eerste .push()/.slice().
+     Een collectie die pas in een latere versie is geïntroduceerd, vullen we
+     vanuit de seed zodat een bestaande demo-opslag de nieuwe functie meteen toont. */
+  ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories','shipments','shipmentEvents'].forEach(function(k){
+    if(!Array.isArray(state[k])){
+      state[k] = (window.CP_DEMO && Array.isArray(window.CP_DEMO[k])) ? clone(window.CP_DEMO[k]) : [];
+    }
+  });
+  /* veld-aanvulling: 'city' (Fabriek op de Kaart) kan in oudere demo-opslag
+     ontbreken; vul aan vanuit de seed, per id */
+  (state.factories||[]).forEach(function(f){
+    if(f.city===undefined){
+      var sf = ((window.CP_DEMO && window.CP_DEMO.factories) || []).find(function(x){ return x.id===f.id; });
+      f.city = (sf && sf.city) ? sf.city : '';
+    }
   });
   function save(){
     try{ localStorage.setItem(DEMO_KEY, JSON.stringify(state)); }catch(e){}
@@ -621,6 +665,11 @@ function makeDemoService(){
     staffEmail: (state.staff && state.staff.email) || '',
 
     listFactories: function(){ return Promise.resolve(state.factories.slice()); },
+    setFactoryCity: function(id, city){
+      var f = state.factories.find(function(x){ return x.id===id; });
+      if(f){ f.city = city || ''; save(); }
+      return Promise.resolve();
+    },
 
     listClients: function(){
       var counts = {};
@@ -807,6 +856,59 @@ function makeDemoService(){
       return Promise.resolve(clone(d));
     },
 
+    listShipments: function(projectId){
+      return Promise.resolve(state.shipments.filter(function(s){ return s.projectId===projectId; }).map(clone));
+    },
+    listShipmentEvents: function(shipmentIds){
+      var set = {};
+      (shipmentIds||[]).forEach(function(id){ set[id] = true; });
+      return Promise.resolve(state.shipmentEvents.filter(function(ev){ return set[ev.shipmentId]; }).map(clone));
+    },
+    addShipment: function(projectId, data){
+      var s = {
+        id: uid('shp'), projectId: projectId, type: data.type,
+        carrierCode: data.carrierCode||'', trackingNumber: data.trackingNumber||'',
+        containerNumber: data.containerNumber||'', blNumber: data.blNumber||'',
+        sampleRoundId: data.sampleRoundId||null,
+        etaWindowStart: data.etaWindowStart||null, etaWindowEnd: data.etaWindowEnd||null,
+        etaNote: data.etaNote||'',
+        etaUpdatedAt: (data.etaWindowStart||data.etaWindowEnd) ? new Date().toISOString() : null,
+        deliveredAt: null, createdAt: todayISO()
+      };
+      state.shipments.push(s);
+      save();
+      return Promise.resolve(clone(s));
+    },
+    addShipmentEvent: function(projectId, shipmentId, data){
+      var ev = {
+        id: uid('shev'), shipmentId: shipmentId, milestoneKey: data.milestoneKey,
+        occurredAt: data.occurredAt, location: data.location||'', note: data.note||'',
+        createdAt: new Date().toISOString()
+      };
+      state.shipmentEvents.push(ev);
+      var s = state.shipments.find(function(x){ return x.id===shipmentId; });
+      /* de door staff ingevulde (mogelijk teruggedateerde) mijlpaaldatum,
+         niet het moment van aanklikken */
+      if(s && data.milestoneKey==='geleverd') s.deliveredAt = (data.occurredAt || todayISO()) + 'T12:00:00Z';
+      pushLog(projectId, {
+        actor:'staff', assetKind:'system', action:'update',
+        detail:'Zendingmijlpaal afgevinkt: ' + (data.label || data.milestoneKey)
+      });
+      save();
+      return Promise.resolve(clone(ev));
+    },
+    updateShipmentEta: function(shipmentId, data){
+      var s = state.shipments.find(function(x){ return x.id===shipmentId; });
+      if(s){
+        s.etaWindowStart = data.etaWindowStart||null;
+        s.etaWindowEnd = data.etaWindowEnd||null;
+        s.etaNote = data.etaNote||'';
+        s.etaUpdatedAt = new Date().toISOString();
+        save();
+      }
+      return Promise.resolve();
+    },
+
     listQuestions: function(){
       return Promise.resolve(state.questions.map(clone));
     },
@@ -867,6 +969,10 @@ function makeSupaService(sb, staffUser){
 
     listFactories: function(){
       return sb.from('factories_partners').select('*').order('name').then(rows);
+    },
+    setFactoryCity: function(id, city){
+      /* kolom uit supabase/portal/0003_factory_city.sql */
+      return sb.from('factories_partners').update({ city: city || '' }).eq('id', id).then(unwrap);
     },
     listClients: function(){
       return Promise.all([
@@ -1072,6 +1178,49 @@ function makeSupaService(sb, staffUser){
         });
     },
 
+    listShipments: function(projectId){
+      return sb.from('shipments').select('*').eq('project_id', projectId).order('created_at').then(rows);
+    },
+    listShipmentEvents: function(shipmentIds){
+      if(!shipmentIds || !shipmentIds.length) return Promise.resolve([]);
+      return sb.from('shipment_events').select('*').in('shipment_id', shipmentIds).order('occurred_at').then(rows);
+    },
+    addShipment: function(projectId, data){
+      return sb.from('shipments').insert({
+        project_id: projectId, type: data.type, carrier_code: data.carrierCode||'',
+        tracking_number: data.trackingNumber||'', container_number: data.containerNumber||'',
+        bl_number: data.blNumber||'', sample_round_id: data.sampleRoundId||null,
+        eta_window_start: data.etaWindowStart||null, eta_window_end: data.etaWindowEnd||null,
+        eta_note: data.etaNote||'',
+        eta_updated_at: (data.etaWindowStart||data.etaWindowEnd) ? new Date().toISOString() : null
+      }).select().single().then(row);
+    },
+    addShipmentEvent: function(projectId, shipmentId, data){
+      return sb.from('shipment_events').insert({
+        shipment_id: shipmentId, milestone_key: data.milestoneKey,
+        occurred_at: data.occurredAt, location: data.location||'', note: data.note||''
+      }).select().single().then(row)
+        .then(function(ev){
+          var chain = Promise.resolve();
+          if(data.milestoneKey==='geleverd'){
+            chain = sb.from('shipments').update({ delivered_at: (data.occurredAt || todayISO()) + 'T12:00:00Z' })
+              .eq('id', shipmentId).then(unwrap);
+          }
+          return chain.then(function(){
+            return log(projectId, {
+              actor:'staff', assetKind:'system', action:'update',
+              detail:'Zendingmijlpaal afgevinkt: ' + (data.label || data.milestoneKey)
+            });
+          }).then(function(){ return ev; });
+        });
+    },
+    updateShipmentEta: function(shipmentId, data){
+      return sb.from('shipments').update({
+        eta_window_start: data.etaWindowStart||null, eta_window_end: data.etaWindowEnd||null,
+        eta_note: data.etaNote||'', eta_updated_at: new Date().toISOString()
+      }).eq('id', shipmentId).then(unwrap);
+    },
+
     listQuestions: function(){
       return sb.from('question_threads').select('*').then(rows);
     },
@@ -1139,6 +1288,7 @@ function render(){
   if(view.name==='clients') p = renderClients();
   else if(view.name==='client') p = renderClient(view.clientId);
   else if(view.name==='project') p = renderProject(view.projectId);
+  else if(view.name==='factories') p = renderFactories();
   else if(view.name==='questions') p = renderQuestions();
   else if(view.name==='log') p = renderLog();
   else p = Promise.resolve();
@@ -1213,18 +1363,31 @@ function openNewClientModal(){
    deel 1b — klantdetail
    ============================================================ */
 function renderClient(clientId){
-  return Promise.all([ DS.getClient(clientId), DS.listClientProjects(clientId) ]).then(function(res){
-    var c = res[0], projects = res[1];
+  return Promise.all([ DS.getClient(clientId), DS.listClientProjects(clientId), DS.listQuestions() ]).then(function(res){
+    var c = res[0], projects = res[1], questions = res[2] || [];
     if(!c){
       content.appendChild(el('p', { text:'Klant niet gevonden.' }));
       return;
     }
+    /* openstaande herbestelaanvragen (uit "Mijn Producten" in de portal)
+       per project van deze klant — groene badge op de klantkaart */
+    var reorderByProject = {};
+    var pidSet = {};
+    projects.forEach(function(p){ pidSet[p.id] = true; });
+    questions.forEach(function(q){
+      if(pidSet[q.projectId] && !q.answeredAt && String(q.question||'').indexOf('HERBESTELLING:')===0){
+        reorderByProject[q.projectId] = true;
+      }
+    });
+    var hasReorder = Object.keys(reorderByProject).length > 0;
+
     content.appendChild(el('button', { type:'button', class:'backbtn', text:'← Alle klanten', onclick:function(){ go({ name:'clients' }); } }));
     content.appendChild(el('div', { class:'pagehead' }, [
       el('div', null, [
         el('span', { class:'kicker', text:'Klant sinds ' + fmtDate(c.createdAt) }),
         el('h1', { text:c.company })
-      ])
+      ]),
+      hasReorder ? el('span', { class:'chip done', text:'Herbestelling' }) : null
     ]));
 
     /* contactkaart */
@@ -1268,6 +1431,7 @@ function renderClient(clientId){
       var sub = p.code ? p.code + ' · ' : '';
       sub += cur ? stageLabel(cur.stageKey) : 'Alle fases afgerond';
       var chips = [];
+      if(reorderByProject[p.id]) chips.push(el('span', { class:'chip done', text:'Herbestelling' }));
       if(p.status==='archived') chips.push(el('span', { class:'chip', text:'Gearchiveerd' }));
       else if(cur) chips.push(el('span', { class:'chip ' + (cur.status==='awaiting_approval'?'awaiting':'current'), text:stageStatusLabel(cur.status) }));
       plist.appendChild(el('button', {
@@ -1324,7 +1488,8 @@ function renderProject(projectId){
     DS.listSamples(projectId),
     DS.listInspections(projectId),
     DS.listDisclosures(projectId),
-    DS.listFactories()
+    DS.listFactories(),
+    DS.listShipments(projectId)
   ]).then(function(res){
     var project = res[0];
     if(!project){
@@ -1332,9 +1497,12 @@ function renderProject(projectId){
       return;
     }
     var media = res[1], docs = res[2], invoices = res[3], samples = res[4],
-        inspections = res[5], disclosures = res[6], factories = res[7];
-    return DS.getClient(project.clientId).then(function(client){
-      buildProjectView(project, client, media, docs, invoices, samples, inspections, disclosures, factories);
+        inspections = res[5], disclosures = res[6], factories = res[7], shipments = res[8];
+    return Promise.all([
+      DS.getClient(project.clientId),
+      DS.listShipmentEvents(shipments.map(function(s){ return s.id; }))
+    ]).then(function(res2){
+      buildProjectView(project, res2[0], media, docs, invoices, samples, inspections, disclosures, factories, shipments, res2[1]);
     });
   });
 }
@@ -1359,7 +1527,7 @@ function sectionBlock(kicker, title, actionBtn, body){
   ]);
   return el('div', { class:'section' }, [ head, body ]);
 }
-function buildProjectView(project, client, media, docs, invoices, samples, inspections, disclosures, factories){
+function buildProjectView(project, client, media, docs, invoices, samples, inspections, disclosures, factories, shipments, shipmentEvents){
   var pid = project.id;
 
   content.appendChild(el('button', {
@@ -1368,12 +1536,18 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
   }));
   var headChips = [];
   if(project.status==='archived') headChips.push(el('span', { class:'chip', text:'Gearchiveerd' }));
+  /* herbestelling in één klik omzetten: naam + ' — batch 2' (of batch n+1),
+     zelfde klant, verse fases, geen media of documenten mee */
+  headChips.push(el('button', {
+    type:'button', class:'btn ghost small', text:'Dupliceer als nieuw project',
+    onclick:function(){ duplicateAsNewProject(project); }
+  }));
   content.appendChild(el('div', { class:'pagehead' }, [
     el('div', null, [
       el('span', { class:'kicker', text:(project.code ? project.code + ' · ' : '') + 'Gestart ' + fmtDate(project.createdAt) }),
       el('h1', { text:project.name })
     ]),
-    el('div', { style:'display:flex;gap:8px;align-items:center;' }, headChips)
+    el('div', { style:'display:flex;gap:8px;align-items:center;flex-wrap:wrap;' }, headChips)
   ]));
 
   /* a. fasebalk */
@@ -1505,6 +1679,19 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
     el('button', { type:'button', class:'btn small', text:'Nieuwe factuur', onclick:function(){ openInvoiceModal(pid); } }),
     invWrap));
 
+  /* d2. zendingen — De Reis: mijlpalen per zending, één knop per stap */
+  var shipWrap = el('div');
+  if(!(shipments||[]).length){
+    shipWrap.appendChild(el('div', { class:'card empty', text:'Nog geen zendingen voor dit project.' }));
+  }
+  (shipments||[]).slice().sort(function(a,b){ return String(a.createdAt).localeCompare(String(b.createdAt)); }).forEach(function(s){
+    var evs = (shipmentEvents||[]).filter(function(ev){ return ev.shipmentId===s.id; });
+    shipWrap.appendChild(buildShipmentAdminCard(pid, project, client, s, evs));
+  });
+  content.appendChild(sectionBlock('De reis van fabriek naar klant', 'Zendingen',
+    el('button', { type:'button', class:'btn small', text:'Zending toevoegen', onclick:function(){ openShipmentModal(pid, samples, project, client); } }),
+    shipWrap));
+
   /* e. samples */
   var smpWrap = el('div', { class:'card rowlist' });
   if(!samples.length) smpWrap.appendChild(el('div', { class:'empty', text:'Nog geen samplerondes.' }));
@@ -1586,6 +1773,18 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
     } }));
   }
   content.appendChild(archWrap);
+}
+
+/* ---------- dupliceren als nieuw project (herbestelling → batch 2) ---------- */
+function duplicateAsNewProject(project){
+  var base = project.name || 'Project';
+  var mt = /^(.*) — batch (\d+)$/.exec(base);
+  var newName = mt ? (mt[1] + ' — batch ' + (parseInt(mt[2],10)+1)) : (base + ' — batch 2');
+  /* createProject zet de zes verse fases automatisch klaar; media en
+     documenten gaan bewust niet mee — het dossier blijft bij batch 1 */
+  DS.createProject(project.clientId, newName, '').then(function(p){
+    go({ name:'project', projectId:p.id, clientId:project.clientId });
+  }).catch(showError);
 }
 
 /* ---------- modals projectdetail ---------- */
@@ -1866,6 +2065,295 @@ function openDisclosureModal(projectId, factories){
   m.body.appendChild(form);
 }
 
+/* ---------- zendingen (De Reis) ---------- */
+function shipmentSubLine(s, events){
+  var SHIP = window.CP_SHIPPING;
+  var tpl = SHIP.milestonesFor(s.type);
+  var evByKey = {};
+  events.forEach(function(ev){ evByKey[ev.milestoneKey] = ev; });
+  var last = null;
+  tpl.forEach(function(ms){ if(evByKey[ms.key]) last = ms; });
+  var parts = [ last ? 'Laatste mijlpaal: ' + last.label : 'Nog geen mijlpaal afgevinkt' ];
+  if(s.blNumber) parts.push('B/L ' + s.blNumber);
+  if(!s.deliveredAt && s.etaWindowStart && s.etaWindowEnd){
+    parts.push('ETA ' + fmtDate(s.etaWindowStart) + ' – ' + fmtDate(s.etaWindowEnd));
+  }
+  return parts.join(' · ');
+}
+function buildShipmentAdminCard(pid, project, client, s, events){
+  var SHIP = window.CP_SHIPPING;
+  var tpl = SHIP.milestonesFor(s.type);
+  var evByKey = {};
+  events.forEach(function(ev){ evByKey[ev.milestoneKey] = ev; });
+  var nextIdx = -1;
+  for(var i=0;i<tpl.length;i++){ if(!evByKey[tpl[i].key]){ nextIdx = i; break; } }
+  var doneCount = tpl.filter(function(ms){ return !!evByKey[ms.key]; }).length;
+
+  var carrier = SHIP.CARRIERS[s.carrierCode] || null;
+  var nr = s.containerNumber || s.trackingNumber;
+  var title = SHIP.typeLabel(s.type) + (carrier ? ' · ' + carrier.name : '') + (nr ? ' · ' + nr : '');
+
+  var det = el('details', { class:'shipdet' });
+  if(!s.deliveredAt) det.open = true;
+  det.appendChild(el('summary', { class:'rowitem' }, [
+    el('span', { class:'chip ' + (s.deliveredAt ? 'done' : 'current'), text: s.deliveredAt ? 'Geleverd' : 'Actief' }),
+    el('div', { class:'rowmain' }, [
+      el('div', { class:'rowtitle', text:title }),
+      el('div', { class:'rowsub', text: shipmentSubLine(s, events) })
+    ]),
+    el('span', { class:'rowmeta', text: doneCount + '/' + tpl.length })
+  ]));
+
+  tpl.forEach(function(ms, idx){
+    var ev = evByKey[ms.key];
+    if(ev){
+      var metaParts = [ fmtDate(ev.occurredAt) ];
+      if(ev.location) metaParts.push(ev.location);
+      det.appendChild(el('div', { class:'shiprow' }, [
+        el('span', { class:'chip done', text:'✓' }),
+        el('span', { class:'ms-label', text: ms.label + (ev.note ? ' — ' + ev.note : '') }),
+        el('span', { class:'ms-meta', text: metaParts.join(' · ') })
+      ]));
+    } else if(idx===nextIdx && !s.deliveredAt){
+      var dt = el('input', { class:'input dt', type:'date', value:todayISO(), 'aria-label':'Datum van ' + ms.label });
+      var loc = el('input', { class:'input loc', type:'text', placeholder:'Locatie (optioneel)', 'aria-label':'Locatie bij ' + ms.label });
+      var nt = el('input', { class:'input nt', type:'text', placeholder:'Notitie (optioneel)', 'aria-label':'Notitie bij ' + ms.label });
+      var btn = el('button', { type:'button', class:'btn small', text:'Vink af' });
+      btn.addEventListener('click', function(){
+        btn.disabled = true;
+        var locVal = loc.value.trim();
+        DS.addShipmentEvent(pid, s.id, {
+          milestoneKey: ms.key, label: ms.label,
+          occurredAt: dt.value || todayISO(), location: locVal, note: nt.value.trim()
+        }).then(function(){
+          notifyClient({
+            client: client, projectName: project.name, projectCode: project.code,
+            page: 'zendingen', portalLabel: 'Volg je zending',
+            subject: 'Je zending is een stap verder — ' + ms.label,
+            bodyLine: 'Nieuwe mijlpaal: ' + ms.label + (locVal ? ' · ' + locVal : '') + '.'
+          });
+          refresh();
+        }).catch(function(ex){ btn.disabled = false; showError(ex); });
+      });
+      det.appendChild(el('div', { class:'shipcheck' }, [
+        el('span', { style:'flex:0 1 auto;font-weight:600;font-size:13.5px;', text:ms.label }),
+        dt, loc, nt, btn
+      ]));
+    } else {
+      det.appendChild(el('div', { class:'shiprow openms' }, [
+        el('span', { class:'chip', text:('0' + (idx+1)).slice(-2) }),
+        el('span', { class:'ms-label', text:ms.label })
+      ]));
+    }
+  });
+
+  var foot = el('div', { class:'shipfoot' });
+  var etaTxt;
+  if(s.deliveredAt) etaTxt = 'Geleverd op ' + fmtDate(s.deliveredAt);
+  else if(s.etaWindowStart && s.etaWindowEnd){
+    etaTxt = 'ETA: ' + fmtDate(s.etaWindowStart) + ' – ' + fmtDate(s.etaWindowEnd)
+      + (s.etaNote ? ' · ' + s.etaNote : '')
+      + (s.etaUpdatedAt ? ' · bijgewerkt ' + fmtDate(s.etaUpdatedAt) : '');
+  } else etaTxt = 'Nog geen ETA ingevuld';
+  foot.appendChild(el('span', { class:'rowsub', style:'flex:1 1 220px;min-width:0;', text:etaTxt }));
+  if(!s.deliveredAt){
+    foot.appendChild(el('button', { type:'button', class:'btn ghost small', text:'ETA bijwerken', onclick:function(){ openEtaModal(s); } }));
+  }
+  if(nr){
+    var track = (carrier && carrier.trackUrl) ? carrier : SHIP.CARRIERS.anders;
+    foot.appendChild(el('a', {
+      class:'btn ghost small', href:track.trackUrl(nr),
+      target:'_blank', rel:'noopener noreferrer', text:'Bekijk bij de vervoerder'
+    }));
+  }
+  det.appendChild(foot);
+
+  return el('div', { class:'card', style:'margin-bottom:12px;' }, det);
+}
+function openEtaModal(shipment){
+  var m = openModal('ETA bijwerken', 'Altijd een weekvenster, nooit een dagbelofte');
+  var start = el('input', { class:'input', type:'date', value: shipment.etaWindowStart || '' });
+  var end = el('input', { class:'input', type:'date', value: shipment.etaWindowEnd || '' });
+  var note = el('input', { class:'input', type:'text', value: shipment.etaNote || '', placeholder:'bv. onder voorbehoud van de douane' });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    err.classList.remove('show');
+    if(!start.value || !end.value){ err.textContent = 'Vul beide datums van het venster in.'; err.classList.add('show'); return; }
+    if(end.value < start.value){ err.textContent = 'Het einde van het venster ligt vóór het begin.'; err.classList.add('show'); return; }
+    DS.updateShipmentEta(shipment.id, {
+      etaWindowStart: start.value, etaWindowEnd: end.value, etaNote: note.value.trim()
+    }).then(function(){ closeModal(); refresh(); })
+      .catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    el('div', { class:'formrow' }, [ field('Venster van', start), field('Venster tot', end) ]),
+    field('Notitie (optioneel)', note),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'ETA opslaan' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+function openShipmentModal(projectId, samples, project, client){
+  var SHIP = window.CP_SHIPPING;
+  var m = openModal('Zending toevoegen', 'Het type bepaalt het mijlpaalsjabloon');
+
+  var type = el('select', { class:'input' });
+  SHIP.TYPES.forEach(function(t){ type.appendChild(option(t.key, t.label, t.key==='koerier')); });
+  var tplInfo = el('p', { class:'kicker', style:'margin:-6px 0 14px;' });
+  function syncTpl(){
+    var list = SHIP.milestonesFor(type.value);
+    tplInfo.textContent = list.length + ' mijlpalen · ' + list[0].label + ' → ' + list[list.length-1].label;
+  }
+  type.addEventListener('change', syncTpl);
+  syncTpl();
+
+  var carrier = el('select', { class:'input' });
+  SHIP.CARRIER_ORDER.forEach(function(code){
+    var c = SHIP.CARRIERS[code];
+    carrier.appendChild(option(code, c.name + (code==='anders' ? ' (vangnet)' : ''), code==='dhl'));
+  });
+
+  var nr = el('input', { class:'input', type:'text', placeholder:'bv. MSKU1234565 of een koeriernummer' });
+  var nrHint = el('p', { class:'nrhint', 'aria-live':'polite' });
+  nr.addEventListener('input', function(){
+    var v = nr.value.trim();
+    nrHint.classList.remove('ok');
+    nrHint.classList.remove('bad');
+    if(!v){ nrHint.textContent = ''; return; }
+    if(SHIP.isContainerFormat(v)){
+      if(SHIP.isoCheck(v)){
+        nrHint.textContent = 'Containernummer — controlecijfer klopt (ISO 6346)';
+        nrHint.classList.add('ok');
+      } else {
+        nrHint.textContent = 'Containernummer — controlecijfer klopt niet (ISO 6346)';
+        nrHint.classList.add('bad');
+      }
+    } else {
+      nrHint.textContent = 'Herkend als trackingnummer (geen container)';
+    }
+  });
+
+  var bl = el('input', { class:'input', type:'text', placeholder:'Alleen bij zeevracht' });
+  var sampleSel = el('select', { class:'input' });
+  sampleSel.appendChild(option('', 'Geen sampleronde', true));
+  (samples||[]).slice().sort(function(a,b){ return String(a.roundDate).localeCompare(String(b.roundDate)); }).forEach(function(sm){
+    sampleSel.appendChild(option(sm.id, sm.roundLabel + ' · ' + fmtDate(sm.roundDate)));
+  });
+  var etaStart = el('input', { class:'input', type:'date' });
+  var etaEnd = el('input', { class:'input', type:'date' });
+  var etaNote = el('input', { class:'input', type:'text', placeholder:'bv. onder voorbehoud van de douane' });
+  var err = el('p', { class:'formerr' });
+
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    err.classList.remove('show');
+    var rawNr = nr.value.trim();
+    var isCont = SHIP.isContainerFormat(rawNr);
+    if((etaStart.value && !etaEnd.value) || (!etaStart.value && etaEnd.value)){
+      err.textContent = 'Vul het ETA venster met twee datums, of laat beide leeg.'; err.classList.add('show'); return;
+    }
+    if(etaStart.value && etaEnd.value < etaStart.value){
+      err.textContent = 'Het einde van het ETA venster ligt vóór het begin.'; err.classList.add('show'); return;
+    }
+    DS.addShipment(projectId, {
+      type: type.value,
+      carrierCode: carrier.value,
+      trackingNumber: isCont ? '' : rawNr,
+      containerNumber: isCont ? SHIP.normalize(rawNr) : '',
+      blNumber: bl.value.trim(),
+      sampleRoundId: sampleSel.value || null,
+      etaWindowStart: etaStart.value || null,
+      etaWindowEnd: etaEnd.value || null,
+      etaNote: etaNote.value.trim()
+    }).then(function(){
+      notifyClient({
+        client: client, projectName: project.name, projectCode: project.code,
+        page: 'zendingen', portalLabel: 'Volg je zending',
+        subject: 'Er staat een zending voor je klaar — ' + project.name,
+        bodyLine: 'Steffan heeft een ' + (SHIP.typeLabel ? SHIP.typeLabel(type.value) : type.value) + ' aangemaakt. Je kunt de reis vanaf nu volgen in je portaal.'
+      });
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    el('div', { class:'formrow' }, [ field('Type', type), field('Vervoerder', carrier) ]),
+    tplInfo,
+    field('Tracking of containernummer', nr),
+    nrHint,
+    el('div', { class:'formrow' }, [ field('B/L nummer (optioneel)', bl), field('Sampleronde (optioneel)', sampleSel) ]),
+    el('div', { class:'formrow' }, [ field('ETA venster van', etaStart), field('ETA venster tot', etaEnd) ]),
+    field('ETA notitie (optioneel)', etaNote),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Zending toevoegen' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+
+/* ============================================================
+   deel 2b — fabrieken (Fabriek op de Kaart)
+   Eén optioneel veld per fabriek: de stad, gekozen uit de vaste
+   presetlijst CP_CITY_COORDS in portal/config.js. De klant ziet de
+   fabriek dan als pin op de vereenvoudigde China-kaart in de portal —
+   alleen stadsniveau, nooit een adres. Leeg = geen pin.
+   ============================================================ */
+function renderFactories(){
+  return DS.listFactories().then(function(factories){
+    content.appendChild(el('div', { class:'pagehead' }, [
+      el('div', null, [
+        el('span', { class:'kicker', text:'Partnernetwerk' }),
+        el('h1', { text:'Fabrieken' })
+      ])
+    ]));
+    content.appendChild(el('p', {
+      style:'font-size:14px;color:var(--gray-69);margin:-8px 0 18px;max-width:64ch;',
+      text:'De stad bepaalt de pin op de kaart in het klantportaal — alleen stadsniveau, nooit een adres. Laat leeg om geen pin te tonen.'
+    }));
+
+    var cities = Object.keys(window.CP_CITY_COORDS || {});
+    var list = el('div', { class:'card rowlist' });
+    if(!factories.length){
+      list.appendChild(el('div', { class:'empty', text:'Nog geen fabrieken in het netwerk.' }));
+    }
+    factories.forEach(function(f){
+      var sel = el('select', { class:'input', style:'width:210px;flex:0 0 210px;', 'aria-label':'Stad van ' + f.name });
+      sel.appendChild(option('', 'Geen stad op de kaart', !f.city));
+      cities.forEach(function(c){ sel.appendChild(option(c, c, f.city===c)); });
+      /* een stad buiten de preset (bv. uit oudere data) niet stilletjes weggooien */
+      if(f.city && cities.indexOf(f.city)===-1){
+        sel.appendChild(option(f.city, f.city + ' (geen kaartpositie)', true));
+      }
+      var flash = el('span', { class:'saveflash', text:'Opgeslagen' });
+      sel.addEventListener('change', function(){
+        DS.setFactoryCity(f.id, sel.value).then(function(){
+          f.city = sel.value; /* zodat een latere mislukte poging naar de laatst opgeslagen stad terugvalt */
+          flash.classList.add('show');
+          setTimeout(function(){ flash.classList.remove('show'); }, 1600);
+        }).catch(function(ex){
+          sel.value = f.city || '';
+          showError(ex);
+        });
+      });
+      var subParts = [];
+      if(f.region) subParts.push(f.region);
+      if(f.nnnSignedAt) subParts.push('NNN getekend ' + fmtDate(f.nnnSignedAt));
+      list.appendChild(el('div', { class:'rowitem' }, [
+        el('div', { class:'rowmain' }, [
+          el('div', { class:'rowtitle', text:f.name }),
+          el('div', { class:'rowsub', text:subParts.join(' · ') || '—' })
+        ]),
+        flash,
+        sel
+      ]));
+    });
+    content.appendChild(el('div', { class:'section' }, list));
+  });
+}
+
 /* ============================================================
    deel 3 — vragen
    ============================================================ */
@@ -1895,6 +2383,12 @@ function renderQuestions(){
       DS.mediaUrl(mrow).then(function(u){ if(u) img.src=u; });
       return img;
     }
+    /* herbestelaanvragen uit "Mijn Producten" (portal) beginnen met een
+       vast voorvoegsel en krijgen hier een groene badge */
+    function reorderChip(q){
+      if(String(q.question||'').indexOf('HERBESTELLING:')!==0) return null;
+      return el('span', { class:'chip done', text:'Herbestelling' });
+    }
 
     var open = questions.filter(function(q){ return !q.answeredAt; })
       .sort(function(a,b){ return String(b.askedAt).localeCompare(String(a.askedAt)); });
@@ -1918,7 +2412,10 @@ function renderQuestions(){
         el('div', { class:'qhead' }, [
           thumbFor(q),
           el('div', { class:'rowmain' }, [
-            el('span', { class:'kicker', text:ctxLine(q) + ' · ' + fmtDateTime(q.askedAt) }),
+            el('div', { style:'display:flex;align-items:center;gap:8px;flex-wrap:wrap;' }, [
+              el('span', { class:'kicker', text:ctxLine(q) + ' · ' + fmtDateTime(q.askedAt) }),
+              reorderChip(q)
+            ]),
             el('div', { class:'qtext', text:q.question })
           ])
         ]),
@@ -1953,7 +2450,10 @@ function renderQuestions(){
       var inner = el('div', { style:'padding:0 18px 18px;' });
       answered.forEach(function(q){
         inner.appendChild(el('div', { style:'padding:14px 0;border-top:1px solid var(--line);' }, [
-          el('span', { class:'kicker', text:ctxLine(q) + ' · gevraagd ' + fmtDateTime(q.askedAt) }),
+          el('div', { style:'display:flex;align-items:center;gap:8px;flex-wrap:wrap;' }, [
+            el('span', { class:'kicker', text:ctxLine(q) + ' · gevraagd ' + fmtDateTime(q.askedAt) }),
+            reorderChip(q)
+          ]),
           el('div', { class:'qtext', style:'font-size:14.5px;', text:q.question }),
           el('div', { class:'qanswered' }, [
             el('span', { class:'kicker', text:'Antwoord · ' + fmtDateTime(q.answeredAt) }),
@@ -2045,7 +2545,10 @@ function buildSupaLogin(){
     submit.disabled = true;
     var sb = null;
     loadSupabaseLib().then(function(){
-      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+      /* één client per pagina: meerdere GoTrueClient-instanties op dezelfde
+         storage-sleutel geven waarschuwingen en token-refresh-races */
+      if(!window.__cpSb) window.__cpSb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+      sb = window.__cpSb;
       return sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
     }).then(function(res){
       if(res.error){
@@ -2080,6 +2583,9 @@ function buildSupaLogin(){
 }
 document.getElementById('logoutBtn').addEventListener('click', function(){
   DS = null;
+  /* in Supabase-modus ook écht uitloggen: anders blijft het staff-token
+     in localStorage staan na "Uitloggen" */
+  if(!IS_DEMO && window.__cpSb) window.__cpSb.auth.signOut();
   appEl.hidden = true;
   loginEl.hidden = false;
   if(IS_DEMO) buildDemoLogin(); else buildSupaLogin();

@@ -19,7 +19,57 @@
   --paper:#faf8f5;
   --card-shadow:0 1px 2px rgba(20,16,8,.04), 0 10px 28px rgba(20,16,8,.05);
   --card-shadow-hover:0 2px 6px rgba(20,16,8,.06), 0 16px 36px rgba(20,16,8,.08);
+  --ease-fl:cubic-bezier(.83,0,.17,1); --ease-float:cubic-bezier(.85,0,.15,1);
   color-scheme: light;
+}
+
+/* ---------- blauwdrukstand (data-mode="blueprint") ----------
+   Zelfde tokenswap als op de hoofdsite, met dezelfde gedeelde
+   localStorage-sleutel (cp_blueprint): wie de site in blauwdrukstand
+   bekeek, opent automatisch een blauwdrukportaal. Donkerblauw
+   tekenpapier, cyaan lijnen. Donkere knoppen (.btn-dark) worden hier
+   bewust cyaan met donkere tekst — precies zoals de zwarte knoppen op
+   de site — en blijven dus leesbaar zonder terugvouwen. */
+:root[data-mode="blueprint"]{
+  --bp-surface:#0a1420; --bp-ink:#8fd8ea;
+  --black:var(--bp-ink); --white:var(--bp-surface); --ink:#cdeef5;
+  --gray-9:#4d7885; --gray-69:#82aab6; --gray-a7:#6f9aa8;
+  --gray-f9:#0d1b28; --gray-f2:#122431;
+  --line:rgba(143,216,234,.22); --line-dark:rgba(143,216,234,.16);
+  --green:#22d3ee; --green-soft:rgba(34,211,238,.14);
+  --critical:#e8927c;
+  --paper:#0a1420;
+  --card-shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.35);
+  --card-shadow-hover:0 2px 6px rgba(0,0,0,.35), 0 16px 36px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+/* terugvouwpatroon (geport van de site): onderdelen die normaal al
+   donker zijn zouden door de platte tokenswap fel cyaan worden met
+   onleesbare tekst. Daarom vouwen exact die containers hun tokens
+   lokaal terug, zodat ze donker blijven met cyaan tekst. */
+:root[data-mode="blueprint"] .darkband,
+:root[data-mode="blueprint"] .dband,
+:root[data-mode="blueprint"] .trustbar,
+:root[data-mode="blueprint"] #moment,
+:root[data-mode="blueprint"] .fl-bp-darkband{
+  --black:var(--bp-surface); --white:var(--bp-ink); --ink:var(--bp-surface);
+}
+/* subtiel tekenpapierraster van 48px, onderdeel van de achtergrond zelf */
+:root[data-mode="blueprint"] body{
+  background-image:
+    linear-gradient(rgba(143,216,234,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143,216,234,.07) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+/* de subnav gebruikt een letterlijke witte kleur (geen token) voor het
+   blur-effect en krijgt daarom één eigen override */
+:root[data-mode="blueprint"] .subnav{ background:rgba(10,20,32,.92); }
+/* de nodepuls op de actieve fase gebruikt letterlijke groentinten */
+:root[data-mode="blueprint"] .path li.current .dot{ animation-name:nodepulse-bp; }
+@keyframes nodepulse-bp{
+  0%{box-shadow:0 0 0 0 rgba(34,211,238,.28)}
+  60%{box-shadow:0 0 0 10px rgba(34,211,238,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -89,6 +139,9 @@ button{font:inherit;color:inherit}
 
 /* ---------- projectkeuze ---------- */
 #view-picker{min-height:100svh;display:grid;place-items:center;background:var(--gray-f9);padding:32px 16px}
+/* auteursstijl display:grid zou het hidden-attribuut verslaan → flits vóór init */
+#view-picker[hidden]{display:none}
+[hidden]{display:none}
 .picker-card{width:100%;max-width:480px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:32px}
 .picker-card h1{font-size:20px;margin:14px 0 20px}
 .proj-row{
@@ -109,9 +162,17 @@ button{font:inherit;color:inherit}
 .topbar-proj .pname{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topbar-proj .pcode{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--gray-69)}
 .topbar-proj .pclient{font-size:12.5px;color:var(--gray-9)}
-@media (max-width:700px){
-  .topbar-in{flex-wrap:wrap}
-  .topbar-proj{text-align:left}
+@media (max-width:820px){
+  .topbar-in{flex-wrap:wrap;row-gap:8px;padding-top:14px;padding-bottom:12px}
+  .topbar-meta{flex-wrap:wrap;gap:8px;flex:1;justify-content:flex-end;min-width:0}
+  /* projectinfo op een eigen volle regel onder de knoppen, één nette regel */
+  .topbar-proj{order:10;flex-basis:100%;text-align:left;display:flex;align-items:baseline;gap:8px;overflow:hidden}
+  .topbar-proj .pname{flex:none;max-width:55%}
+  .topbar-proj .pcode{flex:none}
+  .topbar-proj .pclient{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .topbar-meta .btn-quiet{padding:6px 11px;font-size:12px}
+  .bp-toggle{padding:6px 11px;font-size:10px}
+  #btn-switch{display:none} /* projectwissel loopt op mobiel via de Producten-pagina */
 }
 .subnav{
   position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);
@@ -162,14 +223,14 @@ main section:first-of-type{border-top:0}
   .hostcard__cta{width:100%; text-align:center}
 }
 
-/* ---------- vertrouwensbanner ---------- */
+/* ---------- vertrouwensbanner (donkere band-variant in sitestijl) ---------- */
 .trustbar{
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-  background:var(--green-soft); border-radius:100px; padding:12px 20px;
-  margin-top:14px; font-size:13.5px; color:var(--ink);
+  background:var(--ink); color:var(--white); border-radius:100px; padding:14px 22px;
+  margin-top:14px; font-size:13.5px;
 }
 .trustbar__icon{flex:none; color:var(--green); display:flex}
-.trustbar a{color:var(--green); font-weight:600; text-decoration:underline; text-underline-offset:3px; margin-left:auto; white-space:nowrap}
+.trustbar a{color:var(--white); font-weight:600; text-decoration:underline; text-underline-offset:3px; margin-left:auto; white-space:nowrap}
 @media (max-width:560px){
   .trustbar{border-radius:18px}
   .trustbar a{margin-left:0}
@@ -260,7 +321,7 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 .sample-row .s-main{min-width:0;flex:1}
 .sample-row .s-note{font-size:13.5px;line-height:1.5}
 .sample-row .s-date{font-size:12px;color:var(--gray-9);margin-top:2px}
-.tag-approved{
+.tag-approved,.tag-transit{
   font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--green);background:var(--green-soft);
   padding:3px 8px;border-radius:6px;flex:none;
@@ -285,6 +346,71 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 .qc-table tr:last-child td{border-bottom:0}
 .qc-none{font-size:13.5px;color:var(--gray-69);margin-top:8px}
 .table-scroll{overflow-x:auto}
+
+/* ---------- kwaliteit in beeld (SVG-paneel boven de AQL-kaarten) ---------- */
+.qcviz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.qcviz-scroll svg{min-width:620px;width:100%;height:auto;display:block}
+.qcviz-lab{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:9.5px;letter-spacing:.12em;fill:var(--gray-69);
+}
+.qcviz-norm{fill:var(--gray-9)}
+.qcviz-pass{fill:var(--green);font-weight:600}
+.qcviz-fail{fill:var(--critical);font-weight:600}
+.qc-defblock{cursor:pointer}
+.qc-defblock:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.qcviz-legend{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);
+  margin:12px 0 0;line-height:1.8;
+}
+
+/* ---------- voor en na (vergelijker op de sample-plank) ---------- */
+.ba-wrap{margin-bottom:28px}
+.ba-figure{
+  position:relative;margin:12px 0 0;border-radius:18px;overflow:hidden;
+  border:1px solid var(--line);box-shadow:var(--card-shadow);
+  aspect-ratio:16/9;background:var(--gray-f2);
+}
+.ba-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-img.ba-gray{filter:grayscale(1)}
+.ba-divider{
+  position:absolute;top:0;bottom:0;width:2px;background:#fff;
+  box-shadow:0 0 0 1px rgba(17,17,17,.22);transform:translateX(-1px);pointer-events:none;
+}
+.ba-taglab{
+  position:absolute;top:12px;font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(17,17,17,.72);color:#fff;padding:4px 10px;border-radius:6px;pointer-events:none;
+}
+.ba-taglab.left{left:12px}
+.ba-taglab.right{right:12px}
+.ba-range{width:100%;margin:12px 0 0;accent-color:var(--green)}
+.ba-notes{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ba-chip{
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  border:1px solid var(--line);background:var(--white);border-radius:10px;
+  padding:8px 12px;font-size:13px;line-height:1.5;max-width:100%;
+}
+.ba-chip .ba-round{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);
+  white-space:nowrap;
+}
+
+/* ---------- fabriek op de kaart ---------- */
+.fmap-wrap{margin-top:44px;padding-top:34px;border-top:1px solid var(--line)}
+.fmap-svg{display:block;width:100%;max-width:560px;height:auto;margin:14px 0 0}
+.fmap-outline{fill:var(--gray-f9);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round}
+.fmap-lab{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;fill:var(--gray-69);
+}
+.fmap-cap{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);
+  margin:10px 0 0;line-height:1.8;
+}
 
 /* ---------- documenten ---------- */
 .doc-group{margin-bottom:26px}
@@ -327,6 +453,56 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 .badge-open{color:var(--gray-69);background:var(--gray-f2)}
 @media (max-width:700px){ .inv-row{flex-wrap:wrap} }
 
+/* ---------- zendingen (De Reis) ---------- */
+.ship-card{
+  border:1px solid var(--line);border-radius:18px;background:var(--white);
+  box-shadow:var(--card-shadow);padding:22px;margin-bottom:16px;
+}
+.ship-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.ship-title{font-weight:700;font-size:15.5px}
+.ship-nr{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-69);
+}
+.ship-arc{width:100%;height:auto;display:block;margin:4px 0}
+.ship-arc text{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.12em;fill:var(--gray-69);
+}
+.ship-dot{fill:var(--green)}
+@keyframes shipdot{0%,100%{opacity:1}50%{opacity:.4}}
+.ship-dot.live{animation:shipdot 2.8s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){ .ship-dot.live{animation:none} }
+.ship-tl{list-style:none;margin:10px 0 0;padding:0 0 0 18px;border-left:1px solid var(--line)}
+.ship-tl li{position:relative;padding:0 0 14px 16px}
+.ship-tl li:last-child{padding-bottom:2px}
+.ship-tl li::before{
+  content:'';position:absolute;left:-22.5px;top:5px;width:9px;height:9px;border-radius:50%;
+  background:var(--white);border:1.5px solid var(--gray-a7);
+}
+.ship-tl li.reached::before{background:var(--green);border-color:var(--green)}
+.ship-tl li.open::before{border-style:dashed}
+.ship-tl .tl-label{font-size:13.5px;font-weight:600}
+.ship-tl li.open .tl-label{color:var(--gray-9);font-weight:500}
+.ship-tl .tl-meta{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-9);margin-top:2px;
+}
+.ship-tl .tl-note{font-size:12.5px;color:var(--gray-69);margin-top:2px}
+.ship-eta{
+  margin-top:14px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;
+  background:var(--gray-f9);font-size:13.5px;
+}
+.ship-eta .mono-l,.ship-docs .mono-l{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-69);margin-bottom:4px;
+}
+.ship-eta-note{color:var(--gray-69);font-size:12.5px;margin-top:4px}
+.ship-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.ship-honest{font-size:12.5px;color:var(--gray-9);max-width:46ch}
+.ship-docs{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.ship-year{margin:30px 0 12px}
+
 /* ---------- logboek ---------- */
 .log-list{list-style:none;margin:0;padding:0 0 0 18px;border-left:1px solid var(--line)}
 .log-list li{position:relative;padding:0 0 22px 18px}
@@ -352,6 +528,26 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 .darkband .kicker{color:var(--gray-a7)}
 .darkband p{margin:10px 0 0;max-width:56ch;font-size:15px}
 .darkband a{color:var(--white)}
+
+/* ---------- donkere banden in sitestijl (afgeronde hoeken, witte tekst,
+   kicker in gray-a7; dragen fl-bp-darkband voor de blauwdrukstand) ---------- */
+.dband{
+  background:var(--ink); color:var(--white); border-radius:22px;
+  padding:26px 28px; box-shadow:var(--card-shadow);
+}
+.dband .kicker{color:var(--gray-a7)}
+.statusband{margin-top:14px}
+.statusband p{margin:0}
+.statusband .sb-title{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:8px 0 6px}
+.statusband .sb-meta{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray-a7);line-height:1.8;
+}
+.sec-head.dband{margin-bottom:28px}
+.sec-head.dband p{color:var(--gray-a7)}
+.trustbar a:focus-visible,.dband a:focus-visible,.darkband a:focus-visible{outline-color:var(--white)}
+@media (max-width:560px){ .dband{padding:20px} }
 
 /* ---------- het moment (overlay) ---------- */
 #moment{position:fixed;inset:0;z-index:60;background:var(--black);display:none}
@@ -452,6 +648,292 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;
   letter-spacing:.12em;text-transform:uppercase;color:var(--gray-69);margin-bottom:8px;
 }
+
+/* ---------- de cockpit (#/home) ---------- */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.cockpit-hero{background:var(--white);border:1px solid var(--line);border-radius:22px;padding:30px 32px;box-shadow:var(--card-shadow)}
+.cockpit-hero.needs-action{border-color:var(--green)}
+.cockpit-title{font-size:clamp(24px,4.2vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.18;margin:10px 0 6px;max-width:26ch}
+.cockpit-sub{margin:0 0 18px;color:var(--gray-69);font-size:14.5px;max-width:60ch}
+.cockpit-hero .btn{margin-top:4px}
+.cockpit-progress{margin-top:28px}
+.seg-row,.seg-marks{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.seg{height:10px;border-radius:6px;border:1px solid var(--gray-a7);background:transparent}
+.seg.done{background:var(--ink);border-color:var(--ink)}
+.seg.current{background:var(--green);border-color:var(--green)}
+.seg-marks{margin-top:5px}
+.seg-mark{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.08em;color:var(--gray-69);
+  position:relative;padding-top:7px;min-height:14px;
+}
+.seg-mark.has-pay::before{content:'';position:absolute;top:0;left:1px;width:1px;height:5px;background:var(--gray-a7)}
+.cockpit-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
+.ccard{
+  display:block;color:inherit;text-decoration:none;border:1px solid var(--line);
+  border-radius:18px;background:var(--white);box-shadow:var(--card-shadow);overflow:hidden;
+  transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease;
+}
+.ccard:hover{border-color:var(--gray-a7);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+.ccard img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.ccard-pad{padding:14px 16px 16px}
+.ccard-l{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-69);margin-bottom:7px;
+}
+.ccard-t{font-weight:600;font-size:14px;line-height:1.5}
+.ccard-m{font-size:12.5px;color:var(--gray-9);margin-top:5px}
+.ccard-amount{font-size:18px;font-weight:600;margin-top:6px}
+@media (max-width:560px){ .cockpit-hero{padding:22px 20px} }
+
+/* ---------- de weeklijn (bovenaan #/mijlpalen) ---------- */
+.weekline-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px}
+.weekline-scroll svg{min-width:680px;width:100%;height:auto;display:block}
+.wl-lab{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:9.5px;letter-spacing:.12em;fill:var(--gray-69);
+}
+.wl-date{fill:var(--gray-9)}
+.wl-nu{fill:var(--green);font-weight:600}
+.wl-current-seg{animation:wlpulse 3.2s ease-in-out infinite}
+@keyframes wlpulse{0%,100%{stroke-opacity:.95}50%{stroke-opacity:.45}}
+.wl-legend{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);
+  margin:0 0 30px;line-height:1.8;
+}
+
+/* ---------- het betaalpad (#/kosten) ---------- */
+.cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px}
+.cost-tile{border:1px solid var(--line);border-radius:16px;background:var(--white);padding:18px 20px;box-shadow:var(--card-shadow)}
+.cost-num{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:clamp(19px,2.6vw,26px);font-weight:600;letter-spacing:-.01em;margin-top:8px;white-space:nowrap;
+}
+.cost-note{font-size:12.5px;color:var(--gray-9);margin-top:6px}
+@media (max-width:700px){ .cost-grid{grid-template-columns:1fr} }
+.paybar-wrap{margin-bottom:30px}
+.paybar-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.paybar{display:grid;gap:8px;align-items:end;min-width:480px}
+.payseg-col{min-width:0}
+.payseg-check{height:16px;display:flex;justify-content:center;align-items:flex-start}
+.payseg{height:20px;border-radius:7px;border:1px solid var(--gray-a7);background:transparent}
+.payseg.paid{background:var(--ink);border-color:var(--ink)}
+.payseg.openinv{border-color:var(--ink);background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 7px)}
+.payseg-lab{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-69);
+  margin-top:6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.paybar-legend{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);
+  margin:12px 0 0;line-height:1.8;
+}
+.kosten-actions{margin:16px 0 0}
+
+/* ---------- mijn producten (#/producten) ---------- */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.prodcard{
+  border:1px solid var(--line);border-radius:18px;background:var(--white);
+  box-shadow:var(--card-shadow);overflow:hidden;display:flex;flex-direction:column;
+  transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease;
+}
+.prodcard:hover{border-color:var(--gray-a7);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+.prod-open{display:block;width:100%;text-align:left;border:0;background:none;padding:0;cursor:pointer}
+.prod-open img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.prod-hero-empty{aspect-ratio:16/9;display:grid;place-items:center;background:var(--gray-f9);border-bottom:1px solid var(--line)}
+.prod-hero-empty svg{width:70%;max-width:240px;height:auto}
+.prod-pad{padding:14px 16px 16px}
+.prod-name{font-weight:700;font-size:15.5px;line-height:1.4;margin-top:2px}
+.prod-next{font-size:13px;color:var(--gray-69);margin-top:10px;line-height:1.5}
+.prod-ship{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-9);margin-top:8px;
+}
+.pmini{display:flex;align-items:center;margin-top:12px}
+.pm-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--gray-a7);background:var(--white);flex:none}
+.pm-dot.done{background:var(--green);border-color:var(--green)}
+.pm-dot.current{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.pm-line{flex:1;height:1px;background:var(--line);min-width:5px}
+.pm-line.done{background:var(--green);opacity:.4}
+.prod-actions{padding:0 16px 16px;margin-top:auto}
+.prod-actions .btn{width:100%;text-align:center}
+.prodcard.prod-new{
+  border-style:dashed;border-color:var(--gray-a7);background:transparent;box-shadow:none;
+  align-items:center;justify-content:center;text-align:center;padding:28px 20px;min-height:220px;
+}
+.prodcard.prod-new:hover{transform:none;box-shadow:none;border-color:var(--ink)}
+.prod-new-t{font-weight:700;font-size:15.5px;margin-top:8px}
+.prodcard.prod-new p{font-size:13px;color:var(--gray-69);margin:8px 0 14px;max-width:30ch}
+.archief-kick{margin:36px 0 14px}
+.ask-form input[type="number"],.ask-form input[type="text"]{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  font:inherit;font-size:14.5px;background:var(--white);color:var(--ink);
+  transition:border-color .25s ease;
+}
+.ask-form input[type="number"]:focus,.ask-form input[type="text"]:focus{outline:none;border-color:var(--ink)}
+.ask-form .ask-field{margin-bottom:14px}
+
+/* ---------- printstylesheet: overzicht voor je boekhouding, zwart op wit ---------- */
+@media print{
+  :root,:root[data-mode="blueprint"]{
+    --ink:#000; --black:#000; --white:#fff; --paper:#fff;
+    --green:#1a1a1a; --gray-69:#333; --gray-9:#555; --gray-a7:#888;
+    --line:#ccc; --card-shadow:none; --card-shadow-hover:none;
+  }
+  body{background:#fff !important}
+  :root[data-mode="blueprint"] body{background-image:none}
+  .topbar,.subnav,.hostcard-wrap,.darkband,#moment,#sheet,.btn,.btn-dark,.btn-quiet,button,
+  .notif-panel,.term-pop,dialog.qs{display:none !important}
+  /* termknoppen zijn tekst, geen bediening: op papier gewoon als woord tonen */
+  button.term-link{display:inline !important;color:inherit;text-decoration:none}
+  main section{border-top:0;padding:18px 0}
+  .fl-reveal{opacity:1 !important;transform:none !important}
+  .cost-tile,.ccard,.cockpit-hero,.qc-card,.ship-card,details.stage-acc,.media-card,.sample-row{box-shadow:none}
+}
+
+/* ---------- ritme: onthullen bij scrollen (geport van de hoofdsite) ---------- */
+.fl-reveal{opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-fl),transform .6s var(--ease-fl)}
+.fl-reveal.is-visible{opacity:1;transform:translateY(0)}
+
+/* ---------- magnetische knoppen (alleen fine pointer) ---------- */
+@media (hover:hover) and (pointer:fine){
+  [data-magnetic]{
+    will-change:transform;
+    transition:background-color .25s ease,color .25s ease,border-color .25s ease,transform .3s var(--ease-float);
+  }
+}
+
+/* ---------- blauwdruktoggle in de topbar ---------- */
+button.bp-toggle{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--line);background:transparent;color:var(--gray-69);
+  padding:8px 14px;border-radius:100px;cursor:pointer;flex:none;
+  transition:border-color .25s ease,color .25s ease,background-color .25s ease;
+}
+button.bp-toggle:hover{border-color:var(--gray-a7);color:var(--ink)}
+button.bp-toggle[aria-pressed="true"]{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+
+/* ---------- topbar-iconknoppen (snelzoeken + meldingen) ---------- */
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+  background:transparent;color:var(--gray-69);cursor:pointer;flex:none;
+  position:relative;transition:border-color .25s ease,color .25s ease;
+}
+.icon-btn:hover{border-color:var(--gray-a7);color:var(--ink)}
+.icon-btn svg{display:block}
+
+/* ---------- meldingen ---------- */
+.notif-wrap{position:relative;flex:none;display:flex}
+.notif-dot{
+  position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;
+  background:var(--green);border:2px solid var(--paper);box-sizing:content-box;
+}
+.notif-panel{
+  position:absolute;right:0;top:calc(100% + 10px);z-index:45;
+  width:min(400px,calc(100vw - 32px));max-height:min(520px,70vh);overflow-y:auto;
+  background:var(--white);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--card-shadow-hover);padding:0 0 8px;
+}
+.notif-head{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray-69);padding:14px 20px 10px;border-bottom:1px solid var(--line);
+}
+.notif-item{
+  display:block;text-decoration:none;color:inherit;
+  padding:11px 20px 11px 18px;border-left:2px solid transparent;
+}
+.notif-item:hover{background:var(--gray-f9)}
+.notif-item.unread{border-left-color:var(--green)}
+.notif-meta{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);
+  margin-bottom:3px;
+}
+.notif-title{font-size:13.5px;font-weight:500;line-height:1.5}
+.notif-empty{padding:28px 20px;text-align:center;color:var(--gray-69);font-size:14px}
+.notif-empty svg{display:block;margin:0 auto 10px;color:var(--green)}
+
+/* ---------- snelzoeken (Cmd+K / Ctrl+K) ---------- */
+dialog.qs{
+  border:1px solid var(--ink);border-radius:18px;background:var(--paper);color:var(--ink);
+  padding:0;width:min(560px,92vw);margin:9vh auto auto;box-shadow:var(--card-shadow-hover);
+}
+dialog.qs::backdrop{background:rgba(12,10,8,.45)}
+.qs-input{
+  width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;
+  padding:17px 20px;border-radius:18px 18px 0 0;color:var(--ink);
+  font:500 16px/1.4 'Hanken Grotesk',-apple-system,'Helvetica Neue',Arial,sans-serif;
+}
+.qs-input:focus{outline:none}
+.qs-input::placeholder{color:var(--gray-9)}
+.qs-results{max-height:52vh;overflow-y:auto;padding:6px 8px 10px}
+.qs-sec{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray-69);padding:12px 12px 5px;
+}
+.qs-item{
+  display:block;width:100%;text-align:left;border:0;background:none;color:inherit;
+  padding:9px 12px;border-radius:10px;cursor:pointer;font-size:14px;line-height:1.45;
+}
+.qs-item[aria-selected="true"]{background:var(--green-soft)}
+.qs-item .qs-sub{display:block;font-size:12px;color:var(--gray-9);margin-top:1px}
+.qs-hl{color:var(--green);text-decoration:underline;text-underline-offset:2px}
+.qs-none{padding:18px 14px;color:var(--gray-69);font-size:14px}
+.qs-hint{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);
+  padding:10px 20px 12px;border-top:1px solid var(--line);
+}
+
+/* ---------- vaktaal uitgelegd (termlinks + popover) ---------- */
+button.term-link{
+  background:none;border:0;padding:0;margin:0;font:inherit;letter-spacing:inherit;
+  text-transform:inherit;color:var(--green);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--green);
+}
+.trustbar button.term-link,.dband button.term-link{color:var(--white)}
+.term-pop{
+  position:fixed;z-index:70;width:min(320px,calc(100vw - 24px));
+  background:var(--white);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--card-shadow-hover);padding:14px 16px 15px;
+}
+.term-pop .tp-k{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gray-69);line-height:1.6;
+}
+.term-pop p{font-size:13.5px;line-height:1.55;margin:8px 0 0;color:var(--ink)}
+.term-pop a{
+  display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:var(--green);
+  text-underline-offset:3px;
+}
+
+/* ---------- de vooruitblik (lege staten met lijntekening) ---------- */
+.outlook{padding:8px 0 4px;max-width:560px}
+.outlook svg{display:block;width:100%;max-width:340px;height:auto;margin:6px 0 16px}
+.outlook .ol-line{font-size:14.5px;line-height:1.6;margin:0;max-width:52ch}
+.outlook .ol-mono{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-69);margin:0 0 8px;line-height:1.8;
+}
+.ol-stroke{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ol-soft{fill:none;stroke:var(--gray-a7);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ol-dash{stroke-dasharray:3 6}
+.ol-green{fill:none;stroke:var(--green);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+@media (prefers-reduced-motion: reduce){
+  .fl-reveal{opacity:1 !important;transform:none !important;transition:none !important}
+  [data-magnetic]{transition:none}
+  .path li.current .dot{animation:none}
+  .wl-current-seg{animation:none}
+}
 </style>
 </head>
 <body>
@@ -502,6 +984,17 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           <div class="pcode" id="hdr-project-code"></div>
           <div class="pclient" id="hdr-client-name"></div>
         </div>
+        <button type="button" class="icon-btn" id="qs-open" aria-label="Snelzoeken" title="Zoeken · Cmd+K of Ctrl+K">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+        </button>
+        <div class="notif-wrap">
+          <button type="button" class="icon-btn" id="notif-bell" aria-label="Meldingen" aria-haspopup="true" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2.2 2.2 0 0 0 4 0"/></svg>
+            <span class="notif-dot" id="notif-dot" hidden></span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="region" aria-label="Meldingen" hidden></div>
+        </div>
+        <button type="button" class="bp-toggle" id="bp-toggle" aria-pressed="false">Blauwdruk</button>
         <button type="button" class="btn-quiet" id="btn-switch" hidden>Wissel project</button>
         <button type="button" class="btn-quiet" id="btn-logout">Uitloggen</button>
       </div>
@@ -510,19 +1003,22 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 
   <nav class="subnav" aria-label="Pagina's">
     <div class="wrap subnav-in">
+      <a href="#/home" data-page="home">Overzicht</a>
+      <a href="#/producten" data-page="producten">Producten</a>
       <a href="#/mijlpalen" data-page="mijlpalen">Mijlpalen</a>
       <a href="#/updates" data-page="updates">Updates</a>
       <a href="#/samples" data-page="samples">Samples</a>
       <a href="#/kwaliteit" data-page="kwaliteit">Kwaliteit</a>
+      <a href="#/zendingen" data-page="zendingen">Zendingen</a>
       <a href="#/documenten" data-page="documenten">Documenten</a>
-      <a href="#/facturen" data-page="facturen">Facturen</a>
+      <a href="#/kosten" data-page="kosten">Kosten</a>
       <a href="#/logboek" data-page="logboek">Logboek</a>
     </div>
   </nav>
 
   <section class="hostcard-wrap">
     <div class="wrap">
-      <div class="hostcard">
+      <div class="hostcard fl-reveal">
         <img src="images/founder.jpg" alt="" class="hostcard__photo">
         <div class="hostcard__body">
           <p class="kicker">Jouw contactpersoon</p>
@@ -530,33 +1026,58 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           <p class="hostcard__role">Oprichter CUSTOM+ — leest en beantwoordt elk bericht zelf</p>
           <p class="hostcard__promise">Reageert meestal binnen 1 werkdag</p>
         </div>
-        <button type="button" class="btn btn-dark hostcard__cta" id="btn-ask-steffan">Stel een vraag</button>
+        <button type="button" class="btn btn-dark hostcard__cta" id="btn-ask-steffan" data-magnetic>Stel een vraag</button>
       </div>
-      <div class="trustbar">
+      <div class="dband statusband fl-bp-darkband fl-reveal" id="statusband" hidden>
+        <p class="kicker">Waar je project staat</p>
+        <p class="sb-title" id="sb-title"></p>
+        <p class="sb-meta" id="sb-meta"></p>
+      </div>
+      <div class="trustbar fl-bp-darkband fl-reveal">
         <span class="trustbar__icon" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/></svg>
         </span>
-        <span>Je ontwerp is beschermd: fabrieken krijgen alleen bestanden onder NNN.</span>
+        <span id="trust-line">Je ontwerp is beschermd: fabrieken krijgen alleen bestanden onder NNN.</span>
         <a href="#/logboek">Bekijk het logboek</a>
       </div>
     </div>
   </section>
 
   <main>
+    <section id="home" aria-labelledby="h-home">
+      <div class="wrap">
+        <div id="cockpit-root"></div>
+      </div>
+    </section>
+
+    <section id="producten" aria-labelledby="h-producten">
+      <div class="wrap">
+        <div class="sec-head fl-reveal">
+          <p class="kicker">Mijn producten</p>
+          <h2 id="h-producten">Alles wat je bij CUSTOM+ maakt</h2>
+          <p>Elk project op één plank: actieve projecten bovenaan, afgeronde op de archiefplank eronder — permanent toegankelijk, met het volledige dossier en de zendinggeschiedenis per batch.</p>
+        </div>
+        <div id="producten-list"></div>
+      </div>
+    </section>
+
     <section id="mijlpalen" aria-labelledby="h-mijlpalen">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head fl-reveal">
           <p class="kicker">01 — Mijlpalenpad</p>
           <h2 id="h-mijlpalen">Waar je project staat</h2>
           <p>Zes vaste fases, van eerste schets tot levering. Je betaalt per mijlpaal, nooit vooruit op werk dat nog niet is goedgekeurd.</p>
         </div>
-        <ul class="path" id="path"></ul>
+        <div class="weekline-scroll fl-reveal" id="weekline"></div>
+        <p class="wl-legend fl-reveal" id="weekline-legend" hidden>Gevulde punten = echte goedkeuringsdatums · gestippeld = weekrange als indicatie, geen belofte</p>
+        <ul class="path fl-reveal" id="path"></ul>
+        <div class="fmap-wrap fl-reveal" id="factory-map" hidden></div>
       </div>
     </section>
 
     <section id="updates" aria-labelledby="h-updates">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head fl-reveal">
           <p class="kicker">02 — Updates per fase</p>
           <h2 id="h-updates">Foto's van jouw product, met herkomst</h2>
           <p>Elke update vermeldt fase, datum en fabriek. Klik op een foto voor detail en om een vraag te stellen.</p>
@@ -567,30 +1088,42 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 
     <section id="samples" aria-labelledby="h-samples">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head fl-reveal">
           <p class="kicker">03 — Sample-plank</p>
           <h2 id="h-samples">De rondes op een rij</h2>
           <p>Elke sampleronde met wat er is aangepast. De goedgekeurde ronde staat bovenaan.</p>
         </div>
-        <div id="samples-list"></div>
+        <div id="samples-list" class="fl-reveal"></div>
       </div>
     </section>
 
     <section id="kwaliteit" aria-labelledby="h-kwaliteit">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head dband fl-bp-darkband fl-reveal">
           <p class="kicker">04 — Kwaliteitscontrole</p>
           <h2 id="h-kwaliteit">Inspecties en steekproeven</h2>
           <p>Onafhankelijke controles op vaste checkpoints, volgens de AQL-norm die in je offerte staat.</p>
         </div>
+        <div id="quality-viz" hidden></div>
         <div id="quality-list"></div>
+      </div>
+    </section>
+
+    <section id="zendingen" aria-labelledby="h-zendingen">
+      <div class="wrap">
+        <div class="sec-head fl-reveal">
+          <p class="kicker">05 — De reis</p>
+          <h2 id="h-zendingen">Elke zending, van fabriek tot deur</h2>
+          <p>Samples per koerier en je productie per zeevracht, elk met hun eigen mijlpalen. Geleverde zendingen blijven hier permanent staan.</p>
+        </div>
+        <div id="shipments-list"></div>
       </div>
     </section>
 
     <section id="documenten" aria-labelledby="h-documenten">
       <div class="wrap">
-        <div class="sec-head">
-          <p class="kicker">05 — Documenten</p>
+        <div class="sec-head fl-reveal">
+          <p class="kicker">06 — Documenten</p>
           <h2 id="h-documenten">Alles op één plek</h2>
           <p>Contracten, offertes, facturen en rapporten, geordend per fase. Elke download wordt in het logboek genoteerd.</p>
         </div>
@@ -598,25 +1131,28 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
       </div>
     </section>
 
-    <section id="facturen" aria-labelledby="h-facturen">
+    <section id="kosten" aria-labelledby="h-kosten">
       <div class="wrap">
-        <div class="sec-head">
-          <p class="kicker">06 — Facturen</p>
-          <h2 id="h-facturen">Betalen per mijlpaal</h2>
-          <p>Elke factuur hoort bij een fase uit het mijlpalenpad hierboven.</p>
+        <div class="sec-head fl-reveal">
+          <p class="kicker">07 — Het betaalpad</p>
+          <h2 id="h-kosten">Betalen per mijlpaal</h2>
+          <p>Je keurt elke fase goed vóór je betaalt. Hieronder staat wat is betaald, wat openstaat en wat er nog volgt — elk bedrag komt van een echte factuur.</p>
         </div>
-        <div id="invoices-list"></div>
+        <div id="kosten-summary"></div>
+        <div id="kosten-bar"></div>
+        <div class="doc-group-h fl-reveal">Alle facturen</div>
+        <div id="invoices-list" class="fl-reveal"></div>
       </div>
     </section>
 
     <section id="logboek" aria-labelledby="h-logboek">
       <div class="wrap">
-        <div class="sec-head">
-          <p class="kicker">07 — Toegangslogboek</p>
+        <div class="sec-head fl-reveal">
+          <p class="kicker">08 — Toegangslogboek</p>
           <h2 id="h-logboek">Wie zag wat, en wanneer</h2>
           <p>Jouw bestanden zijn van jou. Dit logboek laat zien wat ermee is gebeurd.</p>
         </div>
-        <ul class="log-list" id="log-list"></ul>
+        <ul class="log-list fl-reveal" id="log-list"></ul>
         <p class="log-foot">Dit logboek toont elke keer dat een bestand van dit project is bekeken, gedownload of gedeeld.</p>
       </div>
     </section>
@@ -660,8 +1196,18 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   </div>
 </div>
 
+<!-- ===== snelzoeken (Cmd+K / Ctrl+K) ===== -->
+<dialog class="qs" id="qs-dialog" aria-label="Snelzoeken">
+  <input class="qs-input" id="qs-input" type="text" role="combobox" aria-expanded="true"
+         aria-controls="qs-results" aria-autocomplete="list" autocomplete="off"
+         spellcheck="false" placeholder="Zoek in je project…">
+  <div class="qs-results" id="qs-results" role="listbox" aria-label="Resultaten"></div>
+  <div class="qs-hint" aria-hidden="true">↑↓ kiezen · Enter openen · Esc sluiten</div>
+</dialog>
+
 <script src="portal/config.js"></script>
 <script src="portal/demo-data.js"></script>
+<script src="portal/shipping.js"></script>
 <script>
 (function () {
   'use strict';
@@ -691,6 +1237,11 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   };
   var CHECKPOINT_LABELS = { iqc: 'IQC — inkomend materiaal', ipqc: 'IPQC — tijdens de run', fqc: 'FQC — voor verzending' };
   var SEVERITY_LABELS = { critical: 'Kritiek', major: 'Groot', minor: 'Klein' };
+  /* korte fasenamen voor kickers en de weeklijn */
+  var STAGE_SHORT = {
+    concept: 'Concept', dfm: 'DFM', sourcing: 'Sourcing',
+    tooling: 'Tooling', production: 'Productie', logistics: 'Logistiek'
+  };
 
   function byId(id) { return document.getElementById(id); }
 
@@ -766,9 +1317,24 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
              mag de portal niet laten crashen — dan liever de verse seed */
           if (parsed && Array.isArray(parsed.clients) && Array.isArray(parsed.projects)) {
             state = parsed;
-            /* collecties die een oudere schrijver kan missen, altijd aanvullen */
-            ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories'].forEach(function (k) {
-              if (!Array.isArray(state[k])) state[k] = [];
+            /* collecties die een oudere schrijver kan missen, altijd aanvullen;
+               een later geïntroduceerde collectie vullen we vanuit de seed zodat
+               een bestaande demo-opslag de nieuwe functie meteen toont */
+            ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories','shipments','shipmentEvents'].forEach(function (k) {
+              if (!Array.isArray(state[k])) {
+                var seedArr = (window.CP_DEMO && Array.isArray(window.CP_DEMO[k])) ? window.CP_DEMO[k] : [];
+                try { state[k] = structuredClone(seedArr); }
+                catch (e2) { state[k] = JSON.parse(JSON.stringify(seedArr)); }
+              }
+            });
+            /* veld-aanvulling: 'city' (Fabriek op de Kaart) kan in oudere
+               demo-opslag ontbreken; vul aan vanuit de seed, per id */
+            (state.factories || []).forEach(function (f) {
+              if (f.city === undefined) {
+                var sf = ((window.CP_DEMO && window.CP_DEMO.factories) || [])
+                  .find(function (x) { return x.id === f.id; });
+                f.city = (sf && sf.city) ? sf.city : '';
+              }
             });
             return;
           }
@@ -819,6 +1385,26 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
         return Promise.resolve(list);
       },
 
+      /* Alle projecten van deze klant — óók gearchiveerde (levenslang
+         toegang op de Archiefplank) — plus precies de collecties die
+         "Mijn Producten" nodig heeft voor kaart en volgende stap. */
+      loadPortfolio: function (clientId) {
+        var projs = state.projects.filter(function (p) { return p.clientId === clientId; });
+        var ids = {};
+        projs.forEach(function (p) { ids[p.id] = true; });
+        function pick(arr) {
+          return (arr || []).filter(function (r) { return ids[r.projectId]; });
+        }
+        return Promise.resolve({
+          projects: projs,
+          media: pick(state.media),
+          samples: pick(state.samples),
+          invoices: pick(state.invoices),
+          questions: pick(state.questions),
+          shipments: pick(state.shipments)
+        });
+      },
+
       loadBundle: function (projectId) {
         function forProject(arr) {
           return (arr || []).filter(function (r) { return r.projectId === projectId; });
@@ -838,7 +1424,19 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           accessLog: forProject(state.accessLog).slice().sort(function (a, b) {
             return new Date(b.createdAt) - new Date(a.createdAt);
           }),
-          factories: state.factories.slice()
+          disclosures: forProject(state.disclosures),
+          factories: state.factories.slice(),
+          shipments: forProject(state.shipments).slice().sort(function (a, b) {
+            return String(a.createdAt).localeCompare(String(b.createdAt));
+          }),
+          shipmentEvents: (state.shipmentEvents || []).filter(function (ev) {
+            return (state.shipments || []).some(function (sp) {
+              return sp.id === ev.shipmentId && sp.projectId === projectId;
+            });
+          }).slice().sort(function (a, b) {
+            return String(a.occurredAt).localeCompare(String(b.occurredAt)) ||
+              String(a.createdAt).localeCompare(String(b.createdAt));
+          })
         };
         return Promise.resolve(bundle);
       },
@@ -973,6 +1571,45 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           .then(function (res) { return camelRows(need(res)); });
       },
 
+      /* Alle projecten van deze klant — óók gearchiveerde (de RLS-policy
+         "client reads own projects" filtert niet op status) — plus de
+         collecties voor de kaarten van "Mijn Producten". */
+      loadPortfolio: function (clientId) {
+        return client().then(function () {
+          return sb.from('projects')
+            .select('*')
+            .eq('client_id', clientId)
+            .order('created_at', { ascending: true });
+        }).then(function (res) {
+          var projects = camelRows(need(res));
+          var ids = projects.map(function (p) { return p.id; });
+          if (!ids.length) {
+            return { projects: [], media: [], samples: [], invoices: [], questions: [], shipments: [] };
+          }
+          function q(table, order) {
+            var sel = sb.from(table).select('*').in('project_id', ids);
+            if (order) sel = sel.order(order);
+            return sel.then(function (r2) { return camelRows(need(r2)); });
+          }
+          return Promise.all([
+            q('project_stages', 'position'),
+            q('media_assets', 'captured_at'),
+            q('sample_rounds', 'round_date'),
+            q('invoices', 'created_at'),
+            q('question_threads', 'asked_at'),
+            q('shipments', 'created_at')
+          ]).then(function (r) {
+            projects.forEach(function (p) {
+              p.stages = r[0].filter(function (s) { return s.projectId === p.id; });
+            });
+            return {
+              projects: projects, media: r[1], samples: r[2],
+              invoices: r[3], questions: r[4], shipments: r[5]
+            };
+          });
+        });
+      },
+
       loadBundle: function (projectId) {
         var q = function (table, order, asc) {
           var sel = sb.from(table).select('*').eq('project_id', projectId);
@@ -992,7 +1629,8 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           q('access_log', 'created_at', false),
           sb.from('factories_partners').select('*')
             .then(function (res) { return camelRows(need(res)); }),
-          q('file_disclosures', 'disclosed_at')
+          q('file_disclosures', 'disclosed_at'),
+          q('shipments', 'created_at')
         ]).then(function (r) {
           var factories = r[9];
           var facById = {};
@@ -1011,11 +1649,22 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
           var log = r[8].concat(discRows).sort(function (a, b) {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
-          return {
+          var bundle = {
             project: r[0], stages: r[1], media: r[2], documents: r[3],
             invoices: r[4], samples: r[5], inspections: r[6], questions: r[7],
-            accessLog: log, factories: factories
+            accessLog: log, disclosures: r[10], factories: factories,
+            shipments: r[11], shipmentEvents: []
           };
+          /* events hangen aan zendingen, niet direct aan het project */
+          var shipIds = r[11].map(function (s) { return s.id; });
+          if (!shipIds.length) return bundle;
+          return sb.from('shipment_events').select('*')
+            .in('shipment_id', shipIds)
+            .order('occurred_at')
+            .then(function (res) {
+              bundle.shipmentEvents = camelRows(need(res));
+              return bundle;
+            });
         });
       },
 
@@ -1077,9 +1726,20 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
      UI-state
      ============================================================ */
   var SESSION = null;
-  var PROJECTS = [];
+  var PROJECTS = [];      /* actieve projecten (picker en wisselknop) */
+  var ALL_PROJECTS = [];  /* alle projecten, ook gearchiveerd (Mijn Producten) */
+  var PORTFOLIO = null;   /* cache van DS.loadPortfolio voor #/producten */
   var BUNDLE = null;
   var lastFocused = null;
+  var sbHasContent = false;
+
+  function fetchPortfolio(force) {
+    if (!force && PORTFOLIO) return Promise.resolve(PORTFOLIO);
+    return DS.loadPortfolio(SESSION.clientId).then(function (pf) {
+      PORTFOLIO = pf;
+      return pf;
+    });
+  }
 
   function factoryById(id) {
     if (!id || !BUNDLE) return null;
@@ -1106,10 +1766,11 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
      zelfde hash-patroon als de hoofdsite. Eén bestand, geen aparte HTML's,
      zodat login/data-laden niet per pagina hoeft te worden herhaald.
      ============================================================ */
-  var PAGES = ['mijlpalen', 'updates', 'samples', 'kwaliteit', 'documenten', 'facturen', 'logboek'];
+  var PAGES = ['home', 'producten', 'mijlpalen', 'updates', 'samples', 'kwaliteit', 'zendingen', 'documenten', 'kosten', 'logboek'];
   var appActive = false;
   function currentPage() {
     var h = location.hash.replace(/^#\/?/, '');
+    if (h === 'facturen') h = 'kosten'; /* oude links blijven werken */
     return PAGES.indexOf(h) > -1 ? h : PAGES[0];
   }
   function renderRoute() {
@@ -1122,7 +1783,14 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
     for (var i = 0; i < links.length; i++) {
       links[i].setAttribute('aria-current', links[i].getAttribute('data-page') === page ? 'page' : 'false');
     }
+    /* op de cockpit zegt de grote kop al waar het project staat;
+       de statusband zou daar exact hetzelfde herhalen. Op de
+       productenpagina (alle projecten) zou een band over één project
+       alleen maar verwarren. */
+    var sb = byId('statusband');
+    if (sb) sb.hidden = !sbHasContent || page === 'home' || page === 'producten';
     window.scrollTo(0, 0);
+    replayReveals(byId(page));
   }
   window.addEventListener('hashchange', function () {
     if (appActive) renderRoute();
@@ -1164,6 +1832,732 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   }
 
   /* ============================================================
+     Statusband — donkere band na de hostkaart: huidige fase plus
+     volgende mijlpaal, puur afgeleid uit BUNDLE.stages.
+     ============================================================ */
+  function renderStatusband() {
+    var band = byId('statusband');
+    if (!band) return;
+    var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    var total = stages.length;
+    if (!total) { band.hidden = true; sbHasContent = false; return; }
+    var current = stages.find(function (s) { return s.status !== 'done' && s.status !== 'upcoming'; }) ||
+      stages.find(function (s) { return s.status === 'upcoming'; }) || null;
+    var title, meta;
+    if (!current) {
+      title = 'Alle fases zijn afgerond';
+      meta = 'FASE ' + total + ' VAN ' + total + ' · AFGEROND';
+    } else {
+      title = stageName(current.stageKey);
+      var next = stages.find(function (s) { return s.position > current.position; }) || null;
+      meta = 'FASE ' + current.position + ' VAN ' + total +
+        (next ? ' · VOLGENDE MIJLPAAL · ' + stageName(next.stageKey).toUpperCase() : ' · LAATSTE FASE');
+    }
+    byId('sb-title').textContent = title;
+    byId('sb-meta').textContent = meta;
+    sbHasContent = true;
+    band.hidden = false;
+  }
+
+  /* ============================================================
+     De Cockpit (#/home) — standaardlanding na login.
+     nextStep() is een pure functie met vaste prioriteit over de
+     bundel: sample dat op akkoord wacht → openstaande factuur →
+     onbeantwoorde eigen vraag → nieuwe foto's → eerlijk "niets
+     nodig van jou". Puur afgeleide data, nul extra invoer.
+     ============================================================ */
+  function currentStageOf(stages) {
+    var st = (stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    return st.find(function (s) { return s.status !== 'done' && s.status !== 'upcoming'; }) ||
+      st.find(function (s) { return s.status === 'upcoming'; }) || null;
+  }
+
+  function nextStep(bundle) {
+    var current = currentStageOf(bundle.stages);
+
+    /* 1: sample met status 'reviewed' zonder nieuwere ronde */
+    var samples = bundle.samples || [];
+    var reviewed = samples.filter(function (s) {
+      if (s.status !== 'reviewed') return false;
+      return !samples.some(function (o) {
+        return o.id !== s.id && parseDay(o.roundDate) > parseDay(s.roundDate);
+      });
+    });
+    if (reviewed.length) {
+      var smp = reviewed[reviewed.length - 1];
+      return {
+        key: 'sample', needsAction: true,
+        title: 'Sample ' + smp.roundLabel + ' wacht op jouw akkoord.',
+        meta: smp.note || '',
+        actionLabel: 'Bekijk sample ' + smp.roundLabel,
+        actionHref: '#/samples'
+      };
+    }
+
+    /* 2: openstaande factuur */
+    var openInv = (bundle.invoices || []).filter(function (i) { return i.status === 'open'; });
+    if (openInv.length) {
+      var inv = openInv[0];
+      return {
+        key: 'invoice', needsAction: true,
+        title: openInv.length === 1
+          ? 'Er staat een factuur voor je open.'
+          : 'Er staan ' + openInv.length + ' facturen voor je open.',
+        meta: inv.label + (inv.amountCents ? ' · ' + fmtMoney(inv.amountCents) : ''),
+        actionLabel: 'Bekijk de factuur',
+        actionHref: '#/kosten'
+      };
+    }
+
+    /* 3: onbeantwoorde eigen vraag */
+    var waiting = (bundle.questions || []).filter(function (q) { return !q.answer; });
+    if (waiting.length) {
+      return {
+        key: 'question', needsAction: false,
+        title: 'Je vraag ligt bij Steffan.',
+        meta: '‘' + waiting[waiting.length - 1].question + '’ — je hoort binnen 1 werkdag van hem.',
+        actionLabel: 'Bekijk je vraag',
+        actionHref: '#/updates'
+      };
+    }
+
+    /* 4: foto's nieuwer dan 7 dagen */
+    var cutoff = Date.now() - 7 * 86400000;
+    var fresh = (bundle.media || []).filter(function (m) {
+      var d = parseDay(m.capturedAt);
+      return d && d.getTime() > cutoff;
+    });
+    if (fresh.length) {
+      return {
+        key: 'media', needsAction: false,
+        title: fresh.length === 1
+          ? 'Er staat een nieuwe foto van je product klaar.'
+          : 'Er staan ' + fresh.length + ' nieuwe foto’s van je product klaar.',
+        meta: '',
+        actionLabel: 'Bekijk de nieuwe foto’s',
+        actionHref: '#/updates'
+      };
+    }
+
+    /* 5: eerlijk — niets nodig */
+    if (!current) {
+      return {
+        key: 'none', needsAction: false,
+        title: 'Alle fases zijn afgerond — je project is klaar.',
+        meta: '',
+        actionLabel: 'Bekijk het mijlpalenpad',
+        actionHref: '#/mijlpalen'
+      };
+    }
+    return {
+      key: 'none', needsAction: false,
+      title: 'Niets nodig van jou — ' + stageName(current.stageKey) + ' loopt.',
+      meta: '',
+      actionLabel: 'Bekijk het mijlpalenpad',
+      actionHref: '#/mijlpalen'
+    };
+  }
+
+  function renderCockpit() {
+    var root = byId('cockpit-root');
+    if (!root) return;
+    root.textContent = '';
+    var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    var total = stages.length;
+    var current = currentStageOf(stages);
+    var step = nextStep(BUNDLE);
+
+    /* hero: kicker, kop in mensentaal, één actie */
+    var hero = el('div', 'cockpit-hero fl-reveal' + (step.needsAction ? ' needs-action' : ''));
+    var kick = (BUNDLE.project.name || '').toUpperCase();
+    if (total) {
+      kick += ' · FASE ' + (current ? current.position : total) + ' VAN ' + total +
+        ' · ' + (current ? (STAGE_SHORT[current.stageKey] || current.stageKey).toUpperCase() : 'AFGEROND');
+    }
+    hero.appendChild(el('p', 'kicker', kick));
+    var kop = el('h2', 'cockpit-title', step.title);
+    kop.id = 'h-home';
+    hero.appendChild(kop);
+    if (step.meta) hero.appendChild(el('p', 'cockpit-sub', step.meta));
+    var act = el('a', step.needsAction ? 'btn btn-dark' : 'btn', step.actionLabel);
+    act.href = step.actionHref;
+    act.setAttribute('data-magnetic', '');
+    hero.appendChild(act);
+
+    /* gesegmenteerde voortgangsbalk: zes blokjes plus betaalmerktekens */
+    if (total) {
+      var prog = el('div', 'cockpit-progress');
+      var segRow = el('div', 'seg-row');
+      segRow.setAttribute('aria-hidden', 'true');
+      var marks = el('div', 'seg-marks');
+      marks.setAttribute('aria-hidden', 'true');
+      stages.forEach(function (s) {
+        var cls = 'seg';
+        if (s.status === 'done') cls += ' done';
+        else if (s.status !== 'upcoming') cls += ' current';
+        segRow.appendChild(el('div', cls));
+        marks.appendChild(el('div', 'seg-mark' + (s.paymentPct > 0 ? ' has-pay' : ''),
+          s.paymentPct > 0 ? s.paymentPct + '%' : ''));
+      });
+      prog.appendChild(segRow);
+      prog.appendChild(marks);
+      prog.appendChild(el('p', 'sr-only', current
+        ? 'Fase ' + current.position + ' van ' + total + ' — ' + stageName(current.stageKey) + ' loopt.'
+        : 'Alle ' + total + ' fases zijn afgerond.'));
+      hero.appendChild(prog);
+    }
+    root.appendChild(hero);
+
+    /* drie doorklikkaarten */
+    var cards = el('div', 'cockpit-cards');
+
+    var latest = (BUNDLE.media || []).slice().sort(function (a, b) {
+      return parseDay(b.capturedAt) - parseDay(a.capturedAt);
+    })[0] || null;
+    var aU = el('a', 'ccard fl-reveal');
+    aU.href = '#/updates';
+    if (latest) {
+      var img = el('img');
+      img.alt = '';
+      img.loading = 'lazy';
+      DS.mediaUrl(latest).then(function (u) { if (u) img.src = u; }).catch(function () { /* stil */ });
+      aU.appendChild(img);
+    }
+    var padU = el('div', 'ccard-pad');
+    padU.appendChild(el('div', 'ccard-l', 'Laatste update'));
+    padU.appendChild(el('div', 'ccard-t', latest ? (latest.caption || '') : 'Nog geen updates.'));
+    padU.appendChild(el('div', 'ccard-m', latest ? originLine(latest) : 'Zodra er iets te zien is, staat het hier.'));
+    aU.appendChild(padU);
+    cards.appendChild(aU);
+
+    var aI = el('a', 'ccard fl-reveal');
+    aI.href = '#/kosten';
+    var padI = el('div', 'ccard-pad');
+    padI.appendChild(el('div', 'ccard-l', 'Facturen'));
+    var openList = (BUNDLE.invoices || []).filter(function (i) { return i.status === 'open'; });
+    if (openList.length) {
+      padI.appendChild(el('div', 'ccard-t', openList[0].label));
+      padI.appendChild(el('div', 'ccard-amount mono', fmtMoney(openList[0].amountCents)));
+      padI.appendChild(el('div', 'ccard-m', openList.length > 1
+        ? 'En nog ' + (openList.length - 1) + ' openstaande ' + (openList.length > 2 ? 'facturen' : 'factuur') + '.'
+        : 'Staat open — bekijk het betaalpad.'));
+    } else {
+      padI.appendChild(el('div', 'ccard-t', 'Niets open'));
+      padI.appendChild(el('div', 'ccard-m', 'Er staat geen factuur voor je open.'));
+    }
+    aI.appendChild(padI);
+    cards.appendChild(aI);
+
+    /* zendingkaart alleen als er echt iets onderweg is */
+    var activeShip = (BUNDLE.shipments || []).filter(function (s) { return !s.deliveredAt; })
+      .sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); })[0] || null;
+    if (activeShip) {
+      var SHIP = window.CP_SHIPPING;
+      var aS = el('a', 'ccard fl-reveal');
+      aS.href = '#/zendingen';
+      var padS = el('div', 'ccard-pad');
+      padS.appendChild(el('div', 'ccard-l', 'Onderweg'));
+      var carrier = SHIP.CARRIERS[activeShip.carrierCode] || null;
+      padS.appendChild(el('div', 'ccard-t', SHIP.typeLabel(activeShip.type) + (carrier ? ' via ' + carrier.name : '')));
+      var evs = shipmentEventsFor(activeShip.id).slice().sort(function (a, b) {
+        return String(a.occurredAt).localeCompare(String(b.occurredAt));
+      });
+      var lastEv = evs[evs.length - 1] || null;
+      if (lastEv) {
+        var parts = [SHIP.milestoneLabel(activeShip.type, lastEv.milestoneKey), fmtDateShort(lastEv.occurredAt)];
+        if (lastEv.location) parts.push(lastEv.location);
+        padS.appendChild(el('div', 'ccard-m', parts.join(' · ')));
+      } else {
+        padS.appendChild(el('div', 'ccard-m', 'Nog geen mijlpaal afgevinkt.'));
+      }
+      if (activeShip.etaWindowStart && activeShip.etaWindowEnd) {
+        padS.appendChild(el('div', 'ccard-m', 'Verwacht tussen ' + fmtDateShort(activeShip.etaWindowStart) +
+          ' en ' + fmtDateShort(activeShip.etaWindowEnd) + '.'));
+      }
+      aS.appendChild(padS);
+      cards.appendChild(aS);
+    }
+    root.appendChild(cards);
+  }
+
+  /* ============================================================
+     Mijn Producten (#/producten) — één kaart per project van deze
+     klant: herofoto (nieuwste media), naam, code, huidige fase als
+     minipad en de volgende stap uit nextStep(). Actieve projecten
+     bovenaan; afgeronde en gearchiveerde projecten verhuizen naar de
+     Archiefplank eronder en blijven permanent klikbaar, met het
+     volledige dossier en de zendinggeschiedenis. Op elk afgerond
+     project één knop "Vraag een nieuwe batch aan" — bewust een
+     gespreksstarter met dossier, geen webshop-checkout.
+     ============================================================ */
+  function projectIsCompleted(p) {
+    if (p.status === 'archived') return true;
+    var st = p.stages || [];
+    return st.length > 0 && st.every(function (s) { return s.status === 'done'; });
+  }
+
+  function portfolioBundleFor(pf, projectId) {
+    function pick(arr) {
+      return (arr || []).filter(function (r) { return r.projectId === projectId; });
+    }
+    var p = (pf.projects || []).find(function (x) { return x.id === projectId; }) || null;
+    return {
+      project: p,
+      stages: ((p && p.stages) || []).slice().sort(function (a, b) { return a.position - b.position; }),
+      media: pick(pf.media),
+      samples: pick(pf.samples),
+      invoices: pick(pf.invoices),
+      questions: pick(pf.questions),
+      shipments: pick(pf.shipments)
+    };
+  }
+
+  function miniPath(stages) {
+    var row = el('div', 'pmini');
+    row.setAttribute('aria-hidden', 'true');
+    stages.forEach(function (s, i) {
+      var cls = 'pm-dot';
+      if (s.status === 'done') cls += ' done';
+      else if (s.status !== 'upcoming') cls += ' current';
+      row.appendChild(el('span', cls));
+      if (i < stages.length - 1) {
+        row.appendChild(el('span', 'pm-line' + (s.status === 'done' ? ' done' : '')));
+      }
+    });
+    return row;
+  }
+
+  function openReorderSheet(project) {
+    var body = byId('sheet-body');
+    body.textContent = '';
+    body.appendChild(el('h3', 'sh-h', 'Vraag een nieuwe batch aan'));
+    body.appendChild(el('div', 'sh-origin',
+      (project.name + (project.code ? ' · ' + project.code : '')).toUpperCase()));
+    var intro = el('p', 'sh-cap',
+      'Het volledige dossier — golden sample, laatste rapporten en fabriek — gaat automatisch mee als referentie. Steffan bevestigt met een offerte, want prijzen kunnen per batch verschillen.');
+    body.appendChild(intro);
+
+    var form = el('form', 'ask-form');
+    var fldA = el('div', 'ask-field');
+    var lblA = el('label', null, 'Aantal stuks');
+    lblA.setAttribute('for', 'reorder-aantal');
+    var inpA = document.createElement('input');
+    inpA.type = 'number';
+    inpA.id = 'reorder-aantal';
+    inpA.min = '1';
+    inpA.step = '1';
+    inpA.required = true;
+    inpA.placeholder = 'bv. 5000';
+    fldA.appendChild(lblA);
+    fldA.appendChild(inpA);
+
+    var fldP = el('div', 'ask-field');
+    var lblP = el('label', null, 'Gewenste periode');
+    lblP.setAttribute('for', 'reorder-periode');
+    var inpP = document.createElement('input');
+    inpP.type = 'text';
+    inpP.id = 'reorder-periode';
+    inpP.required = true;
+    inpP.placeholder = 'bv. klaar voor levering in november';
+    fldP.appendChild(lblP);
+    fldP.appendChild(inpP);
+
+    var btn = el('button', 'btn btn-dark', 'Verstuur aanvraag');
+    btn.type = 'submit';
+    var confirm = el('p', 'ask-confirm', '');
+    confirm.setAttribute('aria-live', 'polite');
+    var errP = el('p', 'form-error', '');
+    errP.setAttribute('aria-live', 'polite');
+    errP.hidden = true;
+
+    form.appendChild(fldA);
+    form.appendChild(fldP);
+    form.appendChild(btn);
+    form.appendChild(confirm);
+    form.appendChild(errP);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errP.hidden = true;
+      errP.textContent = '';
+      var n = parseInt(inpA.value, 10);
+      var periode = inpP.value.trim();
+      if (!(n > 0)) {
+        errP.textContent = 'Vul een aantal in van minstens 1 stuk.';
+        errP.hidden = false;
+        return;
+      }
+      if (!periode) {
+        errP.textContent = 'Vul de gewenste periode in, bijvoorbeeld een maand.';
+        errP.hidden = false;
+        return;
+      }
+      var text = 'HERBESTELLING: ' + n + ' stuks, periode ' + periode +
+        ' — dossier ' + project.name + (project.code ? ' / ' + project.code : '') + ' als referentie';
+      btn.disabled = true;
+      DS.addQuestion(project.id, null, text).then(function (q) {
+        if (PORTFOLIO && PORTFOLIO.questions) PORTFOLIO.questions.push(q);
+        if (BUNDLE && BUNDLE.project && BUNDLE.project.id === project.id) BUNDLE.questions.push(q);
+        inpA.disabled = true;
+        inpP.disabled = true;
+        btn.hidden = true;
+        confirm.textContent = 'Aanvraag ontvangen — Steffan komt met een offerte.';
+      }).catch(function () {
+        btn.disabled = false;
+        errP.textContent = 'Versturen lukte niet. Probeer het opnieuw of mail steffan@customplus.nl.';
+        errP.hidden = false;
+      });
+    });
+    body.appendChild(form);
+    openSheet();
+  }
+
+  function productCard(project, pf) {
+    var pb = portfolioBundleFor(pf, project.id);
+    var completed = projectIsCompleted(project);
+    var stages = pb.stages;
+    var total = stages.length;
+    var current = currentStageOf(stages);
+    var isOpenNow = !!(BUNDLE && BUNDLE.project && BUNDLE.project.id === project.id);
+
+    var art = el('article', 'prodcard fl-reveal');
+
+    var open = el('button', 'prod-open');
+    open.type = 'button';
+    open.setAttribute('aria-label', 'Open het dossier van ' + project.name);
+
+    /* herofoto = nieuwste media van dit project */
+    var newest = pb.media.slice().sort(function (a, b) {
+      return parseDay(b.capturedAt) - parseDay(a.capturedAt);
+    })[0] || null;
+    if (newest) {
+      var img = el('img');
+      img.alt = '';
+      img.loading = 'lazy';
+      DS.mediaUrl(newest).then(function (u) { if (u) img.src = u; }).catch(function () { /* stil */ });
+      open.appendChild(img);
+    } else {
+      var ph = el('div', 'prod-hero-empty');
+      ph.setAttribute('aria-hidden', 'true');
+      ph.appendChild(olDrawPhotos());
+      open.appendChild(ph);
+    }
+
+    var pad = el('div', 'prod-pad');
+    var kickParts = [];
+    if (project.code) kickParts.push(project.code);
+    if (completed) kickParts.push('AFGEROND');
+    else if (total && current) kickParts.push('FASE ' + current.position + ' VAN ' + total + ' · ' + (STAGE_SHORT[current.stageKey] || current.stageKey).toUpperCase());
+    if (isOpenNow) kickParts.push('NU GEOPEND');
+    pad.appendChild(el('p', 'kicker', kickParts.join(' · ')));
+    pad.appendChild(el('div', 'prod-name', project.name));
+    if (total) {
+      pad.appendChild(miniPath(stages));
+      pad.appendChild(el('p', 'sr-only', completed
+        ? 'Alle ' + total + ' fases zijn afgerond.'
+        : (current ? 'Fase ' + current.position + ' van ' + total + ' — ' + stageName(current.stageKey) + '.' : '')));
+    }
+
+    if (completed) {
+      var delivered = pb.shipments.filter(function (s) { return !!s.deliveredAt; })
+        .sort(function (a, b) { return new Date(b.deliveredAt) - new Date(a.deliveredAt); });
+      pad.appendChild(el('div', 'prod-next',
+        'Het volledige dossier en de zendinggeschiedenis blijven permanent toegankelijk.'));
+      if (pb.shipments.length) {
+        pad.appendChild(el('div', 'prod-ship',
+          pb.shipments.length + (pb.shipments.length === 1 ? ' zending' : ' zendingen') +
+          (delivered[0] ? ' · laatst geleverd ' + fmtDateShort(delivered[0].deliveredAt) : '')));
+      }
+    } else {
+      var step = nextStep(pb);
+      pad.appendChild(el('div', 'prod-next', step.title));
+    }
+    open.appendChild(pad);
+    open.addEventListener('click', function () {
+      if (isOpenNow) { location.hash = '#/home'; return; }
+      enterProject(project, 'home');
+    });
+    art.appendChild(open);
+
+    if (completed) {
+      var actions = el('div', 'prod-actions');
+      var rb = el('button', 'btn btn-dark', 'Vraag een nieuwe batch aan');
+      rb.type = 'button';
+      rb.setAttribute('data-magnetic', '');
+      rb.addEventListener('click', function () { openReorderSheet(project); });
+      actions.appendChild(rb);
+      art.appendChild(actions);
+    }
+    return art;
+  }
+
+  /* de vaste lege kaart: een volgend product begint bij een gesprek */
+  function newProductCard() {
+    var art = el('article', 'prodcard prod-new fl-reveal');
+    art.appendChild(el('p', 'kicker', 'Volgend product?'));
+    art.appendChild(el('div', 'prod-new-t', 'Een nieuw product beginnen?'));
+    art.appendChild(el('p', null, 'Vertel Steffan kort wat je wilt maken — hij denkt mee vanaf de eerste schets.'));
+    var a = el('a', 'btn', 'Start het gesprek');
+    a.href = 'custom-plus.html#/contact';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('data-magnetic', '');
+    art.appendChild(a);
+    return art;
+  }
+
+  function renderProducten() {
+    var root = byId('producten-list');
+    if (!root || !SESSION) return;
+    root.textContent = '';
+    fetchPortfolio().then(function (pf) {
+      root.textContent = '';
+      var all = (pf.projects || []).slice().sort(function (a, b) {
+        return String(b.createdAt).localeCompare(String(a.createdAt));
+      });
+      var active = all.filter(function (p) { return !projectIsCompleted(p); });
+      var done = all.filter(function (p) { return projectIsCompleted(p); });
+
+      var grid = el('div', 'prod-grid');
+      active.forEach(function (p) { grid.appendChild(productCard(p, pf)); });
+      grid.appendChild(newProductCard());
+      root.appendChild(grid);
+
+      if (done.length) {
+        root.appendChild(el('p', 'kicker archief-kick fl-reveal',
+          'Archiefplank — afgeronde projecten blijven hier permanent staan'));
+        var gridA = el('div', 'prod-grid');
+        done.forEach(function (p) { gridA.appendChild(productCard(p, pf)); });
+        root.appendChild(gridA);
+      }
+      observeReveals(root);
+    }).catch(function () {
+      root.textContent = '';
+      root.appendChild(el('p', 'empty-line',
+        'Je producten konden nu niet worden geladen. Vernieuw de pagina of mail steffan@customplus.nl.'));
+    });
+  }
+
+  /* ============================================================
+     De Weeklijn — horizontale SVG-tijdlijn bovenaan #/mijlpalen.
+     Verleden is hard (echte approvedAt-datums), de toekomst is
+     eerlijk zacht: gestippeld met een weekrange die expliciet
+     "indicatie" heet (CP_PLANNED_WEEKS in portal/config.js).
+     ============================================================ */
+  function renderWeekline() {
+    var root = byId('weekline');
+    var legend = byId('weekline-legend');
+    if (!root) return;
+    root.textContent = '';
+    var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    if (!stages.length) {
+      root.hidden = true;
+      if (legend) legend.hidden = true;
+      return;
+    }
+    root.hidden = false;
+    if (legend) legend.hidden = false;
+
+    var PW = window.CP_PLANNED_WEEKS || {};
+    var WKMS = 7 * 86400000;
+
+    /* anker: de eerste echte goedkeuringsdatum, teruggerekend naar
+       week 0 via de geplande eindweek van die fase. Geen approvedAt →
+       geen anker en dus geen NU-cursor. */
+    var firstApproved = stages.filter(function (s) { return !!s.approvedAt; })
+      .sort(function (a, b) { return parseDay(a.approvedAt) - parseDay(b.approvedAt); })[0] || null;
+    var week0 = null;
+    if (firstApproved) {
+      var fr = PW[firstApproved.stageKey];
+      week0 = parseDay(firstApproved.approvedAt).getTime() - (fr ? fr[1] : 0) * WKMS;
+    }
+
+    var prevEnd = 0, maxWeek = 0, items = [];
+    stages.forEach(function (s) {
+      var range = PW[s.stageKey] || null;
+      var it = { stage: s, range: range };
+      if (s.status === 'done') {
+        it.kind = 'done';
+        it.dotWk = (week0 !== null && s.approvedAt)
+          ? (parseDay(s.approvedAt).getTime() - week0) / WKMS
+          : (range ? range[1] : prevEnd + 2);
+        it.startWk = Math.min(prevEnd, it.dotWk);
+        it.endWk = Math.max(prevEnd, it.dotWk);
+      } else if (s.status !== 'upcoming') {
+        it.kind = 'current';
+        it.startWk = prevEnd;
+        it.endWk = Math.max(range ? range[1] : prevEnd + 2, it.startWk + 0.8);
+      } else {
+        it.kind = 'upcoming';
+        it.startWk = Math.max(range ? range[0] : prevEnd, prevEnd);
+        it.endWk = Math.max(range ? range[1] : it.startWk + 2, it.startWk + 0.8);
+      }
+      prevEnd = it.endWk;
+      maxWeek = Math.max(maxWeek, it.endWk);
+      items.push(it);
+    });
+
+    var cursorWk = null;
+    if (week0 !== null) {
+      cursorWk = (Date.now() - week0) / WKMS;
+      if (cursorWk < 0) cursorWk = 0;
+    }
+    maxWeek = Math.max(24, Math.ceil(maxWeek), cursorWk === null ? 0 : Math.ceil(cursorWk) + 1);
+
+    var W = 760, PL = 34, PR = 30, AXY = 64;
+    function X(wk) { return PL + (wk / maxWeek) * (W - PL - PR); }
+
+    var svg = svgEl('svg', {
+      viewBox: '0 0 ' + W + ' 122', role: 'img',
+      'aria-label': 'Tijdlijn in weken: afgeronde fases met hun echte goedkeuringsdatum, de huidige fase in groen, toekomstige fases als indicatie.'
+    });
+    svg.appendChild(svgEl('line', {
+      x1: X(0), y1: AXY, x2: X(maxWeek), y2: AXY,
+      stroke: 'var(--line)', 'stroke-width': '1'
+    }));
+
+    var lastLabX = -999, labRow = 0;
+    function belowY(x) {
+      if (x - lastLabX < 58) labRow = 1 - labRow; else labRow = 0;
+      lastLabX = x;
+      return AXY + (labRow ? 38 : 24);
+    }
+    function shortName(s) { return (STAGE_SHORT[s.stageKey] || s.stageKey).toUpperCase(); }
+
+    items.forEach(function (it) {
+      var x1 = X(it.startWk), x2 = X(it.endWk), midX = (x1 + x2) / 2;
+      var tn, tb;
+      if (it.kind === 'done') {
+        if (x2 > x1) {
+          svg.appendChild(svgEl('line', {
+            x1: x1, y1: AXY, x2: x2, y2: AXY,
+            stroke: 'var(--ink)', 'stroke-width': '2', 'stroke-linecap': 'round'
+          }));
+        }
+        svg.appendChild(svgEl('circle', { cx: x2, cy: AXY, r: '5', fill: 'var(--ink)' }));
+        tn = svgEl('text', { x: x2, y: AXY - 22, 'text-anchor': 'middle', class: 'wl-lab' });
+        tn.textContent = shortName(it.stage);
+        svg.appendChild(tn);
+        if (it.stage.approvedAt) {
+          tb = svgEl('text', { x: x2, y: belowY(x2), 'text-anchor': 'middle', class: 'wl-lab wl-date' });
+          tb.textContent = fmtDateShort(it.stage.approvedAt).toUpperCase();
+          svg.appendChild(tb);
+        }
+      } else if (it.kind === 'current') {
+        svg.appendChild(svgEl('line', {
+          x1: x1, y1: AXY, x2: x2, y2: AXY,
+          stroke: 'var(--green)', 'stroke-width': '5', 'stroke-linecap': 'round',
+          class: 'wl-current-seg'
+        }));
+        tn = svgEl('text', { x: midX, y: AXY - 22, 'text-anchor': 'middle', class: 'wl-lab' });
+        tn.textContent = shortName(it.stage);
+        svg.appendChild(tn);
+        tb = svgEl('text', { x: midX, y: belowY(midX), 'text-anchor': 'middle', class: 'wl-lab' });
+        tb.textContent = 'NU BEZIG';
+        svg.appendChild(tb);
+      } else {
+        svg.appendChild(svgEl('line', {
+          x1: x1, y1: AXY, x2: x2, y2: AXY,
+          stroke: 'var(--gray-a7)', 'stroke-width': '2',
+          'stroke-dasharray': '2 6', 'stroke-linecap': 'round'
+        }));
+        svg.appendChild(svgEl('circle', {
+          cx: x2, cy: AXY, r: '4', fill: 'none',
+          stroke: 'var(--gray-a7)', 'stroke-width': '1.5', 'stroke-dasharray': '2 3'
+        }));
+        tn = svgEl('text', { x: midX, y: AXY - 22, 'text-anchor': 'middle', class: 'wl-lab' });
+        tn.textContent = shortName(it.stage);
+        svg.appendChild(tn);
+        tb = svgEl('text', { x: midX, y: belowY(midX), 'text-anchor': 'middle', class: 'wl-lab wl-date' });
+        tb.textContent = it.range ? ('WK ' + it.range[0] + '–' + it.range[1] + ' · INDICATIE') : 'INDICATIE';
+        svg.appendChild(tb);
+      }
+    });
+
+    if (cursorWk !== null) {
+      var cx = X(Math.min(cursorWk, maxWeek));
+      svg.appendChild(svgEl('line', {
+        x1: cx, y1: 26, x2: cx, y2: AXY + 16,
+        stroke: 'var(--green)', 'stroke-width': '1.5'
+      }));
+      var nu = svgEl('text', { x: cx, y: 16, 'text-anchor': 'middle', class: 'wl-lab wl-nu' });
+      nu.textContent = 'NU';
+      svg.appendChild(nu);
+    }
+    root.appendChild(svg);
+  }
+
+  /* ============================================================
+     Fabriek op de Kaart — met de hand gestileerde, vereenvoudigde
+     China-omtrek (geen kaart-API, nul kosten) met een groene pin per
+     fabriek die aan dit project is gekoppeld via media en disclosures.
+     Bewust alleen stadsniveau, nooit een adres; coördinaten uit
+     CP_CITY_COORDS in portal/config.js. Kleuren via CSS-vars, dus de
+     blauwdrukstand kleurt gratis mee. Routes en scheepsposities horen
+     hier niet: het volgen doet de pagina Zendingen.
+     ============================================================ */
+  var CHINA_OUTLINE = 'M462 28 L508 73 L539 88 L577 95 L546 168 L540 175 L507 187 ' +
+    'L483 208 L454 224 L453 195 L426 220 L424 227 L435 237 L457 239 L468 244 ' +
+    'L439 269 L440 279 L462 321 L453 336 L462 341 L451 368 L441 393 L426 415 ' +
+    'L414 429 L388 441 L370 452 L357 469 L353 455 L336 453 L324 440 L307 436 ' +
+    'L280 459 L263 447 L242 420 L252 392 L241 364 L219 353 L187 371 L163 368 ' +
+    'L128 361 L92 337 L74 320 L70 300 L46 277 L34 247 L37 215 L49 201 L85 177 ' +
+    'L106 137 L133 112 L174 101 L192 139 L231 171 L272 172 L305 184 L338 175 ' +
+    'L371 157 L415 149 L444 117 L421 79 L452 45 Z';
+  var CHINA_HAINAN = 'M344 480 Q352 472 361 478 Q368 484 361 492 Q351 499 344 491 Q339 486 344 480 Z';
+
+  function renderFactoryMap() {
+    var root = byId('factory-map');
+    if (!root) return;
+    root.textContent = '';
+    var coords = window.CP_CITY_COORDS || {};
+    var linked = {};
+    (BUNDLE.media || []).forEach(function (m) { if (m.factoryId) linked[m.factoryId] = true; });
+    (BUNDLE.disclosures || []).forEach(function (d) { if (d.factoryId) linked[d.factoryId] = true; });
+    var pins = (BUNDLE.factories || []).filter(function (f) {
+      return linked[f.id] && f.city && coords[f.city];
+    });
+    if (!pins.length) { root.hidden = true; return; }
+    root.hidden = false;
+
+    root.appendChild(el('p', 'kicker', 'Waar jouw product gemaakt wordt'));
+
+    var ariaParts = pins.map(function (f) { return f.name + ' in ' + f.city; });
+    var svg = svgEl('svg', {
+      viewBox: '0 0 600 520', class: 'fmap-svg', role: 'img',
+      'aria-label': 'Vereenvoudigde kaart van China, alleen stadsniveau: ' + ariaParts.join(', ') + '.'
+    });
+    svg.appendChild(svgEl('path', { d: CHINA_OUTLINE, class: 'fmap-outline' }));
+    svg.appendChild(svgEl('path', { d: CHINA_HAINAN, class: 'fmap-outline' }));
+
+    /* pins gesorteerd op hoogte, zodat labels van buursteden netjes stapelen */
+    var sorted = pins.slice().sort(function (a, b) {
+      return coords[a.city].y - coords[b.city].y;
+    });
+    var prevLabelY = -999;
+    sorted.forEach(function (f) {
+      var c = coords[f.city];
+      svg.appendChild(svgEl('circle', {
+        cx: c.x, cy: c.y, r: '7.5', fill: 'none',
+        stroke: 'var(--green)', 'stroke-width': '1', opacity: '.45'
+      }));
+      svg.appendChild(svgEl('circle', { cx: c.x, cy: c.y, r: '4', fill: 'var(--green)' }));
+      var sub = (f.region && f.region !== f.city) ? f.region : f.city;
+      var labY = c.y + 3.5;
+      if (labY - prevLabelY < 14) labY = prevLabelY + 14;
+      prevLabelY = labY;
+      var anchorEnd = c.x > 430;
+      var t = svgEl('text', {
+        x: anchorEnd ? c.x - 12 : c.x + 12, y: labY,
+        'text-anchor': anchorEnd ? 'end' : 'start', class: 'fmap-lab'
+      });
+      t.textContent = (f.name + ' · ' + sub).toUpperCase();
+      svg.appendChild(t);
+    });
+    root.appendChild(svg);
+    root.appendChild(el('p', 'fmap-cap', 'Vereenvoudigde kaart, alleen stadsniveau — nooit een adres.'));
+  }
+
+  /* ============================================================
      Updates per fase
      ============================================================ */
   function mediaCard(m) {
@@ -1183,19 +2577,45 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   function renderUpdates() {
     var root = byId('updates-list');
     root.textContent = '';
+
+    /* vragen zonder foto (bv. herbestelaanvragen) zouden anders nergens
+       zichtbaar zijn, terwijl de cockpit en de meldingen er wel heen linken */
+    var looseQs = BUNDLE.questions.filter(function (q) { return !q.mediaId; })
+      .slice().sort(function (a, b) { return new Date(b.askedAt) - new Date(a.askedAt); });
+    if (looseQs.length) {
+      var qCard = el('div', 'qc-card fl-reveal');
+      qCard.appendChild(el('div', 'qc-meta', 'Jouw vragen en aanvragen'));
+      looseQs.forEach(function (t) {
+        var th = el('div', 'thread');
+        th.appendChild(el('div', 't-who', 'Jij · ' + fmtDateTime(t.askedAt)));
+        th.appendChild(el('div', 't-q', t.question));
+        if (t.answer) {
+          var ans = el('div', 't-answer');
+          ans.appendChild(el('div', 't-who', 'Steffan · ' + (t.answeredAt ? fmtDateTime(t.answeredAt) : '')));
+          ans.appendChild(el('div', 't-q', t.answer));
+          th.appendChild(ans);
+        } else {
+          th.appendChild(el('div', 't-pending', 'Nog niet beantwoord — je hoort binnen 1 werkdag van Steffan.'));
+        }
+        qCard.appendChild(th);
+      });
+      root.appendChild(qCard);
+    }
+
     var withMedia = BUNDLE.stages.filter(function (s) {
       return BUNDLE.media.some(function (m) { return m.stageKey === s.stageKey; });
     }).sort(function (a, b) { return b.position - a.position; });
 
     if (!withMedia.length) {
-      root.appendChild(el('p', 'empty-line', 'Nog geen updates. Zodra er iets te zien is, staat het hier.'));
+      root.appendChild(outlookBlock(olDrawPhotos, null,
+        'Steffan deelt hier foto’s uit elke fase, elk met datum en herkomst. De eerste verschijnt zodra er iets te zien is.'));
       return;
     }
     withMedia.forEach(function (s, idx) {
       var media = BUNDLE.media.filter(function (m) { return m.stageKey === s.stageKey; })
         .slice().sort(function (a, b) { return parseDay(b.capturedAt) - parseDay(a.capturedAt); });
 
-      var det = el('details', 'stage-acc');
+      var det = el('details', 'stage-acc fl-reveal');
       if (idx === 0) det.open = true;
       var sum = el('summary');
       sum.appendChild(el('span', 'acc-caret mono', '›'));
@@ -1215,12 +2635,82 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   /* ============================================================
      Sample-plank
      ============================================================ */
+
+  /* Voor en na — vergelijker tussen twee opeenvolgende rondes met foto:
+     twee lagen in één figure, clip-path gestuurd door een range-input
+     (en dus ook met het toetsenbord bedienbaar). Notities van de rondes
+     als mono-chips eronder; de goedgekeurde ronde draagt het groene zegel. */
+  function beforeAfterBlock(older, newer) {
+    var mOld = BUNDLE.media.find(function (m) { return m.id === older.mediaId; });
+    var mNew = BUNDLE.media.find(function (m) { return m.id === newer.mediaId; });
+    var wrap = el('div', 'ba-wrap');
+    wrap.appendChild(el('p', 'kicker', 'Voor en na · ' + older.roundLabel + ' → ' + newer.roundLabel));
+
+    var fig = el('figure', 'ba-figure');
+    var imgOld = el('img', 'ba-img' + (older.status === 'superseded' ? ' ba-gray' : ''));
+    imgOld.alt = 'Sample ' + older.roundLabel;
+    DS.mediaUrl(mOld).then(function (u) { if (u) imgOld.src = u; }).catch(function () { /* stil */ });
+    var imgNew = el('img', 'ba-img');
+    imgNew.alt = 'Sample ' + newer.roundLabel;
+    DS.mediaUrl(mNew).then(function (u) { if (u) imgNew.src = u; }).catch(function () { /* stil */ });
+    imgNew.style.clipPath = 'inset(0 0 0 50%)';
+    var divider = el('div', 'ba-divider');
+    divider.style.left = '50%';
+    divider.setAttribute('aria-hidden', 'true');
+    fig.appendChild(imgOld);
+    fig.appendChild(imgNew);
+    fig.appendChild(divider);
+    fig.appendChild(el('span', 'ba-taglab left', older.roundLabel));
+    fig.appendChild(el('span', 'ba-taglab right', newer.roundLabel));
+    wrap.appendChild(fig);
+
+    var range = document.createElement('input');
+    range.type = 'range';
+    range.min = '0';
+    range.max = '100';
+    range.step = '1';
+    range.value = '50';
+    range.className = 'ba-range';
+    range.setAttribute('aria-label', 'Vergelijk sample ' + older.roundLabel + ' (links) met sample ' + newer.roundLabel + ' (rechts)');
+    range.addEventListener('input', function () {
+      var v = Math.max(0, Math.min(100, Number(range.value) || 0));
+      imgNew.style.clipPath = 'inset(0 0 0 ' + v + '%)';
+      divider.style.left = v + '%';
+    });
+    wrap.appendChild(range);
+
+    var notes = el('div', 'ba-notes');
+    [older, newer].forEach(function (smp) {
+      var chip = el('div', 'ba-chip');
+      chip.appendChild(el('span', 'ba-round', smp.roundLabel + ' · ' + fmtDateShort(smp.roundDate)));
+      if (smp.note) chip.appendChild(el('span', null, smp.note));
+      if (smp.status === 'approved') {
+        chip.appendChild(el('span', 'tag-approved',
+          'Goedgekeurd' + (smp.approvedAt ? ' op ' + fmtDate(smp.approvedAt) : '')));
+      }
+      notes.appendChild(chip);
+    });
+    wrap.appendChild(notes);
+    return wrap;
+  }
+
   function renderSamples() {
     var root = byId('samples-list');
     root.textContent = '';
     if (!BUNDLE.samples.length) {
-      root.appendChild(el('p', 'empty-line', 'Nog geen samplerondes. Die verschijnen hier zodra de eerste sample uit de mal komt.'));
+      root.appendChild(outlookBlock(olDrawShelf, null, outlookSampleLine()));
       return;
+    }
+    /* de vergelijker boven de rijenlijst: de twee jongste rondes die
+       allebei een foto hebben; rondes zonder foto slaan we netjes over */
+    var chrono = BUNDLE.samples.slice().sort(function (a, b) {
+      return parseDay(a.roundDate) - parseDay(b.roundDate);
+    });
+    var withPhoto = chrono.filter(function (smp) {
+      return BUNDLE.media.some(function (m) { return m.id === smp.mediaId; });
+    });
+    if (withPhoto.length >= 2) {
+      root.appendChild(beforeAfterBlock(withPhoto[withPhoto.length - 2], withPhoto[withPhoto.length - 1]));
     }
     var rows = BUNDLE.samples.slice().sort(function (a, b) {
       if (a.status === 'approved' && b.status !== 'approved') return -1;
@@ -1244,6 +2734,10 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
       main.appendChild(el('div', 's-date', fmtDate(smp.roundDate)));
       row.appendChild(main);
       if (smp.status === 'approved') row.appendChild(el('span', 'tag-approved', 'Goedgekeurd'));
+      var inTransit = (BUNDLE.shipments || []).some(function (sp) {
+        return sp.sampleRoundId === smp.id && !sp.deliveredAt;
+      });
+      if (inTransit) row.appendChild(el('span', 'tag-transit', 'Onderweg naar jou'));
       row.addEventListener('click', function () {
         if (media) openMediaSheet(media);
       });
@@ -1254,21 +2748,200 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   /* ============================================================
      Kwaliteitscontrole
      ============================================================ */
+
+  /* Acceptatiegetal (Ac) uit de gepubliceerde Z1.4-tabel in
+     portal/config.js — bij een omvang tussen twee brackets geldt de
+     dichtstbijzijnde tabelwaarde. */
+  function aqlAcceptFor(sampleSize) {
+    var table = window.CP_AQL_ACCEPT || [];
+    if (!table.length || !sampleSize) return null;
+    var best = table[0];
+    for (var i = 1; i < table.length; i++) {
+      if (Math.abs(table[i].size - sampleSize) < Math.abs(best.size - sampleSize)) best = table[i];
+    }
+    return best.accept;
+  }
+
+  /* Kwaliteit in Beeld — sober handgeschreven SVG-paneel boven de
+     AQL-kaarten: per ronde een staaf ter lengte van de steekproef,
+     defecten als blokjes erop (klein grijs, groot inkt, kritiek omrand),
+     een merkstreepje op het acceptatiegetal en bij 2+ rondes een dunne
+     trendlijn van het totaal per ronde. Blokjes met een gekoppelde foto
+     klikken door naar het detail. Geen gridlijnen, kleuren via CSS-vars. */
+  function renderQualityChart() {
+    var root = byId('quality-viz');
+    if (!root) return;
+    root.textContent = '';
+    var rounds = (BUNDLE.inspections || []).slice().sort(function (a, b) {
+      return parseDay(a.reportDate) - parseDay(b.reportDate);
+    });
+    if (!rounds.length) { root.hidden = true; return; }
+    root.hidden = false;
+
+    var W = 760, ML = 16, topPad = 10, rowH = 58, barH = 12, slotW = 9, blockS = 8;
+    var plotW = 600, passX = ML + plotW + 16;
+    var H = topPad + rounds.length * rowH + 8;
+    var maxSize = 1;
+    rounds.forEach(function (r) { maxSize = Math.max(maxSize, r.sampleSize || 1); });
+
+    /* per ronde alvast de posities en totalen bepalen (ook voor de trendlijn) */
+    var items = rounds.map(function (r, i) {
+      var blocks = [];
+      (r.defects || []).forEach(function (d) {
+        var media = d.mediaId ? BUNDLE.media.find(function (m) { return m.id === d.mediaId; }) : null;
+        for (var k = 0; k < (d.count || 0); k++) {
+          blocks.push({ severity: d.severity, media: media || null });
+        }
+      });
+      return {
+        r: r,
+        blocks: blocks,
+        accept: aqlAcceptFor(r.sampleSize),
+        barY: topPad + i * rowH + 18,
+        labelY: topPad + i * rowH + 9,
+        barLen: Math.max(40, Math.round((r.sampleSize || 0) / maxSize * plotW))
+      };
+    });
+
+    var anyClickable = items.some(function (it) {
+      return it.blocks.some(function (b) { return !!b.media; });
+    });
+
+    var ariaParts = items.map(function (it) {
+      var cp = (it.r.checkpoint || '').toUpperCase();
+      var total = it.blocks.length;
+      var s = cp + ' op ' + fmtDateShort(it.r.reportDate) + ': ' + total +
+        (total === 1 ? ' afwijking' : ' afwijkingen') + ' op ' + it.r.sampleSize + ' stuks';
+      if (it.accept !== null) s += ', de norm staat er ' + it.accept + ' toe';
+      return s;
+    });
+    var svg = svgEl('svg', {
+      viewBox: '0 0 ' + W + ' ' + H, role: 'img',
+      'aria-label': 'Kwaliteit in beeld — per inspectieronde de steekproef, de gevonden afwijkingen en de norm. ' + ariaParts.join(' · ') + '.'
+    });
+
+    /* dunne trendlijn (totaal defecten per ronde) alleen bij 2+ rondes */
+    if (items.length >= 2) {
+      var pts = items.map(function (it) {
+        return (ML + 4 + it.blocks.length * slotW) + ',' + (it.barY + barH / 2);
+      });
+      svg.appendChild(svgEl('polyline', {
+        points: pts.join(' '), fill: 'none', stroke: 'var(--gray-9)',
+        'stroke-width': '1', opacity: '.8'
+      }));
+    }
+
+    items.forEach(function (it) {
+      var r = it.r;
+      var meta = svgEl('text', { x: ML, y: it.labelY, 'text-anchor': 'start', class: 'qcviz-lab' });
+      meta.textContent = (r.checkpoint || '').toUpperCase() + ' · ' +
+        fmtDateShort(r.reportDate).toUpperCase() + ' · STEEKPROEF ' + r.sampleSize + ' STUKS';
+      svg.appendChild(meta);
+
+      svg.appendChild(svgEl('rect', {
+        x: ML, y: it.barY, width: it.barLen, height: barH, rx: '6',
+        fill: 'var(--gray-f2)', stroke: 'var(--line)'
+      }));
+
+      /* merkstreepje op het acceptatiegetal uit de Z1.4-tabel */
+      if (it.accept !== null) {
+        var tickX = ML + 4 + it.accept * slotW - 1.5;
+        svg.appendChild(svgEl('line', {
+          x1: tickX, y1: it.barY - 6, x2: tickX, y2: it.barY + barH + 6,
+          stroke: 'var(--ink)', 'stroke-width': '1.5'
+        }));
+        var anchorStart = tickX < 60;
+        var norm = svgEl('text', {
+          x: anchorStart ? tickX : Math.min(tickX, W - 80),
+          y: it.barY + barH + 18,
+          'text-anchor': anchorStart ? 'start' : 'middle',
+          class: 'qcviz-lab qcviz-norm'
+        });
+        norm.textContent = 'NORM ≤ ' + it.accept;
+        svg.appendChild(norm);
+      }
+
+      /* defectblokjes: klein grijs, groot inkt, kritiek omrand */
+      it.blocks.forEach(function (b, j) {
+        var attrs = {
+          x: ML + 4 + j * slotW, y: it.barY + 2, width: blockS, height: blockS, rx: '1.5'
+        };
+        if (b.severity === 'critical') {
+          attrs.fill = 'var(--white)';
+          attrs.stroke = 'var(--critical)';
+          attrs['stroke-width'] = '2';
+        } else if (b.severity === 'major') {
+          attrs.fill = 'var(--ink)';
+        } else {
+          attrs.fill = 'var(--gray-a7)';
+        }
+        var rect = svgEl('rect', attrs);
+        if (b.media) {
+          rect.setAttribute('class', 'qc-defblock');
+          rect.setAttribute('tabindex', '0');
+          rect.setAttribute('role', 'button');
+          rect.setAttribute('aria-label', 'Afwijking (' +
+            (SEVERITY_LABELS[b.severity] || b.severity).toLowerCase() + ') — bekijk de gekoppelde foto');
+          (function (mediaRow) {
+            rect.addEventListener('click', function () { openMediaSheet(mediaRow); });
+            rect.addEventListener('keydown', function (e) {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMediaSheet(mediaRow); }
+            });
+          })(b.media);
+        } else {
+          rect.setAttribute('aria-hidden', 'true');
+        }
+        svg.appendChild(rect);
+      });
+
+      /* groen uitsluitend voor het geslaagd-vinkje */
+      if (r.passed) {
+        svg.appendChild(svgEl('path', {
+          d: 'M' + passX + ' ' + (it.barY + 7) + ' l5 5 10 -11',
+          fill: 'none', stroke: 'var(--green)', 'stroke-width': '2.5',
+          'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+        }));
+      } else {
+        var fail = svgEl('text', {
+          x: passX, y: it.barY + 10, 'text-anchor': 'start', class: 'qcviz-lab qcviz-fail'
+        });
+        fail.textContent = 'BUITEN NORM';
+        svg.appendChild(fail);
+      }
+    });
+
+    var card = el('article', 'qc-card fl-reveal');
+    var vizMeta = el('div', 'qc-meta');
+    vizMeta.appendChild(linkGlossaryTerms('Kwaliteit in beeld · per ronde: steekproef, afwijkingen en norm (AQL 2,5)'));
+    card.appendChild(vizMeta);
+    var scroll = el('div', 'qcviz-scroll');
+    scroll.appendChild(svg);
+    card.appendChild(scroll);
+    card.appendChild(el('p', 'qcviz-legend',
+      'Blokje = één afwijking · grijs klein · inkt groot · omrand kritiek · streepje = wat de norm toestaat' +
+      (anyClickable ? ' · klik een blokje voor de foto' : '')));
+    root.appendChild(card);
+  }
+
   function renderQuality() {
+    renderQualityChart();
     var root = byId('quality-list');
     root.textContent = '';
     if (!BUNDLE.inspections.length) {
-      root.appendChild(el('p', 'empty-line', 'Nog geen inspectierapporten. De eerste controle vindt plaats zodra de productie start.'));
+      root.appendChild(outlookBlock(olDrawTable, null, outlookQualityLine()));
       return;
     }
     var rows = BUNDLE.inspections.slice().sort(function (a, b) {
       return parseDay(b.reportDate) - parseDay(a.reportDate);
     });
     rows.forEach(function (r) {
-      var card = el('article', 'qc-card');
+      var card = el('article', 'qc-card fl-reveal');
       var cp = (CHECKPOINT_LABELS[r.checkpoint] || r.checkpoint.toUpperCase());
-      card.appendChild(el('div', 'qc-meta',
+      /* checkpointlabel en norm als tekstfragment met termlinks (Vaktaal Uitgelegd) */
+      var metaLine = el('div', 'qc-meta');
+      metaLine.appendChild(linkGlossaryTerms(
         cp + ' · ' + r.aqlNorm + ' · steekproef ' + r.sampleSize + ' · ' + fmtDateShort(r.reportDate)));
+      card.appendChild(metaLine);
 
       var defects = r.defects || [];
       if (defects.length) {
@@ -1300,6 +2973,200 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   }
 
   /* ============================================================
+     Zendingen — De Reis
+     Routeboog + verticale mijlpalentijdlijn per zending; geleverde
+     zendingen zakken permanent naar een archief per jaar.
+     ============================================================ */
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs) {
+    var n = document.createElementNS(SVG_NS, tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    }
+    return n;
+  }
+
+  function shipmentEventsFor(shipmentId) {
+    return (BUNDLE.shipmentEvents || []).filter(function (ev) { return ev.shipmentId === shipmentId; });
+  }
+
+  function shipArc(shipment, tpl, events) {
+    var reached = 0;
+    tpl.forEach(function (ms, i) {
+      var has = events.some(function (ev) { return ev.milestoneKey === ms.key; });
+      if (has) reached = i + 1;
+    });
+    var frac = tpl.length ? reached / tpl.length : 0;
+    if (shipment.deliveredAt) frac = 1;
+
+    var P0x = 36, P0y = 90, Cx = 300, Cy = 12, P1x = 564, P1y = 90;
+    var d = 'M ' + P0x + ' ' + P0y + ' Q ' + Cx + ' ' + Cy + ' ' + P1x + ' ' + P1y;
+    var svg = svgEl('svg', { viewBox: '0 0 600 118', class: 'ship-arc', 'aria-hidden': 'true', focusable: 'false' });
+
+    /* de hele route gestippeld: zo blijft het nog niet afgelegde deel zichtbaar */
+    svg.appendChild(svgEl('path', {
+      d: d, fill: 'none', stroke: 'var(--gray-a7)',
+      'stroke-width': '1.5', 'stroke-dasharray': '2 7', 'stroke-linecap': 'round'
+    }));
+    /* afgelegd deel als doorgetrokken lijn; pathLength maakt het percentage exact */
+    if (frac > 0) {
+      var pct = Math.min(100, Math.round(frac * 1000) / 10);
+      svg.appendChild(svgEl('path', {
+        d: d, fill: 'none', stroke: 'var(--ink)', 'stroke-width': '2',
+        pathLength: '100', 'stroke-dasharray': pct + ' ' + (101 - pct), 'stroke-linecap': 'round'
+      }));
+    }
+    svg.appendChild(svgEl('circle', { cx: P0x, cy: P0y, r: '3.5', fill: 'var(--ink)' }));
+    svg.appendChild(svgEl('circle', { cx: P1x, cy: P1y, r: '3.5', fill: 'var(--white)', stroke: 'var(--gray-a7)', 'stroke-width': '1.5' }));
+    /* groene punt op de laatste bereikte mijlpaal (kwadratische bezier op t=frac) */
+    if (frac > 0) {
+      var t = frac, mt = 1 - frac;
+      var x = mt * mt * P0x + 2 * mt * t * Cx + t * t * P1x;
+      var y = mt * mt * P0y + 2 * mt * t * Cy + t * t * P1y;
+      svg.appendChild(svgEl('circle', { cx: x, cy: y, r: '5', class: 'ship-dot' + (shipment.deliveredAt ? '' : ' live') }));
+    }
+
+    var sortedEv = events.slice().sort(function (a, b) {
+      return String(a.occurredAt).localeCompare(String(b.occurredAt));
+    });
+    var originLoc = (sortedEv.length && sortedEv[0].location) ? sortedEv[0].location : '';
+    var t1 = svgEl('text', { x: P0x - 6, y: 112, 'text-anchor': 'start' });
+    t1.textContent = 'FABRIEK' + (originLoc ? ' · ' + originLoc.toUpperCase() : '');
+    svg.appendChild(t1);
+    var t2 = svgEl('text', { x: P1x + 6, y: 112, 'text-anchor': 'end' });
+    t2.textContent = shipment.deliveredAt ? 'GELEVERD' : 'NAAR JOU';
+    svg.appendChild(t2);
+    return svg;
+  }
+
+  function shipmentCard(s) {
+    var SHIP = window.CP_SHIPPING;
+    var tpl = SHIP.milestonesFor(s.type);
+    var events = shipmentEventsFor(s.id);
+    var evByKey = {};
+    events.forEach(function (ev) { evByKey[ev.milestoneKey] = ev; });
+
+    var card = el('article', 'ship-card fl-reveal');
+
+    var head = el('div', 'ship-head');
+    var carrier = SHIP.CARRIERS[s.carrierCode] || null;
+    head.appendChild(el('span', 'ship-title', SHIP.typeLabel(s.type) + (carrier ? ' via ' + carrier.name : '')));
+    var smp = s.sampleRoundId ? BUNDLE.samples.find(function (x) { return x.id === s.sampleRoundId; }) : null;
+    if (smp) head.appendChild(el('span', 'ship-nr', 'Sample ' + smp.roundLabel));
+    if (s.blNumber) head.appendChild(el('span', 'ship-nr', 'B/L ' + s.blNumber));
+    if (s.deliveredAt) head.appendChild(el('span', 'tag-approved', 'Geleverd ' + fmtDateShort(s.deliveredAt)));
+    card.appendChild(head);
+
+    card.appendChild(shipArc(s, tpl, events));
+
+    var ul = el('ul', 'ship-tl');
+    tpl.forEach(function (ms) {
+      var ev = evByKey[ms.key];
+      var li = el('li', ev ? 'reached' : 'open');
+      li.appendChild(el('div', 'tl-label', ms.label));
+      if (ev) {
+        var parts = [fmtDateShort(ev.occurredAt)];
+        if (ev.location) parts.push(ev.location);
+        li.appendChild(el('div', 'tl-meta', parts.join(' · ')));
+        if (ev.note) li.appendChild(el('div', 'tl-note', ev.note));
+      }
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+
+    /* ETA is altijd een weekvenster; is de update ouder dan 7 dagen,
+       dan zegt de kaart dat gewoon in plaats van precisie te veinzen */
+    if (!s.deliveredAt && (s.etaWindowStart || s.etaWindowEnd)) {
+      var eta = el('div', 'ship-eta');
+      eta.appendChild(el('div', 'mono-l', 'Verwachte levering'));
+      var windowTxt;
+      if (s.etaWindowStart && s.etaWindowEnd) {
+        windowTxt = 'Tussen ' + fmtDate(s.etaWindowStart) + ' en ' + fmtDate(s.etaWindowEnd);
+      } else {
+        windowTxt = 'Rond ' + fmtDate(s.etaWindowStart || s.etaWindowEnd);
+      }
+      eta.appendChild(el('div', null, windowTxt + (s.etaNote ? ' — ' + s.etaNote : '')));
+      if (s.etaUpdatedAt) {
+        eta.appendChild(el('div', 'ship-eta-note', 'Laatst bijgewerkt op ' + fmtDate(s.etaUpdatedAt) + '.'));
+        var ageDays = (Date.now() - new Date(s.etaUpdatedAt).getTime()) / 86400000;
+        if (ageDays > 7) {
+          eta.appendChild(el('div', 'ship-eta-note', 'Deze indicatie is ouder dan een week. Steffan werkt hem bij zodra er nieuws van de vervoerder is.'));
+        }
+      }
+      card.appendChild(eta);
+    }
+
+    var nr = s.containerNumber || s.trackingNumber;
+    if (nr) {
+      var trackCarrier = (carrier && carrier.trackUrl) ? carrier : SHIP.CARRIERS.anders;
+      var actions = el('div', 'ship-actions');
+      var a = el('a', 'btn', 'Volg ' + nr + (carrier ? ' bij ' + carrier.name : ''));
+      a.href = trackCarrier.trackUrl(nr);
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('data-magnetic', '');
+      actions.appendChild(a);
+      actions.appendChild(el('span', 'ship-honest', 'Deze tijdlijn houdt Steffan bij — klik voor de live status van de vervoerder.'));
+      card.appendChild(actions);
+    }
+
+    var linkedDocs = (BUNDLE.documents || []).filter(function (dd) { return dd.shipmentId === s.id; });
+    if (linkedDocs.length) {
+      var db = el('div', 'ship-docs');
+      db.appendChild(el('div', 'mono-l', 'Documenten bij deze zending'));
+      linkedDocs.forEach(function (doc) {
+        var rowD = el('div', 'doc-row');
+        rowD.appendChild(el('span', 'd-type', DOC_TYPE_LABELS[doc.docType] || doc.docType));
+        var mainD = el('div', 'd-main');
+        mainD.appendChild(el('div', 'd-title', doc.title));
+        mainD.appendChild(el('div', 'd-meta', fmtDate(doc.createdAt)));
+        rowD.appendChild(mainD);
+        var btnD = el('button', 'btn-quiet', 'Download');
+        btnD.type = 'button';
+        btnD.setAttribute('aria-label', 'Download ' + doc.title);
+        btnD.setAttribute('data-magnetic', '');
+        btnD.addEventListener('click', function () { handleDownload(doc); });
+        rowD.appendChild(btnD);
+        db.appendChild(rowD);
+      });
+      card.appendChild(db);
+    }
+    return card;
+  }
+
+  function renderShipments() {
+    var root = byId('shipments-list');
+    root.textContent = '';
+    var all = BUNDLE.shipments || [];
+    if (!all.length) {
+      root.appendChild(outlookBlock(olDrawShip, 'Zodra er een zending is, begint hier de reis',
+        'Samples reizen per koerier, je productiebatch per zeevracht — elke zending krijgt hier zijn eigen reis met mijlpalen.'));
+      return;
+    }
+    var active = all.filter(function (s) { return !s.deliveredAt; })
+      .sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); });
+    active.forEach(function (s) { root.appendChild(shipmentCard(s)); });
+    if (!active.length) {
+      root.appendChild(el('p', 'empty-line', 'Er is nu niets onderweg. Alles wat eerder is verzonden staat hieronder in het archief.'));
+    }
+
+    var delivered = all.filter(function (s) { return !!s.deliveredAt; });
+    if (delivered.length) {
+      var byYear = {};
+      delivered.forEach(function (s) {
+        var y = String(new Date(s.deliveredAt).getFullYear());
+        if (!byYear[y]) byYear[y] = [];
+        byYear[y].push(s);
+      });
+      Object.keys(byYear).sort().reverse().forEach(function (y) {
+        root.appendChild(el('p', 'kicker ship-year', 'Archief · ' + y + ' — geleverde zendingen blijven hier permanent staan'));
+        byYear[y].sort(function (a, b) { return new Date(b.deliveredAt) - new Date(a.deliveredAt); })
+          .forEach(function (s) { root.appendChild(shipmentCard(s)); });
+      });
+    }
+  }
+
+  /* ============================================================
      Documenten
      ============================================================ */
   function openDemoDocSheet(doc) {
@@ -1307,7 +3174,8 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
     body.textContent = '';
     body.appendChild(el('h3', 'sh-h', doc.title));
     body.appendChild(el('div', 'sh-origin',
-      DOC_TYPE_LABELS[doc.docType] + ' · ' + stageName(doc.stageKey).toUpperCase() + ' · ' + fmtDateShort(doc.createdAt)));
+      (DOC_TYPE_LABELS[doc.docType] || doc.docType || 'Document') + ' · ' +
+      String(stageName(doc.stageKey) || '').toUpperCase() + ' · ' + fmtDateShort(doc.createdAt)));
     var note = el('div', 'sh-demo-note');
     note.appendChild(el('div', 'mono-l', 'Demo-omgeving'));
     note.appendChild(el('p', null, 'In de demo staat hier het echte bestand. In je eigen omgeving opent de download direct, via een beveiligde link die 15 minuten geldig is.'));
@@ -1347,7 +3215,8 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
     var root = byId('docs-list');
     root.textContent = '';
     if (!BUNDLE.documents.length) {
-      root.appendChild(el('p', 'empty-line', 'Nog geen documenten.'));
+      root.appendChild(outlookBlock(olDrawDrawer, null,
+        'Zodra Steffan het eerste document deelt — meestal de NNN overeenkomst — staat het hier, geordend per fase en permanent bewaard.'));
       return;
     }
     STAGE_ORDER.forEach(function (key) {
@@ -1359,7 +3228,7 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
         if (da !== db) return da - db;
         return parseDay(a.createdAt) - parseDay(b.createdAt);
       });
-      var group = el('div', 'doc-group');
+      var group = el('div', 'doc-group fl-reveal');
       group.appendChild(el('div', 'doc-group-h', stageName(key)));
       docs.forEach(function (d) {
         var row = el('div', 'doc-row');
@@ -1371,6 +3240,7 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
         var btn = el('button', 'btn-quiet', 'Download');
         btn.type = 'button';
         btn.setAttribute('aria-label', 'Download ' + d.title);
+        btn.setAttribute('data-magnetic', '');
         btn.addEventListener('click', function () { handleDownload(d); });
         row.appendChild(btn);
         group.appendChild(row);
@@ -1411,6 +3281,117 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   }
 
   /* ============================================================
+     Het Betaalpad (#/kosten) — drie grote getallen en de balk uit
+     paymentPct. Eerlijkheidsregel hard in code: sommen alleen over
+     bestaande factuurrecords; "nog te verwachten" krijgt alleen een
+     bedrag als dat afleidbaar is uit echte facturen van dit project,
+     anders uitsluitend de percentagestructuur — nooit een schatting.
+     ============================================================ */
+  function renderCosts() {
+    var sumRoot = byId('kosten-summary');
+    var barRoot = byId('kosten-bar');
+    if (!sumRoot || !barRoot) return;
+    sumRoot.textContent = '';
+    barRoot.textContent = '';
+
+    var invoices = BUNDLE.invoices || [];
+    var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    var payStages = stages.filter(function (s) { return s.paymentPct > 0; });
+
+    var paidCents = 0, openCents = 0;
+    invoices.forEach(function (i) {
+      if (i.status === 'paid') paidCents += (i.amountCents || 0);
+      else if (i.status === 'open') openCents += (i.amountCents || 0);
+    });
+
+    function invFor(key) {
+      return invoices.find(function (i) { return i.stageKey === key; }) || null;
+    }
+
+    /* projectsom alleen afleiden als elke gekoppelde factuur op
+       dezelfde som uitkomt (binnen afronding) */
+    var implied = [];
+    payStages.forEach(function (s) {
+      var inv = invFor(s.stageKey);
+      if (inv && inv.amountCents > 0) implied.push(inv.amountCents * 100 / s.paymentPct);
+    });
+    var consistent = implied.length > 0 &&
+      (Math.max.apply(null, implied) - Math.min.apply(null, implied)) <= Math.max.apply(null, implied) * 0.005;
+    var restStages = payStages.filter(function (s) { return !invFor(s.stageKey); });
+    var restPct = restStages.reduce(function (a, s) { return a + s.paymentPct; }, 0);
+
+    var tiles = el('div', 'cost-grid fl-reveal');
+    function tile(label, value, note) {
+      var t = el('div', 'cost-tile');
+      t.appendChild(el('div', 'ccard-l', label));
+      t.appendChild(el('div', 'cost-num', value));
+      if (note) t.appendChild(el('div', 'cost-note', note));
+      return t;
+    }
+    tiles.appendChild(tile('Betaald', fmtMoney(paidCents), null));
+    tiles.appendChild(tile('Open', fmtMoney(openCents), openCents > 0 ? 'Zie de factuur hieronder.' : null));
+    if (!payStages.length) {
+      tiles.appendChild(tile('Nog te verwachten', '—', 'Er zijn nog geen betaalmomenten vastgelegd.'));
+    } else if (!restStages.length) {
+      tiles.appendChild(tile('Nog te verwachten', fmtMoney(0), 'Alle betaalmomenten zijn gefactureerd.'));
+    } else if (consistent) {
+      tiles.appendChild(tile('Nog te verwachten', fmtMoney(Math.round(implied[0] * restPct / 100)),
+        restPct + '% van de projectsom, verdeeld over ' + restStages.length +
+        ' betaalmoment' + (restStages.length > 1 ? 'en' : '') + '.'));
+    } else {
+      tiles.appendChild(tile('Nog te verwachten', restPct + '%',
+        'Van de projectsom, volgens je mijlpalenpad. Het bedrag staat op de factuur zodra die er is.'));
+    }
+    sumRoot.appendChild(tiles);
+
+    /* de gesegmenteerde balk: breedte naar rato van paymentPct */
+    if (!payStages.length) return;
+    var wrapB = el('div', 'paybar-wrap fl-reveal');
+    var scroll = el('div', 'paybar-scroll');
+    var bar = el('div', 'paybar');
+    bar.style.gridTemplateColumns = payStages.map(function (s) { return s.paymentPct + 'fr'; }).join(' ');
+    payStages.forEach(function (s) {
+      var col = el('div', 'payseg-col');
+      var check = el('div', 'payseg-check');
+      var approved = !!s.approvedAt || s.status === 'done';
+      if (approved) {
+        var svgC = svgEl('svg', {
+          viewBox: '0 0 24 24', width: '13', height: '13',
+          'aria-hidden': 'true', focusable: 'false'
+        });
+        svgC.appendChild(svgEl('path', {
+          d: 'M4 12.5l5 5L20 6.5', fill: 'none', stroke: 'var(--green)',
+          'stroke-width': '3', 'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+        }));
+        check.appendChild(svgC);
+      }
+      col.appendChild(check);
+      var inv = invFor(s.stageKey);
+      var segCls = 'payseg';
+      var stateWord = 'volgt nog';
+      if (inv && inv.status === 'paid') { segCls += ' paid'; stateWord = 'betaald'; }
+      else if (inv && inv.status === 'open') { segCls += ' openinv'; stateWord = 'open'; }
+      col.appendChild(el('div', segCls));
+      col.appendChild(el('div', 'payseg-lab', s.paymentPct + '% · ' + stateWord));
+      col.appendChild(el('p', 'sr-only', s.paymentPct + '% bij ' + stageName(s.stageKey) + ' — ' + stateWord +
+        (approved ? ', fase goedgekeurd' : '')));
+      bar.appendChild(col);
+    });
+    scroll.appendChild(bar);
+    wrapB.appendChild(scroll);
+    wrapB.appendChild(el('p', 'paybar-legend',
+      'Vol = goedgekeurd en betaald · gearceerd = gefactureerd, staat open · omlijnd = nog niet aan de orde'));
+
+    var actions = el('p', 'kosten-actions');
+    var pbtn = el('button', 'btn-quiet', 'Overzicht voor je boekhouding');
+    pbtn.type = 'button';
+    pbtn.addEventListener('click', function () { window.print(); });
+    actions.appendChild(pbtn);
+    wrapB.appendChild(actions);
+    barRoot.appendChild(wrapB);
+  }
+
+  /* ============================================================
      Toegangslogboek
      ============================================================ */
   function logSentence(row) {
@@ -1441,9 +3422,276 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
         ? fmtDateTime(row.createdAt)
         : fmtDate(row.createdAt);
       li.appendChild(el('div', 'log-date', dateStr));
-      li.appendChild(el('div', 'log-text', logSentence(row)));
+      var logText = el('div', 'log-text');
+      logText.appendChild(linkGlossaryTerms(logSentence(row)));
+      li.appendChild(logText);
       root.appendChild(li);
     });
+  }
+
+  /* ============================================================
+     Vaktaal Uitgelegd — elke eerste vermelding van een term uit
+     CP_GLOSSARY (portal/config.js) per tekstblok wordt een groene
+     termknop. Zelfde patroon als linkGlossaryTerms() op de hoofdsite
+     (DocumentFragment + String.replace-callback, geen innerHTML),
+     maar omdat de portaalrouter de hash zelf bezet opent een klik
+     hier een lichte uitlegpopover; "Lees meer op de site" gaat in
+     een nieuw tabblad naar de siteglossary op het juiste anker.
+     ============================================================ */
+  var glossRe = null, glossList = null;
+  function glossPrep() {
+    if (glossRe !== null) return;
+    glossList = ((window.CP_GLOSSARY || [])).map(function (g) {
+      var p = g.pattern || String(g.term).replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+      return {
+        id: g.id, term: g.term, full: g.full, def: g.def, url: g.url,
+        pat: p, own: new RegExp('^(?:' + p + ')$')
+      };
+    });
+    if (!glossList.length) { glossRe = false; return; }
+    var parts = glossList.map(function (g) { return '\\b(?:' + g.pat + ')\\b'; });
+    glossRe = new RegExp(parts.join('|'), 'g');
+  }
+
+  var termPopEl = null, termPopBtn = null;
+  function closeTermPop(refocus) {
+    if (!termPopEl) return;
+    if (termPopEl.parentNode) termPopEl.parentNode.removeChild(termPopEl);
+    termPopEl = null;
+    var b = termPopBtn;
+    termPopBtn = null;
+    if (refocus && b && b.focus) b.focus();
+  }
+
+  function openTermPop(btn, entry) {
+    closeTermPop(false);
+    var pop = el('div', 'term-pop');
+    pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-label', entry.term + (entry.full ? ' — ' + entry.full : ''));
+    pop.tabIndex = -1;
+    pop.appendChild(el('div', 'tp-k', entry.term + (entry.full ? ' — ' + entry.full : '')));
+    pop.appendChild(el('p', null, entry.def || ''));
+    if (entry.url) {
+      var a = el('a', null, 'Lees meer op de site');
+      a.href = entry.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      pop.appendChild(a);
+    }
+    document.body.appendChild(pop);
+    var r = btn.getBoundingClientRect();
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var left = Math.max(12, Math.min(r.left, window.innerWidth - pw - 12));
+    var top = r.bottom + 8;
+    if (top + ph > window.innerHeight - 12) top = Math.max(12, r.top - ph - 8);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    termPopEl = pop;
+    termPopBtn = btn;
+    try { pop.focus({ preventScroll: true }); } catch (e) { pop.focus(); }
+  }
+
+  /* Tekst → DocumentFragment waarin de eerste vermelding van elke
+     vakterm een termknop is; alles daarna blijft platte tekst. */
+  function linkGlossaryTerms(text) {
+    var frag = document.createDocumentFragment();
+    glossPrep();
+    if (!glossRe || !text) {
+      frag.appendChild(document.createTextNode(text || ''));
+      return frag;
+    }
+    var used = {}, lastIndex = 0;
+    text.replace(glossRe, function (matched, offset) {
+      var entry = null;
+      for (var i = 0; i < glossList.length; i++) {
+        if (glossList[i].own.test(matched)) { entry = glossList[i]; break; }
+      }
+      if (!entry || used[entry.id]) return matched;
+      used[entry.id] = true;
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      var btn = el('button', 'term-link', matched);
+      btn.type = 'button';
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-label', 'Uitleg: ' + entry.term + (entry.full ? ' — ' + entry.full : ''));
+      (function (b, en) {
+        b.addEventListener('click', function () {
+          if (termPopBtn === b) { closeTermPop(false); return; }
+          openTermPop(b, en);
+        });
+      })(btn, entry);
+      frag.appendChild(btn);
+      lastIndex = offset + matched.length;
+      return matched;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    return frag;
+  }
+
+  /* de vertrouwensband bovenaan krijgt dezelfde termlink (NNN) */
+  function applyTrustbarTerms() {
+    var tl = byId('trust-line');
+    if (!tl) return;
+    tl.textContent = '';
+    tl.appendChild(linkGlossaryTerms('Je ontwerp is beschermd: fabrieken krijgen alleen bestanden onder NNN.'));
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!termPopEl) return;
+    var t = e.target;
+    if (termPopEl.contains(t)) return;
+    if (termPopBtn && (t === termPopBtn || termPopBtn.contains(t))) return;
+    closeTermPop(false);
+  });
+  window.addEventListener('scroll', function () { closeTermPop(false); }, true);
+  window.addEventListener('resize', function () { closeTermPop(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && termPopEl) closeTermPop(true);
+  });
+
+  /* ============================================================
+     De Vooruitblik — geen enkele sectie zegt nog kaal "nog niets":
+     elke lege staat krijgt een inline SVG-lijntekening (1.5px inkt
+     op crème; in blauwdrukstand kleurt alles gratis mee via de
+     CSS-variabelen in .ol-stroke/.ol-soft/.ol-green) plus een
+     eerlijke, uit de echte fases afgeleide zin. De tekeningen zijn
+     decoratief (aria-hidden); de zin draagt de betekenis.
+     ============================================================ */
+  function olBase(h) {
+    return svgEl('svg', { viewBox: '0 0 340 ' + (h || 150), 'aria-hidden': 'true', focusable: 'false' });
+  }
+  function olP(svg, d, cls) {
+    svg.appendChild(svgEl('path', { d: d, class: cls || 'ol-stroke' }));
+  }
+  function olRect(svg, x, y, w, h, rx, cls) {
+    svg.appendChild(svgEl('rect', { x: x, y: y, width: w, height: h, rx: rx, class: cls || 'ol-stroke' }));
+  }
+
+  /* drie samples op een plank; de derde gestippeld — die komt nog */
+  function olDrawShelf() {
+    var s = olBase();
+    olP(s, 'M28 116 H312');
+    olP(s, 'M52 116 V128', 'ol-soft');
+    olP(s, 'M288 116 V128', 'ol-soft');
+    olP(s, 'M78 116 V84 Q78 78 84 78 H100 Q106 78 106 84 V116');
+    olP(s, 'M88 78 V70 H96 V78');
+    olP(s, 'M138 116 V90 Q138 82 146 82 H176 Q184 82 184 90 V116');
+    olP(s, 'M138 96 H184', 'ol-soft');
+    olP(s, 'M154 82 V74 H168 V82');
+    olP(s, 'M222 116 V86 Q222 80 228 80 H244 Q250 80 250 86 V116', 'ol-soft ol-dash');
+    olP(s, 'M230 80 V72 H242 V80', 'ol-soft ol-dash');
+    return s;
+  }
+
+  /* omtrek van een defectentabel met één groen vinkje */
+  function olDrawTable() {
+    var s = olBase();
+    olRect(s, 40, 24, 260, 104, 12);
+    olP(s, 'M40 52 H300');
+    olP(s, 'M54 40 H92', 'ol-soft');
+    olP(s, 'M132 40 H170', 'ol-soft');
+    olP(s, 'M226 40 H272', 'ol-soft');
+    olP(s, 'M120 52 V128', 'ol-soft');
+    olP(s, 'M212 52 V128', 'ol-soft');
+    olP(s, 'M40 78 H300', 'ol-soft ol-dash');
+    olP(s, 'M40 103 H300', 'ol-soft ol-dash');
+    olP(s, 'M232 116 l6 6 12 -12', 'ol-green');
+    return s;
+  }
+
+  /* openstaande archieflade met hangmapjes */
+  function olDrawDrawer() {
+    var s = olBase();
+    olRect(s, 78, 86, 184, 42, 10);
+    olP(s, 'M154 107 H186');
+    olP(s, 'M92 86 L104 60');
+    olP(s, 'M248 86 L236 60');
+    olP(s, 'M104 60 H236');
+    olP(s, 'M124 60 V48 H156 V60');
+    olP(s, 'M166 60 V52 H198 V60', 'ol-soft');
+    olP(s, 'M208 60 V46 H232 V60', 'ol-soft ol-dash');
+    olP(s, 'M132 48 H148', 'ol-green');
+    return s;
+  }
+
+  /* containerschip op een kalme golf; één groene container */
+  function olDrawShip() {
+    var s = olBase(160);
+    olP(s, 'M36 102 H304 L280 130 H62 Z');
+    olRect(s, 252, 64, 30, 38, 3);
+    olP(s, 'M258 74 H276', 'ol-soft');
+    olRect(s, 66, 84, 44, 18, 2);
+    olRect(s, 112, 84, 44, 18, 2, 'ol-soft');
+    olRect(s, 158, 84, 44, 18, 2);
+    olRect(s, 204, 84, 44, 18, 2, 'ol-soft');
+    olRect(s, 88, 66, 44, 18, 2, 'ol-soft');
+    olRect(s, 134, 66, 44, 18, 2, 'ol-green');
+    olP(s, 'M28 144 q9 -6 18 0 t18 0 t18 0 t18 0', 'ol-soft');
+    olP(s, 'M208 144 q9 -6 18 0 t18 0 t18 0', 'ol-soft');
+    return s;
+  }
+
+  /* twee foto's op een stapel, met bergjes en een groen zonnetje */
+  function olDrawPhotos() {
+    var s = olBase();
+    s.appendChild(svgEl('rect', {
+      x: 96, y: 30, width: 126, height: 92, rx: 10,
+      class: 'ol-soft', transform: 'rotate(-5 159 76)'
+    }));
+    olRect(s, 118, 44, 136, 96, 10);
+    s.appendChild(svgEl('circle', { cx: 226, cy: 70, r: 7, class: 'ol-green' }));
+    olP(s, 'M130 124 L158 92 L176 110 L190 96 L216 122');
+    olP(s, 'M132 132 H180', 'ol-soft');
+    return s;
+  }
+
+  /* de lege staat zelf: tekening, optionele monoregel, eerlijke zin
+     (met termlinks van Vaktaal Uitgelegd, dus "AQL" en "T0" zijn
+     meteen klikbaar uitgelegd) */
+  function outlookBlock(drawFn, monoLine, textLine) {
+    var wrap = el('div', 'outlook fl-reveal');
+    wrap.appendChild(drawFn());
+    if (monoLine) wrap.appendChild(el('p', 'ol-mono', monoLine));
+    var p = el('p', 'ol-line');
+    p.appendChild(linkGlossaryTerms(textLine || ''));
+    wrap.appendChild(p);
+    return wrap;
+  }
+
+  function outlookStage(key) {
+    return ((BUNDLE && BUNDLE.stages) || []).find(function (s) { return s.stageKey === key; }) || null;
+  }
+
+  /* eerlijke zin voor de lege sampleplank, afgeleid uit de echte fases */
+  function outlookSampleLine() {
+    var tooling = outlookStage('tooling');
+    var current = currentStageOf(BUNDLE.stages);
+    var total = (BUNDLE.stages || []).length;
+    if (tooling && current && current.position < tooling.position) {
+      return 'Je eerste sample verschijnt na de T0 ronde. Die staat gepland in fase ' +
+        tooling.position + ' van ' + total + ' — jullie zitten nu in fase ' +
+        current.position + ', ' + stageName(current.stageKey) + '.';
+    }
+    if (tooling && current && current.position === tooling.position) {
+      return 'Jullie zitten nu in fase ' + tooling.position + ', ' + stageName('tooling') +
+        ' — het eerste sample uit de T0 ronde verschijnt hier zodra het er is.';
+    }
+    return 'Zodra er een sampleronde is, staat die hier — met foto, notities en wat er per ronde is aangepast.';
+  }
+
+  /* eerlijke zin voor de lege kwaliteitssectie */
+  function outlookQualityLine() {
+    var prod = outlookStage('production');
+    var current = currentStageOf(BUNDLE.stages);
+    var total = (BUNDLE.stages || []).length;
+    if (prod && current && current.position < prod.position) {
+      return 'Elke inspectie wordt gemeten tegen de AQL norm uit je offerte. De eerste controle staat gepland in fase ' +
+        prod.position + ' van ' + total + ' — jullie zitten nu in fase ' +
+        current.position + ', ' + stageName(current.stageKey) + '.';
+    }
+    if (prod && current && current.position === prod.position) {
+      return 'De productie loopt. Het eerste inspectierapport verschijnt hier zodra de controle tegen de AQL norm is uitgevoerd.';
+    }
+    return 'Zodra er een inspectie is uitgevoerd, staat het rapport hier — gemeten tegen de AQL norm uit je offerte.';
   }
 
   /* ============================================================
@@ -1550,7 +3798,13 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   var momentItems = [];
   var momentIndex = 0;
 
-  function lastseenKey() { return 'cp_portal_lastseen_' + SESSION.clientId; }
+  /* per klant ÉN per project: een klant met meerdere projecten mag bij een
+     projectwissel geen "nieuw sinds je vorige bezoek" krijgen voor maandenoude
+     foto's van het andere project */
+  function lastseenKey() {
+    var pid = (BUNDLE && BUNDLE.project) ? BUNDLE.project.id : 'geen';
+    return 'cp_portal_lastseen_' + SESSION.clientId + '_' + pid;
+  }
   /* We onthouden de ID's van geziene media in plaats van een tijdstempel:
      capturedAt is dag-granulair, waardoor een tijdvergelijking foto's mist
      die op de bezoekdag zelf nog zijn geplaatst. */
@@ -1622,23 +3876,42 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   /* ============================================================
      Navigatie tussen views
      ============================================================ */
-  function enterProject(project) {
+  function lastProjKey() { return 'cp_portal_lastproj_' + (SESSION ? SESSION.clientId : 'anoniem'); }
+
+  function enterProject(project, landing) {
     DS.loadBundle(project.id).then(function (bundle) {
       BUNDLE = bundle;
+      try { localStorage.setItem(lastProjKey(), project.id); } catch (e) { /* privémodus */ }
       byId('hdr-project-name').textContent = bundle.project.name;
       byId('hdr-project-code').textContent = bundle.project.code || '';
       byId('hdr-client-name').textContent = SESSION.contactName + ' — ' + SESSION.company;
-      byId('btn-switch').hidden = PROJECTS.length < 2;
+      byId('btn-switch').hidden = ALL_PROJECTS.length < 2;
+      renderProducten();
+      renderCockpit();
       renderPath();
+      renderWeekline();
+      renderFactoryMap();
+      renderStatusband();
       renderUpdates();
       renderSamples();
       renderQuality();
+      renderShipments();
       renderDocs();
+      renderCosts();
       renderInvoices();
       renderLog();
+      applyTrustbarTerms();
+      closeTermPop(false);
+      closeNotifPanel(false);
+      updateNotifDot();
+      observeReveals();
       showView('app');
       appActive = true;
-      if (!location.hash) { location.hash = '#/' + PAGES[0]; }
+      if (landing) {
+        if (location.hash !== '#/' + landing) location.hash = '#/' + landing;
+      } else if (!location.hash) {
+        location.hash = '#/' + PAGES[0];
+      }
       renderRoute();
       maybeShowMoment();
     }).catch(function () {
@@ -1660,17 +3933,31 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
     showView('picker');
   }
 
+  /* Na login: één project → direct dat dossier in (zoals altijd).
+     Meer dan één project (ook gearchiveerde tellen mee: levenslang
+     toegang) → "Mijn Producten" als standaardlanding, tenzij er al
+     een hash staat (diepe link of herlaad). */
   function afterLogin(session) {
     SESSION = session;
     writeSession(DS.demo ? session : null);
-    return DS.listProjects(session.clientId).then(function (projects) {
-      PROJECTS = projects;
-      if (!projects.length) {
+    return fetchPortfolio(true).then(function (pf) {
+      var all = (pf.projects || []).slice().sort(function (a, b) {
+        return String(a.createdAt).localeCompare(String(b.createdAt));
+      });
+      ALL_PROJECTS = all;
+      PROJECTS = all.filter(function (p) { return p.status !== 'archived'; });
+      if (!all.length) {
         showError('Er staat nog geen project voor je klaar. Mail steffan@customplus.nl.');
         return;
       }
-      if (projects.length === 1) enterProject(projects[0]);
-      else renderPicker();
+      /* bij een herlaad het laatst geopende project weer openen; anders
+         het nieuwste actieve project, en zonder actieve projecten het
+         nieuwste gearchiveerde (het archief blijft toegankelijk) */
+      var lastId = null;
+      try { lastId = localStorage.getItem(lastProjKey()); } catch (e) { /* privémodus */ }
+      var open = (lastId && all.find(function (p) { return p.id === lastId; })) ||
+        PROJECTS[PROJECTS.length - 1] || all[all.length - 1];
+      enterProject(open, (all.length > 1 && !location.hash) ? 'producten' : null);
     });
   }
 
@@ -1683,7 +3970,10 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 
   function doLogout() {
     DS.logout().then(function () {
-      SESSION = null; PROJECTS = []; BUNDLE = null;
+      closeTermPop(false);
+      closeNotifPanel(false);
+      if (qsDialog && qsDialog.open) qsDialog.close();
+      SESSION = null; PROJECTS = []; ALL_PROJECTS = []; PORTFOLIO = null; BUNDLE = null;
       appActive = false;
       history.replaceState(null, '', location.pathname + location.search);
       byId('login-error').textContent = '';
@@ -1692,6 +3982,512 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
       window.scrollTo(0, 0);
     });
   }
+
+  /* ============================================================
+     Blauwdrukstand — zelfde localStorage-sleutel als de hoofdsite
+     (cp_blueprint), zodat site en portaal synchroon lopen.
+     ============================================================ */
+  var BP_KEY = 'cp_blueprint';
+  var blueprintOn = false;
+  try { blueprintOn = localStorage.getItem(BP_KEY) === '1'; } catch (e) { /* privémodus */ }
+  function applyBlueprintMode(on) {
+    blueprintOn = on;
+    if (on) { document.documentElement.setAttribute('data-mode', 'blueprint'); }
+    else { document.documentElement.removeAttribute('data-mode'); }
+    var btn = byId('bp-toggle');
+    if (btn) { btn.setAttribute('aria-pressed', String(on)); }
+    try { localStorage.setItem(BP_KEY, on ? '1' : '0'); } catch (e) { /* privémodus */ }
+  }
+  applyBlueprintMode(blueprintOn);
+  byId('bp-toggle').addEventListener('click', function () { applyBlueprintMode(!blueprintOn); });
+
+  /* ============================================================
+     Ritme en beweging — geport van de hoofdsite.
+     Onthullen bij scrollen via één IntersectionObserver; bij elke
+     routewissel opnieuw zodat elke pagina "binnenkomt". Magnetische
+     knoppen alleen bij fine pointer. Alles achter prefers-reduced-motion.
+     ============================================================ */
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  var revealIo = (!reducedMotion && 'IntersectionObserver' in window)
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealIo.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .12, rootMargin: '0px 0px -8% 0px' })
+    : null;
+
+  function observeReveals(scope) {
+    var nodes = (scope || document).querySelectorAll('.fl-reveal:not(.is-visible)');
+    for (var i = 0; i < nodes.length; i++) {
+      if (revealIo) revealIo.observe(nodes[i]);
+      else nodes[i].classList.add('is-visible');
+    }
+  }
+
+  function replayReveals(section) {
+    if (!section) return;
+    if (revealIo) {
+      var done = section.querySelectorAll('.fl-reveal.is-visible');
+      for (var i = 0; i < done.length; i++) done[i].classList.remove('is-visible');
+    }
+    observeReveals(section);
+  }
+
+  if (finePointer && !reducedMotion) {
+    var currentMagnet = null;
+    document.addEventListener('pointermove', function (e) {
+      var m = (e.target && e.target.closest) ? e.target.closest('[data-magnetic]') : null;
+      if (currentMagnet && currentMagnet !== m) {
+        currentMagnet.classList.remove('is-magnet');
+        currentMagnet.style.transform = '';
+      }
+      if (m) {
+        m.classList.add('is-magnet');
+        var r = m.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        m.style.transform = 'translate(' + (dx * .18) + 'px,' + (dy * .3) + 'px)';
+      }
+      currentMagnet = m;
+    });
+    document.addEventListener('pointerout', function (e) {
+      var m = (e.target && e.target.closest) ? e.target.closest('[data-magnetic]') : null;
+      if (m && !m.contains(e.relatedTarget)) { m.classList.remove('is-magnet'); m.style.transform = ''; }
+    });
+  }
+
+  /* ============================================================
+     Meldingen — belletje in de topbar met groene ongelezen-stip.
+     Geen nieuw eventsysteem: de lijst wordt afgeleid uit data die
+     al in BUNDLE zit (foto's, beantwoorde vragen, documenten,
+     facturen, zendingmijlpalen), samengevoegd en gesorteerd.
+     Ongelezen = nieuwer dan localStorage cp_portal_notif_seen_
+     + clientId; het paneel openen zet die op nu.
+     ============================================================ */
+  function notifSeenKey() { return 'cp_portal_notif_seen_' + (SESSION ? SESSION.clientId : 'anoniem'); }
+  function notifSeenTime() {
+    try {
+      var v = localStorage.getItem(notifSeenKey());
+      return v ? (parseInt(v, 10) || 0) : 0;
+    } catch (e) { return 0; }
+  }
+  function notifMarkSeen() {
+    try { localStorage.setItem(notifSeenKey(), String(Date.now())); } catch (e) { /* privémodus */ }
+  }
+
+  function relDayLabel(s) {
+    var d = parseDay(s);
+    if (!d || isNaN(d.getTime())) return '';
+    var now = new Date();
+    var t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    var d0 = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    var diff = Math.round((t0 - d0) / 86400000);
+    if (diff <= 0) return 'VANDAAG';
+    if (diff === 1) return 'GISTEREN';
+    return fmtDateShort(s).toUpperCase();
+  }
+  function shorten(s, n) {
+    s = String(s || '');
+    return s.length > n ? s.slice(0, n - 1) + '…' : s;
+  }
+
+  function buildNotifItems() {
+    var items = [];
+    function stagePosOf(key) {
+      var s = (BUNDLE.stages || []).find(function (x) { return x.stageKey === key; });
+      return s ? s.position : null;
+    }
+    function pushItem(when, title, metaParts, href) {
+      var d = when ? parseDay(when) : null;
+      if (!d || isNaN(d.getTime())) return;
+      items.push({
+        time: d.getTime(),
+        title: title,
+        meta: metaParts.filter(Boolean).join(' · '),
+        href: href
+      });
+    }
+
+    (BUNDLE.media || []).forEach(function (m) {
+      var when = m.createdAt || m.capturedAt;
+      var pos = stagePosOf(m.stageKey);
+      var f = factoryById(m.factoryId);
+      pushItem(when, 'Nieuwe foto: ' + shorten(m.caption || 'update uit de fabriek', 80),
+        [pos ? 'FASE ' + pos : null, relDayLabel(when), f ? f.name.toUpperCase() : null], '#/updates');
+    });
+
+    (BUNDLE.questions || []).forEach(function (q) {
+      if (!q.answeredAt || !q.answer) return;
+      pushItem(q.answeredAt, 'Steffan beantwoordde je vraag: ‘' + shorten(q.question, 60) + '’',
+        ['ANTWOORD', relDayLabel(q.answeredAt)], '#/updates');
+    });
+
+    (BUNDLE.documents || []).forEach(function (d) {
+      var pos = stagePosOf(d.stageKey);
+      pushItem(d.createdAt, 'Nieuw document: ' + d.title,
+        [(DOC_TYPE_LABELS[d.docType] || d.docType).toUpperCase(), pos ? 'FASE ' + pos : null, relDayLabel(d.createdAt)],
+        '#/documenten');
+    });
+
+    (BUNDLE.invoices || []).forEach(function (inv) {
+      if (inv.status === 'paid' && inv.paidAt) {
+        pushItem(inv.paidAt, 'Factuur betaald: ' + inv.label, ['FACTUUR', relDayLabel(inv.paidAt)], '#/kosten');
+        return;
+      }
+      var doc = inv.documentId
+        ? (BUNDLE.documents || []).find(function (dd) { return dd.id === inv.documentId; })
+        : null;
+      var when = inv.createdAt || (doc && doc.createdAt);
+      if (when) {
+        pushItem(when, 'Er staat een factuur voor je klaar: ' + inv.label,
+          ['FACTUUR', relDayLabel(when)], '#/kosten');
+      }
+    });
+
+    var SHIPc = window.CP_SHIPPING;
+    (BUNDLE.shipmentEvents || []).forEach(function (ev) {
+      var ship = (BUNDLE.shipments || []).find(function (sp) { return sp.id === ev.shipmentId; });
+      if (!ship || !SHIPc) return;
+      var when = ev.createdAt || ev.occurredAt;
+      pushItem(when, 'Zending: ' + SHIPc.milestoneLabel(ship.type, ev.milestoneKey),
+        [SHIPc.typeLabel(ship.type).toUpperCase(), relDayLabel(when), ev.location ? ev.location.toUpperCase() : null],
+        '#/zendingen');
+    });
+
+    items.sort(function (a, b) { return b.time - a.time; });
+    return items.slice(0, 30);
+  }
+
+  function updateNotifDot() {
+    var dot = byId('notif-dot');
+    if (!dot) return;
+    if (!BUNDLE) { dot.hidden = true; return; }
+    var seen = notifSeenTime();
+    dot.hidden = !buildNotifItems().some(function (n) { return n.time > seen; });
+  }
+
+  function closeNotifPanel(refocus) {
+    var panel = byId('notif-panel');
+    var bell = byId('notif-bell');
+    if (!panel || panel.hidden) return;
+    panel.hidden = true;
+    if (bell) {
+      bell.setAttribute('aria-expanded', 'false');
+      if (refocus) bell.focus();
+    }
+  }
+
+  function openNotifPanel() {
+    var panel = byId('notif-panel');
+    var bell = byId('notif-bell');
+    if (!panel || !BUNDLE) return;
+    var seen = notifSeenTime();
+    var items = buildNotifItems();
+    panel.textContent = '';
+    panel.appendChild(el('div', 'notif-head', 'Meldingen'));
+    if (!items.length) {
+      var empty = el('div', 'notif-empty');
+      var svgC = svgEl('svg', {
+        width: '28', height: '28', viewBox: '0 0 24 24', fill: 'none',
+        stroke: 'currentColor', 'stroke-width': '1.8', 'aria-hidden': 'true', focusable: 'false'
+      });
+      svgC.appendChild(svgEl('circle', { cx: '12', cy: '12', r: '9' }));
+      svgC.appendChild(svgEl('path', {
+        d: 'M8 12.5l2.6 2.6L16 9.5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+      }));
+      empty.appendChild(svgC);
+      empty.appendChild(el('div', null, 'Je bent helemaal bij.'));
+      panel.appendChild(empty);
+    } else {
+      items.forEach(function (n) {
+        var a = el('a', 'notif-item' + (n.time > seen ? ' unread' : ''));
+        a.href = n.href;
+        a.appendChild(el('div', 'notif-meta', n.meta));
+        a.appendChild(el('div', 'notif-title', n.title));
+        a.addEventListener('click', function () { closeNotifPanel(false); });
+        panel.appendChild(a);
+      });
+    }
+    panel.hidden = false;
+    if (bell) bell.setAttribute('aria-expanded', 'true');
+    notifMarkSeen();
+    var dot = byId('notif-dot');
+    if (dot) dot.hidden = true;
+  }
+
+  byId('notif-bell').addEventListener('click', function () {
+    var panel = byId('notif-panel');
+    if (panel.hidden) openNotifPanel();
+    else closeNotifPanel(false);
+  });
+  document.addEventListener('click', function (e) {
+    var panel = byId('notif-panel');
+    if (!panel || panel.hidden) return;
+    if (e.target && e.target.closest && e.target.closest('.notif-wrap')) return;
+    closeNotifPanel(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeNotifPanel(true);
+  });
+
+  /* ============================================================
+     Snelzoeken — Cmd+K/Ctrl+K opent een <dialog> (native focus trap
+     en Esc-gedrag) met een index die volledig uit het geheugen komt:
+     pagina's, documenten, foto's, samples, facturen, zendingen en
+     acties. Simpele subsequence-fuzzymatch zonder library; pijltjes
+     plus Enter navigeren, het matchdeel kleurt groen. Het zoekicoon
+     in de topbar opent hetzelfde paneel op mobiel.
+     ============================================================ */
+  var qsDialog = byId('qs-dialog'), qsInput = byId('qs-input'), qsResults = byId('qs-results');
+  var qsIndex = [], qsItems = [], qsSel = 0;
+  var QS_PAGE_LABELS = {
+    home: 'Overzicht', producten: 'Producten', mijlpalen: 'Mijlpalen', updates: 'Updates',
+    samples: 'Samples', kwaliteit: 'Kwaliteit', zendingen: 'Zendingen', documenten: 'Documenten',
+    kosten: 'Kosten', logboek: 'Logboek'
+  };
+  var QS_SECTIONS = ['PAGINA’S', 'DOCUMENTEN', 'FOTO’S', 'SAMPLES', 'FACTUREN', 'ZENDINGEN', 'ACTIES'];
+  /* extra zoekwoorden per pagina, zodat "aql" bij Kwaliteit uitkomt
+     en "factuur" bij Kosten — puur vaste NL-synoniemen, geen data */
+  var QS_PAGE_ALTS = {
+    home: 'overzicht status cockpit',
+    producten: 'producten projecten archief plank herbestellen nieuwe batch',
+    mijlpalen: 'mijlpalen fases planning weeklijn',
+    updates: 'updates foto’s fabriek',
+    samples: 'samples rondes t0 t1 t2 golden sample',
+    kwaliteit: 'kwaliteit aql inspectie iqc ipqc fqc steekproef',
+    zendingen: 'zendingen tracking container reis',
+    documenten: 'documenten downloads nnn offerte',
+    kosten: 'kosten facturen betaalpad betalen',
+    logboek: 'logboek toegang privacy'
+  };
+
+  /* per teken genormaliseerd (kleine letters, accenten eraf) zodat de
+     matchposities één op één op de oorspronkelijke tekst passen */
+  function qsNorm(s) {
+    s = String(s || '').toLowerCase();
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      var n = c.normalize ? c.normalize('NFD') : c;
+      out += n.charAt(0);
+    }
+    return out;
+  }
+
+  /* eerst een gewone deeltekstmatch (mooi aaneengesloten groen),
+     anders een subsequencematch: alle tekens van de zoekterm komen
+     in volgorde voor. Geeft null als het niet past. */
+  function qsMatch(q, text) {
+    var nq = qsNorm(q), nt = qsNorm(text);
+    if (!nq) return { score: 0, pos: [] };
+    var idx = nt.indexOf(nq);
+    if (idx >= 0) {
+      var pos = [];
+      for (var i = 0; i < nq.length; i++) pos.push(idx + i);
+      return { score: 100 - idx, pos: pos };
+    }
+    var pos2 = [], ti = 0;
+    for (var j = 0; j < nq.length; j++) {
+      var ch = nq.charAt(j);
+      if (ch === ' ') continue;
+      var found = nt.indexOf(ch, ti);
+      if (found < 0) return null;
+      pos2.push(found);
+      ti = found + 1;
+    }
+    if (!pos2.length) return null;
+    var spread = pos2[pos2.length - 1] - pos2[0] - (pos2.length - 1);
+    return { score: 40 - spread, pos: pos2 };
+  }
+
+  function buildQsIndex() {
+    var ix = [];
+    PAGES.forEach(function (p) {
+      ix.push({
+        sec: 'PAGINA’S', label: QS_PAGE_LABELS[p] || p, sub: 'Ga naar deze pagina',
+        alt: p + ' ' + (QS_PAGE_ALTS[p] || ''),
+        run: function () { location.hash = '#/' + p; }
+      });
+    });
+    (BUNDLE.documents || []).forEach(function (d) {
+      ix.push({
+        sec: 'DOCUMENTEN', label: d.title,
+        sub: (DOC_TYPE_LABELS[d.docType] || d.docType) + ' · ' + fmtDateShort(d.createdAt),
+        alt: d.docType + ' ' + (DOC_TYPE_LABELS[d.docType] || '') +
+          (d.docType === 'inspection' ? ' aql rapport' : ''),
+        run: function () { location.hash = '#/documenten'; }
+      });
+    });
+    (BUNDLE.media || []).forEach(function (m) {
+      ix.push({
+        sec: 'FOTO’S', label: m.caption || 'Foto', sub: originLine(m),
+        run: function () { openMediaSheet(m); }
+      });
+    });
+    (BUNDLE.samples || []).forEach(function (smp) {
+      ix.push({
+        sec: 'SAMPLES', label: smp.roundLabel + (smp.note ? ' — ' + smp.note : ''),
+        sub: fmtDateShort(smp.roundDate) + (smp.status === 'approved' ? ' · goedgekeurd' : ''),
+        alt: 'sample ronde ' + smp.roundLabel,
+        run: function () { location.hash = '#/samples'; }
+      });
+    });
+    (BUNDLE.invoices || []).forEach(function (inv) {
+      ix.push({
+        sec: 'FACTUREN', label: inv.label,
+        sub: fmtMoney(inv.amountCents) + ' · ' + (inv.status === 'paid' ? 'betaald' : 'open'),
+        alt: 'factuur',
+        run: function () { location.hash = '#/kosten'; }
+      });
+    });
+    var SHIPc = window.CP_SHIPPING;
+    (BUNDLE.shipments || []).forEach(function (sp) {
+      var carrier = SHIPc ? SHIPc.CARRIERS[sp.carrierCode] : null;
+      var nr = sp.containerNumber || sp.trackingNumber || '';
+      ix.push({
+        sec: 'ZENDINGEN',
+        label: (SHIPc ? SHIPc.typeLabel(sp.type) : sp.type) +
+          (carrier ? ' via ' + carrier.name : '') + (nr ? ' · ' + nr : ''),
+        sub: sp.deliveredAt ? 'Geleverd ' + fmtDateShort(sp.deliveredAt) : 'Onderweg',
+        alt: 'zending ' + nr,
+        run: function () { location.hash = '#/zendingen'; }
+      });
+    });
+    ix.push({
+      sec: 'ACTIES', label: 'Stel een vraag aan Steffan', sub: 'Opent het vraagformulier',
+      alt: 'vraag hulp contact',
+      run: function () { askSteffan(); }
+    });
+    return ix;
+  }
+
+  /* label met de gematchte tekens groen onderstreept — spans via
+     createElement, aaneengesloten runs als één span */
+  function qsLabelNode(text, positions) {
+    var frag = document.createDocumentFragment();
+    if (!positions || !positions.length) {
+      frag.appendChild(document.createTextNode(text));
+      return frag;
+    }
+    var last = 0, i = 0;
+    while (i < positions.length) {
+      var a = positions[i], b = a;
+      while (i + 1 < positions.length && positions[i + 1] === b + 1) { i++; b = positions[i]; }
+      if (a > last) frag.appendChild(document.createTextNode(text.slice(last, a)));
+      frag.appendChild(el('span', 'qs-hl', text.slice(a, b + 1)));
+      last = b + 1;
+      i++;
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    return frag;
+  }
+
+  function setQsSel(i) {
+    if (!qsItems.length) return;
+    qsSel = ((i % qsItems.length) + qsItems.length) % qsItems.length;
+    qsItems.forEach(function (it, j) {
+      it.btn.setAttribute('aria-selected', j === qsSel ? 'true' : 'false');
+    });
+    var btn = qsItems[qsSel].btn;
+    qsInput.setAttribute('aria-activedescendant', btn.id);
+    if (btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest' });
+  }
+
+  function qsActivate() {
+    var it = qsItems[qsSel];
+    if (!it) return;
+    qsDialog.close();
+    it.entry.run();
+  }
+
+  function renderQsResults(q) {
+    qsResults.textContent = '';
+    qsItems = [];
+    qsSel = 0;
+    var groups = {};
+    qsIndex.forEach(function (entry) {
+      var m;
+      if (!q) {
+        /* leeg veld: pagina's en acties als vertrekpunt */
+        if (entry.sec !== 'PAGINA’S' && entry.sec !== 'ACTIES') return;
+        m = { score: 0, pos: [] };
+      } else {
+        m = qsMatch(q, entry.label);
+        if (!m && entry.alt) {
+          var am = qsMatch(q, entry.alt);
+          if (am) m = { score: am.score - 10, pos: [] };
+        }
+        if (!m && entry.sub) {
+          var sm = qsMatch(q, entry.sub);
+          if (sm) m = { score: sm.score - 20, pos: [] };
+        }
+        if (!m) return;
+      }
+      (groups[entry.sec] = groups[entry.sec] || []).push({ entry: entry, match: m });
+    });
+    var n = 0;
+    QS_SECTIONS.forEach(function (sec) {
+      var g = groups[sec];
+      if (!g || !g.length) return;
+      g.sort(function (a, b) { return b.match.score - a.match.score; });
+      g.slice(0, q ? 6 : 12).forEach(function (row, ri) {
+        if (ri === 0) qsResults.appendChild(el('div', 'qs-sec', sec));
+        var btn = el('button', 'qs-item');
+        btn.type = 'button';
+        btn.id = 'qs-opt-' + n;
+        btn.setAttribute('role', 'option');
+        btn.setAttribute('aria-selected', 'false');
+        btn.appendChild(qsLabelNode(row.entry.label, row.match.pos));
+        if (row.entry.sub) btn.appendChild(el('span', 'qs-sub', row.entry.sub));
+        var idx = qsItems.length;
+        btn.addEventListener('click', function () { qsSel = idx; qsActivate(); });
+        btn.addEventListener('mousemove', function () { if (qsSel !== idx) setQsSel(idx); });
+        qsResults.appendChild(btn);
+        qsItems.push({ btn: btn, entry: row.entry });
+        n++;
+      });
+    });
+    if (!qsItems.length) {
+      qsResults.appendChild(el('div', 'qs-none', 'Niets gevonden voor ‘' + q + '’.'));
+      qsInput.removeAttribute('aria-activedescendant');
+      return;
+    }
+    setQsSel(0);
+  }
+
+  function openQuickSearch() {
+    if (!BUNDLE || !qsDialog || !qsDialog.showModal) return;
+    qsIndex = buildQsIndex();
+    qsInput.value = '';
+    renderQsResults('');
+    if (!qsDialog.open) qsDialog.showModal();
+    qsInput.focus();
+  }
+
+  byId('qs-open').addEventListener('click', openQuickSearch);
+  qsInput.addEventListener('input', function () { renderQsResults(qsInput.value.trim()); });
+  qsInput.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setQsSel(qsSel + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setQsSel(qsSel - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); qsActivate(); }
+  });
+  /* klik op de backdrop (het dialog-element zelf) sluit */
+  qsDialog.addEventListener('click', function (e) {
+    if (e.target === qsDialog) qsDialog.close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
+    if (e.key !== 'k' && e.key !== 'K') return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    if (!appActive || !BUNDLE) return;
+    e.preventDefault();
+    openQuickSearch();
+  });
 
   /* ============================================================
      Events
@@ -1736,16 +4532,22 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
 
   byId('btn-logout').addEventListener('click', doLogout);
   byId('picker-logout').addEventListener('click', doLogout);
-  byId('btn-switch').addEventListener('click', renderPicker);
+  /* projectwissel loopt via de productenpagina: alle projecten van deze
+     klant op één plank, inclusief het archief */
+  byId('btn-switch').addEventListener('click', function () {
+    if (appActive) { location.hash = '#/producten'; return; }
+    renderPicker();
+  });
 
-  byId('btn-ask-steffan').addEventListener('click', function () {
+  function askSteffan() {
     if (!BUNDLE) return;
     var latest = (BUNDLE.media || []).slice().sort(function (a, b) {
       return (a.capturedAt < b.capturedAt) ? 1 : -1;
     })[0];
     if (latest) { openMediaSheet(latest); }
     else { location.hash = '#/updates'; }
-  });
+  }
+  byId('btn-ask-steffan').addEventListener('click', askSteffan);
 
   byId('mo-close').addEventListener('click', closeMoment);
   byId('mo-prev').addEventListener('click', function () { momentShow(momentIndex - 1); });
