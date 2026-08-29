@@ -1,6 +1,6 @@
-/* Lokale dev-server: statische bestanden + de Netlify Function op hetzelfde origin,
-   zodat de AI productcheck ook lokaal echt werkt. Leest MISTRAL_API_KEY uit .env
-   (niet gecommit). Productie draait dit niet — daar doet Netlify beide. */
+/* Lokale dev-server: statische bestanden + de Netlify Functions op hetzelfde origin,
+   zodat AI-productcheck en klantmeldingen ook lokaal echt werken. Leest .env
+   (niet gecommit). Productie draait dit niet — daar doet Netlify alle drie. */
 
 import { createServer } from 'node:http';
 import { readFile, readFileSync, existsSync } from 'node:fs';
@@ -19,7 +19,13 @@ if (existsSync(envPath)) {
   });
 }
 
-var handlerPromise = import('../netlify/functions/product-check.mjs');
+/* elke functie in netlify/functions/<naam>.mjs is bereikbaar op
+   /.netlify/functions/<naam>, precies zoals Netlify dat in productie doet */
+var FUNCTIONS = ['product-check', 'notify-client'];
+var handlerPromises = {};
+FUNCTIONS.forEach(function (name) {
+  handlerPromises[name] = import('../netlify/functions/' + name + '.mjs');
+});
 
 var MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -32,12 +38,13 @@ var MIME = {
 createServer(function (req, res) {
   var url = new URL(req.url, 'http://localhost:' + PORT);
 
-  /* de serverless functie */
-  if (url.pathname === '/.netlify/functions/product-check') {
+  /* serverless functies */
+  var fnMatch = url.pathname.match(/^\/\.netlify\/functions\/([a-z-]+)$/);
+  if (fnMatch && handlerPromises[fnMatch[1]]) {
     var chunks = [];
     req.on('data', function (c) { chunks.push(c); });
     req.on('end', function () {
-      handlerPromise.then(function (mod) {
+      handlerPromises[fnMatch[1]].then(function (mod) {
         var request = new Request('http://localhost:' + PORT + url.pathname, {
           method: req.method,
           headers: req.headers,
@@ -67,5 +74,8 @@ createServer(function (req, res) {
     res.end(data);
   });
 }).listen(PORT, function () {
-  console.log('dev-server op http://localhost:' + PORT + ' (AI-functie ' + (process.env.MISTRAL_API_KEY ? 'ACTIEF' : 'zonder key — geeft 503') + ')');
+  var notifyReady = process.env.RESEND_API_KEY && process.env.RESEND_FROM && process.env.NOTIFY_SHARED_SECRET;
+  console.log('dev-server op http://localhost:' + PORT +
+    ' (AI-functie ' + (process.env.MISTRAL_API_KEY ? 'ACTIEF' : 'zonder key — geeft 503') +
+    ', klantmeldingen ' + (notifyReady ? 'ACTIEF' : 'nog niet geconfigureerd — geeft 503') + ')');
 });

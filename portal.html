@@ -1,0 +1,1799 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mijn project — CUSTOM+</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --white:#fff; --ink:#111;
+  --gray-9:#999; --gray-69:#696969; --gray-a7:#a7a7a7;
+  --gray-f9:#f9f9f9; --gray-f2:#f2f2f2;
+  --line:rgba(228,224,219,.6); --line-dark:rgba(255,255,255,.14);
+  --green:#1B6E45; --green-soft:rgba(27,110,69,.09);
+  --critical:#d97654;
+  --paper:#faf8f5;
+  --card-shadow:0 1px 2px rgba(20,16,8,.04), 0 10px 28px rgba(20,16,8,.05);
+  --card-shadow-hover:0 2px 6px rgba(20,16,8,.06), 0 16px 36px rgba(20,16,8,.08);
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font:400 15.5px/1.65 'Hanken Grotesk',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
+.mono{font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
+.kicker{
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-69);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+@media (max-width:700px){ .wrap{padding:0 16px} }
+
+.wordmark{font-weight:800;letter-spacing:.02em;font-size:19px}
+.wordmark em{font-style:normal;color:var(--green)}
+
+.btn{
+  display:inline-block;border:1px solid var(--ink);background:var(--white);
+  color:var(--ink);padding:10px 20px;border-radius:100px;cursor:pointer;
+  font-weight:600;font-size:14px;transition:background .25s ease,color .25s ease,border-color .25s ease,transform .15s ease;
+}
+.btn:hover{background:var(--ink);color:var(--white)}
+.btn:active{transform:scale(.98)}
+.btn-dark{background:var(--ink);color:var(--white)}
+.btn-dark:hover{background:var(--black);color:var(--white);opacity:.9}
+.btn-quiet{
+  border:1px solid var(--line);background:var(--white);color:var(--gray-69);
+  padding:8px 16px;border-radius:100px;cursor:pointer;font-size:13px;font-weight:500;
+  transition:border-color .25s ease,color .25s ease;
+}
+.btn-quiet:hover{border-color:var(--gray-a7);color:var(--ink)}
+
+/* ---------- login ---------- */
+#view-login{min-height:100svh;display:grid;place-items:center;background:var(--gray-f9);padding:32px 16px}
+.login-card{
+  width:100%;max-width:400px;background:var(--white);border:1px solid var(--line);
+  border-radius:12px;padding:36px 32px;
+}
+.login-card .wordmark{margin-bottom:6px}
+.login-sub{color:var(--gray-69);font-size:14px;margin:0 0 26px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  font:inherit;font-size:15px;background:var(--white);color:var(--ink);
+  transition:border-color .25s ease;
+}
+.field input:focus{outline:none;border-color:var(--ink)}
+.form-error{color:var(--critical);font-size:13.5px;min-height:1.2em;margin:4px 0 12px}
+.form-note{color:var(--gray-69);font-size:13.5px;margin:4px 0 12px}
+.login-divider{
+  display:flex;align-items:center;gap:12px;margin:22px 0;
+  color:var(--gray-a7);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.login-card .btn,.login-card .btn-dark{width:100%;text-align:center}
+.login-foot{margin-top:22px;font-size:12.5px;color:var(--gray-9)}
+
+/* ---------- projectkeuze ---------- */
+#view-picker{min-height:100svh;display:grid;place-items:center;background:var(--gray-f9);padding:32px 16px}
+.picker-card{width:100%;max-width:480px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:32px}
+.picker-card h1{font-size:20px;margin:14px 0 20px}
+.proj-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;
+  text-align:left;background:var(--white);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .25s ease;
+}
+.proj-row:hover{border-color:var(--ink)}
+.proj-row .name{font-weight:600}
+.proj-row .code{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px;color:var(--gray-69)}
+
+/* ---------- kopbalk + subnav ---------- */
+#view-app{display:none}
+.topbar{border-bottom:1px solid var(--line);background:var(--white)}
+.topbar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+.topbar-meta{display:flex;align-items:center;gap:18px;min-width:0}
+.topbar-proj{text-align:right;min-width:0}
+.topbar-proj .pname{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-proj .pcode{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--gray-69)}
+.topbar-proj .pclient{font-size:12.5px;color:var(--gray-9)}
+@media (max-width:700px){
+  .topbar-in{flex-wrap:wrap}
+  .topbar-proj{text-align:left}
+}
+.subnav{
+  position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+}
+.subnav-in{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.subnav a{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
+  color:var(--gray-69);padding:13px 12px;white-space:nowrap;border-bottom:2px solid transparent;
+  transition:color .25s ease;
+}
+.subnav a:hover{color:var(--ink)}
+.subnav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* ---------- secties ---------- */
+main section{padding:54px 0;border-top:1px solid var(--line)}
+main section:first-of-type{border-top:0}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:23px;font-weight:700;margin:8px 0 4px;letter-spacing:-.01em}
+.sec-head p{margin:0;color:var(--gray-69);font-size:14px;max-width:62ch}
+.empty-line{color:var(--gray-9);font-size:14px}
+
+/* ---------- host-kaart ---------- */
+.hostcard-wrap{padding:22px 0 0}
+.hostcard{
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  background:var(--white); border:1px solid var(--line); border-radius:22px;
+  padding:20px 24px; box-shadow:var(--card-shadow);
+}
+.hostcard__photo{
+  width:56px; height:56px; border-radius:50%; object-fit:cover; flex:none;
+  border:1px solid var(--line);
+}
+.hostcard__body{flex:1; min-width:180px}
+.hostcard__name{font-size:16px; font-weight:700; margin:2px 0 2px; letter-spacing:-.005em}
+.hostcard__role{font-size:13px; color:var(--gray-69); margin:0}
+.hostcard__promise{
+  font-size:12.5px; color:var(--green); margin:5px 0 0; font-weight:600;
+  display:flex; align-items:center; gap:6px;
+}
+.hostcard__promise::before{
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--green); flex:none;
+}
+.hostcard__cta{flex:none}
+@media (max-width:560px){
+  .hostcard{padding:18px}
+  .hostcard__cta{width:100%; text-align:center}
+}
+
+/* ---------- vertrouwensbanner ---------- */
+.trustbar{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  background:var(--green-soft); border-radius:100px; padding:12px 20px;
+  margin-top:14px; font-size:13.5px; color:var(--ink);
+}
+.trustbar__icon{flex:none; color:var(--green); display:flex}
+.trustbar a{color:var(--green); font-weight:600; text-decoration:underline; text-underline-offset:3px; margin-left:auto; white-space:nowrap}
+@media (max-width:560px){
+  .trustbar{border-radius:18px}
+  .trustbar a{margin-left:0}
+}
+
+/* ---------- mijlpalenpad ---------- */
+.path{list-style:none;margin:0;padding:0;display:flex;gap:0}
+.path li{flex:1;position:relative;padding:0 14px 0 0;min-width:0}
+.path .dot{
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink);
+  background:var(--white);position:relative;z-index:2;
+  color:var(--white);font-size:12px;font-weight:700;line-height:1;
+}
+.path li:not(:last-child)::after{
+  content:'';position:absolute;top:12px;left:34px;right:6px;height:1px;
+  background:var(--line);z-index:1;
+}
+.path li.done .dot{background:var(--green);border-color:var(--green)}
+.path li.done:not(:last-child)::after{background:var(--green);opacity:.35}
+.path li.upcoming .dot{border-color:var(--gray-a7)}
+.path li.current .dot{border-color:var(--green);animation:nodepulse 3.2s ease-out infinite}
+@keyframes nodepulse{
+  0%{box-shadow:0 0 0 0 rgba(27,110,69,.22)}
+  60%{box-shadow:0 0 0 10px rgba(27,110,69,0)}
+  100%{box-shadow:0 0 0 0 rgba(27,110,69,0)}
+}
+.path .st-name{font-size:12.5px;font-weight:600;margin-top:12px;line-height:1.4;padding-right:6px}
+.path li.upcoming .st-name{color:var(--gray-9);font-weight:500}
+.path .st-pay{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  margin-top:6px;color:var(--gray-69);
+}
+.path .st-pay .paid{color:var(--green)}
+.path .st-date{font-size:11.5px;color:var(--gray-9);margin-top:4px}
+@media (max-width:820px){
+  .path{flex-direction:column}
+  .path li{padding:0 0 30px 34px}
+  .path li:last-child{padding-bottom:0}
+  .path .dot{position:absolute;left:0;top:0}
+  .path li:not(:last-child)::after{
+    top:30px;left:12px;right:auto;bottom:4px;width:1px;height:auto;
+  }
+  .path .st-name{margin-top:0;font-size:13.5px}
+}
+
+/* ---------- updates per fase ---------- */
+details.stage-acc{border:1px solid var(--line);border-radius:18px;margin-bottom:14px;background:var(--white);box-shadow:var(--card-shadow)}
+details.stage-acc summary{
+  list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:14px;
+  padding:16px 20px;user-select:none;
+}
+details.stage-acc summary::-webkit-details-marker{display:none}
+details.stage-acc summary .acc-title{font-weight:700;font-size:15px}
+details.stage-acc summary .acc-count{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--gray-69);margin-left:auto;
+}
+details.stage-acc summary .acc-caret{color:var(--gray-a7);transition:transform .25s ease;font-size:12px}
+details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
+.acc-body{padding:4px 20px 20px;border-top:1px solid var(--line)}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;padding-top:16px}
+.media-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--white);padding:0;text-align:left;cursor:pointer;box-shadow:var(--card-shadow);transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}
+.media-card:hover{border-color:var(--gray-a7);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+.media-card img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.media-card .m-cap{padding:14px 16px 6px;font-size:13.5px;line-height:1.5;font-weight:500}
+.m-origin{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--gray-69);
+  padding:0 14px 12px;line-height:1.6;
+}
+.media-card .m-origin{border-top:0}
+
+/* ---------- sample-plank ---------- */
+.sample-row{
+  display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+  border:1px solid var(--line);border-radius:16px;background:var(--white);
+  padding:14px 18px;margin-bottom:10px;cursor:pointer;box-shadow:var(--card-shadow);
+  transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease;
+}
+.sample-row:hover{border-color:var(--gray-a7);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+.sample-row img{width:68px;height:52px;object-fit:cover;border-radius:10px;flex:none}
+.sample-row.superseded img{filter:grayscale(1)}
+.sample-row.superseded .s-note,.sample-row.superseded .s-label{color:var(--gray-9)}
+.sample-row .s-label{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;
+  min-width:30px;flex:none;
+}
+.sample-row .s-main{min-width:0;flex:1}
+.sample-row .s-note{font-size:13.5px;line-height:1.5}
+.sample-row .s-date{font-size:12px;color:var(--gray-9);margin-top:2px}
+.tag-approved{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--green);background:var(--green-soft);
+  padding:3px 8px;border-radius:6px;flex:none;
+}
+
+/* ---------- kwaliteit ---------- */
+.qc-card{border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:14px;background:var(--white);box-shadow:var(--card-shadow)}
+.qc-meta{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);margin-bottom:10px;
+}
+.qc-context{margin:10px 0 0;font-size:14.5px}
+.qc-pass{font-size:13.5px;font-weight:600;color:var(--green);margin-top:10px}
+.qc-fail{font-size:13.5px;font-weight:600;color:var(--critical);margin-top:10px}
+.qc-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+.qc-table th{
+  text-align:left;font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);
+  font-weight:500;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);
+}
+.qc-table td{padding:8px 12px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.qc-table tr:last-child td{border-bottom:0}
+.qc-none{font-size:13.5px;color:var(--gray-69);margin-top:8px}
+.table-scroll{overflow-x:auto}
+
+/* ---------- documenten ---------- */
+.doc-group{margin-bottom:26px}
+.doc-group-h{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gray-69);
+  padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:2px;
+}
+.doc-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.doc-row .d-type{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--gray-69);min-width:118px;flex:none;
+}
+.doc-row .d-main{flex:1;min-width:0}
+.doc-row .d-title{font-size:14.5px;font-weight:600}
+.doc-row .d-meta{font-size:12.5px;color:var(--gray-9)}
+@media (max-width:700px){
+  .doc-row{flex-wrap:wrap}
+  .doc-row .d-type{min-width:0;width:100%}
+}
+
+/* ---------- facturen ---------- */
+.inv-row{display:flex;align-items:center;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}
+.inv-row .i-main{flex:1;min-width:0}
+.inv-row .i-stage{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);
+}
+.inv-row .i-label{font-size:14.5px;font-weight:600;margin-top:2px}
+.inv-row .i-paidat{font-size:12.5px;color:var(--gray-9);margin-top:2px}
+.inv-row .i-amount{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:13.5px;font-weight:600;
+  white-space:nowrap;
+}
+.badge{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 12px;border-radius:100px;flex:none;
+}
+.badge-paid{color:var(--green);background:var(--green-soft)}
+.badge-open{color:var(--gray-69);background:var(--gray-f2)}
+@media (max-width:700px){ .inv-row{flex-wrap:wrap} }
+
+/* ---------- logboek ---------- */
+.log-list{list-style:none;margin:0;padding:0 0 0 18px;border-left:1px solid var(--line)}
+.log-list li{position:relative;padding:0 0 22px 18px}
+.log-list li:last-child{padding-bottom:6px}
+.log-list li::before{
+  content:'';position:absolute;left:-21.5px;top:7px;width:7px;height:7px;border-radius:50%;
+  background:var(--white);border:1.5px solid var(--gray-a7);
+}
+.log-list li.log-client::before{background:var(--ink);border-color:var(--ink)}
+.log-date{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  color:var(--gray-9);letter-spacing:.06em;
+}
+.log-text{font-size:14px;margin-top:2px}
+.log-foot{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  color:var(--gray-9);line-height:1.7;margin-top:26px;letter-spacing:.02em;
+}
+
+/* ---------- donkere band ---------- */
+.darkband{background:var(--ink);color:var(--white);margin-top:20px}
+.darkband .wrap{padding-top:44px;padding-bottom:44px}
+.darkband .kicker{color:var(--gray-a7)}
+.darkband p{margin:10px 0 0;max-width:56ch;font-size:15px}
+.darkband a{color:var(--white)}
+
+/* ---------- het moment (overlay) ---------- */
+#moment{position:fixed;inset:0;z-index:60;background:var(--black);display:none}
+#moment.open{display:block}
+#moment .mo-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#moment .mo-scrim{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,0) 58%,rgba(0,0,0,.72) 100%),
+    radial-gradient(130% 130% at 50% 45%,rgba(0,0,0,0) 58%,rgba(0,0,0,.45) 100%);
+}
+#moment .mo-top{
+  position:absolute;top:0;left:0;right:0;padding:26px 28px;display:flex;
+  align-items:center;justify-content:space-between;gap:16px;color:var(--white);
+}
+#moment .mo-kicker{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);
+}
+#moment .mo-count{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  color:rgba(255,255,255,.7);letter-spacing:.1em;
+}
+#moment .mo-bottom{
+  position:absolute;left:0;right:0;bottom:0;padding:28px;color:var(--white);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+#moment .mo-cap{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:13px;line-height:1.7;
+  max-width:56ch;color:rgba(255,255,255,.94);
+}
+#moment .mo-capdate{
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);
+  margin-bottom:8px;
+}
+#moment .mo-close{
+  border:1px solid rgba(255,255,255,.75);background:transparent;color:var(--white);
+  padding:11px 22px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;
+  transition:background .25s ease,color .25s ease;white-space:nowrap;
+}
+#moment .mo-close:hover{background:var(--white);color:var(--ink)}
+#moment .mo-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.25);color:var(--white);
+  width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
+  transition:background .25s ease;
+}
+#moment .mo-nav:hover{background:rgba(0,0,0,.55)}
+#moment .mo-prev{left:20px}
+#moment .mo-next{right:20px}
+@media (max-width:700px){
+  #moment .mo-nav{width:38px;height:38px}
+  #moment .mo-bottom{padding:20px 16px}
+  #moment .mo-top{padding:20px 16px}
+}
+
+/* ---------- detail-sheet ---------- */
+#sheet{position:fixed;inset:0;z-index:50;display:none}
+#sheet.open{display:block}
+#sheet .sh-scrim{position:absolute;inset:0;background:rgba(17,17,17,.45)}
+#sheet .sh-panel{
+  position:absolute;top:0;right:0;bottom:0;width:min(560px,100%);
+  background:var(--white);overflow-y:auto;padding:26px 28px 40px;
+  border-left:1px solid var(--line);
+}
+@media (max-width:700px){ #sheet .sh-panel{padding:20px 16px 32px} }
+.sh-head{display:flex;justify-content:flex-end;margin-bottom:14px}
+.sh-img{width:100%;border-radius:10px;border:1px solid var(--line)}
+.sh-cap{font-size:15px;line-height:1.6;margin:16px 0 6px}
+.sh-origin{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--gray-69);line-height:1.7;
+}
+.sh-divider{height:1px;background:var(--line);margin:24px 0}
+.sh-h{font-size:16px;font-weight:700;margin:0 0 14px}
+.thread{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.thread .t-who{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray-69);margin-bottom:4px;
+}
+.thread .t-q{font-size:14px}
+.thread .t-answer{background:var(--gray-f9);border-radius:8px;padding:12px 14px;margin-top:12px}
+.thread .t-answer .t-who{color:var(--green)}
+.thread .t-pending{font-size:12.5px;color:var(--gray-9);margin-top:10px}
+.ask-form label{display:block;font-size:13.5px;font-weight:600;margin-bottom:8px}
+.ask-form textarea{
+  width:100%;min-height:84px;padding:12px;border:1px solid var(--line);border-radius:10px;
+  font:inherit;font-size:14.5px;resize:vertical;background:var(--white);color:var(--ink);
+}
+.ask-form textarea:focus{outline:none;border-color:var(--ink)}
+.ask-form .btn{margin-top:12px}
+.ask-confirm{color:var(--green);font-size:14px;font-weight:600;margin-top:12px}
+.sh-demo-note{
+  border:1px solid var(--line);border-radius:10px;background:var(--gray-f9);
+  padding:18px 20px;margin-top:18px;font-size:14.5px;
+}
+.sh-demo-note .mono-l{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gray-69);margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== login ===== -->
+<section id="view-login" aria-label="Inloggen">
+  <div class="login-card">
+    <div class="wordmark">CUSTOM<em>+</em></div>
+    <p class="login-sub">Mijn project — volg je product van schets tot verscheping.</p>
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="login-email">E-mailadres</label>
+        <input id="login-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="login-pass">Wachtwoord</label>
+        <input id="login-pass" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <p id="login-error" class="form-error" role="alert" aria-live="polite"></p>
+      <button type="submit" class="btn btn-dark" id="login-submit">Inloggen</button>
+    </form>
+    <div id="login-demo-block">
+      <div class="login-divider" aria-hidden="true">of</div>
+      <button type="button" class="btn" id="btn-demo">Bekijk de demo-omgeving</button>
+    </div>
+    <p class="login-foot">Toegang gekregen van Steffan en lukt het niet? Mail <a href="mailto:steffan@customplus.nl">steffan@customplus.nl</a>.</p>
+  </div>
+</section>
+
+<!-- ===== projectkeuze ===== -->
+<section id="view-picker" aria-label="Projectkeuze" hidden>
+  <div class="picker-card">
+    <div class="wordmark">CUSTOM<em>+</em></div>
+    <h1>Kies een project</h1>
+    <div id="picker-list"></div>
+    <p style="margin-top:18px"><button type="button" class="btn-quiet" id="picker-logout">Uitloggen</button></p>
+  </div>
+</section>
+
+<!-- ===== app ===== -->
+<div id="view-app">
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <div class="wordmark">CUSTOM<em>+</em></div>
+      <div class="topbar-meta">
+        <div class="topbar-proj">
+          <div class="pname" id="hdr-project-name"></div>
+          <div class="pcode" id="hdr-project-code"></div>
+          <div class="pclient" id="hdr-client-name"></div>
+        </div>
+        <button type="button" class="btn-quiet" id="btn-switch" hidden>Wissel project</button>
+        <button type="button" class="btn-quiet" id="btn-logout">Uitloggen</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="subnav" aria-label="Pagina's">
+    <div class="wrap subnav-in">
+      <a href="#/mijlpalen" data-page="mijlpalen">Mijlpalen</a>
+      <a href="#/updates" data-page="updates">Updates</a>
+      <a href="#/samples" data-page="samples">Samples</a>
+      <a href="#/kwaliteit" data-page="kwaliteit">Kwaliteit</a>
+      <a href="#/documenten" data-page="documenten">Documenten</a>
+      <a href="#/facturen" data-page="facturen">Facturen</a>
+      <a href="#/logboek" data-page="logboek">Logboek</a>
+    </div>
+  </nav>
+
+  <section class="hostcard-wrap">
+    <div class="wrap">
+      <div class="hostcard">
+        <img src="images/founder.jpg" alt="" class="hostcard__photo">
+        <div class="hostcard__body">
+          <p class="kicker">Jouw contactpersoon</p>
+          <p class="hostcard__name">Steffan Bakker</p>
+          <p class="hostcard__role">Oprichter CUSTOM+ — leest en beantwoordt elk bericht zelf</p>
+          <p class="hostcard__promise">Reageert meestal binnen 1 werkdag</p>
+        </div>
+        <button type="button" class="btn btn-dark hostcard__cta" id="btn-ask-steffan">Stel een vraag</button>
+      </div>
+      <div class="trustbar">
+        <span class="trustbar__icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/></svg>
+        </span>
+        <span>Je ontwerp is beschermd: fabrieken krijgen alleen bestanden onder NNN.</span>
+        <a href="#/logboek">Bekijk het logboek</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section id="mijlpalen" aria-labelledby="h-mijlpalen">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">01 — Mijlpalenpad</p>
+          <h2 id="h-mijlpalen">Waar je project staat</h2>
+          <p>Zes vaste fases, van eerste schets tot levering. Je betaalt per mijlpaal, nooit vooruit op werk dat nog niet is goedgekeurd.</p>
+        </div>
+        <ul class="path" id="path"></ul>
+      </div>
+    </section>
+
+    <section id="updates" aria-labelledby="h-updates">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">02 — Updates per fase</p>
+          <h2 id="h-updates">Foto's van jouw product, met herkomst</h2>
+          <p>Elke update vermeldt fase, datum en fabriek. Klik op een foto voor detail en om een vraag te stellen.</p>
+        </div>
+        <div id="updates-list"></div>
+      </div>
+    </section>
+
+    <section id="samples" aria-labelledby="h-samples">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">03 — Sample-plank</p>
+          <h2 id="h-samples">De rondes op een rij</h2>
+          <p>Elke sampleronde met wat er is aangepast. De goedgekeurde ronde staat bovenaan.</p>
+        </div>
+        <div id="samples-list"></div>
+      </div>
+    </section>
+
+    <section id="kwaliteit" aria-labelledby="h-kwaliteit">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">04 — Kwaliteitscontrole</p>
+          <h2 id="h-kwaliteit">Inspecties en steekproeven</h2>
+          <p>Onafhankelijke controles op vaste checkpoints, volgens de AQL-norm die in je offerte staat.</p>
+        </div>
+        <div id="quality-list"></div>
+      </div>
+    </section>
+
+    <section id="documenten" aria-labelledby="h-documenten">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">05 — Documenten</p>
+          <h2 id="h-documenten">Alles op één plek</h2>
+          <p>Contracten, offertes, facturen en rapporten, geordend per fase. Elke download wordt in het logboek genoteerd.</p>
+        </div>
+        <div id="docs-list"></div>
+      </div>
+    </section>
+
+    <section id="facturen" aria-labelledby="h-facturen">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">06 — Facturen</p>
+          <h2 id="h-facturen">Betalen per mijlpaal</h2>
+          <p>Elke factuur hoort bij een fase uit het mijlpalenpad hierboven.</p>
+        </div>
+        <div id="invoices-list"></div>
+      </div>
+    </section>
+
+    <section id="logboek" aria-labelledby="h-logboek">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="kicker">07 — Toegangslogboek</p>
+          <h2 id="h-logboek">Wie zag wat, en wanneer</h2>
+          <p>Jouw bestanden zijn van jou. Dit logboek laat zien wat ermee is gebeurd.</p>
+        </div>
+        <ul class="log-list" id="log-list"></ul>
+        <p class="log-foot">Dit logboek toont elke keer dat een bestand van dit project is bekeken, gedownload of gedeeld.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="darkband">
+    <div class="wrap">
+      <p class="kicker">Vragen over je project</p>
+      <p>Stel je vraag bij een foto hierboven of mail <a href="mailto:steffan@customplus.nl">steffan@customplus.nl</a>. Je hoort binnen 1 werkdag van Steffan.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== het moment ===== -->
+<div id="moment" role="dialog" aria-modal="true" aria-label="Nieuwe foto's sinds je vorige bezoek">
+  <img class="mo-img" id="mo-img" alt="">
+  <div class="mo-scrim" aria-hidden="true"></div>
+  <div class="mo-top">
+    <span class="mo-kicker">Nieuw sinds je vorige bezoek</span>
+    <span class="mo-count" id="mo-count"></span>
+  </div>
+  <button type="button" class="mo-nav mo-prev" id="mo-prev" aria-label="Vorige foto">&#8249;</button>
+  <button type="button" class="mo-nav mo-next" id="mo-next" aria-label="Volgende foto">&#8250;</button>
+  <div class="mo-bottom">
+    <div>
+      <div class="mo-capdate mono" id="mo-capdate"></div>
+      <div class="mo-cap" id="mo-cap"></div>
+    </div>
+    <button type="button" class="mo-close" id="mo-close">Naar mijn project</button>
+  </div>
+</div>
+
+<!-- ===== detail-sheet ===== -->
+<div id="sheet">
+  <div class="sh-scrim" id="sheet-scrim"></div>
+  <div class="sh-panel" role="dialog" aria-modal="true" aria-label="Detail" id="sheet-panel">
+    <div class="sh-head">
+      <button type="button" class="btn-quiet" id="sheet-close">Sluiten</button>
+    </div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<script src="portal/config.js"></script>
+<script src="portal/demo-data.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Basis
+     ============================================================ */
+  var CFG = window.CP_PORTAL_CONFIG || {};
+  var DEMO_MODE = !(CFG.supabaseUrl && CFG.supabaseAnonKey);
+
+  var DEMO_KEY = 'cp_portal_demo_v1';
+  var SESSION_KEY = 'cp_portal_session_v1';
+
+  var STAGE_ORDER = ['concept', 'dfm', 'sourcing', 'tooling', 'production', 'logistics'];
+  var STAGE_NAMES = {
+    concept: 'Concept & Industrieel Ontwerp',
+    dfm: 'Ontwerp voor Produceerbaarheid',
+    sourcing: 'Fabriekssourcing & Screening',
+    tooling: 'Tooling, Sampling & Iteratie',
+    production: 'Massaproductie & Kwaliteitscontrole',
+    logistics: 'Compliance & Logistiek'
+  };
+  var DOC_TYPE_ORDER = ['nnn', 'quote', 'invoice', 'inspection', 'compliance', 'shipping', 'other'];
+  var DOC_TYPE_LABELS = {
+    nnn: 'NNN', quote: 'Offerte', invoice: 'Factuur', inspection: 'Inspectierapport',
+    compliance: 'Compliance', shipping: 'Verzending', other: 'Overig'
+  };
+  var CHECKPOINT_LABELS = { iqc: 'IQC — inkomend materiaal', ipqc: 'IPQC — tijdens de run', fqc: 'FQC — voor verzending' };
+  var SEVERITY_LABELS = { critical: 'Kritiek', major: 'Groot', minor: 'Klein' };
+
+  function byId(id) { return document.getElementById(id); }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+
+  function parseDay(s) {
+    if (!s) return null;
+    if (s.indexOf('T') >= 0) return new Date(s);
+    var p = s.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function fmtDate(s) {
+    var d = parseDay(s);
+    if (!d || isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function fmtDateShort(s) {
+    var d = parseDay(s);
+    if (!d || isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
+  }
+  function fmtDateTime(s) {
+    var d = new Date(s);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' +
+      d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+  }
+  var moneyFmt = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+  function fmtMoney(cents) { return moneyFmt.format((cents || 0) / 100); }
+
+  function camelRow(r) {
+    var o = {};
+    Object.keys(r).forEach(function (k) {
+      var ck = k.replace(/_([a-z])/g, function (m, c) { return c.toUpperCase(); });
+      o[ck] = r[k];
+    });
+    return o;
+  }
+  function camelRows(rows) { return (rows || []).map(camelRow); }
+
+  function readSession() {
+    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch (e) { return null; }
+  }
+  function writeSession(s) {
+    try {
+      if (s) sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
+      else sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) { /* privémodus */ }
+  }
+
+  /* ============================================================
+     Dataservice — demomodus
+     ============================================================ */
+  function demoService() {
+    var state = null;
+
+    function cloneSeed() {
+      try { return structuredClone(window.CP_DEMO); }
+      catch (e) { return JSON.parse(JSON.stringify(window.CP_DEMO)); }
+    }
+    function load() {
+      var raw = null;
+      try { raw = localStorage.getItem(DEMO_KEY); } catch (e) { /* leeg */ }
+      if (raw) {
+        try {
+          var parsed = JSON.parse(raw);
+          /* vormcheck: een oudere of afwijkende versie onder dezelfde sleutel
+             mag de portal niet laten crashen — dan liever de verse seed */
+          if (parsed && Array.isArray(parsed.clients) && Array.isArray(parsed.projects)) {
+            state = parsed;
+            /* collecties die een oudere schrijver kan missen, altijd aanvullen */
+            ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories'].forEach(function (k) {
+              if (!Array.isArray(state[k])) state[k] = [];
+            });
+            return;
+          }
+        } catch (e) { /* val terug op seed */ }
+      }
+      state = cloneSeed();
+    }
+    function save() {
+      try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch (e) { /* privémodus */ }
+    }
+    function sessionFromClient(c) {
+      return { mode: 'demo', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email };
+    }
+
+    return {
+      demo: true,
+
+      init: function () {
+        load();
+        var s = readSession();
+        if (s && s.mode === 'demo') {
+          var c = state.clients.find(function (x) { return x.id === s.clientId; });
+          if (c) return Promise.resolve(sessionFromClient(c));
+        }
+        return Promise.resolve(null);
+      },
+
+      login: function () {
+        return Promise.reject(new Error('In de demo-omgeving log je in via de knop "Bekijk de demo-omgeving".'));
+      },
+
+      demoLogin: function () {
+        var c = state.clients.find(function (x) { return x.id === 'cli-noor'; }) || state.clients[0];
+        var s = sessionFromClient(c);
+        writeSession(s);
+        return Promise.resolve(s);
+      },
+
+      logout: function () {
+        writeSession(null);
+        return Promise.resolve();
+      },
+
+      listProjects: function (clientId) {
+        var list = state.projects.filter(function (p) {
+          return p.clientId === clientId && p.status !== 'archived';
+        });
+        return Promise.resolve(list);
+      },
+
+      loadBundle: function (projectId) {
+        function forProject(arr) {
+          return (arr || []).filter(function (r) { return r.projectId === projectId; });
+        }
+        var project = state.projects.find(function (p) { return p.id === projectId; });
+        var bundle = {
+          project: project,
+          stages: (project.stages || []).slice().sort(function (a, b) { return a.position - b.position; }),
+          media: forProject(state.media).slice().sort(function (a, b) {
+            return parseDay(a.capturedAt) - parseDay(b.capturedAt);
+          }),
+          documents: forProject(state.documents),
+          invoices: forProject(state.invoices),
+          samples: forProject(state.samples),
+          inspections: forProject(state.inspections),
+          questions: forProject(state.questions),
+          accessLog: forProject(state.accessLog).slice().sort(function (a, b) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }),
+          factories: state.factories.slice()
+        };
+        return Promise.resolve(bundle);
+      },
+
+      mediaUrl: function (media) {
+        return Promise.resolve(media.src || media.storagePath || '');
+      },
+
+      docUrl: function () {
+        return Promise.resolve(null); /* demo: geen echt bestand */
+      },
+
+      addQuestion: function (projectId, media, text) {
+        var q = {
+          id: 'q-' + Date.now(),
+          projectId: projectId,
+          mediaId: media ? media.id : null,
+          stageKey: media ? media.stageKey : '',
+          question: text,
+          answer: '',
+          askedAt: new Date().toISOString(),
+          answeredAt: null
+        };
+        state.questions.push(q);
+        save();
+        return Promise.resolve(q);
+      },
+
+      addLog: function (projectId, assetKind, assetId, action, detail) {
+        var row = {
+          id: 'log-' + Date.now(),
+          projectId: projectId,
+          actor: 'client',
+          assetKind: assetKind,
+          assetId: assetId,
+          action: action,
+          detail: detail,
+          createdAt: new Date().toISOString()
+        };
+        state.accessLog.push(row);
+        save();
+        return Promise.resolve(row);
+      }
+    };
+  }
+
+  /* ============================================================
+     Dataservice — Supabase-modus
+     ============================================================ */
+  function supaService() {
+    var sb = null;
+
+    function lib() {
+      if (window.supabase) return Promise.resolve();
+      return new Promise(function (resolve, reject) {
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        s.onload = function () { resolve(); };
+        s.onerror = function () { reject(new Error('De verbinding kon niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.')); };
+        document.head.appendChild(s);
+      });
+    }
+    function client() {
+      if (sb) return Promise.resolve(sb);
+      return lib().then(function () {
+        sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+        return sb;
+      });
+    }
+    function mapAuthError(err) {
+      var m = (err && err.message) || '';
+      if (/invalid login credentials/i.test(m)) return 'E-mailadres of wachtwoord klopt niet.';
+      if (/email not confirmed/i.test(m)) return 'Dit e-mailadres is nog niet bevestigd. Kijk in je mailbox.';
+      if (/rate limit/i.test(m)) return 'Te veel pogingen kort na elkaar. Wacht even en probeer het opnieuw.';
+      return 'Inloggen lukte niet. Probeer het opnieuw of mail steffan@customplus.nl.';
+    }
+    function need(res) {
+      if (res.error) throw res.error;
+      return res.data;
+    }
+    function clientForUser(userId) {
+      return sb.from('clients')
+        .select('id, company, contact_name, email')
+        .eq('auth_user_id', userId)
+        .maybeSingle()
+        .then(function (res) {
+          var row = need(res);
+          if (!row) throw new Error('Dit account is nog niet aan een klant gekoppeld. Mail steffan@customplus.nl.');
+          var c = camelRow(row);
+          return { mode: 'supabase', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email };
+        });
+    }
+
+    return {
+      demo: false,
+
+      init: function () {
+        return client().then(function () {
+          return sb.auth.getSession();
+        }).then(function (res) {
+          var session = res.data ? res.data.session : null;
+          if (!session || !session.user) return null;
+          return clientForUser(session.user.id).catch(function () { return null; });
+        });
+      },
+
+      login: function (email, password) {
+        return client().then(function () {
+          return sb.auth.signInWithPassword({ email: email, password: password });
+        }).then(function (res) {
+          if (res.error) throw new Error(mapAuthError(res.error));
+          return clientForUser(res.data.user.id);
+        });
+      },
+
+      demoLogin: function () {
+        return Promise.reject(new Error('De demo-omgeving is hier niet actief.'));
+      },
+
+      logout: function () {
+        writeSession(null);
+        if (!sb) return Promise.resolve();
+        return sb.auth.signOut().then(function () { return null; });
+      },
+
+      listProjects: function (clientId) {
+        return sb.from('projects')
+          .select('*')
+          .eq('client_id', clientId)
+          .eq('status', 'active')
+          .order('created_at', { ascending: true })
+          .then(function (res) { return camelRows(need(res)); });
+      },
+
+      loadBundle: function (projectId) {
+        var q = function (table, order, asc) {
+          var sel = sb.from(table).select('*').eq('project_id', projectId);
+          if (order) sel = sel.order(order, { ascending: asc !== false });
+          return sel.then(function (res) { return camelRows(need(res)); });
+        };
+        return Promise.all([
+          sb.from('projects').select('*').eq('id', projectId).single()
+            .then(function (res) { return camelRow(need(res)); }),
+          q('project_stages', 'position'),
+          q('media_assets', 'captured_at'),
+          q('documents', 'created_at'),
+          q('invoices', 'created_at'),
+          q('sample_rounds', 'round_date'),
+          q('inspection_reports', 'report_date'),
+          q('question_threads', 'asked_at'),
+          q('access_log', 'created_at', false),
+          sb.from('factories_partners').select('*')
+            .then(function (res) { return camelRows(need(res)); }),
+          q('file_disclosures', 'disclosed_at')
+        ]).then(function (r) {
+          var factories = r[9];
+          var facById = {};
+          factories.forEach(function (f) { facById[f.id] = f; });
+          /* disclosures als systeemregels in het logboek */
+          var discRows = r[10].map(function (d) {
+            var f = facById[d.factoryId];
+            var detail = 'Bestanden gedeeld met ' + (f ? f.name : 'partner') +
+              (d.underNnn ? ' onder NNN' : '');
+            return {
+              id: 'dis-' + d.id, projectId: projectId, actor: 'system',
+              assetKind: 'system', assetId: null, action: 'share',
+              detail: detail, createdAt: d.disclosedAt
+            };
+          });
+          var log = r[8].concat(discRows).sort(function (a, b) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+          return {
+            project: r[0], stages: r[1], media: r[2], documents: r[3],
+            invoices: r[4], samples: r[5], inspections: r[6], questions: r[7],
+            accessLog: log, factories: factories
+          };
+        });
+      },
+
+      mediaUrl: function (media) {
+        return sb.storage.from('project-media')
+          .createSignedUrl(media.storagePath, 900)
+          .then(function (res) {
+            if (res.error) throw res.error;
+            return res.data.signedUrl;
+          });
+      },
+
+      docUrl: function (doc) {
+        return sb.storage.from('project-docs')
+          .createSignedUrl(doc.storagePath, 900)
+          .then(function (res) {
+            if (res.error) throw res.error;
+            return res.data.signedUrl;
+          });
+      },
+
+      addQuestion: function (projectId, media, text) {
+        return sb.from('question_threads').insert({
+          project_id: projectId,
+          media_id: media ? media.id : null,
+          stage_key: media ? media.stageKey : '',
+          question: text
+        }).select().single().then(function (res) { return camelRow(need(res)); });
+      },
+
+      addLog: function (projectId, assetKind, assetId, action, detail) {
+        return sb.from('access_log').insert({
+          project_id: projectId,
+          actor: 'client',
+          asset_kind: assetKind,
+          asset_id: assetId,
+          action: action,
+          detail: detail
+        }).select().single()
+          .then(function (res) { return camelRow(need(res)); })
+          .catch(function () {
+            /* loggen mag een download nooit blokkeren */
+            return {
+              actor: 'client', assetKind: assetKind, action: action,
+              detail: detail, createdAt: new Date().toISOString()
+            };
+          });
+      }
+    };
+  }
+
+  var DS = DEMO_MODE ? demoService() : supaService();
+  if (!DEMO_MODE) {
+    var demoBlock = byId('login-demo-block');
+    if (demoBlock) demoBlock.hidden = true;
+  }
+
+  /* ============================================================
+     UI-state
+     ============================================================ */
+  var SESSION = null;
+  var PROJECTS = [];
+  var BUNDLE = null;
+  var lastFocused = null;
+
+  function factoryById(id) {
+    if (!id || !BUNDLE) return null;
+    return BUNDLE.factories.find(function (f) { return f.id === id; }) || null;
+  }
+  function stageName(key) { return STAGE_NAMES[key] || key; }
+
+  function originLine(media) {
+    var parts = [stageName(media.stageKey).toUpperCase(), fmtDateShort(media.capturedAt)];
+    var f = factoryById(media.factoryId);
+    if (f) parts.push(f.name + (f.region ? ', ' + f.region : ''));
+    return parts.join(' · ');
+  }
+
+  function showView(name) {
+    byId('view-login').style.display = (name === 'login') ? 'grid' : 'none';
+    byId('view-picker').hidden = (name !== 'picker');
+    byId('view-picker').style.display = (name === 'picker') ? 'grid' : 'none';
+    byId('view-app').style.display = (name === 'app') ? 'block' : 'none';
+  }
+
+  /* ============================================================
+     Router — elke sectie is een eigen pagina (#/mijlpalen, #/updates, …),
+     zelfde hash-patroon als de hoofdsite. Eén bestand, geen aparte HTML's,
+     zodat login/data-laden niet per pagina hoeft te worden herhaald.
+     ============================================================ */
+  var PAGES = ['mijlpalen', 'updates', 'samples', 'kwaliteit', 'documenten', 'facturen', 'logboek'];
+  var appActive = false;
+  function currentPage() {
+    var h = location.hash.replace(/^#\/?/, '');
+    return PAGES.indexOf(h) > -1 ? h : PAGES[0];
+  }
+  function renderRoute() {
+    var page = currentPage();
+    PAGES.forEach(function (p) {
+      var sec = byId(p);
+      if (sec) sec.hidden = (p !== page);
+    });
+    var links = document.querySelectorAll('.subnav a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].setAttribute('aria-current', links[i].getAttribute('data-page') === page ? 'page' : 'false');
+    }
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', function () {
+    if (appActive) renderRoute();
+  });
+
+  /* ============================================================
+     Mijlpalenpad
+     ============================================================ */
+  function renderPath() {
+    var root = byId('path');
+    root.textContent = '';
+    BUNDLE.stages.forEach(function (s) {
+      var li = el('li', s.status === 'awaiting_approval' ? 'current' : s.status);
+      var dot = el('span', 'dot', s.status === 'done' ? '✓' : null);
+      dot.setAttribute('aria-hidden', 'true');
+      li.appendChild(dot);
+      li.appendChild(el('div', 'st-name', stageName(s.stageKey)));
+
+      if (s.paymentPct > 0) {
+        var inv = BUNDLE.invoices.find(function (i) { return i.stageKey === s.stageKey; });
+        var pay = el('div', 'st-pay');
+        pay.appendChild(document.createTextNode(s.paymentPct + '%'));
+        if (inv) {
+          pay.appendChild(document.createTextNode(' · '));
+          pay.appendChild(el('span', inv.status === 'paid' ? 'paid' : '', inv.status === 'paid' ? 'betaald' : 'open'));
+        }
+        li.appendChild(pay);
+      }
+      if (s.status === 'done' && s.approvedAt) {
+        li.appendChild(el('div', 'st-date', 'Goedgekeurd op ' + fmtDate(s.approvedAt)));
+      }
+      var srState = s.status === 'done' ? 'afgerond' : (s.status === 'upcoming' ? 'volgt nog' : 'nu bezig');
+      var sr = el('span', null, ' — ' + srState);
+      sr.style.position = 'absolute'; sr.style.width = '1px'; sr.style.height = '1px';
+      sr.style.overflow = 'hidden'; sr.style.clipPath = 'inset(50%)';
+      li.appendChild(sr);
+      root.appendChild(li);
+    });
+  }
+
+  /* ============================================================
+     Updates per fase
+     ============================================================ */
+  function mediaCard(m) {
+    var card = el('button', 'media-card');
+    card.type = 'button';
+    var img = el('img');
+    img.alt = m.caption || 'Projectfoto';
+    img.loading = 'lazy';
+    DS.mediaUrl(m).then(function (url) { if (url) img.src = url; }).catch(function () { /* stil */ });
+    card.appendChild(img);
+    card.appendChild(el('div', 'm-cap', m.caption || ''));
+    card.appendChild(el('div', 'm-origin', originLine(m)));
+    card.addEventListener('click', function () { openMediaSheet(m); });
+    return card;
+  }
+
+  function renderUpdates() {
+    var root = byId('updates-list');
+    root.textContent = '';
+    var withMedia = BUNDLE.stages.filter(function (s) {
+      return BUNDLE.media.some(function (m) { return m.stageKey === s.stageKey; });
+    }).sort(function (a, b) { return b.position - a.position; });
+
+    if (!withMedia.length) {
+      root.appendChild(el('p', 'empty-line', 'Nog geen updates. Zodra er iets te zien is, staat het hier.'));
+      return;
+    }
+    withMedia.forEach(function (s, idx) {
+      var media = BUNDLE.media.filter(function (m) { return m.stageKey === s.stageKey; })
+        .slice().sort(function (a, b) { return parseDay(b.capturedAt) - parseDay(a.capturedAt); });
+
+      var det = el('details', 'stage-acc');
+      if (idx === 0) det.open = true;
+      var sum = el('summary');
+      sum.appendChild(el('span', 'acc-caret mono', '›'));
+      sum.appendChild(el('span', 'acc-title', stageName(s.stageKey)));
+      sum.appendChild(el('span', 'acc-count', media.length + (media.length === 1 ? ' update' : ' updates')));
+      det.appendChild(sum);
+
+      var body = el('div', 'acc-body');
+      var grid = el('div', 'media-grid');
+      media.forEach(function (m) { grid.appendChild(mediaCard(m)); });
+      body.appendChild(grid);
+      det.appendChild(body);
+      root.appendChild(det);
+    });
+  }
+
+  /* ============================================================
+     Sample-plank
+     ============================================================ */
+  function renderSamples() {
+    var root = byId('samples-list');
+    root.textContent = '';
+    if (!BUNDLE.samples.length) {
+      root.appendChild(el('p', 'empty-line', 'Nog geen samplerondes. Die verschijnen hier zodra de eerste sample uit de mal komt.'));
+      return;
+    }
+    var rows = BUNDLE.samples.slice().sort(function (a, b) {
+      if (a.status === 'approved' && b.status !== 'approved') return -1;
+      if (b.status === 'approved' && a.status !== 'approved') return 1;
+      return parseDay(b.roundDate) - parseDay(a.roundDate);
+    });
+    rows.forEach(function (smp) {
+      var media = BUNDLE.media.find(function (m) { return m.id === smp.mediaId; }) || null;
+      var row = el('button', 'sample-row' + (smp.status === 'superseded' ? ' superseded' : ''));
+      row.type = 'button';
+      if (media) {
+        var img = el('img');
+        img.alt = 'Sample ' + smp.roundLabel;
+        img.loading = 'lazy';
+        DS.mediaUrl(media).then(function (url) { if (url) img.src = url; }).catch(function () { /* stil */ });
+        row.appendChild(img);
+      }
+      row.appendChild(el('span', 's-label', smp.roundLabel));
+      var main = el('div', 's-main');
+      main.appendChild(el('div', 's-note', smp.note || ''));
+      main.appendChild(el('div', 's-date', fmtDate(smp.roundDate)));
+      row.appendChild(main);
+      if (smp.status === 'approved') row.appendChild(el('span', 'tag-approved', 'Goedgekeurd'));
+      row.addEventListener('click', function () {
+        if (media) openMediaSheet(media);
+      });
+      root.appendChild(row);
+    });
+  }
+
+  /* ============================================================
+     Kwaliteitscontrole
+     ============================================================ */
+  function renderQuality() {
+    var root = byId('quality-list');
+    root.textContent = '';
+    if (!BUNDLE.inspections.length) {
+      root.appendChild(el('p', 'empty-line', 'Nog geen inspectierapporten. De eerste controle vindt plaats zodra de productie start.'));
+      return;
+    }
+    var rows = BUNDLE.inspections.slice().sort(function (a, b) {
+      return parseDay(b.reportDate) - parseDay(a.reportDate);
+    });
+    rows.forEach(function (r) {
+      var card = el('article', 'qc-card');
+      var cp = (CHECKPOINT_LABELS[r.checkpoint] || r.checkpoint.toUpperCase());
+      card.appendChild(el('div', 'qc-meta',
+        cp + ' · ' + r.aqlNorm + ' · steekproef ' + r.sampleSize + ' · ' + fmtDateShort(r.reportDate)));
+
+      var defects = r.defects || [];
+      if (defects.length) {
+        var scroll = el('div', 'table-scroll');
+        var tbl = el('table', 'qc-table');
+        var thead = el('thead');
+        var trh = el('tr');
+        ['Ernst', 'Aantal', 'Notitie'].forEach(function (h) { trh.appendChild(el('th', null, h)); });
+        thead.appendChild(trh);
+        tbl.appendChild(thead);
+        var tbody = el('tbody');
+        defects.forEach(function (d) {
+          var tr = el('tr');
+          tr.appendChild(el('td', null, SEVERITY_LABELS[d.severity] || d.severity));
+          tr.appendChild(el('td', null, String(d.count)));
+          tr.appendChild(el('td', null, d.note || ''));
+          tbody.appendChild(tr);
+        });
+        tbl.appendChild(tbody);
+        scroll.appendChild(tbl);
+        card.appendChild(scroll);
+      } else {
+        card.appendChild(el('p', 'qc-none', 'Geen afwijkingen gevonden.'));
+      }
+      if (r.contextLine) card.appendChild(el('p', 'qc-context', r.contextLine));
+      card.appendChild(el('p', r.passed ? 'qc-pass' : 'qc-fail', r.passed ? 'Binnen norm' : 'Buiten norm — Steffan neemt contact op'));
+      root.appendChild(card);
+    });
+  }
+
+  /* ============================================================
+     Documenten
+     ============================================================ */
+  function openDemoDocSheet(doc) {
+    var body = byId('sheet-body');
+    body.textContent = '';
+    body.appendChild(el('h3', 'sh-h', doc.title));
+    body.appendChild(el('div', 'sh-origin',
+      DOC_TYPE_LABELS[doc.docType] + ' · ' + stageName(doc.stageKey).toUpperCase() + ' · ' + fmtDateShort(doc.createdAt)));
+    var note = el('div', 'sh-demo-note');
+    note.appendChild(el('div', 'mono-l', 'Demo-omgeving'));
+    note.appendChild(el('p', null, 'In de demo staat hier het echte bestand. In je eigen omgeving opent de download direct, via een beveiligde link die 15 minuten geldig is.'));
+    var p2 = el('p', null, 'Deze download is wel in je toegangslogboek genoteerd, zodat je ziet hoe dat werkt.');
+    p2.style.marginBottom = '0';
+    note.appendChild(p2);
+    body.appendChild(note);
+    openSheet();
+  }
+
+  function handleDownload(doc) {
+    var logIt = function () {
+      return DS.addLog(BUNDLE.project.id, 'document', doc.id, 'download', doc.title)
+        .then(function (row) {
+          BUNDLE.accessLog.unshift(row);
+          renderLog();
+        });
+    };
+    if (DS.demo) {
+      logIt();
+      openDemoDocSheet(doc);
+      return;
+    }
+    DS.docUrl(doc).then(function (url) {
+      if (url) window.open(url, '_blank', 'noopener');
+      return logIt();
+    }).catch(function () {
+      var body = byId('sheet-body');
+      body.textContent = '';
+      body.appendChild(el('h3', 'sh-h', doc.title));
+      body.appendChild(el('p', null, 'Het bestand kon nu niet worden opgehaald. Probeer het over een minuut opnieuw of mail steffan@customplus.nl.'));
+      openSheet();
+    });
+  }
+
+  function renderDocs() {
+    var root = byId('docs-list');
+    root.textContent = '';
+    if (!BUNDLE.documents.length) {
+      root.appendChild(el('p', 'empty-line', 'Nog geen documenten.'));
+      return;
+    }
+    STAGE_ORDER.forEach(function (key) {
+      var docs = BUNDLE.documents.filter(function (d) { return d.stageKey === key; });
+      if (!docs.length) return;
+      docs.sort(function (a, b) {
+        var da = DOC_TYPE_ORDER.indexOf(a.docType); if (da < 0) da = 99;
+        var db = DOC_TYPE_ORDER.indexOf(b.docType); if (db < 0) db = 99;
+        if (da !== db) return da - db;
+        return parseDay(a.createdAt) - parseDay(b.createdAt);
+      });
+      var group = el('div', 'doc-group');
+      group.appendChild(el('div', 'doc-group-h', stageName(key)));
+      docs.forEach(function (d) {
+        var row = el('div', 'doc-row');
+        row.appendChild(el('span', 'd-type', DOC_TYPE_LABELS[d.docType] || d.docType));
+        var main = el('div', 'd-main');
+        main.appendChild(el('div', 'd-title', d.title + (d.version > 1 ? ' (v' + d.version + ')' : '')));
+        main.appendChild(el('div', 'd-meta', fmtDate(d.createdAt)));
+        row.appendChild(main);
+        var btn = el('button', 'btn-quiet', 'Download');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Download ' + d.title);
+        btn.addEventListener('click', function () { handleDownload(d); });
+        row.appendChild(btn);
+        group.appendChild(row);
+      });
+      root.appendChild(group);
+    });
+  }
+
+  /* ============================================================
+     Facturen
+     ============================================================ */
+  function renderInvoices() {
+    var root = byId('invoices-list');
+    root.textContent = '';
+    if (!BUNDLE.invoices.length) {
+      root.appendChild(el('p', 'empty-line', 'Nog geen facturen.'));
+      return;
+    }
+    var rows = BUNDLE.invoices.slice().sort(function (a, b) {
+      return STAGE_ORDER.indexOf(a.stageKey) - STAGE_ORDER.indexOf(b.stageKey);
+    });
+    rows.forEach(function (inv) {
+      var stage = BUNDLE.stages.find(function (s) { return s.stageKey === inv.stageKey; });
+      var row = el('div', 'inv-row');
+      var main = el('div', 'i-main');
+      var pct = stage && stage.paymentPct ? ' · ' + stage.paymentPct + '%' : '';
+      main.appendChild(el('div', 'i-stage', stageName(inv.stageKey).toUpperCase() + pct));
+      main.appendChild(el('div', 'i-label', inv.label));
+      if (inv.status === 'paid' && inv.paidAt) {
+        main.appendChild(el('div', 'i-paidat', 'Betaald op ' + fmtDate(inv.paidAt)));
+      }
+      row.appendChild(main);
+      row.appendChild(el('span', 'i-amount', fmtMoney(inv.amountCents)));
+      row.appendChild(el('span', 'badge ' + (inv.status === 'paid' ? 'badge-paid' : 'badge-open'),
+        inv.status === 'paid' ? 'Betaald' : 'Open'));
+      root.appendChild(row);
+    });
+  }
+
+  /* ============================================================
+     Toegangslogboek
+     ============================================================ */
+  function logSentence(row) {
+    if (row.actor === 'client') {
+      var verb = 'bekeek';
+      if (row.action === 'download') verb = 'downloadde';
+      if (row.action === 'share') verb = 'deelde';
+      return 'Jij ' + verb + ' ‘' + (row.detail || 'een bestand') + '’';
+    }
+    if (row.actor === 'staff') {
+      return 'Steffan: ' + (row.detail || '');
+    }
+    return row.detail || '';
+  }
+
+  function renderLog() {
+    var root = byId('log-list');
+    root.textContent = '';
+    if (!BUNDLE.accessLog.length) {
+      var li0 = el('li');
+      li0.appendChild(el('div', 'log-text empty-line', 'Nog geen activiteit.'));
+      root.appendChild(li0);
+      return;
+    }
+    BUNDLE.accessLog.forEach(function (row) {
+      var li = el('li', row.actor === 'client' ? 'log-client' : 'log-system');
+      var dateStr = row.createdAt && row.createdAt.indexOf('T') >= 0
+        ? fmtDateTime(row.createdAt)
+        : fmtDate(row.createdAt);
+      li.appendChild(el('div', 'log-date', dateStr));
+      li.appendChild(el('div', 'log-text', logSentence(row)));
+      root.appendChild(li);
+    });
+  }
+
+  /* ============================================================
+     Detail-sheet (foto + opmerkingen)
+     ============================================================ */
+  function openSheet() {
+    lastFocused = document.activeElement;
+    byId('sheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    byId('sheet-close').focus();
+  }
+  function closeSheet() {
+    byId('sheet').classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  function threadBlock(media) {
+    var wrapT = el('div');
+    var threads = BUNDLE.questions.filter(function (q) { return q.mediaId === media.id; })
+      .slice().sort(function (a, b) { return new Date(a.askedAt) - new Date(b.askedAt); });
+
+    threads.forEach(function (t) {
+      var th = el('div', 'thread');
+      th.appendChild(el('div', 't-who', 'Jij · ' + fmtDateTime(t.askedAt)));
+      th.appendChild(el('div', 't-q', t.question));
+      if (t.answer) {
+        var ans = el('div', 't-answer');
+        ans.appendChild(el('div', 't-who', 'Steffan · ' + (t.answeredAt ? fmtDateTime(t.answeredAt) : '')));
+        ans.appendChild(el('div', 't-q', t.answer));
+        th.appendChild(ans);
+      } else {
+        th.appendChild(el('div', 't-pending', 'Nog niet beantwoord — je hoort binnen 1 werkdag van Steffan.'));
+      }
+      wrapT.appendChild(th);
+    });
+
+    var form = el('form', 'ask-form');
+    var lbl = el('label', null, 'Stel een vraag over deze foto');
+    var taId = 'ask-' + media.id;
+    lbl.setAttribute('for', taId);
+    var ta = document.createElement('textarea');
+    ta.id = taId;
+    ta.required = true;
+    ta.placeholder = 'Bijvoorbeeld: is deze kleur al de definitieve kleur?';
+    var btn = el('button', 'btn btn-dark', 'Versturen');
+    btn.type = 'submit';
+    var confirm = el('p', 'ask-confirm', '');
+    confirm.setAttribute('aria-live', 'polite');
+    var errP = el('p', 'form-error', '');
+    errP.setAttribute('aria-live', 'polite');
+    errP.hidden = true;
+    form.appendChild(lbl);
+    form.appendChild(ta);
+    form.appendChild(btn);
+    form.appendChild(confirm);
+    form.appendChild(errP);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var text = ta.value.trim();
+      if (!text) return;
+      btn.disabled = true;
+      errP.hidden = true;
+      errP.textContent = '';
+      DS.addQuestion(BUNDLE.project.id, media, text).then(function (q) {
+        BUNDLE.questions.push(q);
+        var th = el('div', 'thread');
+        th.appendChild(el('div', 't-who', 'Jij · ' + fmtDateTime(q.askedAt)));
+        th.appendChild(el('div', 't-q', q.question));
+        th.appendChild(el('div', 't-pending', 'Nog niet beantwoord.'));
+        wrapT.insertBefore(th, form.parentNode === wrapT ? form : null);
+        ta.value = '';
+        confirm.textContent = 'Ontvangen — je hoort binnen 1 werkdag van Steffan.';
+        btn.disabled = false;
+      }).catch(function () {
+        confirm.textContent = '';
+        errP.textContent = 'Versturen lukte niet. Probeer het opnieuw.';
+        errP.hidden = false;
+        btn.disabled = false;
+      });
+    });
+    wrapT.appendChild(form);
+    return wrapT;
+  }
+
+  function openMediaSheet(media) {
+    var body = byId('sheet-body');
+    body.textContent = '';
+    var img = el('img', 'sh-img');
+    img.alt = media.caption || 'Projectfoto';
+    DS.mediaUrl(media).then(function (url) { if (url) img.src = url; }).catch(function () { /* stil */ });
+    body.appendChild(img);
+    body.appendChild(el('p', 'sh-cap', media.caption || ''));
+    body.appendChild(el('div', 'sh-origin', originLine(media)));
+    body.appendChild(el('div', 'sh-divider'));
+    body.appendChild(el('h3', 'sh-h', 'Opmerkingen'));
+    body.appendChild(threadBlock(media));
+    openSheet();
+  }
+
+  /* ============================================================
+     Het moment
+     ============================================================ */
+  var momentItems = [];
+  var momentIndex = 0;
+
+  function lastseenKey() { return 'cp_portal_lastseen_' + SESSION.clientId; }
+  /* We onthouden de ID's van geziene media in plaats van een tijdstempel:
+     capturedAt is dag-granulair, waardoor een tijdvergelijking foto's mist
+     die op de bezoekdag zelf nog zijn geplaatst. */
+  function readSeenIds() {
+    try {
+      var raw = localStorage.getItem(lastseenKey());
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : null; /* oude ISO-waarde → als onbekend behandelen */
+    } catch (e) { return null; }
+  }
+  function markSeen() {
+    try {
+      var ids = (BUNDLE && BUNDLE.media ? BUNDLE.media : []).map(function (m) { return m.id; });
+      localStorage.setItem(lastseenKey(), JSON.stringify(ids));
+    } catch (e) { /* privémodus */ }
+  }
+
+  function momentShow(i) {
+    momentIndex = (i + momentItems.length) % momentItems.length;
+    var m = momentItems[momentIndex];
+    var img = byId('mo-img');
+    img.src = '';
+    DS.mediaUrl(m).then(function (url) { if (url) img.src = url; }).catch(function () { /* stil */ });
+    img.alt = m.caption || 'Nieuwe projectfoto';
+    byId('mo-cap').textContent = m.caption || '';
+    byId('mo-capdate').textContent = originLine(m);
+    byId('mo-count').textContent = momentItems.length > 1
+      ? (momentIndex + 1) + ' / ' + momentItems.length : '';
+  }
+
+  function openMoment(items) {
+    momentItems = items;
+    var multi = items.length > 1;
+    byId('mo-prev').style.display = multi ? 'block' : 'none';
+    byId('mo-next').style.display = multi ? 'block' : 'none';
+    momentShow(0);
+    lastFocused = document.activeElement;
+    byId('moment').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    byId('mo-close').focus();
+  }
+
+  function closeMoment() {
+    byId('moment').classList.remove('open');
+    document.body.style.overflow = '';
+    markSeen();
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  function maybeShowMoment() {
+    var seen = readSeenIds();
+    var fresh;
+    if (seen === null) {
+      /* eerste bezoek in deze browser: toon wat recent is (14 dagen) */
+      var cutoff = Date.now() - 14 * 86400000;
+      fresh = BUNDLE.media.filter(function (m) {
+        var d = parseDay(m.capturedAt);
+        return d && d.getTime() > cutoff;
+      });
+    } else {
+      fresh = BUNDLE.media.filter(function (m) { return seen.indexOf(m.id) === -1; });
+    }
+    fresh.sort(function (a, b) { return parseDay(b.capturedAt) - parseDay(a.capturedAt); });
+    if (fresh.length) openMoment(fresh);
+    else markSeen();
+  }
+
+  /* ============================================================
+     Navigatie tussen views
+     ============================================================ */
+  function enterProject(project) {
+    DS.loadBundle(project.id).then(function (bundle) {
+      BUNDLE = bundle;
+      byId('hdr-project-name').textContent = bundle.project.name;
+      byId('hdr-project-code').textContent = bundle.project.code || '';
+      byId('hdr-client-name').textContent = SESSION.contactName + ' — ' + SESSION.company;
+      byId('btn-switch').hidden = PROJECTS.length < 2;
+      renderPath();
+      renderUpdates();
+      renderSamples();
+      renderQuality();
+      renderDocs();
+      renderInvoices();
+      renderLog();
+      showView('app');
+      appActive = true;
+      if (!location.hash) { location.hash = '#/' + PAGES[0]; }
+      renderRoute();
+      maybeShowMoment();
+    }).catch(function () {
+      showError('Je project kon niet worden geladen. Vernieuw de pagina of mail steffan@customplus.nl.');
+    });
+  }
+
+  function renderPicker() {
+    var root = byId('picker-list');
+    root.textContent = '';
+    PROJECTS.forEach(function (p) {
+      var row = el('button', 'proj-row');
+      row.type = 'button';
+      row.appendChild(el('span', 'name', p.name));
+      row.appendChild(el('span', 'code', p.code || ''));
+      row.addEventListener('click', function () { enterProject(p); });
+      root.appendChild(row);
+    });
+    showView('picker');
+  }
+
+  function afterLogin(session) {
+    SESSION = session;
+    writeSession(DS.demo ? session : null);
+    return DS.listProjects(session.clientId).then(function (projects) {
+      PROJECTS = projects;
+      if (!projects.length) {
+        showError('Er staat nog geen project voor je klaar. Mail steffan@customplus.nl.');
+        return;
+      }
+      if (projects.length === 1) enterProject(projects[0]);
+      else renderPicker();
+    });
+  }
+
+  function showError(msg) {
+    var errP = byId('login-error');
+    errP.className = 'form-error';
+    errP.textContent = msg;
+    showView('login');
+  }
+
+  function doLogout() {
+    DS.logout().then(function () {
+      SESSION = null; PROJECTS = []; BUNDLE = null;
+      appActive = false;
+      history.replaceState(null, '', location.pathname + location.search);
+      byId('login-error').textContent = '';
+      byId('login-pass').value = '';
+      showView('login');
+      window.scrollTo(0, 0);
+    });
+  }
+
+  /* ============================================================
+     Events
+     ============================================================ */
+  byId('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var errP = byId('login-error');
+    errP.textContent = '';
+    if (DS.demo) {
+      errP.className = 'form-note';
+      errP.textContent = 'Dit is de demo-omgeving: gebruik de knop "Bekijk de demo-omgeving" hieronder.';
+      return;
+    }
+    errP.className = 'form-error';
+    var email = byId('login-email').value.trim();
+    var pass = byId('login-pass').value;
+    if (!email || !pass) {
+      errP.textContent = 'Vul je e-mailadres en wachtwoord in.';
+      return;
+    }
+    var btn = byId('login-submit');
+    btn.disabled = true;
+    btn.textContent = 'Even geduld…';
+    DS.login(email, pass).then(function (session) {
+      btn.disabled = false;
+      btn.textContent = 'Inloggen';
+      return afterLogin(session);
+    }).catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = 'Inloggen';
+      errP.textContent = (err && err.message) || 'Inloggen lukte niet.';
+    });
+  });
+
+  byId('btn-demo').addEventListener('click', function () {
+    DS.demoLogin().then(afterLogin).catch(function (err) {
+      var errP = byId('login-error');
+      errP.className = 'form-error';
+      errP.textContent = (err && err.message) || 'De demo kon niet worden gestart.';
+    });
+  });
+
+  byId('btn-logout').addEventListener('click', doLogout);
+  byId('picker-logout').addEventListener('click', doLogout);
+  byId('btn-switch').addEventListener('click', renderPicker);
+
+  byId('btn-ask-steffan').addEventListener('click', function () {
+    if (!BUNDLE) return;
+    var latest = (BUNDLE.media || []).slice().sort(function (a, b) {
+      return (a.capturedAt < b.capturedAt) ? 1 : -1;
+    })[0];
+    if (latest) { openMediaSheet(latest); }
+    else { location.hash = '#/updates'; }
+  });
+
+  byId('mo-close').addEventListener('click', closeMoment);
+  byId('mo-prev').addEventListener('click', function () { momentShow(momentIndex - 1); });
+  byId('mo-next').addEventListener('click', function () { momentShow(momentIndex + 1); });
+
+  /* swipe op het moment-scherm */
+  (function () {
+    var startX = null;
+    var mo = byId('moment');
+    mo.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 1) startX = e.touches[0].clientX;
+    }, { passive: true });
+    mo.addEventListener('touchend', function (e) {
+      if (startX === null || momentItems.length < 2) { startX = null; return; }
+      var dx = e.changedTouches[0].clientX - startX;
+      if (dx > 40) momentShow(momentIndex - 1);
+      else if (dx < -40) momentShow(momentIndex + 1);
+      startX = null;
+    }, { passive: true });
+  })();
+
+  byId('sheet-close').addEventListener('click', closeSheet);
+  byId('sheet-scrim').addEventListener('click', closeSheet);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (byId('sheet').classList.contains('open')) { closeSheet(); return; }
+    if (byId('moment').classList.contains('open')) closeMoment();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var mo = byId('moment');
+    if (!mo.classList.contains('open') || momentItems.length < 2) return;
+    if (e.key === 'ArrowLeft') momentShow(momentIndex - 1);
+    if (e.key === 'ArrowRight') momentShow(momentIndex + 1);
+  });
+
+  /* ============================================================
+     Start
+     ============================================================ */
+  showView('login');
+  DS.init().then(function (session) {
+    if (session) return afterLogin(session);
+    return null;
+  }).catch(function () {
+    showView('login');
+  });
+})();
+</script>
+</body>
+</html>

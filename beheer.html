@@ -1,0 +1,2098 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>CUSTOM+ Beheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --white:#fff; --ink:#111;
+  --gray-9:#999; --gray-69:#696969; --gray-a7:#a7a7a7; --gray-f9:#f9f9f9; --gray-f2:#f2f2f2;
+  --line:rgba(228,224,219,.6); --line-dark:rgba(255,255,255,.14);
+  --green:#1B6E45; --green-soft:rgba(27,110,69,.09);
+  --critical:#d97654;
+  --font: 'Hanken Grotesk', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  font-family:var(--font); font-size:15px; line-height:1.55; color:var(--ink);
+  background:var(--gray-f9); min-height:100vh;
+}
+img{ max-width:100%; display:block; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input, textarea, select{ font:inherit; color:var(--ink); }
+:focus{ outline:none; }
+:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; border-radius:4px; }
+[hidden]{ display:none !important; }
+
+.kicker{
+  font-family:var(--mono); font-size:11px; font-weight:500; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--gray-69);
+}
+.mono{ font-family:var(--mono); }
+
+/* ---------- login ---------- */
+.login-wrap{
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.login-card{
+  width:100%; max-width:400px; background:var(--white);
+  border:1px solid var(--line); border-radius:12px; overflow:hidden;
+}
+.login-band{
+  background:var(--black); color:var(--white); padding:26px 28px 22px;
+}
+.login-band .wordmark{ font-weight:800; font-size:19px; letter-spacing:.02em; }
+.login-band .kicker{ color:var(--gray-a7); margin-top:4px; }
+.login-body{ padding:26px 28px 30px; }
+.login-body p{ color:var(--gray-69); font-size:14px; margin-bottom:18px; }
+.login-error{
+  font-size:13.5px; color:var(--critical); margin-top:14px; display:none;
+}
+.login-error.show{ display:block; }
+
+/* ---------- shell ---------- */
+.shell{ display:flex; min-height:100vh; }
+.side{
+  width:216px; flex:0 0 216px; background:var(--white);
+  border-right:1px solid var(--line);
+  display:flex; flex-direction:column;
+  position:sticky; top:0; height:100vh;
+}
+.side-head{ padding:24px 22px 18px; border-bottom:1px solid var(--line); }
+.side-head .wordmark{ font-weight:800; font-size:17px; letter-spacing:.02em; }
+.side-head .kicker{ margin-top:2px; }
+.side nav{ padding:14px 12px; display:flex; flex-direction:column; gap:2px; }
+.navbtn{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%; text-align:left; padding:9px 12px; border-radius:8px;
+  font-weight:600; font-size:14.5px; color:var(--gray-69);
+  transition:background .25s ease, color .25s ease;
+}
+.navbtn:hover{ background:var(--gray-f9); color:var(--ink); }
+.navbtn.active{ background:var(--gray-f2); color:var(--ink); }
+.navbadge{
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  background:var(--black); color:var(--white); border-radius:999px;
+  min-width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;
+  padding:0 6px;
+}
+.side-foot{ margin-top:auto; padding:16px 22px 20px; border-top:1px solid var(--line); }
+.side-foot .who{ font-size:13.5px; font-weight:600; }
+.side-foot .who small{ display:block; font-weight:400; color:var(--gray-9); font-size:12.5px; }
+.linkbtn{
+  font-size:13.5px; color:var(--gray-69); text-decoration:underline;
+  text-underline-offset:3px; margin-top:8px; padding:0; border-radius:2px;
+  transition:color .25s ease;
+}
+.linkbtn:hover{ color:var(--ink); }
+
+.main{ flex:1; min-width:0; }
+.demobar{
+  border-bottom:1px solid var(--line); background:var(--white);
+  padding:8px 28px; font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--gray-69);
+  display:flex; align-items:center; gap:8px;
+}
+.demobar .dot{ width:6px; height:6px; border-radius:50%; background:var(--green); flex:0 0 6px; }
+.content{ max-width:1080px; margin:0 auto; padding:34px 28px 90px; }
+
+/* ---------- generic ---------- */
+.pagehead{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+.pagehead h1{ font-size:24px; font-weight:800; letter-spacing:-.01em; line-height:1.2; }
+.pagehead .kicker{ margin-bottom:6px; display:block; }
+.backbtn{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--gray-69); margin-bottom:14px; display:inline-block; padding:2px 0;
+  transition:color .25s ease;
+}
+.backbtn:hover{ color:var(--ink); }
+
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--black); color:var(--white); font-weight:600; font-size:14px;
+  padding:9px 18px; border-radius:9px; border:1px solid var(--black);
+  transition:opacity .25s ease;
+}
+.btn:hover{ opacity:.82; }
+.btn:disabled{ opacity:.4; cursor:default; }
+.btn.ghost{
+  background:var(--white); color:var(--ink); border:1px solid var(--line);
+  transition:border-color .25s ease, background .25s ease;
+}
+.btn.ghost:hover{ opacity:1; border-color:var(--gray-a7); background:var(--gray-f9); }
+.btn.small{ font-size:13px; padding:6px 13px; border-radius:8px; }
+.btn.danger{ background:var(--white); color:var(--critical); border:1px solid var(--line); }
+.btn.danger:hover{ opacity:1; border-color:var(--critical); }
+.btn.wide{ width:100%; justify-content:center; }
+
+.card{
+  background:var(--white); border:1px solid var(--line); border-radius:12px;
+}
+.section{ margin-bottom:34px; }
+.sectionhead{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  margin-bottom:12px;
+}
+.sectionhead h2{ font-size:16.5px; font-weight:700; }
+.sectionhead .kicker{ display:block; margin-bottom:2px; }
+
+.rowlist > *{ border-bottom:1px solid var(--line); }
+.rowlist > *:last-child{ border-bottom:0; }
+.rowitem{ display:flex; align-items:center; gap:14px; padding:14px 18px; }
+.rowitem.link{ width:100%; text-align:left; transition:background .25s ease; border-radius:0; }
+.rowitem.link:hover{ background:var(--gray-f9); }
+.rowmain{ flex:1; min-width:0; }
+.rowtitle{ font-weight:600; font-size:14.5px; }
+.rowsub{ font-size:13px; color:var(--gray-69); margin-top:1px; }
+.rowmeta{ font-family:var(--mono); font-size:11.5px; color:var(--gray-9); white-space:nowrap; }
+
+.chip{
+  font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap;
+  border:1px solid var(--line); color:var(--gray-69); background:var(--white);
+}
+.chip.done{ background:var(--green-soft); color:var(--green); border-color:transparent; }
+.chip.current{ background:var(--black); color:var(--white); border-color:var(--black); }
+.chip.awaiting{ color:var(--critical); border-color:var(--critical); }
+.chip.crit{ color:var(--critical); border-color:var(--critical); }
+
+.empty{
+  padding:26px 18px; text-align:center; color:var(--gray-9); font-size:13.5px;
+}
+
+/* ---------- forms ---------- */
+.field{ display:block; margin-bottom:14px; }
+.flabel{
+  display:block; font-family:var(--mono); font-size:10.5px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--gray-69); margin-bottom:6px;
+}
+.input, textarea.input, select.input{
+  width:100%; background:var(--white); border:1px solid var(--line); border-radius:8px;
+  padding:9px 12px; font-size:14.5px; transition:border-color .25s ease;
+}
+.input:focus-visible{ outline:2px solid var(--ink); outline-offset:1px; }
+textarea.input{ resize:vertical; min-height:96px; }
+.formrow{ display:flex; gap:12px; }
+.formrow > *{ flex:1; }
+.checkline{ display:flex; align-items:center; gap:9px; font-size:14px; margin-bottom:14px; cursor:pointer; }
+.checkline input{ width:16px; height:16px; accent-color:var(--black); }
+.formerr{ color:var(--critical); font-size:13.5px; margin:2px 0 12px; display:none; }
+.formerr.show{ display:block; }
+.saveflash{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--green); opacity:0; transition:opacity .25s ease; margin-left:12px;
+}
+.saveflash.show{ opacity:1; }
+
+/* ---------- modal ---------- */
+.overlay{
+  position:fixed; inset:0; background:rgba(17,17,17,.4); z-index:60;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:6vh 18px 18px; overflow-y:auto;
+}
+.modal{
+  background:var(--white); border-radius:12px; width:100%; max-width:520px;
+  border:1px solid var(--line); padding:24px 26px 26px; margin-bottom:6vh;
+}
+.modal h2{ font-size:17px; font-weight:700; margin-bottom:4px; }
+.modal .kicker{ margin-bottom:16px; display:block; }
+.modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap; }
+
+/* ---------- klantdetail ---------- */
+.contactgrid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0; }
+.contactcell{ padding:16px 18px; border-bottom:1px solid var(--line); }
+.contactcell .kicker{ font-size:10px; margin-bottom:3px; display:block; }
+.contactcell div{ font-size:14.5px; font-weight:500; word-break:break-word; }
+.notesbox{ padding:18px; }
+
+/* ---------- fasebalk ---------- */
+.stagegrid{ display:flex; flex-direction:column; }
+.stagerow{ display:flex; align-items:center; gap:14px; padding:12px 18px; }
+.stagenum{ font-family:var(--mono); font-size:11px; color:var(--gray-9); width:20px; flex:0 0 20px; }
+.stagename{ flex:1; font-weight:600; font-size:14px; min-width:0; }
+.stagename small{ display:block; font-family:var(--mono); font-size:10.5px; font-weight:400; color:var(--gray-9); letter-spacing:.06em; }
+.stagesel{ width:190px; flex:0 0 190px; }
+
+/* ---------- media ---------- */
+.mediagrid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:14px; }
+.mediacard{ background:var(--white); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+.mediacard img{ width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--gray-f2); }
+.mediacard .mbody{ padding:12px 14px 13px; }
+.mediacard .mcap{ font-size:13.5px; line-height:1.45; }
+.mediastrip{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  font-family:var(--mono); font-size:10.5px; color:var(--gray-9); margin-top:9px;
+  letter-spacing:.04em;
+}
+.mediastrip button{ color:var(--gray-9); text-decoration:underline; text-underline-offset:2px; transition:color .25s ease; }
+.mediastrip button:hover{ color:var(--critical); }
+.stagekick{ margin:18px 0 10px; }
+.stagekick:first-child{ margin-top:0; }
+
+/* beeldkeuze in modal */
+.imgpickgrid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(86px, 1fr)); gap:8px; margin-bottom:6px; }
+.imgpick{ border:2px solid transparent; border-radius:8px; overflow:hidden; padding:0; transition:border-color .25s ease; }
+.imgpick img{ aspect-ratio:1; object-fit:cover; }
+.imgpick[aria-pressed="true"]{ border-color:var(--black); }
+
+/* ---------- inspecties ---------- */
+.insp{ padding:16px 18px; }
+.insphead{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.insphead .cp{ font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+.inspmeta{ font-size:13px; color:var(--gray-69); margin-top:4px; }
+.defrow{ display:flex; align-items:baseline; gap:10px; font-size:13.5px; padding:7px 0; border-top:1px dashed var(--line); margin-top:7px; }
+.defcount{ font-family:var(--mono); font-size:12px; color:var(--gray-69); }
+.defform{ display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+.defform select{ width:110px; }
+.defform .cnt{ width:70px; }
+.defform .note{ flex:1; min-width:140px; }
+.defform .rm{ color:var(--gray-9); font-size:18px; line-height:1; padding:4px 6px; border-radius:6px; }
+.defform .rm:hover{ color:var(--critical); }
+
+/* ---------- vragen ---------- */
+.qcard{ padding:18px; }
+.qhead{ display:flex; gap:14px; align-items:flex-start; }
+.qthumb{ width:76px; height:76px; flex:0 0 76px; border-radius:8px; object-fit:cover; background:var(--gray-f2); border:1px solid var(--line); }
+.qtext{ font-size:15.5px; font-weight:600; line-height:1.45; margin-top:5px; }
+.qanswer{ margin-top:14px; }
+.qanswered{ background:var(--gray-f9); border-radius:8px; padding:12px 14px; margin-top:12px; font-size:14px; }
+details.answered summary{
+  cursor:pointer; list-style:none; padding:14px 18px; font-weight:600; font-size:14px;
+  display:flex; align-items:center; gap:8px;
+}
+details.answered summary::-webkit-details-marker{ display:none; }
+details.answered summary::before{ content:'+'; font-family:var(--mono); color:var(--gray-9); }
+details.answered[open] summary::before{ content:'\2013'; }
+
+/* ---------- logboek ---------- */
+.logrow{ display:flex; gap:14px; padding:11px 18px; font-size:13.5px; align-items:baseline; }
+.logwhen{ font-family:var(--mono); font-size:11px; color:var(--gray-9); flex:0 0 150px; white-space:nowrap; }
+.logactor{ flex:0 0 66px; }
+.logdetail{ flex:1; min-width:0; }
+.logproj{ font-family:var(--mono); font-size:11px; color:var(--gray-9); white-space:nowrap; }
+
+/* ---------- responsive ---------- */
+@media (max-width:820px){
+  .shell{ flex-direction:column; }
+  .side{ width:100%; flex:none; height:auto; position:static; border-right:0; border-bottom:1px solid var(--line); }
+  .side-head{ padding:16px 18px 12px; border-bottom:0; }
+  .side nav{ flex-direction:row; padding:0 12px 10px; overflow-x:auto; }
+  .navbtn{ white-space:nowrap; width:auto; }
+  .side-foot{ display:none; }
+  .demobar{ padding:8px 18px; }
+  .content{ padding:24px 16px 70px; }
+  .formrow{ flex-direction:column; gap:0; }
+  .stagerow{ flex-wrap:wrap; }
+  .stagesel{ width:100%; flex:1 1 100%; margin-left:34px; }
+  .logwhen{ flex-basis:118px; }
+  .logrow{ flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- login -->
+<div id="login" class="login-wrap">
+  <div class="login-card">
+    <div class="login-band">
+      <div class="wordmark">CUSTOM+</div>
+      <div class="kicker">Beheer &amp; CRM</div>
+    </div>
+    <div class="login-body" id="loginBody"></div>
+  </div>
+</div>
+
+<!-- app -->
+<div id="app" class="shell" hidden>
+  <aside class="side">
+    <div class="side-head">
+      <div class="wordmark">CUSTOM+</div>
+      <div class="kicker">Beheer</div>
+    </div>
+    <nav aria-label="Hoofdnavigatie">
+      <button type="button" class="navbtn" data-nav="clients">Klanten</button>
+      <button type="button" class="navbtn" data-nav="questions"><span>Vragen</span><span class="navbadge" id="qBadge" hidden>0</span></button>
+      <button type="button" class="navbtn" data-nav="log">Logboek</button>
+    </nav>
+    <div class="side-foot">
+      <div class="who"><span id="whoName">—</span><small id="whoMail"></small></div>
+      <button type="button" class="linkbtn" id="logoutBtn">Uitloggen</button>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="demobar" id="demoBar" hidden>
+      <span class="dot" aria-hidden="true"></span>
+      <span>Demomodus — wijzigingen blijven lokaal in deze browser</span>
+    </div>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script src="portal/config.js"></script>
+<script src="portal/demo-data.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   constanten en helpers
+   ============================================================ */
+var CFG = window.CP_PORTAL_CONFIG || {};
+var IS_DEMO = !(CFG.supabaseUrl && CFG.supabaseAnonKey);
+var DEMO_KEY = 'cp_portal_demo_v1';
+
+var STAGES = [
+  { key:'concept',    label:'Concept & Industrieel Ontwerp',       pct:25 },
+  { key:'dfm',        label:'Ontwerp voor Produceerbaarheid',      pct:0  },
+  { key:'sourcing',   label:'Fabriekssourcing & Screening',        pct:35 },
+  { key:'tooling',    label:'Tooling, Sampling & Iteratie',        pct:25 },
+  { key:'production', label:'Massaproductie & Kwaliteitscontrole', pct:0  },
+  { key:'logistics',  label:'Compliance & Logistiek',              pct:15 }
+];
+function stageLabel(key){
+  for(var i=0;i<STAGES.length;i++){ if(STAGES[i].key===key) return STAGES[i].label; }
+  return key || '';
+}
+var STAGE_STATUS = [
+  { key:'done',              label:'Afgerond' },
+  { key:'current',           label:'Actief' },
+  { key:'awaiting_approval', label:'Wacht op akkoord' },
+  { key:'upcoming',          label:'Gepland' }
+];
+function stageStatusLabel(key){
+  for(var i=0;i<STAGE_STATUS.length;i++){ if(STAGE_STATUS[i].key===key) return STAGE_STATUS[i].label; }
+  return key || '';
+}
+var DOC_TYPES = [
+  { key:'nnn',        label:'NNN' },
+  { key:'quote',      label:'Offerte' },
+  { key:'invoice',    label:'Factuur' },
+  { key:'inspection', label:'Inspectie' },
+  { key:'compliance', label:'Compliance' },
+  { key:'shipping',   label:'Verzending' },
+  { key:'other',      label:'Overig' }
+];
+function docTypeLabel(key){
+  for(var i=0;i<DOC_TYPES.length;i++){ if(DOC_TYPES[i].key===key) return DOC_TYPES[i].label; }
+  return key || '';
+}
+var SAMPLE_STATUS = [
+  { key:'reviewed',   label:'Beoordeeld' },
+  { key:'approved',   label:'Goedgekeurd' },
+  { key:'superseded', label:'Vervangen' }
+];
+function sampleStatusLabel(key){
+  for(var i=0;i<SAMPLE_STATUS.length;i++){ if(SAMPLE_STATUS[i].key===key) return SAMPLE_STATUS[i].label; }
+  return key || '';
+}
+var CHECKPOINTS = [
+  { key:'iqc',  label:'IQC — ingangscontrole' },
+  { key:'ipqc', label:'IPQC — tijdens productie' },
+  { key:'fqc',  label:'FQC — eindcontrole' }
+];
+var SEVERITIES = [
+  { key:'minor',    label:'Klein' },
+  { key:'major',    label:'Groot' },
+  { key:'critical', label:'Kritiek' }
+];
+function severityLabel(key){
+  for(var i=0;i<SEVERITIES.length;i++){ if(SEVERITIES[i].key===key) return SEVERITIES[i].label; }
+  return key || '';
+}
+function actorLabel(a){
+  if(a==='client') return 'Klant';
+  if(a==='staff') return 'Beheer';
+  if(a==='system') return 'Systeem';
+  return a || '';
+}
+var DEMO_IMAGES = [
+  'images/occ-anniversary.jpg','images/occ-christmas.jpg','images/occ-events.jpg',
+  'images/occ-launch.jpg','images/occ-newclient.jpg','images/occ-newyear.jpg',
+  'images/occ-opening.jpg','images/occ-renewal.jpg','images/occ-sinterklaas.jpg',
+  'images/occ-thankyou.jpg'
+];
+
+function clone(o){
+  return (typeof structuredClone==='function') ? structuredClone(o) : JSON.parse(JSON.stringify(o));
+}
+function uid(prefix){
+  var r = Math.random().toString(36).slice(2,9);
+  return prefix + '-' + Date.now().toString(36) + r;
+}
+function uuid(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return uid('f').replace(/[^a-z0-9]/g,'');
+}
+function todayISO(){
+  var d = new Date();
+  var m = String(d.getMonth()+1); if(m.length<2) m='0'+m;
+  var day = String(d.getDate()); if(day.length<2) day='0'+day;
+  return d.getFullYear() + '-' + m + '-' + day;
+}
+function asDate(v){
+  if(!v) return null;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v)) return new Date(v + 'T00:00:00');
+  return new Date(v);
+}
+function fmtDate(v){
+  var d = asDate(v);
+  if(!d || isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('nl-NL', { day:'numeric', month:'long', year:'numeric' });
+}
+function fmtDateTime(v){
+  var d = asDate(v);
+  if(!d || isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('nl-NL', { day:'numeric', month:'short', year:'numeric' }) +
+    ' ' + d.toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' });
+}
+var euroFmt = new Intl.NumberFormat('nl-NL', { style:'currency', currency:'EUR' });
+function fmtMoney(cents){ return euroFmt.format((cents||0)/100); }
+
+/* ============================================================
+   klantmeldingen — mailt de klant bij een echte wijziging in zijn project
+   ============================================================
+   Alleen actief buiten demomodus (echte klantadressen bestaan pas dan) en
+   alleen als notifySharedSecret in portal/config.js is ingevuld. Zonder een
+   van beide slaat dit stil over — nooit een mail naar demodata of een
+   halfgeconfigureerde omgeving. Zie netlify/functions/notify-client.mjs voor
+   de kanttekening bij dat "gedeelde wachtwoord": het is een drempel tegen
+   toevallig misbruik, geen echte authenticatie zoals een ingelogde sessie
+   dat zou zijn — een latere stap is dit vervangen door verificatie van het
+   Supabase-sessietoken van de ingelogde staf-gebruiker. */
+var PORTAL_BASE = location.origin + '/portal.html';
+function notifyClient(opts){
+  if(IS_DEMO || !CFG.notifySharedSecret) return Promise.resolve();
+  if(!opts || !opts.client || !opts.client.email) return Promise.resolve();
+  return fetch('/.netlify/functions/notify-client', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({
+      secret: CFG.notifySharedSecret,
+      to: opts.client.email,
+      clientName: opts.client.contactName || '',
+      subject: opts.subject,
+      bodyLine: opts.bodyLine,
+      portalUrl: PORTAL_BASE + '#/' + (opts.page || 'mijlpalen'),
+      portalLabel: opts.portalLabel || 'Bekijk je project',
+      projectName: opts.projectName || '',
+      projectCode: opts.projectCode || ''
+    })
+  }).catch(function(){ /* een mislukte mail mag de eigenlijke actie nooit blokkeren */ });
+}
+function parseEuro(s){
+  s = String(s==null?'':s).replace(/[€\s]/g,'');
+  if(!s) return NaN;
+  /* NL-notatie: punt is ALTIJD duizendtalscheiding, komma is de decimaal —
+     dus punten strippen we altijd, ook zonder komma ("3.125" = 3125, niet 3,125). */
+  s = s.replace(/\./g, '').replace(',', '.');
+  var n = parseFloat(s);
+  if(isNaN(n) || n < 0) return NaN;
+  return Math.round(n*100);
+}
+
+/* DOM zonder innerHTML: veilig tegen XSS */
+function el(tag, attrs, children){
+  var n = document.createElement(tag);
+  if(attrs){
+    Object.keys(attrs).forEach(function(k){
+      var v = attrs[k];
+      if(v==null) return;
+      if(k==='class'){ n.className = v; }
+      else if(k==='text'){ n.textContent = v; }
+      else if(k==='value'){ n.value = v; }
+      else if(k==='checked'){ n.checked = !!v; }
+      else if(k==='disabled'){ n.disabled = !!v; }
+      else if(k.indexOf('on')===0 && typeof v==='function'){ n.addEventListener(k.slice(2), v); }
+      else { n.setAttribute(k, v); }
+    });
+  }
+  if(children!=null){
+    (Array.isArray(children)?children:[children]).forEach(function(c){
+      if(c==null) return;
+      n.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+    });
+  }
+  return n;
+}
+function option(value, label, selected){
+  var o = el('option', { value:value, text:label });
+  if(selected) o.selected = true;
+  return o;
+}
+function field(labelText, input){
+  return el('label', { class:'field' }, [ el('span', { class:'flabel', text:labelText }), input ]);
+}
+function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+
+/* ============================================================
+   modals
+   ============================================================ */
+var activeModal = null;
+function closeModal(){
+  if(activeModal){
+    var onDismiss = activeModal.onDismiss;
+    document.removeEventListener('keydown', activeModal.esc);
+    if(activeModal.node.parentNode) activeModal.node.parentNode.removeChild(activeModal.node);
+    activeModal = null;
+    /* sluiten via Escape/overlay telt als annuleren voor wie op de uitkomst wacht */
+    if(onDismiss) onDismiss();
+  }
+}
+function openModal(title, kicker){
+  closeModal();
+  var body = el('div');
+  var dlg = el('div', { class:'modal', role:'dialog', 'aria-modal':'true', 'aria-label':title }, [
+    el('h2', { text:title }),
+    kicker ? el('span', { class:'kicker', text:kicker }) : null,
+    body
+  ]);
+  var overlay = el('div', { class:'overlay', onclick:function(e){ if(e.target===overlay) closeModal(); } }, dlg);
+  function esc(e){ if(e.key==='Escape') closeModal(); }
+  document.addEventListener('keydown', esc);
+  document.body.appendChild(overlay);
+  activeModal = { node:overlay, esc:esc, onDismiss:null };
+  setTimeout(function(){
+    var f = dlg.querySelector('input, textarea, select, button');
+    if(f) f.focus();
+  }, 30);
+  return {
+    body:body, close:closeModal,
+    /* fn wordt aangeroepen als de modal sluit ZONDER expliciete knop
+       (Escape of overlay-klik) — bv. om een confirm-Promise alsnog te settelen */
+    onDismiss:function(fn){ if(activeModal) activeModal.onDismiss = fn; }
+  };
+}
+function confirmDialog(title, message, confirmText){
+  return new Promise(function(resolve){
+    var settled = false;
+    function settle(v){ if(settled) return; settled = true; resolve(v); }
+    var m = openModal(title);
+    m.onDismiss(function(){ settle(false); });
+    m.body.appendChild(el('p', { text:message, style:'font-size:14px;color:var(--gray-69);' }));
+    m.body.appendChild(el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:function(){ settle(false); closeModal(); } }),
+      el('button', { type:'button', class:'btn', text:confirmText||'Bevestigen', onclick:function(){ settle(true); closeModal(); } })
+    ]));
+  });
+}
+
+/* ============================================================
+   dataservice — demomodus
+   ============================================================ */
+function makeDemoService(){
+  var state = null;
+  try{
+    var raw = localStorage.getItem(DEMO_KEY);
+    if(raw) state = JSON.parse(raw);
+  }catch(e){ state = null; }
+  if(!state || !Array.isArray(state.clients) || !Array.isArray(state.projects)) state = clone(window.CP_DEMO);
+  /* schema-drift over apps/versies heen: ontbrekende collecties altijd aanvullen
+     in plaats van de hele state te laten crashen op de eerste .push()/.slice() */
+  ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories'].forEach(function(k){
+    if(!Array.isArray(state[k])) state[k] = [];
+  });
+  function save(){
+    try{ localStorage.setItem(DEMO_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function pushLog(projectId, entry){
+    state.accessLog.push({
+      id: uid('log'), projectId: projectId,
+      actor: entry.actor, assetKind: entry.assetKind, assetId: entry.assetId || null,
+      action: entry.action, detail: entry.detail || '',
+      createdAt: new Date().toISOString()
+    });
+  }
+  function findStage(projectId, stageKey){
+    var p = state.projects.find(function(x){ return x.id===projectId; });
+    if(!p) return null;
+    return p.stages.find(function(s){ return s.stageKey===stageKey; }) || null;
+  }
+  return {
+    mode: 'demo',
+    staffName: (state.staff && state.staff.name) || 'Steffan Bakker',
+    staffEmail: (state.staff && state.staff.email) || '',
+
+    listFactories: function(){ return Promise.resolve(state.factories.slice()); },
+
+    listClients: function(){
+      var counts = {};
+      state.projects.forEach(function(p){ counts[p.clientId] = (counts[p.clientId]||0)+1; });
+      return Promise.resolve(state.clients.map(function(c){
+        var o = clone(c); o.projectCount = counts[c.id]||0; return o;
+      }));
+    },
+    getClient: function(id){
+      var c = state.clients.find(function(x){ return x.id===id; });
+      return Promise.resolve(c ? clone(c) : null);
+    },
+    createClient: function(data){
+      var c = {
+        id: uid('cli'), company: data.company, contactName: data.contactName,
+        email: data.email, phone: data.phone||'', notes: data.notes||'',
+        createdAt: todayISO(), projects: []
+      };
+      state.clients.push(c); save();
+      return Promise.resolve(clone(c));
+    },
+    saveClientNotes: function(id, notes){
+      var c = state.clients.find(function(x){ return x.id===id; });
+      if(c){ c.notes = notes; save(); }
+      return Promise.resolve();
+    },
+
+    listClientProjects: function(clientId){
+      return Promise.resolve(state.projects.filter(function(p){ return p.clientId===clientId; }).map(clone));
+    },
+    listAllProjects: function(){ return Promise.resolve(state.projects.map(clone)); },
+    getProject: function(id){
+      var p = state.projects.find(function(x){ return x.id===id; });
+      return Promise.resolve(p ? clone(p) : null);
+    },
+    createProject: function(clientId, name, code){
+      var p = {
+        id: uid('prj'), clientId: clientId, name: name, code: code||'',
+        status: 'active', createdAt: todayISO(),
+        stages: STAGES.map(function(s, i){
+          return { stageKey:s.key, position:i+1, status:(s.key==='concept'?'current':'upcoming'), paymentPct:s.pct, approvedAt:null };
+        })
+      };
+      state.projects.push(p);
+      var c = state.clients.find(function(x){ return x.id===clientId; });
+      if(c && c.projects) c.projects.push(p.id);
+      save();
+      return Promise.resolve(clone(p));
+    },
+    setStageStatus: function(projectId, stageKey, status){
+      var s = findStage(projectId, stageKey);
+      if(s){
+        s.status = status;
+        s.approvedAt = (status==='done') ? todayISO() : null;
+        pushLog(projectId, {
+          actor:'staff', assetKind:'system', action:'update',
+          detail:'Fasestatus gewijzigd: ' + stageLabel(stageKey) + ' → ' + stageStatusLabel(status)
+        });
+        save();
+      }
+      return Promise.resolve();
+    },
+    archiveProject: function(projectId){
+      var p = state.projects.find(function(x){ return x.id===projectId; });
+      if(p){
+        p.status = 'archived';
+        p.archivedAt = todayISO();
+        pushLog(projectId, { actor:'staff', assetKind:'system', action:'archive', detail:'Project gearchiveerd' });
+        save();
+      }
+      return Promise.resolve();
+    },
+
+    listMedia: function(projectId){
+      return Promise.resolve(state.media.filter(function(m){ return m.projectId===projectId; }).map(clone));
+    },
+    listAllMedia: function(){ return Promise.resolve(state.media.map(clone)); },
+    addMedia: function(projectId, data){
+      var m = {
+        id: uid('med'), projectId: projectId, stageKey: data.stageKey, kind: 'photo',
+        src: data.src, caption: data.caption, factoryId: data.factoryId||null,
+        capturedAt: data.capturedAt
+      };
+      state.media.push(m);
+      pushLog(projectId, {
+        actor:'staff', assetKind:'media', assetId:m.id, action:'update',
+        detail:'Media geplaatst: ' + data.caption
+      });
+      save();
+      return Promise.resolve(clone(m));
+    },
+    deleteMedia: function(id){
+      state.media = state.media.filter(function(m){ return m.id!==id; });
+      save();
+      return Promise.resolve();
+    },
+    mediaUrl: function(m){
+      return Promise.resolve(m && m.src ? m.src : null);
+    },
+
+    listDocuments: function(projectId){
+      return Promise.resolve(state.documents.filter(function(d){ return d.projectId===projectId; }).map(clone));
+    },
+    addDocument: function(projectId, data){
+      var d = {
+        id: uid('doc'), projectId: projectId, stageKey: data.stageKey,
+        docType: data.docType, title: data.title, version: data.version||1,
+        createdAt: todayISO()
+      };
+      state.documents.push(d); save();
+      return Promise.resolve(clone(d));
+    },
+    deleteDocument: function(id){
+      state.documents = state.documents.filter(function(d){ return d.id!==id; });
+      save();
+      return Promise.resolve();
+    },
+
+    listInvoices: function(projectId){
+      return Promise.resolve(state.invoices.filter(function(i){ return i.projectId===projectId; }).map(clone));
+    },
+    addInvoice: function(projectId, data){
+      var inv = {
+        id: uid('inv'), projectId: projectId, stageKey: data.stageKey, label: data.label,
+        amountCents: data.amountCents, currency:'EUR', status:'open', paidAt:null, documentId:null
+      };
+      state.invoices.push(inv); save();
+      return Promise.resolve(clone(inv));
+    },
+    markInvoicePaid: function(id){
+      var inv = state.invoices.find(function(i){ return i.id===id; });
+      if(inv){ inv.status='paid'; inv.paidAt=todayISO(); save(); }
+      return Promise.resolve();
+    },
+
+    listSamples: function(projectId){
+      return Promise.resolve(state.samples.filter(function(s){ return s.projectId===projectId; }).map(clone));
+    },
+    addSample: function(projectId, data){
+      if(data.status==='approved'){
+        state.samples.forEach(function(s){
+          if(s.projectId===projectId && s.status==='approved') s.status='superseded';
+        });
+      }
+      var s = {
+        id: uid('smp'), projectId: projectId, roundLabel: data.roundLabel,
+        mediaId: data.mediaId||null, status: data.status, note: data.note||'',
+        roundDate: data.roundDate
+      };
+      state.samples.push(s); save();
+      return Promise.resolve(clone(s));
+    },
+
+    listInspections: function(projectId){
+      return Promise.resolve(state.inspections.filter(function(i){ return i.projectId===projectId; }).map(clone));
+    },
+    addInspection: function(projectId, data){
+      var r = {
+        id: uid('insp'), projectId: projectId, stageKey:'production',
+        checkpoint: data.checkpoint, aqlNorm: data.aqlNorm, sampleSize: data.sampleSize,
+        defects: data.defects, contextLine: data.contextLine||'',
+        reportDate: data.reportDate, passed: !!data.passed
+      };
+      state.inspections.push(r); save();
+      return Promise.resolve(clone(r));
+    },
+
+    listDisclosures: function(projectId){
+      return Promise.resolve(state.disclosures.filter(function(d){ return d.projectId===projectId; }).map(clone));
+    },
+    addDisclosure: function(projectId, data){
+      var d = {
+        id: uid('dis'), projectId: projectId, documentId:null,
+        factoryId: data.factoryId, disclosedAt: data.disclosedAt,
+        underNnn: !!data.underNnn, what: data.what
+      };
+      state.disclosures.push(d);
+      var fac = state.factories.find(function(f){ return f.id===data.factoryId; });
+      pushLog(projectId, {
+        actor:'system', assetKind:'system', action:'share',
+        detail: data.what + ' gedeeld met ' + (fac?fac.name:'partner') + (data.underNnn ? ' onder NNN' : '')
+      });
+      save();
+      return Promise.resolve(clone(d));
+    },
+
+    listQuestions: function(){
+      return Promise.resolve(state.questions.map(clone));
+    },
+    answerQuestion: function(id, answer){
+      var q = state.questions.find(function(x){ return x.id===id; });
+      if(q){ q.answer = answer; q.answeredAt = new Date().toISOString(); save(); }
+      return Promise.resolve();
+    },
+
+    listLog: function(projectId){
+      var rows = state.accessLog.filter(function(r){ return !projectId || r.projectId===projectId; });
+      return Promise.resolve(rows.map(clone));
+    }
+  };
+}
+
+/* ============================================================
+   dataservice — Supabase-modus
+   ============================================================ */
+function loadSupabaseLib(){
+  return new Promise(function(resolve, reject){
+    if(window.supabase && window.supabase.createClient) return resolve();
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    s.onload = function(){ resolve(); };
+    s.onerror = function(){ reject(new Error('Kon de Supabase-bibliotheek niet laden. Controleer je verbinding.')); };
+    document.head.appendChild(s);
+  });
+}
+function toCamelKey(k){ return k.replace(/_([a-z])/g, function(m, c){ return c.toUpperCase(); }); }
+function camelRow(r){
+  var out = {};
+  Object.keys(r).forEach(function(k){ out[toCamelKey(k)] = r[k]; });
+  return out;
+}
+function makeSupaService(sb, staffUser){
+  function unwrap(res){
+    if(res && res.error) throw new Error(res.error.message || 'Er ging iets mis bij het ophalen van gegevens.');
+    return res ? res.data : null;
+  }
+  function rows(res){ return (unwrap(res)||[]).map(camelRow); }
+  function row(res){ var d = unwrap(res); return d ? camelRow(d) : null; }
+  function log(projectId, entry){
+    return sb.from('access_log').insert({
+      project_id: projectId, actor: entry.actor, asset_kind: entry.assetKind,
+      asset_id: entry.assetId || null, action: entry.action, detail: entry.detail || ''
+    }).then(function(){ /* een logfout mag de actie niet blokkeren */ }, function(){});
+  }
+  function fileExt(name){
+    var i = String(name||'').lastIndexOf('.');
+    var ext = i > -1 ? String(name).slice(i+1).toLowerCase().replace(/[^a-z0-9]/g,'') : '';
+    return ext || 'bin';
+  }
+  return {
+    mode: 'supabase',
+    staffName: (staffUser && staffUser.email) || 'Beheer',
+    staffEmail: (staffUser && staffUser.email) || '',
+
+    listFactories: function(){
+      return sb.from('factories_partners').select('*').order('name').then(rows);
+    },
+    listClients: function(){
+      return Promise.all([
+        sb.from('clients').select('*').order('created_at').then(rows),
+        sb.from('projects').select('id, client_id').then(rows)
+      ]).then(function(res){
+        var counts = {};
+        res[1].forEach(function(p){ counts[p.clientId] = (counts[p.clientId]||0)+1; });
+        return res[0].map(function(c){ c.projectCount = counts[c.id]||0; return c; });
+      });
+    },
+    getClient: function(id){
+      return sb.from('clients').select('*').eq('id', id).maybeSingle().then(row);
+    },
+    createClient: function(data){
+      return sb.from('clients').insert({
+        company: data.company, contact_name: data.contactName, email: data.email,
+        phone: data.phone||'', notes: data.notes||''
+      }).select().single().then(row);
+    },
+    saveClientNotes: function(id, notes){
+      return sb.from('clients').update({ notes: notes }).eq('id', id).then(unwrap);
+    },
+
+    listClientProjects: function(clientId){
+      return Promise.all([
+        sb.from('projects').select('*').eq('client_id', clientId).order('created_at').then(rows),
+        sb.from('project_stages').select('*').order('position').then(rows)
+      ]).then(function(res){
+        return res[0].map(function(p){
+          p.stages = res[1].filter(function(s){ return s.projectId===p.id; });
+          return p;
+        });
+      });
+    },
+    listAllProjects: function(){
+      return sb.from('projects').select('*').order('created_at').then(rows);
+    },
+    getProject: function(id){
+      return Promise.all([
+        sb.from('projects').select('*').eq('id', id).maybeSingle().then(row),
+        sb.from('project_stages').select('*').eq('project_id', id).order('position').then(rows)
+      ]).then(function(res){
+        if(!res[0]) return null;
+        res[0].stages = res[1];
+        return res[0];
+      });
+    },
+    createProject: function(clientId, name, code){
+      var project = null;
+      return sb.from('projects').insert({ client_id: clientId, name: name, code: code||'' })
+        .select().single().then(row)
+        .then(function(p){
+          project = p;
+          return sb.from('project_stages').insert(STAGES.map(function(s, i){
+            return {
+              project_id: p.id, stage_key: s.key, position: i+1,
+              status: (s.key==='concept'?'current':'upcoming'), payment_pct: s.pct
+            };
+          })).then(unwrap);
+        })
+        .then(function(){ return project; });
+    },
+    setStageStatus: function(projectId, stageKey, status){
+      return sb.from('project_stages')
+        .update({ status: status, approved_at: (status==='done' ? new Date().toISOString() : null) })
+        .eq('project_id', projectId).eq('stage_key', stageKey)
+        .then(unwrap)
+        .then(function(){
+          return log(projectId, {
+            actor:'staff', assetKind:'system', action:'update',
+            detail:'Fasestatus gewijzigd: ' + stageLabel(stageKey) + ' → ' + stageStatusLabel(status)
+          });
+        });
+    },
+    archiveProject: function(projectId){
+      return sb.from('projects')
+        .update({ status:'archived', archived_at: new Date().toISOString() })
+        .eq('id', projectId).then(unwrap)
+        .then(function(){
+          return log(projectId, { actor:'staff', assetKind:'system', action:'archive', detail:'Project gearchiveerd' });
+        });
+    },
+
+    listMedia: function(projectId){
+      return sb.from('media_assets').select('*').eq('project_id', projectId).order('captured_at').then(rows);
+    },
+    listAllMedia: function(){
+      return sb.from('media_assets').select('*').then(rows);
+    },
+    addMedia: function(projectId, data){
+      var path = projectId + '/' + uuid() + '.' + fileExt(data.file && data.file.name);
+      return sb.storage.from('project-media').upload(path, data.file)
+        .then(function(res){
+          if(res.error) throw new Error('Upload mislukt: ' + res.error.message);
+          return sb.from('media_assets').insert({
+            project_id: projectId, stage_key: data.stageKey, kind:'photo',
+            storage_path: path, caption: data.caption,
+            factory_id: data.factoryId||null, captured_at: data.capturedAt
+          }).select().single().then(row);
+        })
+        .then(function(m){
+          return log(projectId, {
+            actor:'staff', assetKind:'media', assetId:m.id, action:'update',
+            detail:'Media geplaatst: ' + data.caption
+          }).then(function(){ return m; });
+        });
+    },
+    deleteMedia: function(id){
+      return sb.from('media_assets').delete().eq('id', id).then(unwrap);
+    },
+    mediaUrl: function(m){
+      if(!m || !m.storagePath) return Promise.resolve(m && m.src ? m.src : null);
+      return sb.storage.from('project-media').createSignedUrl(m.storagePath, 900)
+        .then(function(res){ return res.data ? res.data.signedUrl : null; })
+        .catch(function(){ return null; });
+    },
+
+    listDocuments: function(projectId){
+      return sb.from('documents').select('*').eq('project_id', projectId).order('created_at').then(rows);
+    },
+    addDocument: function(projectId, data){
+      var start = Promise.resolve('');
+      if(data.file){
+        var path = projectId + '/' + uuid() + '.' + fileExt(data.file.name);
+        start = sb.storage.from('project-docs').upload(path, data.file).then(function(res){
+          if(res.error) throw new Error('Upload mislukt: ' + res.error.message);
+          return path;
+        });
+      }
+      return start.then(function(storagePath){
+        return sb.from('documents').insert({
+          project_id: projectId, stage_key: data.stageKey, doc_type: data.docType,
+          title: data.title, version: data.version||1, storage_path: storagePath
+        }).select().single().then(row);
+      });
+    },
+    deleteDocument: function(id){
+      return sb.from('documents').delete().eq('id', id).then(unwrap);
+    },
+
+    listInvoices: function(projectId){
+      return sb.from('invoices').select('*').eq('project_id', projectId).order('created_at').then(rows);
+    },
+    addInvoice: function(projectId, data){
+      return sb.from('invoices').insert({
+        project_id: projectId, stage_key: data.stageKey, label: data.label,
+        amount_cents: data.amountCents, currency:'EUR', status:'open'
+      }).select().single().then(row);
+    },
+    markInvoicePaid: function(id){
+      return sb.from('invoices').update({ status:'paid', paid_at:new Date().toISOString() }).eq('id', id).then(unwrap);
+    },
+
+    listSamples: function(projectId){
+      return sb.from('sample_rounds').select('*').eq('project_id', projectId).order('round_date').then(rows);
+    },
+    addSample: function(projectId, data){
+      var start = Promise.resolve();
+      if(data.status==='approved'){
+        start = sb.from('sample_rounds').update({ status:'superseded' })
+          .eq('project_id', projectId).eq('status','approved').then(unwrap);
+      }
+      return start.then(function(){
+        return sb.from('sample_rounds').insert({
+          project_id: projectId, round_label: data.roundLabel, media_id: data.mediaId||null,
+          status: data.status, note: data.note||'', round_date: data.roundDate
+        }).select().single().then(row);
+      });
+    },
+
+    listInspections: function(projectId){
+      return sb.from('inspection_reports').select('*').eq('project_id', projectId).order('report_date').then(rows);
+    },
+    addInspection: function(projectId, data){
+      return sb.from('inspection_reports').insert({
+        project_id: projectId, stage_key:'production', checkpoint: data.checkpoint,
+        aql_norm: data.aqlNorm, sample_size: data.sampleSize, defects: data.defects,
+        context_line: data.contextLine||'', report_date: data.reportDate, passed: !!data.passed
+      }).select().single().then(row);
+    },
+
+    listDisclosures: function(projectId){
+      return sb.from('file_disclosures').select('*').eq('project_id', projectId).order('disclosed_at').then(rows);
+    },
+    addDisclosure: function(projectId, data){
+      /* NB: het schema bewaart de omschrijving ("wat") niet als losse kolom
+         wanneer er geen document aan hangt; de logregel legt dit vast. */
+      return sb.from('file_disclosures').insert({
+        project_id: projectId, factory_id: data.factoryId,
+        disclosed_at: data.disclosedAt, under_nnn: !!data.underNnn
+      }).select().single().then(row)
+        .then(function(d){
+          return sb.from('factories_partners').select('name').eq('id', data.factoryId).maybeSingle()
+            .then(function(res){
+              var name = res.data ? res.data.name : 'partner';
+              return log(projectId, {
+                actor:'system', assetKind:'system', action:'share',
+                detail: data.what + ' gedeeld met ' + name + (data.underNnn ? ' onder NNN' : '')
+              });
+            })
+            .then(function(){ return d; });
+        });
+    },
+
+    listQuestions: function(){
+      return sb.from('question_threads').select('*').then(rows);
+    },
+    answerQuestion: function(id, answer){
+      return sb.from('question_threads')
+        .update({ answer: answer, answered_at: new Date().toISOString() })
+        .eq('id', id).then(unwrap);
+    },
+
+    listLog: function(projectId){
+      var q = sb.from('access_log').select('*');
+      if(projectId) q = q.eq('project_id', projectId);
+      return q.order('created_at', { ascending:false }).limit(500).then(rows);
+    }
+  };
+}
+
+/* ============================================================
+   app-state en navigatie
+   ============================================================ */
+var DS = null;
+var view = { name:'clients' };
+var logFilter = '';
+
+var content = document.getElementById('content');
+var qBadge = document.getElementById('qBadge');
+
+function go(v){
+  view = v;
+  render().then(function(){ window.scrollTo(0, 0); });
+}
+function refresh(){
+  var y = window.scrollY;
+  return render().then(function(){ window.scrollTo(0, y); });
+}
+function setNavActive(){
+  var name = view.name;
+  var navKey = (name==='client' || name==='project') ? 'clients' : name;
+  document.querySelectorAll('.navbtn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-nav')===navKey);
+  });
+}
+function updateBadge(){
+  if(!DS) return;
+  DS.listQuestions().then(function(qs){
+    var open = qs.filter(function(q){ return !q.answeredAt; }).length;
+    qBadge.textContent = String(open);
+    qBadge.hidden = open===0;
+  }).catch(function(){});
+}
+function showError(err){
+  clearNode(content);
+  content.appendChild(el('div', { class:'card', style:'padding:22px;' }, [
+    el('span', { class:'kicker', text:'Er ging iets mis' }),
+    el('p', { text: (err && err.message) || String(err), style:'margin-top:8px;font-size:14px;' }),
+    el('div', { style:'margin-top:16px;' },
+      el('button', { type:'button', class:'btn ghost small', text:'Opnieuw proberen', onclick:function(){ render(); } }))
+  ]));
+}
+function render(){
+  setNavActive();
+  updateBadge();
+  clearNode(content);
+  var p;
+  if(view.name==='clients') p = renderClients();
+  else if(view.name==='client') p = renderClient(view.clientId);
+  else if(view.name==='project') p = renderProject(view.projectId);
+  else if(view.name==='questions') p = renderQuestions();
+  else if(view.name==='log') p = renderLog();
+  else p = Promise.resolve();
+  return p.catch(showError);
+}
+
+/* ============================================================
+   deel 1 — klanten
+   ============================================================ */
+function renderClients(){
+  return DS.listClients().then(function(clients){
+    content.appendChild(el('div', { class:'pagehead' }, [
+      el('div', null, [
+        el('span', { class:'kicker', text:'CRM' }),
+        el('h1', { text:'Klanten' })
+      ]),
+      el('button', { type:'button', class:'btn', text:'Nieuwe klant', onclick:openNewClientModal })
+    ]));
+    var list = el('div', { class:'card rowlist' });
+    if(!clients.length){
+      list.appendChild(el('div', { class:'empty', text:'Nog geen klanten. Voeg je eerste klant toe.' }));
+    }
+    clients.forEach(function(c){
+      list.appendChild(el('button', {
+        type:'button', class:'rowitem link',
+        onclick:function(){ go({ name:'client', clientId:c.id }); }
+      }, [
+        el('div', { class:'rowmain' }, [
+          el('div', { class:'rowtitle', text:c.company }),
+          el('div', { class:'rowsub', text:[c.contactName, c.email, c.phone].filter(Boolean).join(' · ') })
+        ]),
+        el('span', { class:'chip', text: c.projectCount + (c.projectCount===1 ? ' project' : ' projecten') }),
+        el('span', { class:'rowmeta', text: fmtDate(c.createdAt) })
+      ]));
+    });
+    content.appendChild(list);
+  });
+}
+function openNewClientModal(){
+  var m = openModal('Nieuwe klant', 'CRM');
+  var company = el('input', { class:'input', type:'text', required:'required' });
+  var contact = el('input', { class:'input', type:'text', required:'required' });
+  var email = el('input', { class:'input', type:'email', required:'required' });
+  var phone = el('input', { class:'input', type:'tel' });
+  var notes = el('textarea', { class:'input' });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    DS.createClient({
+      company: company.value.trim(), contactName: contact.value.trim(),
+      email: email.value.trim(), phone: phone.value.trim(), notes: notes.value.trim()
+    }).then(function(c){
+      closeModal();
+      go({ name:'client', clientId:c.id });
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Bedrijf', company),
+    field('Contactnaam', contact),
+    field('E-mail', email),
+    field('Telefoon', phone),
+    field('Notities', notes),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Klant aanmaken' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+
+/* ============================================================
+   deel 1b — klantdetail
+   ============================================================ */
+function renderClient(clientId){
+  return Promise.all([ DS.getClient(clientId), DS.listClientProjects(clientId) ]).then(function(res){
+    var c = res[0], projects = res[1];
+    if(!c){
+      content.appendChild(el('p', { text:'Klant niet gevonden.' }));
+      return;
+    }
+    content.appendChild(el('button', { type:'button', class:'backbtn', text:'← Alle klanten', onclick:function(){ go({ name:'clients' }); } }));
+    content.appendChild(el('div', { class:'pagehead' }, [
+      el('div', null, [
+        el('span', { class:'kicker', text:'Klant sinds ' + fmtDate(c.createdAt) }),
+        el('h1', { text:c.company })
+      ])
+    ]));
+
+    /* contactkaart */
+    var grid = el('div', { class:'card contactgrid' });
+    [ ['Contact', c.contactName], ['E-mail', c.email], ['Telefoon', c.phone||'—'] ].forEach(function(pair){
+      grid.appendChild(el('div', { class:'contactcell' }, [
+        el('span', { class:'kicker', text:pair[0] }),
+        el('div', { text:pair[1] })
+      ]));
+    });
+    content.appendChild(el('div', { class:'section' }, grid));
+
+    /* notities (CRM, alleen hier zichtbaar) */
+    var flash = el('span', { class:'saveflash', text:'Opgeslagen' });
+    var ta = el('textarea', { class:'input', 'aria-label':'Notities bij ' + c.company });
+    ta.value = c.notes || '';
+    ta.addEventListener('blur', function(){
+      DS.saveClientNotes(clientId, ta.value).then(function(){
+        flash.classList.add('show');
+        setTimeout(function(){ flash.classList.remove('show'); }, 1600);
+      });
+    });
+    content.appendChild(el('div', { class:'section' }, [
+      el('div', { class:'sectionhead' }, [
+        el('div', null, [
+          el('span', { class:'kicker', text:'Alleen zichtbaar in het beheer' }),
+          el('h2', { text:'Notities' })
+        ]),
+        flash
+      ]),
+      el('div', { class:'card notesbox' }, ta)
+    ]));
+
+    /* projecten */
+    var plist = el('div', { class:'card rowlist' });
+    if(!projects.length){
+      plist.appendChild(el('div', { class:'empty', text:'Nog geen projecten voor deze klant.' }));
+    }
+    projects.forEach(function(p){
+      var cur = (p.stages||[]).find(function(s){ return s.status==='current' || s.status==='awaiting_approval'; });
+      var sub = p.code ? p.code + ' · ' : '';
+      sub += cur ? stageLabel(cur.stageKey) : 'Alle fases afgerond';
+      var chips = [];
+      if(p.status==='archived') chips.push(el('span', { class:'chip', text:'Gearchiveerd' }));
+      else if(cur) chips.push(el('span', { class:'chip ' + (cur.status==='awaiting_approval'?'awaiting':'current'), text:stageStatusLabel(cur.status) }));
+      plist.appendChild(el('button', {
+        type:'button', class:'rowitem link',
+        onclick:function(){ go({ name:'project', projectId:p.id, clientId:clientId }); }
+      }, [
+        el('div', { class:'rowmain' }, [
+          el('div', { class:'rowtitle', text:p.name }),
+          el('div', { class:'rowsub', text:sub })
+        ])
+      ].concat(chips, [ el('span', { class:'rowmeta', text:fmtDate(p.createdAt) }) ])));
+    });
+    content.appendChild(el('div', { class:'section' }, [
+      el('div', { class:'sectionhead' }, [
+        el('h2', { text:'Projecten' }),
+        el('button', { type:'button', class:'btn small', text:'Nieuw project', onclick:function(){ openNewProjectModal(clientId); } })
+      ]),
+      plist
+    ]));
+  });
+}
+function openNewProjectModal(clientId){
+  var m = openModal('Nieuw project', 'De zes fases worden automatisch klaargezet');
+  var name = el('input', { class:'input', type:'text', required:'required' });
+  var code = el('input', { class:'input', type:'text', placeholder:'bv. REQ 0829' });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    DS.createProject(clientId, name.value.trim(), code.value.trim()).then(function(p){
+      closeModal();
+      go({ name:'project', projectId:p.id, clientId:clientId });
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Projectnaam', name),
+    field('Code', code),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Project aanmaken' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+
+/* ============================================================
+   deel 2 — projectdetail
+   ============================================================ */
+function renderProject(projectId){
+  return Promise.all([
+    DS.getProject(projectId),
+    DS.listMedia(projectId),
+    DS.listDocuments(projectId),
+    DS.listInvoices(projectId),
+    DS.listSamples(projectId),
+    DS.listInspections(projectId),
+    DS.listDisclosures(projectId),
+    DS.listFactories()
+  ]).then(function(res){
+    var project = res[0];
+    if(!project){
+      content.appendChild(el('p', { text:'Project niet gevonden.' }));
+      return;
+    }
+    var media = res[1], docs = res[2], invoices = res[3], samples = res[4],
+        inspections = res[5], disclosures = res[6], factories = res[7];
+    return DS.getClient(project.clientId).then(function(client){
+      buildProjectView(project, client, media, docs, invoices, samples, inspections, disclosures, factories);
+    });
+  });
+}
+function factoryName(factories, id){
+  if(!id) return null;
+  var f = factories.find(function(x){ return x.id===id; });
+  return f ? f.name : null;
+}
+function chipClassForStage(status){
+  if(status==='done') return 'done';
+  if(status==='current') return 'current';
+  if(status==='awaiting_approval') return 'awaiting';
+  return '';
+}
+function sectionBlock(kicker, title, actionBtn, body){
+  var head = el('div', { class:'sectionhead' }, [
+    el('div', null, [
+      el('span', { class:'kicker', text:kicker }),
+      el('h2', { text:title })
+    ]),
+    actionBtn
+  ]);
+  return el('div', { class:'section' }, [ head, body ]);
+}
+function buildProjectView(project, client, media, docs, invoices, samples, inspections, disclosures, factories){
+  var pid = project.id;
+
+  content.appendChild(el('button', {
+    type:'button', class:'backbtn', text:'← ' + (client ? client.company : 'Klant'),
+    onclick:function(){ go({ name:'client', clientId:project.clientId }); }
+  }));
+  var headChips = [];
+  if(project.status==='archived') headChips.push(el('span', { class:'chip', text:'Gearchiveerd' }));
+  content.appendChild(el('div', { class:'pagehead' }, [
+    el('div', null, [
+      el('span', { class:'kicker', text:(project.code ? project.code + ' · ' : '') + 'Gestart ' + fmtDate(project.createdAt) }),
+      el('h1', { text:project.name })
+    ]),
+    el('div', { style:'display:flex;gap:8px;align-items:center;' }, headChips)
+  ]));
+
+  /* a. fasebalk */
+  var stageCard = el('div', { class:'card rowlist stagegrid' });
+  (project.stages||[]).slice().sort(function(a,b){ return a.position-b.position; }).forEach(function(s){
+    var sel = el('select', { class:'input stagesel', 'aria-label':'Status van fase ' + stageLabel(s.stageKey) });
+    STAGE_STATUS.forEach(function(st){ sel.appendChild(option(st.key, st.label, st.key===s.status)); });
+    sel.addEventListener('change', function(){
+      var newStatus = sel.value;
+      DS.setStageStatus(pid, s.stageKey, newStatus).then(function(){
+        if(newStatus === 'done' || newStatus === 'awaiting_approval'){
+          notifyClient({
+            client: client,
+            projectName: project.name, projectCode: project.code,
+            page: 'mijlpalen', portalLabel: 'Bekijk het mijlpalenpad',
+            subject: (newStatus === 'done' ? stageLabel(s.stageKey) + ' is afgerond' : 'Jouw goedkeuring gevraagd') + ' — ' + project.name,
+            bodyLine: newStatus === 'done'
+              ? stageLabel(s.stageKey) + ' is afgerond.'
+              : stageLabel(s.stageKey) + ' wacht op jouw goedkeuring.'
+          });
+        }
+        refresh();
+      }).catch(function(ex){
+        sel.value = s.status;
+        showError(ex);
+      });
+    });
+    var subParts = [];
+    if(s.paymentPct) subParts.push(s.paymentPct + '% betaalmoment');
+    if(s.approvedAt) subParts.push('afgerond ' + fmtDate(s.approvedAt));
+    stageCard.appendChild(el('div', { class:'stagerow' }, [
+      el('span', { class:'stagenum', text:('0' + s.position).slice(-2) }),
+      el('div', { class:'stagename' }, [
+        document.createTextNode(stageLabel(s.stageKey)),
+        el('small', { text: subParts.join(' · ') || ' ' })
+      ]),
+      el('span', { class:'chip ' + chipClassForStage(s.status), text:stageStatusLabel(s.status) }),
+      sel
+    ]));
+  });
+  content.appendChild(sectionBlock('Voortgang', 'Fases', null, stageCard));
+
+  /* b. media */
+  var mediaWrap = el('div');
+  var anyMedia = false;
+  STAGES.forEach(function(st){
+    var items = media.filter(function(m){ return m.stageKey===st.key; });
+    if(!items.length) return;
+    anyMedia = true;
+    mediaWrap.appendChild(el('div', { class:'kicker stagekick', text:st.label }));
+    var grid = el('div', { class:'mediagrid' });
+    items.forEach(function(m){
+      var img = el('img', { alt:m.caption||'Projectfoto', loading:'lazy' });
+      DS.mediaUrl(m).then(function(u){ if(u) img.src = u; });
+      var fname = factoryName(factories, m.factoryId);
+      grid.appendChild(el('div', { class:'mediacard' }, [
+        img,
+        el('div', { class:'mbody' }, [
+          el('div', { class:'mcap', text:m.caption }),
+          el('div', { class:'mediastrip' }, [
+            el('span', { text:(fname ? fname : 'CUSTOM+') + ' · ' + fmtDate(m.capturedAt) }),
+            el('button', { type:'button', text:'Verwijderen', onclick:function(){
+              confirmDialog('Media verwijderen', 'Weet je zeker dat je deze foto uit het project wilt halen? De klant ziet hem daarna niet meer.', 'Verwijderen').then(function(ok){
+                if(ok) DS.deleteMedia(m.id).then(refresh);
+              });
+            } })
+          ])
+        ])
+      ]));
+    });
+    mediaWrap.appendChild(grid);
+  });
+  if(!anyMedia) mediaWrap.appendChild(el('div', { class:'card empty', text:'Nog geen media in dit project.' }));
+  content.appendChild(sectionBlock('Wat de klant ziet', 'Media',
+    el('button', { type:'button', class:'btn small', text:'Foto toevoegen', onclick:function(){ openMediaModal(pid, factories, project, client); } }),
+    mediaWrap));
+
+  /* c. documenten */
+  var docWrap = el('div', { class:'card rowlist' });
+  var anyDoc = false;
+  STAGES.forEach(function(st){
+    var items = docs.filter(function(d){ return d.stageKey===st.key; });
+    if(!items.length) return;
+    anyDoc = true;
+    docWrap.appendChild(el('div', { style:'padding:12px 18px 4px;' },
+      el('span', { class:'kicker', text:st.label })));
+    items.forEach(function(d){
+      docWrap.appendChild(el('div', { class:'rowitem' }, [
+        el('span', { class:'chip', text:docTypeLabel(d.docType) }),
+        el('div', { class:'rowmain' }, [
+          el('div', { class:'rowtitle', text:d.title }),
+          el('div', { class:'rowsub', text:'Versie ' + (d.version||1) + ' · ' + fmtDate(d.createdAt) })
+        ]),
+        el('button', { type:'button', class:'btn ghost small', text:'Verwijderen', onclick:function(){
+          confirmDialog('Document verwijderen', 'Weet je zeker dat je dit document wilt verwijderen?', 'Verwijderen').then(function(ok){
+            if(ok) DS.deleteDocument(d.id).then(refresh);
+          });
+        } })
+      ]));
+    });
+  });
+  if(!anyDoc) docWrap.appendChild(el('div', { class:'empty', text:'Nog geen documenten in dit project.' }));
+  content.appendChild(sectionBlock('Per fase, zoals in de portal', 'Documenten',
+    el('button', { type:'button', class:'btn small', text:'Document toevoegen', onclick:function(){ openDocumentModal(pid, project, client); } }),
+    docWrap));
+
+  /* d. facturen */
+  var invWrap = el('div', { class:'card rowlist' });
+  if(!invoices.length) invWrap.appendChild(el('div', { class:'empty', text:'Nog geen facturen.' }));
+  invoices.forEach(function(inv){
+    var statusChip;
+    if(inv.status==='paid') statusChip = el('span', { class:'chip done', text:'Betaald' });
+    else if(inv.status==='void') statusChip = el('span', { class:'chip', text:'Vervallen' });
+    else statusChip = el('span', { class:'chip awaiting', text:'Open' });
+    var right = [ el('span', { class:'rowmeta', text:fmtMoney(inv.amountCents) }), statusChip ];
+    if(inv.status==='open'){
+      right.push(el('button', { type:'button', class:'btn ghost small', text:'Markeer betaald', onclick:function(){
+        DS.markInvoicePaid(inv.id).then(refresh);
+      } }));
+    }
+    invWrap.appendChild(el('div', { class:'rowitem' }, [
+      el('div', { class:'rowmain' }, [
+        el('div', { class:'rowtitle', text:inv.label }),
+        el('div', { class:'rowsub', text:stageLabel(inv.stageKey) + (inv.paidAt ? ' · betaald op ' + fmtDate(inv.paidAt) : '') })
+      ])
+    ].concat(right)));
+  });
+  content.appendChild(sectionBlock('Betaalmomenten', 'Facturen',
+    el('button', { type:'button', class:'btn small', text:'Nieuwe factuur', onclick:function(){ openInvoiceModal(pid); } }),
+    invWrap));
+
+  /* e. samples */
+  var smpWrap = el('div', { class:'card rowlist' });
+  if(!samples.length) smpWrap.appendChild(el('div', { class:'empty', text:'Nog geen samplerondes.' }));
+  samples.slice().sort(function(a,b){ return String(a.roundDate).localeCompare(String(b.roundDate)); }).forEach(function(s){
+    var thumb = null;
+    if(s.mediaId){
+      var mm = media.find(function(x){ return x.id===s.mediaId; });
+      if(mm){
+        thumb = el('img', { class:'qthumb', style:'width:52px;height:52px;flex:0 0 52px;', alt:'' });
+        (function(imgNode, mrow){ DS.mediaUrl(mrow).then(function(u){ if(u) imgNode.src=u; }); })(thumb, mm);
+      }
+    }
+    var cls = s.status==='approved' ? 'done' : (s.status==='superseded' ? '' : 'current');
+    smpWrap.appendChild(el('div', { class:'rowitem' }, [
+      el('span', { class:'mono', style:'font-weight:600;font-size:13px;width:34px;flex:0 0 34px;', text:s.roundLabel }),
+      thumb,
+      el('div', { class:'rowmain' }, [
+        el('div', { class:'rowtitle', text:s.note||'—' }),
+        el('div', { class:'rowsub', text:fmtDate(s.roundDate) })
+      ]),
+      el('span', { class:'chip ' + cls, text:sampleStatusLabel(s.status) })
+    ]));
+  });
+  content.appendChild(sectionBlock('Tooling en iteratie', 'Samplerondes',
+    el('button', { type:'button', class:'btn small', text:'Ronde toevoegen', onclick:function(){ openSampleModal(pid, samples, media, project, client); } }),
+    smpWrap));
+
+  /* f. inspecties */
+  var inspWrap = el('div', { class:'card rowlist' });
+  if(!inspections.length) inspWrap.appendChild(el('div', { class:'empty', text:'Nog geen inspectierapporten.' }));
+  inspections.slice().sort(function(a,b){ return String(a.reportDate).localeCompare(String(b.reportDate)); }).forEach(function(r){
+    var box = el('div', { class:'insp' });
+    box.appendChild(el('div', { class:'insphead' }, [
+      el('span', { class:'cp', text:r.checkpoint }),
+      el('span', { class:'chip ' + (r.passed ? 'done' : 'crit'), text:r.passed ? 'Geslaagd' : 'Afgekeurd' }),
+      el('span', { class:'rowmeta', text:fmtDate(r.reportDate) })
+    ]));
+    box.appendChild(el('div', { class:'inspmeta', text:(r.aqlNorm||'') + ' · steekproef ' + (r.sampleSize||0) + ' stuks' }));
+    if(r.contextLine) box.appendChild(el('div', { style:'font-size:13.5px;margin-top:6px;', text:r.contextLine }));
+    (r.defects||[]).forEach(function(d){
+      box.appendChild(el('div', { class:'defrow' }, [
+        el('span', { class:'chip' + (d.severity==='critical' ? ' crit' : ''), text:severityLabel(d.severity) }),
+        el('span', { class:'defcount', text:(d.count||0) + '×' }),
+        el('span', { text:d.note||'' })
+      ]));
+    });
+    inspWrap.appendChild(box);
+  });
+  content.appendChild(sectionBlock('Kwaliteitscontrole', 'Inspecties',
+    el('button', { type:'button', class:'btn small', text:'Rapport toevoegen', onclick:function(){ openInspectionModal(pid, project, client); } }),
+    inspWrap));
+
+  /* g. disclosures */
+  var disWrap = el('div', { class:'card rowlist' });
+  if(!disclosures.length) disWrap.appendChild(el('div', { class:'empty', text:'Nog niets gedeeld met fabrieken.' }));
+  disclosures.slice().sort(function(a,b){ return String(a.disclosedAt).localeCompare(String(b.disclosedAt)); }).forEach(function(d){
+    var fname = factoryName(factories, d.factoryId) || 'Partner';
+    disWrap.appendChild(el('div', { class:'rowitem' }, [
+      el('div', { class:'rowmain' }, [
+        el('div', { class:'rowtitle', text:d.what || 'Bestanden gedeeld' }),
+        el('div', { class:'rowsub', text:fname + ' · ' + fmtDate(d.disclosedAt) })
+      ]),
+      d.underNnn ? el('span', { class:'chip done', text:'Onder NNN' }) : el('span', { class:'chip', text:'Zonder NNN' })
+    ]));
+  });
+  content.appendChild(sectionBlock('Gedeeld met fabriek', 'Disclosures',
+    el('button', { type:'button', class:'btn small', text:'Delen vastleggen', onclick:function(){ openDisclosureModal(pid, factories); } }),
+    disWrap));
+
+  /* h. archiveren */
+  var archWrap = el('div', { style:'border-top:1px solid var(--line);padding-top:26px;margin-top:10px;' });
+  if(project.status==='archived'){
+    archWrap.appendChild(el('p', { class:'kicker', text:'Dit project is gearchiveerd' + (project.archivedAt ? ' op ' + fmtDate(project.archivedAt) : '') }));
+  } else {
+    archWrap.appendChild(el('button', { type:'button', class:'btn danger', text:'Project archiveren', onclick:function(){
+      confirmDialog('Project archiveren', 'Het project verdwijnt uit de actieve lijst. Dit kun je later alleen handmatig terugdraaien.', 'Archiveren').then(function(ok){
+        if(ok) DS.archiveProject(pid).then(refresh);
+      });
+    } }));
+  }
+  content.appendChild(archWrap);
+}
+
+/* ---------- modals projectdetail ---------- */
+function stageSelect(selected){
+  var sel = el('select', { class:'input' });
+  STAGES.forEach(function(s){ sel.appendChild(option(s.key, s.label, s.key===selected)); });
+  return sel;
+}
+function openMediaModal(projectId, factories, project, client){
+  var m = openModal('Foto toevoegen', IS_DEMO ? 'Demomodus: kies een sitebeeld' : 'Upload naar de beveiligde opslag');
+  var chosenSrc = null;
+  var fileInput = null;
+  var form = el('form');
+
+  if(IS_DEMO){
+    var grid = el('div', { class:'imgpickgrid', role:'group', 'aria-label':'Beschikbare beelden' });
+    DEMO_IMAGES.forEach(function(src){
+      var b = el('button', { type:'button', class:'imgpick', 'aria-pressed':'false', 'aria-label':src.replace('images/','') },
+        el('img', { src:src, alt:'' }));
+      b.addEventListener('click', function(){
+        chosenSrc = src;
+        grid.querySelectorAll('.imgpick').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+      });
+      grid.appendChild(b);
+    });
+    form.appendChild(field('Beeld', grid));
+  } else {
+    fileInput = el('input', { class:'input', type:'file', accept:'image/*', required:'required' });
+    form.appendChild(field('Bestand', fileInput));
+  }
+
+  var caption = el('input', { class:'input', type:'text', required:'required' });
+  var stage = stageSelect('concept');
+  var fac = el('select', { class:'input' });
+  fac.appendChild(option('', 'Geen fabriek (CUSTOM+)', true));
+  factories.forEach(function(f){ fac.appendChild(option(f.id, f.name + (f.region ? ' — ' + f.region : ''))); });
+  var date = el('input', { class:'input', type:'date', required:'required', value:todayISO() });
+  var err = el('p', { class:'formerr' });
+
+  form.appendChild(field('Onderschrift', caption));
+  form.appendChild(el('div', { class:'formrow' }, [ field('Fase', stage), field('Fabriek', fac) ]));
+  form.appendChild(field('Datum', date));
+  form.appendChild(err);
+  form.appendChild(el('div', { class:'modal-actions' }, [
+    el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+    el('button', { type:'submit', class:'btn', text:'Toevoegen' })
+  ]));
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    err.classList.remove('show');
+    if(IS_DEMO && !chosenSrc){
+      err.textContent = 'Kies eerst een beeld.'; err.classList.add('show'); return;
+    }
+    if(!IS_DEMO && !(fileInput.files && fileInput.files[0])){
+      err.textContent = 'Kies eerst een bestand.'; err.classList.add('show'); return;
+    }
+    var payload = {
+      stageKey: stage.value, caption: caption.value.trim(),
+      factoryId: fac.value || null, capturedAt: date.value
+    };
+    if(IS_DEMO) payload.src = chosenSrc;
+    else payload.file = fileInput.files[0];
+    DS.addMedia(projectId, payload).then(function(){
+      notifyClient({
+        client: client, projectName: project.name, projectCode: project.code,
+        page: 'updates', portalLabel: 'Bekijk de update',
+        subject: 'Nieuwe update — ' + project.name,
+        bodyLine: 'Er staat een nieuwe foto bij ' + stageLabel(payload.stageKey) + ': ' + payload.caption
+      });
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  });
+  m.body.appendChild(form);
+}
+function openDocumentModal(projectId, project, client){
+  var m = openModal('Document toevoegen', IS_DEMO ? 'Demomodus: zonder echt bestand' : 'Upload naar de beveiligde opslag');
+  var title = el('input', { class:'input', type:'text', required:'required' });
+  var stage = stageSelect('concept');
+  var type = el('select', { class:'input' });
+  DOC_TYPES.forEach(function(t){ type.appendChild(option(t.key, t.label)); });
+  var version = el('input', { class:'input', type:'number', min:'1', step:'1', value:'1' });
+  var fileInput = IS_DEMO ? null : el('input', { class:'input', type:'file', required:'required' });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    var payload = {
+      title: title.value.trim(), stageKey: stage.value,
+      docType: type.value, version: parseInt(version.value, 10) || 1
+    };
+    if(fileInput) payload.file = fileInput.files[0];
+    DS.addDocument(projectId, payload).then(function(){
+      notifyClient({
+        client: client, projectName: project.name, projectCode: project.code,
+        page: 'documenten', portalLabel: 'Bekijk het document',
+        subject: 'Nieuw document — ' + project.name,
+        bodyLine: 'Er is een nieuw document geplaatst: ' + payload.title + '.'
+      });
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Titel', title),
+    el('div', { class:'formrow' }, [ field('Fase', stage), field('Type', type) ]),
+    field('Versie', version),
+    fileInput ? field('Bestand', fileInput) : null,
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Toevoegen' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+function openInvoiceModal(projectId){
+  var m = openModal('Nieuwe factuur', 'Bedrag in euro’s, bijvoorbeeld 3.125,00');
+  var label = el('input', { class:'input', type:'text', required:'required', placeholder:'bv. 25% — ontwerpaftekening' });
+  var amount = el('input', { class:'input', type:'text', required:'required', inputmode:'decimal', placeholder:'3.125,00' });
+  var stage = stageSelect('concept');
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    err.classList.remove('show');
+    var cents = parseEuro(amount.value);
+    if(isNaN(cents)){ err.textContent = 'Vul een geldig bedrag in, bijvoorbeeld 3.125,00.'; err.classList.add('show'); return; }
+    DS.addInvoice(projectId, { label:label.value.trim(), amountCents:cents, stageKey:stage.value }).then(function(){
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Omschrijving', label),
+    el('div', { class:'formrow' }, [ field('Bedrag (€)', amount), field('Fase', stage) ]),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Factuur aanmaken' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+function nextRoundLabel(samples){
+  var max = -1;
+  samples.forEach(function(s){
+    var mt = /^T(\d+)$/.exec(s.roundLabel||'');
+    if(mt){ var n = parseInt(mt[1],10); if(n>max) max = n; }
+  });
+  return 'T' + (max+1);
+}
+function openSampleModal(projectId, samples, media, project, client){
+  var m = openModal('Ronde toevoegen', 'Een goedgekeurde ronde vervangt eerdere goedkeuringen');
+  var label = el('input', { class:'input', type:'text', required:'required', value:nextRoundLabel(samples) });
+  var mediaSel = el('select', { class:'input' });
+  mediaSel.appendChild(option('', 'Geen foto gekoppeld', true));
+  media.forEach(function(mm){
+    var cap = (mm.caption||'').length > 46 ? mm.caption.slice(0,46) + '…' : (mm.caption||'Foto');
+    mediaSel.appendChild(option(mm.id, cap + ' · ' + fmtDate(mm.capturedAt)));
+  });
+  var status = el('select', { class:'input' });
+  SAMPLE_STATUS.forEach(function(s){ status.appendChild(option(s.key, s.label, s.key==='reviewed')); });
+  var note = el('textarea', { class:'input', placeholder:'Wat is er aangepast in deze ronde' });
+  var date = el('input', { class:'input', type:'date', required:'required', value:todayISO() });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    var roundLabelVal = label.value.trim();
+    DS.addSample(projectId, {
+      roundLabel: roundLabelVal, mediaId: mediaSel.value || null,
+      status: status.value, note: note.value.trim(), roundDate: date.value
+    }).then(function(){
+      notifyClient({
+        client: client, projectName: project.name, projectCode: project.code,
+        page: 'samples', portalLabel: 'Bekijk de sample-ronde',
+        subject: 'Nieuwe sample-ronde — ' + project.name,
+        bodyLine: 'Ronde ' + roundLabelVal + ' is beschikbaar' + (status.value === 'approved' ? ' en goedgekeurd.' : '.')
+      });
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    el('div', { class:'formrow' }, [ field('Label', label), field('Datum', date) ]),
+    field('Gekoppelde foto', mediaSel),
+    field('Status', status),
+    field('Notitie', note),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Ronde toevoegen' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+function openInspectionModal(projectId, project, client){
+  var m = openModal('Rapport toevoegen', 'Kwaliteitscontrole');
+  var checkpoint = el('select', { class:'input' });
+  CHECKPOINTS.forEach(function(c){ checkpoint.appendChild(option(c.key, c.label)); });
+  var norm = el('input', { class:'input', type:'text', value:'ANSI/ASQ Z1.4 II' });
+  var size = el('input', { class:'input', type:'number', min:'1', step:'1', required:'required' });
+  var context = el('input', { class:'input', type:'text', placeholder:'Korte context voor de klant' });
+  var date = el('input', { class:'input', type:'date', required:'required', value:todayISO() });
+  var passed = el('input', { type:'checkbox', checked:true });
+  var err = el('p', { class:'formerr' });
+
+  var defWrap = el('div');
+  function addDefectRow(){
+    var sev = el('select', { class:'input', 'aria-label':'Ernst' });
+    SEVERITIES.forEach(function(s){ sev.appendChild(option(s.key, s.label)); });
+    var cnt = el('input', { class:'input cnt', type:'number', min:'1', step:'1', value:'1', 'aria-label':'Aantal' });
+    var note = el('input', { class:'input note', type:'text', placeholder:'Notitie', 'aria-label':'Notitie bij afwijking' });
+    var rowEl = el('div', { class:'defform' }, [
+      sev, cnt, note,
+      el('button', { type:'button', class:'rm', 'aria-label':'Rij verwijderen', text:'×', onclick:function(){ defWrap.removeChild(rowEl); } })
+    ]);
+    rowEl._get = function(){
+      return { severity:sev.value, count:parseInt(cnt.value,10)||1, note:note.value.trim() };
+    };
+    defWrap.appendChild(rowEl);
+  }
+
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    var defects = [];
+    defWrap.querySelectorAll('.defform').forEach(function(r){ if(r._get) defects.push(r._get()); });
+    var checkpointVal = checkpoint.value;
+    DS.addInspection(projectId, {
+      checkpoint: checkpointVal, aqlNorm: norm.value.trim() || 'ANSI/ASQ Z1.4 II',
+      sampleSize: parseInt(size.value,10)||0, defects: defects,
+      contextLine: context.value.trim(), reportDate: date.value, passed: passed.checked
+    }).then(function(){
+      notifyClient({
+        client: client, projectName: project.name, projectCode: project.code,
+        page: 'kwaliteit', portalLabel: 'Bekijk het rapport',
+        subject: 'Inspectierapport geplaatst — ' + project.name,
+        bodyLine: 'Het ' + checkpointVal.toUpperCase() + '-rapport staat klaar' + (passed.checked ? ', binnen norm.' : '.')
+      });
+      closeModal(); refresh();
+    }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    el('div', { class:'formrow' }, [ field('Checkpoint', checkpoint), field('Datum', date) ]),
+    el('div', { class:'formrow' }, [ field('Norm', norm), field('Steekproefgrootte', size) ]),
+    field('Afwijkingen', el('div', null, [
+      defWrap,
+      el('button', { type:'button', class:'btn ghost small', text:'Rij toevoegen', onclick:addDefectRow })
+    ])),
+    field('Contextregel', context),
+    el('label', { class:'checkline' }, [ passed, document.createTextNode('Geslaagd') ]),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Rapport opslaan' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+function openDisclosureModal(projectId, factories){
+  var m = openModal('Delen vastleggen', 'Verschijnt in het toegangslogboek van de klant');
+  var fac = el('select', { class:'input' });
+  factories.forEach(function(f){ fac.appendChild(option(f.id, f.name + (f.region ? ' — ' + f.region : ''))); });
+  var what = el('input', { class:'input', type:'text', required:'required', placeholder:'bv. Productiebestanden (STEP + 2D)' });
+  var date = el('input', { class:'input', type:'date', required:'required', value:todayISO() });
+  var nnn = el('input', { type:'checkbox', checked:true });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    if(!fac.value){ err.textContent = 'Kies een fabriek.'; err.classList.add('show'); return; }
+    DS.addDisclosure(projectId, {
+      factoryId: fac.value, what: what.value.trim(),
+      disclosedAt: date.value, underNnn: nnn.checked
+    }).then(function(){ closeModal(); refresh(); })
+      .catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Fabriek', fac),
+    field('Wat is gedeeld', what),
+    field('Datum', date),
+    el('label', { class:'checkline' }, [ nnn, document.createTextNode('Gedeeld onder NNN-overeenkomst') ]),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Vastleggen' })
+    ])
+  ]);
+  m.body.appendChild(form);
+}
+
+/* ============================================================
+   deel 3 — vragen
+   ============================================================ */
+function renderQuestions(){
+  return Promise.all([
+    DS.listQuestions(), DS.listAllProjects(), DS.listClients(), DS.listAllMedia()
+  ]).then(function(res){
+    var questions = res[0], projects = res[1], clients = res[2], media = res[3];
+    var pmap = {}, cmap = {}, mmap = {};
+    projects.forEach(function(p){ pmap[p.id]=p; });
+    clients.forEach(function(c){ cmap[c.id]=c; });
+    media.forEach(function(mrow){ mmap[mrow.id]=mrow; });
+
+    function ctxLine(q){
+      var p = pmap[q.projectId];
+      var c = p ? cmap[p.clientId] : null;
+      var parts = [];
+      if(p) parts.push(p.name);
+      if(c) parts.push(c.company);
+      if(q.stageKey) parts.push(stageLabel(q.stageKey));
+      return parts.join(' · ');
+    }
+    function thumbFor(q){
+      var mrow = q.mediaId ? mmap[q.mediaId] : null;
+      if(!mrow) return null;
+      var img = el('img', { class:'qthumb', alt:'' });
+      DS.mediaUrl(mrow).then(function(u){ if(u) img.src=u; });
+      return img;
+    }
+
+    var open = questions.filter(function(q){ return !q.answeredAt; })
+      .sort(function(a,b){ return String(b.askedAt).localeCompare(String(a.askedAt)); });
+    var answered = questions.filter(function(q){ return q.answeredAt; })
+      .sort(function(a,b){ return String(b.answeredAt).localeCompare(String(a.answeredAt)); });
+
+    content.appendChild(el('div', { class:'pagehead' }, [
+      el('div', null, [
+        el('span', { class:'kicker', text:'Van klanten, over foto’s en fases' }),
+        el('h1', { text:'Vragen' })
+      ])
+    ]));
+
+    if(!open.length){
+      content.appendChild(el('div', { class:'card empty section', text:'Geen openstaande vragen. Alles is beantwoord.' }));
+    }
+    open.forEach(function(q){
+      var ta = el('textarea', { class:'input', 'aria-label':'Antwoord op vraag', placeholder:'Je antwoord aan de klant' });
+      var err = el('p', { class:'formerr' });
+      var card = el('div', { class:'card qcard', style:'margin-bottom:14px;' }, [
+        el('div', { class:'qhead' }, [
+          thumbFor(q),
+          el('div', { class:'rowmain' }, [
+            el('span', { class:'kicker', text:ctxLine(q) + ' · ' + fmtDateTime(q.askedAt) }),
+            el('div', { class:'qtext', text:q.question })
+          ])
+        ]),
+        el('div', { class:'qanswer' }, [
+          ta, err,
+          el('div', { style:'margin-top:10px;display:flex;justify-content:flex-end;' },
+            el('button', { type:'button', class:'btn small', text:'Beantwoord', onclick:function(){
+              var a = ta.value.trim();
+              if(!a){ err.textContent = 'Schrijf eerst een antwoord.'; err.classList.add('show'); return; }
+              DS.answerQuestion(q.id, a).then(function(){
+                var p = pmap[q.projectId];
+                var c = p ? cmap[p.clientId] : null;
+                if(p && c){
+                  notifyClient({
+                    client: c, projectName: p.name, projectCode: p.code,
+                    page: 'updates', portalLabel: 'Bekijk het antwoord',
+                    subject: 'Antwoord op je vraag — ' + p.name,
+                    bodyLine: 'Steffan heeft gereageerd op je vraag: “' + q.question + '”'
+                  });
+                }
+                refresh();
+              }).catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+            } }))
+        ])
+      ]);
+      content.appendChild(card);
+    });
+
+    if(answered.length){
+      var det = el('details', { class:'answered card', style:'margin-top:22px;' });
+      det.appendChild(el('summary', null, 'Beantwoorde vragen (' + answered.length + ')'));
+      var inner = el('div', { style:'padding:0 18px 18px;' });
+      answered.forEach(function(q){
+        inner.appendChild(el('div', { style:'padding:14px 0;border-top:1px solid var(--line);' }, [
+          el('span', { class:'kicker', text:ctxLine(q) + ' · gevraagd ' + fmtDateTime(q.askedAt) }),
+          el('div', { class:'qtext', style:'font-size:14.5px;', text:q.question }),
+          el('div', { class:'qanswered' }, [
+            el('span', { class:'kicker', text:'Antwoord · ' + fmtDateTime(q.answeredAt) }),
+            el('div', { style:'margin-top:4px;', text:q.answer })
+          ])
+        ]));
+      });
+      det.appendChild(inner);
+      content.appendChild(det);
+    }
+  });
+}
+
+/* ============================================================
+   deel 4 — logboek
+   ============================================================ */
+function renderLog(){
+  return Promise.all([ DS.listAllProjects(), DS.listClients() ]).then(function(res){
+    var projects = res[0], clients = res[1];
+    var cmap = {}; clients.forEach(function(c){ cmap[c.id]=c; });
+    var pmap = {}; projects.forEach(function(p){ pmap[p.id]=p; });
+
+    content.appendChild(el('div', { class:'pagehead' }, [
+      el('div', null, [
+        el('span', { class:'kicker', text:'Alles wat is bekeken, gedownload en gedeeld' }),
+        el('h1', { text:'Logboek' })
+      ])
+    ]));
+
+    var sel = el('select', { class:'input', style:'max-width:340px;', 'aria-label':'Filter op project' });
+    sel.appendChild(option('', 'Alle projecten', logFilter===''));
+    projects.forEach(function(p){
+      var c = cmap[p.clientId];
+      sel.appendChild(option(p.id, p.name + (c ? ' — ' + c.company : ''), logFilter===p.id));
+    });
+    sel.addEventListener('change', function(){ logFilter = sel.value; refresh(); });
+    content.appendChild(el('div', { class:'field', style:'margin-bottom:16px;' }, sel));
+
+    return DS.listLog(logFilter || null).then(function(logRows){
+      logRows.sort(function(a,b){ return String(b.createdAt).localeCompare(String(a.createdAt)); });
+      var listEl = el('div', { class:'card rowlist' });
+      if(!logRows.length) listEl.appendChild(el('div', { class:'empty', text:'Nog geen logregels.' }));
+      logRows.forEach(function(r){
+        var p = pmap[r.projectId];
+        listEl.appendChild(el('div', { class:'logrow' }, [
+          el('span', { class:'logwhen', text:fmtDateTime(r.createdAt) }),
+          el('span', { class:'logactor' }, el('span', { class:'chip' + (r.actor==='client' ? ' current' : ''), text:actorLabel(r.actor) })),
+          el('span', { class:'logdetail', text:r.detail || r.action }),
+          el('span', { class:'logproj', text:p ? p.name : '' })
+        ]));
+      });
+      content.appendChild(listEl);
+    });
+  });
+}
+
+/* ============================================================
+   login en opstart
+   ============================================================ */
+var loginEl = document.getElementById('login');
+var appEl = document.getElementById('app');
+var loginBody = document.getElementById('loginBody');
+
+function enterApp(){
+  document.getElementById('whoName').textContent = DS.staffName;
+  document.getElementById('whoMail').textContent = DS.staffEmail;
+  document.getElementById('demoBar').hidden = DS.mode!=='demo';
+  loginEl.hidden = true;
+  appEl.hidden = false;
+  go({ name:'clients' });
+}
+function buildDemoLogin(){
+  clearNode(loginBody);
+  loginBody.appendChild(el('p', { text:'Er is nog geen Supabase-project gekoppeld. Je kunt het beheer volledig proberen met voorbeelddata; wijzigingen blijven lokaal in deze browser.' }));
+  loginBody.appendChild(el('button', { type:'button', class:'btn wide', text:'Open het demobeheer', onclick:function(){
+    DS = makeDemoService();
+    enterApp();
+  } }));
+}
+function buildSupaLogin(){
+  clearNode(loginBody);
+  var email = el('input', { class:'input', type:'email', required:'required', autocomplete:'username' });
+  var pass = el('input', { class:'input', type:'password', required:'required', autocomplete:'current-password' });
+  var err = el('p', { class:'login-error' });
+  var submit = el('button', { type:'submit', class:'btn wide', text:'Inloggen' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    err.classList.remove('show');
+    submit.disabled = true;
+    var sb = null;
+    loadSupabaseLib().then(function(){
+      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+      return sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+    }).then(function(res){
+      if(res.error){
+        var msg = /invalid login credentials/i.test(res.error.message||'')
+          ? 'E-mail of wachtwoord klopt niet.'
+          : 'Inloggen lukte niet: ' + res.error.message;
+        throw new Error(msg);
+      }
+      var userId = res.data.user.id;
+      return sb.from('staff_users').select('user_id').eq('user_id', userId).maybeSingle().then(function(staffRes){
+        if(staffRes.error) throw new Error('Kon de beheerrechten niet controleren: ' + staffRes.error.message);
+        if(!staffRes.data){
+          return sb.auth.signOut().then(function(){
+            throw new Error('Dit account heeft geen beheerrechten.');
+          });
+        }
+        DS = makeSupaService(sb, res.data.user);
+        enterApp();
+      });
+    }).catch(function(ex){
+      err.textContent = ex.message || String(ex);
+      err.classList.add('show');
+    }).then(function(){ submit.disabled = false; });
+  } }, [
+    field('E-mail', email),
+    field('Wachtwoord', pass),
+    submit,
+    err
+  ]);
+  loginBody.appendChild(el('p', { text:'Log in met je beheeraccount.' }));
+  loginBody.appendChild(form);
+}
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  DS = null;
+  appEl.hidden = true;
+  loginEl.hidden = false;
+  if(IS_DEMO) buildDemoLogin(); else buildSupaLogin();
+});
+document.querySelectorAll('.navbtn').forEach(function(b){
+  b.addEventListener('click', function(){
+    var nav = b.getAttribute('data-nav');
+    go({ name:nav==='clients' ? 'clients' : nav });
+  });
+});
+
+if(IS_DEMO) buildDemoLogin(); else buildSupaLogin();
+})();
+</script>
+</body>
+</html>
