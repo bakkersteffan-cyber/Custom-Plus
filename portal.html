@@ -54,6 +54,9 @@
 :root[data-mode="blueprint"] .fl-bp-darkband{
   --black:var(--bp-surface); --white:var(--bp-ink); --ink:var(--bp-surface);
 }
+/* de zijbalk krijgt in blauwdruk een eigen, iets donkerder vlak zodat hij
+   zich blijft aftekenen tegen het rasterpapier */
+:root[data-mode="blueprint"] .sidebar{background:rgba(6,14,24,.55)}
 /* subtiel tekenpapierraster van 48px, onderdeel van de achtergrond zelf */
 :root[data-mode="blueprint"] body{
   background-image:
@@ -119,6 +122,68 @@ button{font:inherit;color:inherit}
   transition:border-color .25s ease,color .25s ease;
 }
 .btn-quiet:hover{border-color:var(--gray-a7);color:var(--ink)}
+
+/* ---------- app-shell: zijbalk op desktop (referentie: Skillex/Solarius) ---------- */
+.sidebar{display:none}
+@media (min-width:1080px){
+  body.app-on #view-app{display:grid;grid-template-columns:236px minmax(0,1fr);align-items:start}
+  .sidebar{
+    display:flex;flex-direction:column;gap:2px;
+    grid-row:1 / span 8; /* spant alle (impliciete) rijen; anders rekt zijn 100svh rij 1 op */
+    position:sticky;top:0;height:100svh;overflow-y:auto;
+    background:var(--white);border-right:1px solid var(--line);
+    padding:26px 14px 18px;
+  }
+  .sidebar__mark{padding:0 12px 22px;font-size:17px}
+  .side-nav{display:flex;flex-direction:column;gap:2px}
+  .side-nav a{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 12px;border-radius:12px;text-decoration:none;
+    font-size:14px;font-weight:500;color:var(--gray-33);
+    transition:background .2s ease,color .2s ease;
+  }
+  .side-nav a:hover{background:var(--gray-f9);color:var(--ink)}
+  .side-nav a[aria-current="page"]{background:var(--gray-f2);color:var(--ink);font-weight:600}
+  .side-nav svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+  .side-nav a[aria-current="page"] svg{opacity:1;stroke:var(--green)}
+  .sidebar__foot{margin-top:auto;padding:14px 4px 0;border-top:1px solid var(--line)}
+  .side-client{display:flex;align-items:center;gap:10px;padding:6px 8px}
+  .side-client__dot{
+    width:34px;height:34px;border-radius:50%;flex:none;
+    background:var(--green-soft);color:var(--green);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;letter-spacing:.02em;
+  }
+  .side-client__txt{min-width:0;display:flex;flex-direction:column}
+  .side-client__name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side-client__co{font-size:11.5px;color:var(--gray-9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* topbar wordt de slanke contentkop rechtsboven, zonder eigen merklogo */
+  .topbar{grid-column:2;border-bottom:0;background:transparent}
+  .topbar-in{padding-top:22px;padding-bottom:6px}
+  .topbar .wordmark{display:none}
+  .topbar-proj{display:none}
+  .subnav{display:none}
+  .hostcard-wrap{grid-column:2}
+  #view-app > main{grid-column:2}
+  #view-app > footer{grid-column:2}
+  /* zoekpil zoals de referentie linksboven in de content */
+  .qs-pill{
+    display:inline-flex;align-items:center;gap:10px;margin-right:auto;
+    border:1px solid var(--line);background:var(--white);color:var(--gray-9);
+    border-radius:100px;padding:10px 18px;font-size:13px;cursor:pointer;min-width:230px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  .qs-pill:hover{border-color:var(--gray-a7);color:var(--gray-33)}
+  .qs-pill svg{flex:none}
+  .qs-pill .kbd{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gray-a7)}
+  #qs-open{display:none}
+}
+@media (min-width:1080px){ .topbar-meta{flex:1} }
+@media (max-width:1079.5px){ .qs-pill{display:none} }
+#view-app{display:none}
+@media (max-width:1079.5px){ body.app-on #view-app{display:block} }
+@media (min-width:1080px){ body.app-on #view-app{display:grid} }
 
 /* ---------- login ---------- */
 #view-login{min-height:100svh;display:grid;place-items:center;background:var(--gray-f9);padding:32px 16px}
@@ -680,6 +745,85 @@ details.stage-acc[open] summary .acc-caret{transform:rotate(90deg)}
   position:relative;padding-top:7px;min-height:14px;
 }
 .seg-mark.has-pay::before{content:'';position:absolute;top:0;left:1px;width:1px;height:5px;background:var(--gray-a7)}
+/* ---------- dashboard (#/home, referentiestijl) ---------- */
+.dash{display:grid;gap:26px}
+@media (min-width:1080px){
+  .dash{grid-template-columns:minmax(0,1fr) 320px;gap:34px;align-items:start}
+}
+.dash-greet{padding:8px 0 2px}
+.dash-hello{
+  font-size:clamp(30px,2.6vw + 14px,42px);font-weight:700;letter-spacing:-.02em;
+  line-height:1.12;margin:0 0 10px;text-wrap:balance;
+}
+.dash-status{font-size:16px;color:var(--gray-33);margin:0 0 4px;max-width:52ch;text-wrap:pretty}
+.dash-status.needs-action{color:var(--ink);font-weight:600}
+.dash-meta{font-size:13.5px;color:var(--gray-69);margin:0 0 18px}
+.dash-greet .btn{margin-top:6px}
+
+.stage-tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:26px}
+@media (max-width:820px){
+  .stage-tiles{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-inline:-16px;padding-inline:16px}
+  .stile{flex:0 0 92px}
+}
+.stile{
+  display:flex;flex-direction:column;align-items:center;gap:9px;text-decoration:none;color:inherit;
+  background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 8px 12px;
+  box-shadow:var(--card-shadow);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease;
+}
+.stile:hover,.stile:focus-visible{border-color:var(--gray-a7);transform:translateY(-2px);box-shadow:var(--card-shadow-hover)}
+.stile__ic{
+  width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;
+  background:var(--gray-f2);color:var(--gray-69);
+}
+.stile.done .stile__ic{background:var(--green-soft);color:var(--green)}
+.stile.current .stile__ic{background:var(--green);color:var(--white)}
+.stile.current{border-color:var(--green)}
+.stile__l{font-size:11px;font-weight:500;color:var(--gray-69);text-align:center;line-height:1.35}
+.stile.current .stile__l{color:var(--ink);font-weight:600}
+
+.rail-card{
+  background:var(--white);border:1px solid var(--line);border-radius:20px;
+  padding:20px 22px;box-shadow:var(--card-shadow);
+}
+.dash-rail{display:grid;gap:16px}
+@media (max-width:1079.5px){ .dash-rail{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))} }
+.ring-card{text-align:center;padding:24px 20px 20px}
+.ring{width:132px;height:132px;margin:0 auto}
+.ring-seg{fill:none;stroke:var(--gray-f2);stroke-width:9;stroke-linecap:round}
+.ring-seg.done{stroke:var(--ink)}
+.ring-seg.current{stroke:var(--green)}
+.ring-mid{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  font-size:21px;font-weight:600;fill:var(--ink);font-variant-numeric:tabular-nums;
+}
+.ring-lbl{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  font-size:10.5px;letter-spacing:.14em;color:var(--gray-69);margin:14px 0 2px;text-transform:uppercase;
+}
+.ring-sub{font-size:13.5px;font-weight:600;margin:0}
+.rail-host{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rail-host__ph{width:42px;height:42px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--line)}
+.rail-host__t{flex:1;min-width:120px}
+.rail-host__n{font-size:13.5px;font-weight:600}
+.rail-host__r{font-size:11.5px;color:var(--green);font-weight:500}
+.rail-host__b{width:100%;padding:11px 18px;font-size:10px}
+.rail-act__h{font-size:14px;font-weight:600;margin-bottom:12px}
+.rail-act__row{
+  display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:inherit;
+  padding:9px 0;border-top:1px solid var(--line);
+}
+.rail-act__row:first-of-type{border-top:0}
+.rail-act__row:hover .rail-act__tt,.rail-act__row:focus-visible .rail-act__tt{text-decoration:underline;text-underline-offset:3px}
+.rail-act__sq{width:34px;height:34px;border-radius:10px;flex:none;background:var(--green-soft);position:relative}
+.rail-act__sq::after{content:'';position:absolute;inset:0;margin:auto;width:7px;height:7px;border-radius:50%;background:var(--green)}
+.rail-act__tx{min-width:0;display:flex;flex-direction:column;gap:2px}
+.rail-act__tt{font-size:13px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rail-act__mm{font-size:10px;color:var(--gray-9);letter-spacing:.05em;text-transform:uppercase}
+.rail-act__empty{font-size:13px;color:var(--gray-9);margin:0}
+/* op home dekt de rail Steffan al; de globale hostcard zou dubbel zijn */
+body[data-page="home"] .hostcard-wrap{display:none}
+
 .cockpit-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
 .ccard{
   display:block;color:inherit;text-decoration:none;border:1px solid var(--line);
@@ -999,10 +1143,41 @@ button.term-link{
 
 <!-- ===== app ===== -->
 <div id="view-app">
+  <!-- zijbalk (alleen desktop; mobiel gebruikt de topbar + subnav hieronder) -->
+  <aside class="sidebar" aria-label="Hoofdnavigatie">
+    <div class="wordmark sidebar__mark" data-no-i18n>CUSTOM<em>+</em></div>
+    <nav class="side-nav">
+      <a href="#/home" data-page="home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/></svg><span>Overzicht</span></a>
+      <a href="#/producten" data-page="producten"><svg viewBox="0 0 24 24"><path d="M12 3 20 7v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg><span>Producten</span></a>
+      <a href="#/mijlpalen" data-page="mijlpalen"><svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 7.5 10 10.5M14 13.5l3 3"/></svg><span>Mijlpalen</span></a>
+      <a href="#/updates" data-page="updates"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13" r="3.5"/></svg><span>Updates</span></a>
+      <a href="#/samples" data-page="samples"><svg viewBox="0 0 24 24"><path d="M12 3 21 8l-9 5-9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span>Samples</span></a>
+      <a href="#/kwaliteit" data-page="kwaliteit"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 9.5"/></svg><span>Kwaliteit</span></a>
+      <a href="#/zendingen" data-page="zendingen"><svg viewBox="0 0 24 24"><path d="M3 15h18l-2 4H5z"/><path d="M6 15V9h6v6M12 11h5l2 4"/></svg><span>Zendingen</span></a>
+      <a href="#/documenten" data-page="documenten"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg><span>Documenten</span></a>
+      <a href="#/kosten" data-page="kosten"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5A3.2 3.2 0 0 0 9 12a3.2 3.2 0 0 0 5.5 2.5M7.5 11h4M7.5 13h4"/></svg><span>Kosten</span></a>
+      <a href="#/logboek" data-page="logboek"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg><span>Logboek</span></a>
+    </nav>
+    <div class="sidebar__foot">
+      <div class="side-client" data-no-i18n>
+        <span class="side-client__dot" id="side-client-init" aria-hidden="true"></span>
+        <span class="side-client__txt">
+          <span class="side-client__name" id="side-client-name"></span>
+          <span class="side-client__co" id="side-client-co"></span>
+        </span>
+      </div>
+    </div>
+  </aside>
+
   <header class="topbar">
     <div class="wrap topbar-in">
       <div class="wordmark" data-no-i18n>CUSTOM<em>+</em></div>
       <div class="topbar-meta">
+        <button type="button" class="qs-pill" id="qs-pill" title="Zoeken · Cmd+K of Ctrl+K">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+          <span>Zoek in je project</span>
+          <span class="kbd" data-no-i18n>⌘K</span>
+        </button>
         <div class="topbar-proj" data-no-i18n>
           <div class="pname" id="hdr-project-name"></div>
           <div class="pcode" id="hdr-project-code"></div>
@@ -1893,7 +2068,9 @@ button.term-link{
     byId('view-login').style.display = (name === 'login') ? 'grid' : 'none';
     byId('view-picker').hidden = (name !== 'picker');
     byId('view-picker').style.display = (name === 'picker') ? 'grid' : 'none';
-    byId('view-app').style.display = (name === 'app') ? 'block' : 'none';
+    /* de app-shell (zijbalk-grid op desktop) hangt aan een body-class,
+       zodat CSS het display-type per breakpoint kan kiezen */
+    document.body.classList.toggle('app-on', name === 'app');
   }
 
   /* ============================================================
@@ -1910,11 +2087,12 @@ button.term-link{
   }
   function renderRoute() {
     var page = currentPage();
+    document.body.setAttribute('data-page', page);
     PAGES.forEach(function (p) {
       var sec = byId(p);
       if (sec) sec.hidden = (p !== page);
     });
-    var links = document.querySelectorAll('.subnav a');
+    var links = document.querySelectorAll('.subnav a, .side-nav a');
     for (var i = 0; i < links.length; i++) {
       links[i].setAttribute('aria-current', links[i].getAttribute('data-page') === page ? 'page' : 'false');
     }
@@ -2103,46 +2281,112 @@ button.term-link{
     var current = currentStageOf(stages);
     var step = nextStep(BUNDLE);
 
-    /* hero: kicker, kop in mensentaal, één actie */
-    var hero = el('div', 'cockpit-hero fl-reveal' + (step.needsAction ? ' needs-action' : ''));
-    var kick = (BUNDLE.project.name || '').toUpperCase();
-    if (total) {
-      kick += ' · ' + i18nTpl('FASE {n} VAN {t}', { n: current ? current.position : total, t: total }) +
-        ' · ' + (current ? i18nT(STAGE_SHORT[current.stageKey] || current.stageKey).toUpperCase() : i18nT('AFGEROND'));
-    }
-    hero.appendChild(el('p', 'kicker', kick));
-    var kop = el('h2', 'cockpit-title', step.title);
+    /* ---- dashboardindeling (referentie: Skillex/Solarius): linkerkolom
+       begroeting + fasetegels + kaarten, rechterkolom ring + Steffan +
+       recente activiteit ---- */
+    root.className = 'dash';
+    var dashMain = el('div', 'dash-main');
+    var dashRail = el('aside', 'dash-rail');
+    dashRail.setAttribute('aria-label', i18nT('Projectoverzicht'));
+
+    /* begroeting op het crème, open zoals de referentie — geen kaart */
+    var greet = el('div', 'dash-greet fl-reveal');
+    var uur = new Date().getHours();
+    var groetWoord = uur < 12 ? 'Goedemorgen' : (uur < 18 ? 'Goedemiddag' : 'Goedenavond');
+    var kop = el('h2', 'dash-hello');
     kop.id = 'h-home';
-    hero.appendChild(kop);
-    if (step.meta) hero.appendChild(el('p', 'cockpit-sub', step.meta));
+    kop.appendChild(el('span', null, i18nT(groetWoord) + ', '));
+    var naam = el('span', null, (SESSION.contactName || '').split(' ')[0] + '.');
+    naam.setAttribute('data-no-i18n', '');
+    kop.appendChild(naam);
+    greet.appendChild(kop);
+    greet.appendChild(el('p', 'dash-status' + (step.needsAction ? ' needs-action' : ''), step.title));
+    if (step.meta) {
+      var metaP = el('p', 'dash-meta', step.meta);
+      metaP.setAttribute('data-no-i18n', '');
+      greet.appendChild(metaP);
+    }
     var act = el('a', step.needsAction ? 'btn btn-dark' : 'btn', step.actionLabel);
     act.href = step.actionHref;
     act.setAttribute('data-magnetic', '');
-    hero.appendChild(act);
+    greet.appendChild(act);
+    dashMain.appendChild(greet);
 
-    /* gesegmenteerde voortgangsbalk: zes blokjes plus betaalmerktekens */
+    /* fasetegels — de zes fases als categorierij zoals de referentie */
     if (total) {
-      var prog = el('div', 'cockpit-progress');
-      var segRow = el('div', 'seg-row');
-      segRow.setAttribute('aria-hidden', 'true');
-      var marks = el('div', 'seg-marks');
-      marks.setAttribute('aria-hidden', 'true');
+      var tiles = el('div', 'stage-tiles fl-reveal');
+      tiles.setAttribute('role', 'list');
       stages.forEach(function (s) {
-        var cls = 'seg';
-        if (s.status === 'done') cls += ' done';
-        else if (s.status !== 'upcoming') cls += ' current';
-        segRow.appendChild(el('div', cls));
-        marks.appendChild(el('div', 'seg-mark' + (s.paymentPct > 0 ? ' has-pay' : ''),
-          s.paymentPct > 0 ? s.paymentPct + '%' : ''));
+        var t = el('a', 'stile' + (s.status === 'done' ? ' done' : (s.status !== 'upcoming' ? ' current' : '')));
+        t.href = '#/mijlpalen';
+        t.setAttribute('role', 'listitem');
+        var ic = el('span', 'stile__ic');
+        ic.setAttribute('aria-hidden', 'true');
+        ic.textContent = s.status === 'done' ? '✓' : ('0' + s.position).slice(-2);
+        t.appendChild(ic);
+        t.appendChild(el('span', 'stile__l', i18nT(STAGE_SHORT[s.stageKey] || s.stageKey)));
+        tiles.appendChild(t);
       });
-      prog.appendChild(segRow);
-      prog.appendChild(marks);
-      prog.appendChild(el('p', 'sr-only', current
+      dashMain.appendChild(tiles);
+    }
+
+    /* rechterkolom: voortgangsring */
+    if (total) {
+      var ringCard = el('div', 'rail-card ring-card fl-reveal');
+      ringCard.appendChild(buildStageRing(stages, current, total));
+      var ringLbl = el('p', 'ring-lbl', current
+        ? i18nTpl('FASE {n} VAN {t}', { n: current.position, t: total })
+        : i18nT('AFGEROND'));
+      ringCard.appendChild(ringLbl);
+      if (current) ringCard.appendChild(el('p', 'ring-sub', i18nT(stageName(current.stageKey))));
+      ringCard.appendChild(el('p', 'sr-only', current
         ? i18nTpl('Fase {n} van {t} — {fase} loopt.', { n: current.position, t: total, fase: i18nT(stageName(current.stageKey)) })
         : i18nTpl('Alle {t} fases zijn afgerond.', { t: total })));
-      hero.appendChild(prog);
+      dashRail.appendChild(ringCard);
     }
-    root.appendChild(hero);
+
+    /* rechterkolom: Steffan compact (desktop; mobiel toont de gewone hostcard) */
+    var railHost = el('div', 'rail-card rail-host fl-reveal');
+    var hFoto = el('img', 'rail-host__ph');
+    hFoto.src = 'images/founder.jpg'; hFoto.alt = '';
+    railHost.appendChild(hFoto);
+    var hTxt = el('div', 'rail-host__t');
+    var hNaam = el('div', 'rail-host__n', 'Steffan Bakker');
+    hNaam.setAttribute('data-no-i18n', '');
+    hTxt.appendChild(hNaam);
+    hTxt.appendChild(el('div', 'rail-host__r', i18nT('Reageert meestal binnen 1 werkdag')));
+    railHost.appendChild(hTxt);
+    var hBtn = el('button', 'btn rail-host__b', i18nT('Stel een vraag'));
+    hBtn.type = 'button';
+    hBtn.addEventListener('click', askSteffan);
+    railHost.appendChild(hBtn);
+    dashRail.appendChild(railHost);
+
+    /* rechterkolom: recente activiteit (afgeleid, zelfde bron als meldingen) */
+    var acts = buildNotifItems().slice(0, 4);
+    var actCard = el('div', 'rail-card rail-act fl-reveal');
+    actCard.appendChild(el('div', 'rail-act__h', i18nT('Recente activiteit')));
+    if (!acts.length) {
+      actCard.appendChild(el('p', 'rail-act__empty', i18nT('Je bent helemaal bij.')));
+    } else {
+      acts.forEach(function (it) {
+        var row = el('a', 'rail-act__row');
+        row.href = it.href;
+        var sq = el('span', 'rail-act__sq');
+        sq.setAttribute('aria-hidden', 'true');
+        row.appendChild(sq);
+        var tx = el('span', 'rail-act__tx');
+        var tt = el('span', 'rail-act__tt', it.title);
+        tt.setAttribute('data-no-i18n', '');
+        tx.appendChild(tt);
+        var mm = el('span', 'rail-act__mm mono', it.meta);
+        mm.setAttribute('data-no-i18n', '');
+        tx.appendChild(mm);
+        row.appendChild(tx);
+        actCard.appendChild(row);
+      });
+    }
+    dashRail.appendChild(actCard);
 
     /* drie doorklikkaarten */
     var cards = el('div', 'cockpit-cards');
@@ -2229,7 +2473,43 @@ button.term-link{
       aS.appendChild(padS);
       cards.appendChild(aS);
     }
-    root.appendChild(cards);
+    dashMain.appendChild(cards);
+    root.appendChild(dashMain);
+    root.appendChild(dashRail);
+  }
+
+  /* zes ringsegmenten, één per fase — geen percentages, alleen de echte
+     fasestanden (inkt = af, groen = actief, licht = nog te gaan) */
+  function buildStageRing(stages, current, total) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 120 120');
+    svg.setAttribute('class', 'ring');
+    svg.setAttribute('aria-hidden', 'true');
+    var R = 50, CX = 60, CY = 60, GAP = 7; /* graden tussen segmenten */
+    function pt(deg) {
+      var rad = (deg - 90) * Math.PI / 180;
+      return [CX + R * Math.cos(rad), CY + R * Math.sin(rad)];
+    }
+    stages.forEach(function (s, i) {
+      var a0 = i * (360 / total) + GAP / 2;
+      var a1 = (i + 1) * (360 / total) - GAP / 2;
+      var p0 = pt(a0), p1 = pt(a1);
+      var path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) +
+        ' A' + R + ' ' + R + ' 0 0 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2));
+      path.setAttribute('class', 'ring-seg' +
+        (s.status === 'done' ? ' done' : (s.status !== 'upcoming' ? ' current' : '')));
+      svg.appendChild(path);
+    });
+    var mid = document.createElementNS(NS, 'text');
+    mid.setAttribute('x', CX); mid.setAttribute('y', CY + 2);
+    mid.setAttribute('class', 'ring-mid');
+    mid.setAttribute('text-anchor', 'middle');
+    mid.setAttribute('dominant-baseline', 'middle');
+    mid.textContent = (current ? current.position : total) + '/' + total;
+    svg.appendChild(mid);
+    return svg;
   }
 
   /* ============================================================
@@ -4152,6 +4432,11 @@ button.term-link{
       byId('hdr-project-name').textContent = bundle.project.name;
       byId('hdr-project-code').textContent = bundle.project.code || '';
       byId('hdr-client-name').textContent = SESSION.contactName + ' — ' + SESSION.company;
+      /* zijbalk-klantkaart (desktop) */
+      var initials = (SESSION.contactName || '?').split(/\s+/).map(function (w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+      byId('side-client-init').textContent = initials;
+      byId('side-client-name').textContent = SESSION.contactName || '';
+      byId('side-client-co').textContent = SESSION.company || '';
       byId('btn-switch').hidden = ALL_PROJECTS.length < 2;
       renderAllSections();
       closeTermPop(false);
@@ -4728,6 +5013,7 @@ button.term-link{
   }
 
   byId('qs-open').addEventListener('click', openQuickSearch);
+  byId('qs-pill').addEventListener('click', openQuickSearch);
   qsInput.addEventListener('input', function () { renderQsResults(qsInput.value.trim()); });
   qsInput.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown') { e.preventDefault(); setQsSel(qsSel + 1); }

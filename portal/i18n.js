@@ -9,6 +9,12 @@
    hoofdscript van portal.html. */
 window.CP_PORTAL_I18N = {
   en: {
+    'Goedemorgen': 'Good morning',
+    'Goedemiddag': 'Good afternoon',
+    'Goedenavond': 'Good evening',
+    'Zoek in je project': 'Search your project',
+    'Recente activiteit': 'Recent activity',
+    'Projectoverzicht': 'Project overview',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Sign in",
     "Mijn project — volg je product van schets tot verscheping.": "My project — follow your product from sketch to shipment.",
@@ -349,6 +355,12 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "The official transport document of a sea freight shipment: proof that the cargo is on board and the document that releases the container at the destination.",
   },
   de: {
+    'Goedemorgen': 'Guten Morgen',
+    'Goedemiddag': 'Guten Tag',
+    'Goedenavond': 'Guten Abend',
+    'Zoek in je project': 'In Ihrem Projekt suchen',
+    'Recente activiteit': 'Letzte Aktivität',
+    'Projectoverzicht': 'Projektübersicht',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Anmelden",
     "Mijn project — volg je product van schets tot verscheping.": "Mein Projekt — verfolgen Sie Ihr Produkt von der Skizze bis zur Verschiffung.",
@@ -689,6 +701,12 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "Das offizielle Transportdokument einer Seefracht: der Nachweis, dass die Ladung an Bord ist, und das Dokument, mit dem der Container am Ziel freigegeben wird.",
   },
   fr: {
+    'Goedemorgen': 'Bonjour',
+    'Goedemiddag': 'Bonjour',
+    'Goedenavond': 'Bonsoir',
+    'Zoek in je project': 'Rechercher dans votre projet',
+    'Recente activiteit': 'Activité récente',
+    'Projectoverzicht': 'Aperçu du projet',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Connexion",
     "Mijn project — volg je product van schets tot verscheping.": "Mon projet — suivez votre produit de l’esquisse à l’expédition.",
@@ -1029,6 +1047,12 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "Le document de transport officiel d’un fret maritime : la preuve que la cargaison est à bord et le document qui libère le conteneur à destination.",
   },
   es: {
+    'Goedemorgen': 'Buenos días',
+    'Goedemiddag': 'Buenas tardes',
+    'Goedenavond': 'Buenas noches',
+    'Zoek in je project': 'Buscar en su proyecto',
+    'Recente activiteit': 'Actividad reciente',
+    'Projectoverzicht': 'Resumen del proyecto',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Iniciar sesión",
     "Mijn project — volg je product van schets tot verscheping.": "Mi proyecto — siga su producto del boceto al embarque.",
