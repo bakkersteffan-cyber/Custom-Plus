@@ -647,6 +647,23 @@ function makeDemoService(){
     }
   });
   function save(){
+    /* tweetabs-veilig: de portal-tab kan intussen een vraag of logregel
+       hebben toegevoegd onder dezelfde sleutel. Union die per id in vóór
+       we de hele staat terugschrijven, anders overschrijft een simpele
+       notitie-blur hier de klantvraag daar — permanent. */
+    try{
+      var raw = localStorage.getItem(DEMO_KEY);
+      if(raw){
+        var latest = JSON.parse(raw);
+        if(latest && Array.isArray(latest.questions)){
+          ['questions','accessLog'].forEach(function(k){
+            var have = {};
+            (state[k] = state[k] || []).forEach(function(it){ have[it.id] = true; });
+            (latest[k] || []).forEach(function(it){ if(!have[it.id]) state[k].push(it); });
+          });
+        }
+      }
+    }catch(e){ /* onleesbaar: schrijf de eigen staat */ }
     try{ localStorage.setItem(DEMO_KEY, JSON.stringify(state)); }catch(e){}
   }
   function pushLog(projectId, entry){
@@ -666,6 +683,26 @@ function makeDemoService(){
     mode: 'demo',
     staffName: (state.staff && state.staff.name) || 'Steffan Bakker',
     staffEmail: (state.staff && state.staff.email) || '',
+
+    /* leest toevoegingen van de portal-tab (vragen, logregels) in de
+       eigen staat in — aangeroepen door de storage-listener zodat de
+       vragenbadge live meebeweegt zonder heruitloggen */
+    absorbExternal: function(){
+      try{
+        var raw = localStorage.getItem(DEMO_KEY);
+        if(!raw) return Promise.resolve(false);
+        var latest = JSON.parse(raw);
+        var changed = false;
+        ['questions','accessLog'].forEach(function(k){
+          var have = {};
+          (state[k] = state[k] || []).forEach(function(it){ have[it.id] = true; });
+          (latest && latest[k] || []).forEach(function(it){
+            if(!have[it.id]){ state[k].push(it); changed = true; }
+          });
+        });
+        return Promise.resolve(changed);
+      }catch(e){ return Promise.resolve(false); }
+    },
 
     listFactories: function(){ return Promise.resolve(state.factories.slice()); },
     setFactoryCity: function(id, city){
@@ -780,6 +817,7 @@ function makeDemoService(){
       var d = {
         id: uid('doc'), projectId: projectId, stageKey: data.stageKey,
         docType: data.docType, title: data.title, version: data.version||1,
+        shipmentId: data.shipmentId||null,
         createdAt: todayISO()
       };
       state.documents.push(d); save();
@@ -787,7 +825,20 @@ function makeDemoService(){
     },
     deleteDocument: function(id){
       state.documents = state.documents.filter(function(d){ return d.id!==id; });
+      /* facturen die naar dit document wezen niet laten bungelen */
+      state.invoices.forEach(function(inv){ if(inv.documentId===id) inv.documentId = null; });
       save();
+      return Promise.resolve();
+    },
+    /* koppelaars ("Hoort bij"): document ↔ zending en factuur → document */
+    linkDocumentToShipment: function(docId, shipmentId){
+      var d = state.documents.find(function(x){ return x.id===docId; });
+      if(d){ d.shipmentId = shipmentId||null; save(); }
+      return Promise.resolve();
+    },
+    linkInvoiceDocument: function(invoiceId, documentId){
+      var inv = state.invoices.find(function(i){ return i.id===invoiceId; });
+      if(inv){ inv.documentId = documentId||null; save(); }
       return Promise.resolve();
     },
 
@@ -1109,12 +1160,24 @@ function makeSupaService(sb, staffUser){
       return start.then(function(storagePath){
         return sb.from('documents').insert({
           project_id: projectId, stage_key: data.stageKey, doc_type: data.docType,
-          title: data.title, version: data.version||1, storage_path: storagePath
+          title: data.title, version: data.version||1, storage_path: storagePath,
+          shipment_id: data.shipmentId||null
         }).select().single().then(row);
       });
     },
     deleteDocument: function(id){
-      return sb.from('documents').delete().eq('id', id).then(unwrap);
+      /* eerst de factuurverwijzing losmaken (FK uit 0004_links.sql),
+         anders blokkeert de verwijdering op de referentie */
+      return sb.from('invoices').update({ document_id: null }).eq('document_id', id)
+        .then(function(){ return sb.from('documents').delete().eq('id', id).then(unwrap); });
+    },
+    /* koppelaars ("Hoort bij"): document ↔ zending en factuur → document */
+    linkDocumentToShipment: function(docId, shipmentId){
+      return sb.from('documents').update({ shipment_id: shipmentId||null }).eq('id', docId).then(unwrap);
+    },
+    linkInvoiceDocument: function(invoiceId, documentId){
+      /* kolom uit supabase/portal/0004_links.sql */
+      return sb.from('invoices').update({ document_id: documentId||null }).eq('id', invoiceId).then(unwrap);
     },
 
     listInvoices: function(projectId){
@@ -1274,6 +1337,18 @@ function updateBadge(){
     qBadge.hidden = open===0;
   }).catch(function(){});
 }
+/* portal-tab schreef onder dezelfde sleutel (vraag/logregel): neem de
+   toevoegingen op en ververs badge + eventueel de open vragenlijst.
+   'storage' vuurt alleen cross-tab, dus eigen writes lussen niet. */
+window.addEventListener('storage', function(e){
+  if(!e || e.key !== DEMO_KEY) return;
+  if(!DS || !DS.absorbExternal) return;
+  DS.absorbExternal().then(function(changed){
+    if(!changed) return;
+    updateBadge();
+    if(view && (view.name === 'questions' || view.name === 'log')) refresh();
+  });
+});
 function showError(err){
   clearNode(content);
   content.appendChild(el('div', { class:'card', style:'padding:22px;' }, [
@@ -1655,7 +1730,7 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
   });
   if(!anyDoc) docWrap.appendChild(el('div', { class:'empty', text:'Nog geen documenten in dit project.' }));
   content.appendChild(sectionBlock('Per fase, zoals in de portal', 'Documenten',
-    el('button', { type:'button', class:'btn small', text:'Document toevoegen', onclick:function(){ openDocumentModal(pid, project, client); } }),
+    el('button', { type:'button', class:'btn small', text:'Document toevoegen', onclick:function(){ openDocumentModal(pid, project, client, shipments, invoices); } }),
     docWrap));
 
   /* d. facturen */
@@ -1690,7 +1765,7 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
   }
   (shipments||[]).slice().sort(function(a,b){ return String(a.createdAt).localeCompare(String(b.createdAt)); }).forEach(function(s){
     var evs = (shipmentEvents||[]).filter(function(ev){ return ev.shipmentId===s.id; });
-    shipWrap.appendChild(buildShipmentAdminCard(pid, project, client, s, evs));
+    shipWrap.appendChild(buildShipmentAdminCard(pid, project, client, s, evs, docs));
   });
   content.appendChild(sectionBlock('De reis van fabriek naar klant', 'Zendingen',
     el('button', { type:'button', class:'btn small', text:'Zending toevoegen', onclick:function(){ openShipmentModal(pid, samples, project, client); } }),
@@ -1864,7 +1939,17 @@ function openMediaModal(projectId, factories, project, client){
   });
   m.body.appendChild(form);
 }
-function openDocumentModal(projectId, project, client){
+/* korte, herkenbare regel voor een zending in een kiezer */
+function shipmentOptionLabel(s){
+  var SHIP = window.CP_SHIPPING;
+  var nr = s.containerNumber || s.trackingNumber;
+  var parts = [ SHIP.typeLabel(s.type) ];
+  if(nr) parts.push(nr);
+  else if(s.blNumber) parts.push('B/L ' + s.blNumber);
+  parts.push(s.deliveredAt ? 'geleverd' : 'actief');
+  return parts.join(' · ');
+}
+function openDocumentModal(projectId, project, client, shipments, invoices){
   var m = openModal('Document toevoegen', IS_DEMO ? 'Demomodus: zonder echt bestand' : 'Upload naar de beveiligde opslag');
   var title = el('input', { class:'input', type:'text', required:'required' });
   var stage = stageSelect('concept');
@@ -1873,14 +1958,51 @@ function openDocumentModal(projectId, project, client){
   var version = el('input', { class:'input', type:'number', min:'1', step:'1', value:'1' });
   var fileInput = IS_DEMO ? null : el('input', { class:'input', type:'file', required:'required' });
   var err = el('p', { class:'formerr' });
+
+  /* 'Hoort bij' — optionele koppelaars: hang het document aan een zending
+     (downloadchip op de zendingkaart in de portal) en/of wijs het als
+     factuurdocument aan een factuur toe (documents.shipment_id uit 0002,
+     invoices.document_id uit 0004_links.sql) */
+  var shipSel = null, invSel = null, linkBlock = null;
+  if((shipments||[]).length || (invoices||[]).length){
+    var linkRows = [];
+    if((shipments||[]).length){
+      shipSel = el('select', { class:'input' });
+      shipSel.appendChild(option('', 'Geen zending', true));
+      shipments.slice().sort(function(a,b){ return String(a.createdAt).localeCompare(String(b.createdAt)); }).forEach(function(s){
+        shipSel.appendChild(option(s.id, shipmentOptionLabel(s)));
+      });
+      linkRows.push(field('Zending', shipSel));
+    }
+    if((invoices||[]).length){
+      invSel = el('select', { class:'input' });
+      invSel.appendChild(option('', 'Geen factuur', true));
+      invoices.forEach(function(inv){
+        invSel.appendChild(option(inv.id, inv.label + ' · ' + fmtMoney(inv.amountCents) + (inv.documentId ? ' — vervangt huidige koppeling' : '')));
+      });
+      linkRows.push(field('Factuur', invSel));
+    }
+    linkBlock = el('div', null, [
+      el('span', { class:'kicker', style:'display:block;margin:4px 0 10px;', text:'Hoort bij (optioneel)' }),
+      linkRows.length===2 ? el('div', { class:'formrow' }, linkRows) : linkRows[0]
+    ]);
+  }
+
   var form = el('form', { onsubmit:function(e){
     e.preventDefault();
     var payload = {
       title: title.value.trim(), stageKey: stage.value,
-      docType: type.value, version: parseInt(version.value, 10) || 1
+      docType: type.value, version: parseInt(version.value, 10) || 1,
+      shipmentId: (shipSel && shipSel.value) ? shipSel.value : null
     };
     if(fileInput) payload.file = fileInput.files[0];
-    DS.addDocument(projectId, payload).then(function(){
+    DS.addDocument(projectId, payload).then(function(d){
+      /* factuur → nieuw document: demo muteert de state, Supabase doet
+         een update ná de insert (het document-id bestaat pas dan) */
+      if(invSel && invSel.value && d && d.id){
+        return DS.linkInvoiceDocument(invSel.value, d.id);
+      }
+    }).then(function(){
       notifyClient({
         client: client, projectName: project.name, projectCode: project.code,
         page: 'documenten', portalLabel: 'Bekijk het document',
@@ -1894,6 +2016,7 @@ function openDocumentModal(projectId, project, client){
     el('div', { class:'formrow' }, [ field('Fase', stage), field('Type', type) ]),
     field('Versie', version),
     fileInput ? field('Bestand', fileInput) : null,
+    linkBlock,
     err,
     el('div', { class:'modal-actions' }, [
       el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
@@ -2070,6 +2193,9 @@ function openDisclosureModal(projectId, factories){
 }
 
 /* ---------- zendingen (De Reis) ---------- */
+/* per zending-id de door de beheerder gekozen open/dicht-stand,
+   zodat refresh() de accordeon niet terugklapt (per sessie) */
+var shipOpenState = {};
 function shipmentSubLine(s, events){
   var SHIP = window.CP_SHIPPING;
   var tpl = SHIP.milestonesFor(s.type);
@@ -2084,7 +2210,7 @@ function shipmentSubLine(s, events){
   }
   return parts.join(' · ');
 }
-function buildShipmentAdminCard(pid, project, client, s, events){
+function buildShipmentAdminCard(pid, project, client, s, events, docs){
   var SHIP = window.CP_SHIPPING;
   var tpl = SHIP.milestonesFor(s.type);
   var evByKey = {};
@@ -2098,7 +2224,12 @@ function buildShipmentAdminCard(pid, project, client, s, events){
   var title = SHIP.typeLabel(s.type) + (carrier ? ' · ' + carrier.name : '') + (nr ? ' · ' + nr : '');
 
   var det = el('details', { class:'shipdet' });
-  if(!s.deliveredAt) det.open = true;
+  det.setAttribute('data-sid', s.id);
+  /* open-staat overleeft een refresh(): wie een geleverde zending openklapt
+     om er een B/L aan te koppelen, ziet na het koppelen de bevestiging in
+     de nog steeds geopende kaart i.p.v. een dichtgeklapte lijst */
+  det.open = shipOpenState.hasOwnProperty(s.id) ? shipOpenState[s.id] : !s.deliveredAt;
+  det.addEventListener('toggle', function(){ shipOpenState[s.id] = det.open; });
   det.appendChild(el('summary', { class:'rowitem' }, [
     el('span', { class:'chip ' + (s.deliveredAt ? 'done' : 'current'), text: s.deliveredAt ? 'Geleverd' : 'Actief' }),
     el('div', { class:'rowmain' }, [
@@ -2163,6 +2294,7 @@ function buildShipmentAdminCard(pid, project, client, s, events){
   if(!s.deliveredAt){
     foot.appendChild(el('button', { type:'button', class:'btn ghost small', text:'ETA bijwerken', onclick:function(){ openEtaModal(s); } }));
   }
+  foot.appendChild(el('button', { type:'button', class:'btn ghost small', text:'Document koppelen', onclick:function(){ openShipmentDocModal(s, docs); } }));
   if(nr){
     var track = (carrier && carrier.trackUrl) ? carrier : SHIP.CARRIERS.anders;
     foot.appendChild(el('a', {
@@ -2173,6 +2305,45 @@ function buildShipmentAdminCard(pid, project, client, s, events){
   det.appendChild(foot);
 
   return el('div', { class:'card', style:'margin-bottom:12px;' }, det);
+}
+/* bestaand projectdocument aan een zending hangen — de klant ziet het
+   als downloadchip op de zendingkaart en in de 'Hoort bij'-chips */
+function openShipmentDocModal(shipment, docs){
+  var m = openModal('Document koppelen', 'Verschijnt als download bij deze zending in het portaal');
+  var linked = (docs||[]).filter(function(d){ return d.shipmentId===shipment.id; });
+  var loose = (docs||[]).filter(function(d){ return d.shipmentId!==shipment.id; });
+  if(linked.length){
+    m.body.appendChild(el('p', { class:'kicker', style:'margin-bottom:12px;', text:'Al gekoppeld: ' + linked.map(function(d){ return d.title; }).join(' · ') }));
+  }
+  if(!loose.length){
+    m.body.appendChild(el('p', { style:'font-size:14px;color:var(--gray-69);', text: (docs||[]).length
+      ? 'Alle projectdocumenten hangen al aan deze zending.'
+      : 'Er zijn nog geen documenten in dit project. Voeg eerst een document toe.' }));
+    m.body.appendChild(el('div', { class:'modal-actions' },
+      el('button', { type:'button', class:'btn ghost', text:'Sluiten', onclick:closeModal })));
+    return;
+  }
+  var sel = el('select', { class:'input' });
+  loose.forEach(function(d, i){
+    var lbl = docTypeLabel(d.docType) + ' · ' + d.title + ' · v' + (d.version||1)
+      + (d.shipmentId ? ' — nu aan een andere zending' : '');
+    sel.appendChild(option(d.id, lbl, i===0));
+  });
+  var err = el('p', { class:'formerr' });
+  var form = el('form', { onsubmit:function(e){
+    e.preventDefault();
+    DS.linkDocumentToShipment(sel.value, shipment.id)
+      .then(function(){ closeModal(); refresh(); })
+      .catch(function(ex){ err.textContent = ex.message||String(ex); err.classList.add('show'); });
+  } }, [
+    field('Document', sel),
+    err,
+    el('div', { class:'modal-actions' }, [
+      el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+      el('button', { type:'submit', class:'btn', text:'Koppelen' })
+    ])
+  ]);
+  m.body.appendChild(form);
 }
 function openEtaModal(shipment){
   var m = openModal('ETA bijwerken', 'Altijd een weekvenster, nooit een dagbelofte');

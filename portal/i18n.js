@@ -9,6 +9,10 @@
    hoofdscript van portal.html. */
 window.CP_PORTAL_I18N = {
   en: {
+    'Hoofdnavigatie': 'Main navigation',
+    'Taal': 'Language',
+    '{fase} is afgerond.': '{fase} is complete.',
+    '{fase} wacht op jouw goedkeuring.': '{fase} is waiting for your approval.',
     'Goedemorgen': 'Good morning',
     'Goedemiddag': 'Good afternoon',
     'Goedenavond': 'Good evening',
@@ -16,6 +20,7 @@ window.CP_PORTAL_I18N = {
     'Recente activiteit': 'Recent activity',
     'Projectoverzicht': 'Project overview',
     'Hoort bij': 'Belongs to',
+    'Bijgewerkt': 'Updated',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Sign in",
     "Mijn project — volg je product van schets tot verscheping.": "My project — follow your product from sketch to shipment.",
@@ -360,6 +365,10 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "The official transport document of a sea freight shipment: proof that the cargo is on board and the document that releases the container at the destination.",
   },
   de: {
+    'Hoofdnavigatie': 'Hauptnavigation',
+    'Taal': 'Sprache',
+    '{fase} is afgerond.': '{fase} ist abgeschlossen.',
+    '{fase} wacht op jouw goedkeuring.': '{fase} wartet auf Ihre Freigabe.',
     'Goedemorgen': 'Guten Morgen',
     'Goedemiddag': 'Guten Tag',
     'Goedenavond': 'Guten Abend',
@@ -367,6 +376,7 @@ window.CP_PORTAL_I18N = {
     'Recente activiteit': 'Letzte Aktivität',
     'Projectoverzicht': 'Projektübersicht',
     'Hoort bij': 'Gehört zu',
+    'Bijgewerkt': 'Aktualisiert',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Anmelden",
     "Mijn project — volg je product van schets tot verscheping.": "Mein Projekt — verfolgen Sie Ihr Produkt von der Skizze bis zur Verschiffung.",
@@ -711,6 +721,10 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "Das offizielle Transportdokument einer Seefracht: der Nachweis, dass die Ladung an Bord ist, und das Dokument, mit dem der Container am Ziel freigegeben wird.",
   },
   fr: {
+    'Hoofdnavigatie': 'Navigation principale',
+    'Taal': 'Langue',
+    '{fase} is afgerond.': '{fase} est terminée.',
+    '{fase} wacht op jouw goedkeuring.': '{fase} attend votre validation.',
     'Goedemorgen': 'Bonjour',
     'Goedemiddag': 'Bonjour',
     'Goedenavond': 'Bonsoir',
@@ -718,6 +732,7 @@ window.CP_PORTAL_I18N = {
     'Recente activiteit': 'Activité récente',
     'Projectoverzicht': 'Aperçu du projet',
     'Hoort bij': 'Rattaché à',
+    'Bijgewerkt': 'Mis à jour',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Connexion",
     "Mijn project — volg je product van schets tot verscheping.": "Mon projet — suivez votre produit de l’esquisse à l’expédition.",
@@ -1062,6 +1077,10 @@ window.CP_PORTAL_I18N = {
     "Het officiële vervoersdocument van een zeevracht: het bewijs dat de lading aan boord is én het document waarmee de container op de bestemming wordt vrijgegeven.": "Le document de transport officiel d’un fret maritime : la preuve que la cargaison est à bord et le document qui libère le conteneur à destination.",
   },
   es: {
+    'Hoofdnavigatie': 'Navegación principal',
+    'Taal': 'Idioma',
+    '{fase} is afgerond.': '{fase} está completada.',
+    '{fase} wacht op jouw goedkeuring.': '{fase} espera su aprobación.',
     'Goedemorgen': 'Buenos días',
     'Goedemiddag': 'Buenas tardes',
     'Goedenavond': 'Buenas noches',
@@ -1069,6 +1088,7 @@ window.CP_PORTAL_I18N = {
     'Recente activiteit': 'Actividad reciente',
     'Projectoverzicht': 'Resumen del proyecto',
     'Hoort bij': 'Pertenece a',
+    'Bijgewerkt': 'Actualizado',
     /* A — chrome, login, navigatie, fouten, zoeken */
     "Inloggen": "Iniciar sesión",
     "Mijn project — volg je product van schets tot verscheping.": "Mi proyecto — siga su producto del boceto al embarque.",

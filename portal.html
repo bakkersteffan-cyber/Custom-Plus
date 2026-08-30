@@ -11,7 +11,7 @@
 <style>
 :root{
   --black:#000; --white:#fff; --ink:#111;
-  --gray-9:#999; --gray-69:#696969; --gray-a7:#a7a7a7;
+  --gray-9:#999; --gray-33:#333; --gray-69:#696969; --gray-a7:#a7a7a7;
   --gray-f9:#f9f9f9; --gray-f2:#f2f2f2;
   --line:rgba(228,224,219,.6); --line-dark:rgba(255,255,255,.14);
   --green:#1B6E45; --green-soft:rgba(27,110,69,.09);
@@ -35,7 +35,7 @@
 :root[data-mode="blueprint"]{
   --bp-surface:#0a1420; --bp-ink:#8fd8ea;
   --black:var(--bp-ink); --white:var(--bp-surface); --ink:#cdeef5;
-  --gray-9:#4d7885; --gray-69:#82aab6; --gray-a7:#6f9aa8;
+  --gray-9:#4d7885; --gray-33:#bfe6ef; --gray-69:#82aab6; --gray-a7:#6f9aa8;
   --gray-f9:#0d1b28; --gray-f2:#122431;
   --line:rgba(143,216,234,.22); --line-dark:rgba(143,216,234,.16);
   --green:#22d3ee; --green-soft:rgba(34,211,238,.14);
@@ -273,6 +273,8 @@ button{font:inherit;color:inherit}
 }
 .subnav a:hover{color:var(--ink)}
 .subnav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+/* anchor-scrolls mogen nooit achter de sticky subnav (mobiel/tablet) belanden */
+details.stage-acc summary,[data-eid]{scroll-margin-top:64px}
 
 /* ---------- secties ---------- */
 main section{padding-block:clamp(44px,6vw,96px);border-top:1px solid var(--line)}
@@ -1216,6 +1218,17 @@ button.lang-btn[aria-pressed="true"]{border-color:var(--gray-a7);color:var(--ink
 .notif-title{font-size:13.5px;font-weight:500;line-height:1.5}
 .notif-empty{padding:28px 20px;text-align:center;color:var(--gray-69);font-size:14px}
 .notif-empty svg{display:block;margin:0 auto 10px;color:var(--green)}
+/* stille bevestiging bij de bel na een live verversing (cross-tab of realtime) */
+.upd-hint{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:40;
+  font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gray-69);background:var(--white);border:1px solid var(--line);
+  border-radius:999px;padding:4px 11px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.upd-hint.show{opacity:1}
+@media (prefers-reduced-motion: reduce){ .upd-hint{transition:none} }
 
 /* ---------- snelzoeken (Cmd+K / Ctrl+K) ---------- */
 dialog.qs{
@@ -1763,7 +1776,13 @@ button.term-link{
        een project, daarna de actieve route tonen */
     if (appActive && BUNDLE) {
       renderAllSections();
-      renderRoute();
+      /* passief: een taalwissel is geen navigatie — geen scrollsprong,
+         geen herhaalde anker-puls */
+      renderRoute({ passive: true });
+      var lsw = byId('lang-switch');
+      if (lsw) lsw.setAttribute('aria-label', i18nT('Taal'));
+      var sbar = document.querySelector('.sidebar');
+      if (sbar) sbar.setAttribute('aria-label', i18nT('Hoofdnavigatie'));
     }
   }
 
@@ -1871,6 +1890,24 @@ button.term-link{
       state = cloneSeed();
     }
     function save() {
+      /* tweetabs-veilig: het beheer kan in een andere tab net geschreven
+         hebben. De verse opslag is voor alles behalve de eigen collecties
+         de waarheid; daar bovenop leggen we alleen de eigen toevoegingen
+         (het portaal voegt uitsluitend vragen en logregels toe). */
+      try {
+        var raw = localStorage.getItem(DEMO_KEY);
+        if (raw) {
+          var latest = JSON.parse(raw);
+          if (latest && Array.isArray(latest.clients)) {
+            ['questions', 'accessLog'].forEach(function (k) {
+              var have = {};
+              (latest[k] = latest[k] || []).forEach(function (it) { have[it.id] = true; });
+              (state[k] || []).forEach(function (it) { if (!have[it.id]) latest[k].push(it); });
+            });
+            state = latest;
+          }
+        }
+      } catch (e) { /* onleesbare opslag: schrijf gewoon de eigen staat */ }
       try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch (e) { /* privémodus */ }
     }
     function sessionFromClient(c) {
@@ -1903,6 +1940,14 @@ button.term-link{
 
       logout: function () {
         writeSession(null);
+        return Promise.resolve();
+      },
+
+      /* beheer.html schrijft onder dezelfde localStorage-sleutel; na een
+         cross-tab 'storage'-event is de state in dit geheugen verouderd
+         en lezen we hem opnieuw in vóór de volgende loadBundle */
+      reloadFromStorage: function () {
+        load();
         return Promise.resolve();
       },
 
@@ -2016,6 +2061,7 @@ button.term-link{
      ============================================================ */
   function supaService() {
     var sb = null;
+    var liveChannel = null; /* één realtime-kanaal per geopend project */
 
     function lib() {
       if (window.supabase) return Promise.resolve();
@@ -2240,6 +2286,52 @@ button.term-link{
               detail: detail, createdAt: new Date().toISOString()
             };
           });
+      },
+
+      /* Live verversen: één supabase.channel per geopend project dat op
+         postgres_changes van alle projecttabellen luistert en bij elke
+         wijziging onChange aanroept (de beller debounct en herlaadt de
+         bundel). Een projectwissel ruimt het vorige kanaal hier op;
+         uitloggen loopt via unsubscribeProject. Live testen kan pas met
+         een echt project — het codepad is klaar. */
+      subscribeProject: function (projectId, onChange) {
+        var TABLES = ['project_stages', 'media_assets', 'documents', 'invoices',
+          'sample_rounds', 'inspection_reports', 'question_threads', 'access_log',
+          'file_disclosures', 'shipments'];
+        return client().then(function () {
+          if (liveChannel) {
+            try { sb.removeChannel(liveChannel); } catch (e) { /* stil */ }
+            liveChannel = null;
+          }
+          var ch = sb.channel('project-' + projectId);
+          TABLES.forEach(function (t) {
+            ch.on('postgres_changes',
+              { event: '*', schema: 'public', table: t, filter: 'project_id=eq.' + projectId },
+              onChange);
+          });
+          /* het project zelf (naam, code, status) heeft id i.p.v. project_id */
+          ch.on('postgres_changes',
+            { event: '*', schema: 'public', table: 'projects', filter: 'id=eq.' + projectId },
+            onChange);
+          /* shipment_events hangt via de zending aan het project en heeft
+             geen project_id-kolom om op te filteren; we luisteren daarom op
+             de hele tabel — RLS beperkt wat binnenkomt al tot eigen
+             zendingen, en de refresh herlaadt sowieso alleen dít project */
+          ch.on('postgres_changes',
+            { event: '*', schema: 'public', table: 'shipment_events' },
+            onChange);
+          ch.subscribe();
+          liveChannel = ch;
+          return null;
+        });
+      },
+
+      unsubscribeProject: function () {
+        if (!sb || !liveChannel) return Promise.resolve();
+        var ch = liveChannel;
+        liveChannel = null;
+        try { sb.removeChannel(ch); } catch (e) { /* stil */ }
+        return Promise.resolve();
       }
     };
   }
@@ -2311,8 +2403,13 @@ button.term-link{
     var i = h.indexOf('@');
     return i > -1 ? h.slice(i + 1) : '';
   }
-  function renderRoute() {
+  var lastRenderedHash = null;
+  /* opts.passive: her-render zonder navigatie-neveneffecten (taalwissel,
+     live-verversing) — geen scrollsprong, geen anker-scroll, geen spookpuls */
+  function renderRoute(opts) {
+    opts = opts || {};
     var page = currentPage();
+    lastRenderedHash = location.hash;
     document.body.setAttribute('data-page', page);
     PAGES.forEach(function (p) {
       var sec = byId(p);
@@ -2328,13 +2425,21 @@ button.term-link{
        alleen maar verwarren. */
     var sb = byId('statusband');
     if (sb) sb.hidden = !sbHasContent || page === 'home' || page === 'producten';
-    window.scrollTo(0, 0);
-    replayReveals(byId(page));
-    if (page === 'updates') applyUpdatesAnchor();
-    applyEntityAnchor(page);
+    if (!opts.passive) {
+      window.scrollTo(0, 0);
+      replayReveals(byId(page));
+      if (page === 'updates') applyUpdatesAnchor();
+      applyEntityAnchor(page);
+    } else {
+      /* nieuwe elementen na een her-render alsnog laten onthullen,
+         zonder de al zichtbare opnieuw te verbergen */
+      observeReveals(byId(page));
+    }
   }
   window.addEventListener('hashchange', function () {
-    if (appActive) renderRoute();
+    /* enterProject rendert al synchroon ná het zetten van de hash;
+       de asynchrone hashchange die daarop volgt zou alles dubbel doen */
+    if (appActive && location.hash !== lastRenderedHash) renderRoute();
   });
 
   /* ============================================================
@@ -3321,13 +3426,18 @@ button.term-link{
     var anchorKey = anchor.indexOf('fase:') === 0 ? anchor.slice(5) : '';
     if (anchorKey && !withMedia.some(function (s) { return s.stageKey === anchorKey; })) anchorKey = '';
 
+    var keepOpenStages = liveKeepOpenStages; /* alleen gezet tijdens live-verversing */
     withMedia.forEach(function (s, idx) {
       var media = BUNDLE.media.filter(function (m) { return m.stageKey === s.stageKey; })
         .slice().sort(function (a, b) { return parseDay(b.capturedAt) - parseDay(a.capturedAt); });
 
       var det = el('details', 'stage-acc fl-reveal');
       det.setAttribute('data-stage-key', s.stageKey);
-      det.open = anchorKey ? (s.stageKey === anchorKey) : (idx === 0);
+      /* een stille her-render (live-verversing) respecteert wat de
+         gebruiker zelf open had staan */
+      det.open = keepOpenStages
+        ? keepOpenStages.indexOf(s.stageKey) > -1
+        : (anchorKey ? (s.stageKey === anchorKey) : (idx === 0));
       var sum = el('summary');
       sum.appendChild(el('span', 'acc-caret mono', '›'));
       sum.appendChild(el('span', 'acc-title', i18nT(stageName(s.stageKey))));
@@ -3362,12 +3472,21 @@ button.term-link{
     accs.forEach(function (d) { d.open = (d === target); });
     target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
     var sum = target.querySelector('summary');
-    if (sum) {
-      sum.classList.remove('acc-pulse');
-      void sum.offsetWidth; /* herstart de puls bij een tweede tegel-klik */
-      sum.classList.add('acc-pulse');
-      setTimeout(function () { sum.classList.remove('acc-pulse'); }, 1700);
-    }
+    if (sum) pulseOnce(sum);
+  }
+
+  /* één puls per element, race-vrij: een lopende verwijder-timer wordt
+     eerst gecleard zodat een tweede klik binnen 1,7s de nieuwe puls
+     niet halverwege afkapt */
+  function pulseOnce(elmt) {
+    if (elmt._pulseT) clearTimeout(elmt._pulseT);
+    elmt.classList.remove('acc-pulse');
+    void elmt.offsetWidth;
+    elmt.classList.add('acc-pulse');
+    elmt._pulseT = setTimeout(function () {
+      elmt._pulseT = null;
+      elmt.classList.remove('acc-pulse');
+    }, 1700);
   }
 
   /* Melding → exacte kaart: '#/pagina@id' scrollt na render naar het
@@ -3392,10 +3511,7 @@ button.term-link{
     if (det && !det.open) det.open = true;
     requestAnimationFrame(function () {
       target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
-      target.classList.remove('acc-pulse');
-      void target.offsetWidth; /* herstart de puls bij een tweede klik */
-      target.classList.add('acc-pulse');
-      setTimeout(function () { target.classList.remove('acc-pulse'); }, 1700);
+      pulseOnce(target);
     });
   }
 
@@ -4697,11 +4813,14 @@ button.term-link{
       if (obj.sampleRoundId) {
         sampleChip((BUNDLE.samples || []).find(function (s) { return s.id === obj.sampleRoundId; }));
       }
-      /* de jongste inspectie van de fase waar de zending uit vertrekt =
-         de meest recente inspectie in het dossier */
-      inspChip((BUNDLE.inspections || []).slice().sort(function (a, b) {
-        return parseDay(b.reportDate) - parseDay(a.reportDate);
-      })[0] || null);
+      /* alleen de productiebatch hoort bij een inspectie; een koerier-
+         zending van een sampleronde heeft niets met de latere
+         productie-inspecties te maken */
+      if (!obj.sampleRoundId) {
+        inspChip((BUNDLE.inspections || []).slice().sort(function (a, b) {
+          return parseDay(b.reportDate) - parseDay(a.reportDate);
+        })[0] || null);
+      }
     } else if (kind === 'sample') {
       if (obj.mediaId) {
         fotoChip((BUNDLE.media || []).find(function (m) { return m.id === obj.mediaId; }));
@@ -5076,6 +5195,11 @@ button.term-link{
       }
       renderRoute();
       maybeShowMoment();
+      /* Supabase: live meeluisteren met dit project; een eerdere
+         projectsubscription wordt binnen subscribeProject opgeruimd */
+      if (!DS.demo && DS.subscribeProject) {
+        DS.subscribeProject(project.id, scheduleLiveRefresh);
+      }
     }).catch(function () {
       showError(i18nT('Je project kon niet worden geladen. Vernieuw de pagina of mail steffan@customplus.nl.'));
     });
@@ -5132,6 +5256,7 @@ button.term-link{
   }
 
   function doLogout() {
+    if (DS.unsubscribeProject) DS.unsubscribeProject();
     DS.logout().then(function () {
       closeTermPop(false);
       closeNotifPanel(false);
@@ -5187,8 +5312,14 @@ button.term-link{
   function observeReveals(scope) {
     var nodes = (scope || document).querySelectorAll('.fl-reveal:not(.is-visible)');
     for (var i = 0; i < nodes.length; i++) {
-      if (revealIo) revealIo.observe(nodes[i]);
-      else nodes[i].classList.add('is-visible');
+      /* een container die hoger is dan ~7,6x de viewport kan de .12-drempel
+         wiskundig nooit halen (max ratio = .92*vh/hoogte) en zou permanent
+         op opacity:0 blijven hangen — die onthullen we direct */
+      if (revealIo && nodes[i].offsetHeight * 0.12 <= window.innerHeight * 0.9) {
+        revealIo.observe(nodes[i]);
+      } else {
+        nodes[i].classList.add('is-visible');
+      }
     }
   }
 
@@ -5755,6 +5886,117 @@ button.term-link{
     if (!mo.classList.contains('open') || momentItems.length < 2) return;
     if (e.key === 'ArrowLeft') momentShow(momentIndex - 1);
     if (e.key === 'ArrowRight') momentShow(momentIndex + 1);
+  });
+
+  /* ============================================================
+     Live verversen — Steffan werkt in het beheer, de klant kijkt mee.
+     Demomodus: beheer.html schrijft onder dezelfde localStorage-sleutel
+     (cp_portal_demo_v1); het 'storage'-event hieronder herlaadt dan de
+     bundel en her-rendert wat op het scherm staat. Supabase-modus: de
+     realtime-subscription uit enterProject roept hetzelfde pad aan.
+     Geen volledige reload, geen scrollsprong — alleen de secties worden
+     opnieuw opgebouwd en de meldingstip bijgewerkt, met heel kort een
+     stille mono-regel 'Bijgewerkt' bij de bel.
+     ============================================================ */
+  var updHintTimer = null;
+  function flashUpdatedHint() {
+    var wrap = document.querySelector('.notif-wrap');
+    if (!wrap) return;
+    var hint = byId('upd-hint');
+    if (!hint) {
+      hint = el('span', 'upd-hint');
+      hint.id = 'upd-hint';
+      hint.setAttribute('role', 'status');
+      wrap.appendChild(hint);
+    }
+    hint.textContent = i18nT('Bijgewerkt');
+    hint.classList.add('show');
+    if (updHintTimer) clearTimeout(updHintTimer);
+    updHintTimer = setTimeout(function () { hint.classList.remove('show'); }, 2200);
+  }
+
+  var liveRefreshBusy = false;
+  var liveRefreshAgain = false;
+  var liveKeepOpenStages = null;
+  function refreshActiveProject() {
+    if (!appActive || !BUNDLE || !SESSION) return;
+    if (liveRefreshBusy) { liveRefreshAgain = true; return; }
+    liveRefreshBusy = true;
+    var pid = BUNDLE.project.id;
+    PORTFOLIO = null; /* de productenplank is na een wijziging ook verouderd */
+    DS.loadBundle(pid).then(function (bundle) {
+      liveRefreshBusy = false;
+      if (!appActive || !BUNDLE || BUNDLE.project.id !== pid) return; /* intussen gewisseld of uitgelogd */
+      BUNDLE = bundle;
+      var x = window.scrollX, y = window.scrollY;
+      /* UI-state die de gebruiker zelf zette overleeft de stille her-render:
+         open fase-accordeons en de stand van de voor/na-schuiven */
+      liveKeepOpenStages = Array.prototype.map.call(
+        document.querySelectorAll('#updates details.stage-acc[open]'),
+        function (d) { return d.getAttribute('data-stage-key'); });
+      var baValues = Array.prototype.map.call(
+        document.querySelectorAll('.ba-wrap input[type="range"]'),
+        function (r) { return r.value; });
+      renderAllSections();
+      liveKeepOpenStages = null;
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.ba-wrap input[type="range"]'),
+        function (r, i) {
+          if (baValues[i] !== undefined) {
+            r.value = baValues[i];
+            r.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        });
+      renderSheetStamps();
+      byId('hdr-project-name').textContent = bundle.project.name;
+      /* zelfde zichtbaarheidsregel als renderRoute, zonder de scroll-reset;
+         renderStatusband zet de band namelijk onvoorwaardelijk aan */
+      var page = currentPage();
+      var sbEl = byId('statusband');
+      if (sbEl) sbEl.hidden = !sbHasContent || page === 'home' || page === 'producten';
+      /* nieuwe reveal-nodes meteen tonen: een stille verversing mag geen
+         animatiegolf of onzichtbare content opleveren */
+      document.querySelectorAll('.fl-reveal:not(.is-visible)').forEach(function (n) {
+        n.classList.add('is-visible');
+      });
+      window.scrollTo(x, y);
+      /* de productenplank vult asynchroon (fetchPortfolio): herstel de
+         scrollpositie nogmaals zodra die hoogte terug is, anders clampt
+         de tussenliggende lege pagina de positie */
+      if (currentPage() === 'producten') {
+        setTimeout(function () { window.scrollTo(x, y); }, 350);
+      }
+      /* meldingen: open paneel opnieuw vullen, anders alleen de stip */
+      var panel = byId('notif-panel');
+      if (panel && !panel.hidden) openNotifPanel();
+      else updateNotifDot();
+      flashUpdatedHint();
+      if (liveRefreshAgain) { liveRefreshAgain = false; scheduleLiveRefresh(); }
+    }).catch(function () {
+      liveRefreshBusy = false;
+      /* stil: de klant houdt gewoon de vorige stand op het scherm */
+    });
+  }
+  var liveRefreshTimer = null;
+  function scheduleLiveRefresh() {
+    /* korte debounce: één beheeractie kan meerdere writes/events geven */
+    if (liveRefreshTimer) clearTimeout(liveRefreshTimer);
+    liveRefreshTimer = setTimeout(function () {
+      liveRefreshTimer = null;
+      refreshActiveProject();
+    }, 400);
+  }
+  /* 'storage' vuurt per specificatie ALLEEN in andere tabs/vensters dan
+     het venster dat de write deed — de eigen writes van dit portaal
+     (vraag stellen, logregel, herbestelaanvraag schrijven óók onder deze
+     sleutel) komen hier dus nooit doorheen en kunnen geen render-lus
+     veroorzaken. Alleen relevant in demomodus; Supabase loopt via het
+     realtime-kanaal. */
+  window.addEventListener('storage', function (e) {
+    if (!DS.demo || !DS.reloadFromStorage) return;
+    if (!e || e.key !== DEMO_KEY) return;
+    if (!appActive || !BUNDLE) return;
+    DS.reloadFromStorage().then(scheduleLiveRefresh);
   });
 
   /* ============================================================
