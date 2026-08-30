@@ -279,3 +279,132 @@ create policy "staff only admin_audit_log" on admin_audit_log
 -- ------------------------------------------------------------
 alter table media_assets add column if not exists published_at timestamptz;
 alter table documents    add column if not exists published_at timestamptz;
+
+-- ------------------------------------------------------------
+-- GOLF 8 — automatische factuurmaker
+-- Conceptstand ook op facturen: het beheer zet bij een betaalfase die op
+-- 'wacht op akkoord' gaat automatisch een factuur in CONCEPT klaar
+-- (instelling 'auto_concept_factuur' in admin_settings, default aan; de
+-- betaalvoorwaarde-regel op het factuurdocument leeft daar ook, als
+-- sleutel 'betaalvoorwaarden' — geen extra DDL). Default 'published'
+-- zodat alle bestaande facturen zichtbaar blijven — migratie-veilig,
+-- zelfde patroon als media/documents in golf 3. De restrictive policy
+-- zorgt dat een klant een conceptfactuur ook op databaseniveau nooit
+-- leest; het beheer stuurt publish_status alleen mee bij een concept,
+-- dus gewone facturen blijven werken zolang dit blok nog niet gedraaid is.
+-- Het factuurdocument zelf is een gewone documents-rij (doc_type
+-- 'invoice', storage_path '' tot de beheerder de zelf geprinte PDF
+-- uploadt) — geen nieuwe tabellen.
+-- ------------------------------------------------------------
+alter table invoices add column if not exists publish_status text not null default 'published';
+
+drop policy if exists "concept facturen alleen staff" on invoices;
+create policy "concept facturen alleen staff" on invoices
+  as restrictive for select using (publish_status <> 'concept' or is_staff());
+
+-- ------------------------------------------------------------
+-- FIXRONDE (golf 8) — factuurnummers, factuurmeldingen en verouderde PDF's
+--
+-- 1. R0-1/R1-1 — DUBBEL FACTUURNUMMER.
+--    De jaarteller werd client-side gelezen en opgehoogd in losse async
+--    stappen; twee snelle betaalfase-wissels of twee beheertabs konden
+--    daardoor hetzelfde nummer aan twee facturen geven, en niets ving dat
+--    op. Twee sloten:
+--      a) claim_invoice_number() geeft het volgende nummer uit BINNEN één
+--         transactie, met een rijvergrendeling op de tellerrij ('for
+--         update'). Twee gelijktijdige claims staan dus netjes in de rij en
+--         krijgen nooit hetzelfde nummer. Een nummer dat al op een factuur
+--         staat (handmatig getypt) wordt overgeslagen.
+--      b) een unique index op invoice_number als laatste vangnet, ook voor
+--         handmatig getypte nummers. Lege nummers doen niet mee.
+--    Het beheer valt terug op een compare-and-set in JavaScript zolang dit
+--    blok nog niet gedraaid is — nooit stil een duplicaat.
+--
+-- 2. R1-4 — MELDINGSTIJD VAN EEN FACTUUR.
+--    Facturen kregen in golf 8 wel een conceptstand maar geen
+--    publicatietijd, terwijl media en documenten die in golf 3 exact
+--    hiervoor kregen. Een concept dat dagen later stil werd gepubliceerd
+--    zakte met zijn aanmaakdatum onder de al geziene meldingen weg. De
+--    portal gebruikt published_at || created_at; bestaande rijen houden
+--    null en vallen dus terug op created_at — migratie-veilig.
+--
+-- 3. R1-2 — VEROUDERDE FACTUUR-PDF.
+--    Nummer of fase van een factuur wijzigen synchroniseert nu het
+--    gekoppelde documentrecord (titel + fase). De al geüploade PDF kunnen
+--    we niet herschrijven; file_stale markeert zo'n record zodat het beheer
+--    eerlijk toont dat de PDF opnieuw geprint en geüpload moet worden.
+--    Wordt automatisch weer false zodra er een nieuwe PDF in hangt.
+-- ------------------------------------------------------------
+alter table invoices  add column if not exists published_at timestamptz;
+alter table documents add column if not exists file_stale boolean not null default false;
+
+-- unique index op het factuurnummer (lege nummers uitgezonderd). Staan er al
+-- duplicaten in de tabel, dan kan de index niet worden aangelegd: dat mag
+-- deze migratie niet laten klappen, maar het moet wél opvallen — vandaar de
+-- notice met het aantal botsende nummers.
+do $$
+begin
+  begin
+    create unique index if not exists invoices_invoice_number_uniq
+      on invoices (invoice_number)
+      where invoice_number <> '';
+  exception when others then
+    raise notice 'invoices_invoice_number_uniq niet aangelegd (%). Bestaande dubbele factuurnummers: %',
+      sqlerrm,
+      (select coalesce(string_agg(invoice_number, ', '), '(geen)')
+         from (select invoice_number from invoices
+                where invoice_number <> ''
+                group by invoice_number having count(*) > 1) d);
+  end;
+end $$;
+
+-- atomaire nummeruitgifte: lezen, ophogen en terugschrijven in één
+-- transactie. security definer omdat de tellerrij staff-only is; de
+-- is_staff()-check hieronder houdt dat hard, en het execute-recht gaat
+-- bewust niet naar public/anon.
+create or replace function claim_invoice_number()
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_year   int := extract(year from now())::int;
+  v_cur    jsonb;
+  v_prefix text;
+  v_next   int;
+  v_text   text;
+begin
+  if not is_staff() then
+    raise exception 'Alleen beheer mag een factuurnummer uitgeven.';
+  end if;
+
+  insert into admin_settings(key, value)
+    values ('factuur_reeks', jsonb_build_object('prefix', 'CP', 'jaar', v_year, 'volgende', 1))
+    on conflict (key) do nothing;
+
+  -- de rijvergrendeling is het hele punt: een tweede claim wacht hier
+  select value into v_cur from admin_settings where key = 'factuur_reeks' for update;
+
+  v_prefix := coalesce(nullif(v_cur->>'prefix', ''), 'CP');
+  if coalesce((v_cur->>'jaar')::int, 0) <> v_year then
+    v_next := 1;                      -- jaarwissel: reeks begint opnieuw
+  else
+    v_next := greatest(coalesce((v_cur->>'volgende')::int, 1), 1);
+  end if;
+
+  v_text := v_prefix || '-' || v_year || '-' || lpad(v_next::text, 4, '0');
+  while exists (select 1 from invoices where invoice_number = v_text) loop
+    v_next := v_next + 1;             -- handmatig getypt nummer overslaan
+    v_text := v_prefix || '-' || v_year || '-' || lpad(v_next::text, 4, '0');
+  end loop;
+
+  update admin_settings
+     set value = jsonb_build_object('prefix', v_prefix, 'jaar', v_year, 'volgende', v_next + 1),
+         updated_at = now()
+   where key = 'factuur_reeks';
+
+  return jsonb_build_object('text', v_text, 'prefix', v_prefix, 'jaar', v_year, 'volgende', v_next);
+end $$;
+revoke all on function claim_invoice_number() from public;
+grant execute on function claim_invoice_number() to authenticated;

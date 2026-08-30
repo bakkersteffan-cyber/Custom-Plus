@@ -616,6 +616,12 @@ details.stage-acc summary.acc-pulse{
 .doc-row .d-main{flex:1;min-width:0}
 .doc-row .d-title{font-size:14.5px;font-weight:600}
 .doc-row .d-meta{font-size:12.5px;color:var(--gray-9)}
+/* FIXRONDE R0-5/R1-5: document zonder geüpload bestand — eerlijke staat in
+   plaats van een downloadknop die alleen maar een fout kan geven */
+.doc-row .d-pending{
+  flex:none;font-size:12.5px;font-weight:600;color:var(--gray-69);
+  border:1px dashed var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap;
+}
 @media (max-width:700px){
   .doc-row{flex-wrap:wrap}
   .doc-row .d-type{min-width:0;width:100%}
@@ -630,6 +636,9 @@ details.stage-acc summary.acc-pulse{
 }
 .inv-row .i-label{font-size:14.5px;font-weight:600;margin-top:2px}
 .inv-row .i-paidat{font-size:12.5px;color:var(--gray-9);margin-top:2px}
+/* FIXRONDE R1-6: chip naar het gekoppelde factuurdocument op de factuurregel */
+.inv-row .i-doclink{margin-top:7px}
+.inv-row .i-doclink .rel-chip{padding:5px 11px;font-size:12px}
 .inv-row .i-amount{
   font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:13.5px;font-weight:600;
   white-space:nowrap;
@@ -1658,6 +1667,7 @@ body.is-preview #btn-ask-steffan{ display:none; }
 
 <script src="portal/config.js"></script>
 <script src="portal/demo-data.js"></script>
+<script src="portal/demo-files.js"></script>
 <script src="portal/shipping.js"></script>
 <script src="portal/status.js"></script>
 <script src="portal/i18n.js"></script>
@@ -2113,6 +2123,8 @@ body.is-preview #btn-ask-steffan{ display:none; }
         function pick(arr) {
           return (arr || []).filter(function (r) { return ids[r.projectId]; });
         }
+        /* conceptfacturen (golf 8) bestaan voor de klant niet — zelfde
+           poort als conceptmedia, ook in de voorvertoning */
         return Promise.resolve(conceptGate({
           projects: projs,
           media: pick(state.media),
@@ -2120,7 +2132,7 @@ body.is-preview #btn-ask-steffan{ display:none; }
           invoices: pick(state.invoices),
           questions: pick(state.questions),
           shipments: pick(state.shipments)
-        }, ['media'], false));
+        }, ['media', 'invoices'], false));
       },
 
       loadBundle: function (projectId) {
@@ -2158,15 +2170,27 @@ body.is-preview #btn-ask-steffan{ display:none; }
               String(a.createdAt).localeCompare(String(b.createdAt));
           })
         };
+        /* conceptfacturen (golf 8) blijven óók in de voorvertoning weg:
+           het betaalpad toont exact wat de klant ziet */
+        conceptGate(bundle, ['invoices'], false);
         return Promise.resolve(conceptGate(bundle, ['media', 'documents'], true));
       },
 
       mediaUrl: function (media) {
+        /* echte upload uit het beheer (fileRef): blob uit IndexedDB als
+           objectURL — demo-files.js cachet per fileRef en revoket alles
+           netjes bij pagehide. Ontbreekt de blob in déze browser (andere
+           browser, opslag gewist) → nette terugvaltegel, geen kapot beeld. */
+        if (media && media.fileRef && window.CP_FILES) {
+          return window.CP_FILES.fileUrl(media.fileRef).then(function (u) {
+            return u || window.CP_FILES.missingImage(i18nT('Bestand niet beschikbaar in deze browser'));
+          });
+        }
         return Promise.resolve(media.src || media.storagePath || '');
       },
 
       docUrl: function () {
-        return Promise.resolve(null); /* demo: geen echt bestand */
+        return Promise.resolve(null); /* demo zonder upload: geen echt bestand (fileRef loopt via handleDownload) */
       },
 
       addQuestion: function (projectId, media, text) {
@@ -2358,10 +2382,13 @@ body.is-preview #btn-ask-steffan{ display:none; }
             projects.forEach(function (p) {
               p.stages = r[0].filter(function (s) { return s.projectId === p.id; });
             });
+            /* conceptfacturen (golf 8): zelfde poort als demomodus — de
+               RLS-restrictie in 0005 dekt de klant, deze regel dekt de
+               staff-voorvertoning */
             return conceptGate({
               projects: projects, media: r[1], samples: r[2],
               invoices: r[3], questions: r[4], shipments: r[5]
-            }, ['media'], false);
+            }, ['media', 'invoices'], false);
           });
         });
       },
@@ -2420,6 +2447,8 @@ body.is-preview #btn-ask-steffan{ display:none; }
             docSlots: r[12]
           };
           conceptGate(bundle, ['media', 'documents'], true);
+          /* conceptfacturen (golf 8) óók hier weg — zie loadPortfolio */
+          conceptGate(bundle, ['invoices'], false);
           /* events hangen aan zendingen, niet direct aan het project */
           var shipIds = r[11].map(function (s) { return s.id; });
           if (!shipIds.length) return bundle;
@@ -2443,6 +2472,13 @@ body.is-preview #btn-ask-steffan{ display:none; }
       },
 
       docUrl: function (doc) {
+        /* FIXRONDE R0-5/R1-5: een factuurdocument ontstaat in het beheer met
+           storage_path '' — er is geen serverside PDF-generatie, de beheerder
+           uploadt de zelf bewaarde PDF later. createSignedUrl('') faalt, en
+           die fout werd hier een 'probeer het over een minuut opnieuw' voor
+           een bestand dat nooit is geüpload. Zelfde poort als beheer's eigen
+           docUrl: geen pad = geen link, en de UI toont de eerlijke staat. */
+        if (!doc || !doc.storagePath) return Promise.resolve(null);
         return sb.storage.from('project-docs')
           .createSignedUrl(doc.storagePath, 900)
           .then(function (res) {
@@ -4403,11 +4439,16 @@ body.is-preview #btn-ask-steffan{ display:none; }
            (inclusief logregel) als de rijen in het archief hieronder */
         var chipRow = el('div', 'ship-doc-chips');
         linkedDocs.forEach(function (doc) {
-          var ch = el('button', 'rel-chip rel-chip--dl',
-            i18nT(DOC_TYPE_LABELS[doc.docType] || doc.docType) + ' · ' + doc.title);
+          /* FIXRONDE R0-5: zonder bestand geen downloadchip */
+          var can = docDownloadable(doc);
+          var ch = el('button', can ? 'rel-chip rel-chip--dl' : 'rel-chip',
+            i18nT(DOC_TYPE_LABELS[doc.docType] || doc.docType) + ' · ' + docDisplayTitle(doc)
+              + (can ? '' : ' · ' + i18nT('PDF volgt')));
           ch.type = 'button';
           ch.setAttribute('data-no-i18n', ''); /* documenttitel = data */
-          ch.setAttribute('aria-label', i18nTpl('Download {x}', { x: doc.title }));
+          ch.setAttribute('aria-label', can
+            ? i18nTpl('Download {x}', { x: docDisplayTitle(doc) })
+            : i18nT('Nog geen bestand'));
           ch.addEventListener('click', function () { handleDownload(doc); });
           chipRow.appendChild(ch);
         });
@@ -4417,17 +4458,21 @@ body.is-preview #btn-ask-steffan{ display:none; }
           var rowD = el('div', 'doc-row');
           rowD.appendChild(el('span', 'd-type', i18nT(DOC_TYPE_LABELS[doc.docType] || doc.docType)));
           var mainD = el('div', 'd-main');
-          var titleD = el('div', 'd-title', doc.title);
+          var titleD = el('div', 'd-title', docDisplayTitle(doc));
           titleD.setAttribute('data-no-i18n', ''); /* documenttitel = data */
           mainD.appendChild(titleD);
           mainD.appendChild(el('div', 'd-meta', fmtDate(doc.createdAt)));
           rowD.appendChild(mainD);
-          var btnD = el('button', 'btn-quiet', i18nT('Download'));
-          btnD.type = 'button';
-          btnD.setAttribute('aria-label', i18nTpl('Download {x}', { x: doc.title }));
-          btnD.setAttribute('data-magnetic', '');
-          btnD.addEventListener('click', function () { handleDownload(doc); });
-          rowD.appendChild(btnD);
+          if (!docDownloadable(doc)) {
+            rowD.appendChild(el('span', 'd-pending', i18nT('PDF volgt')));
+          } else {
+            var btnD = el('button', 'btn-quiet', i18nT('Download'));
+            btnD.type = 'button';
+            btnD.setAttribute('aria-label', i18nTpl('Download {x}', { x: docDisplayTitle(doc) }));
+            btnD.setAttribute('data-magnetic', '');
+            btnD.addEventListener('click', function () { handleDownload(doc); });
+            rowD.appendChild(btnD);
+          }
           db.appendChild(rowD);
         });
       }
@@ -4473,11 +4518,50 @@ body.is-preview #btn-ask-steffan{ display:none; }
   /* ============================================================
      Documenten
      ============================================================ */
+  /* golf 8: factuurdocumenten uit het beheer heten "Factuur {nummer}" —
+     het vaste woord vertaalt op het renderpunt via de vier woordenboeken,
+     het nummer blijft data; elke andere titel blijft onaangeroerd */
+  function docDisplayTitle(d) {
+    var mt = /^Factuur\s+(\S+)$/.exec(String((d && d.title) || ''));
+    if (mt) return i18nTpl('Factuur {nummer}', { nummer: mt[1] });
+    return (d && d.title) || '';
+  }
+  /* FIXRONDE R0-5/R1-5 — is er echt iets te downloaden?
+     Live: een documentrij zonder storage_path heeft geen bestand (het
+     factuurdocument uit het beheer krijgt zijn PDF pas bij de handmatige
+     upload). Zo'n rij mag niet als downloadbaar gepresenteerd worden — een
+     signed-URL-fout die 'probeer het over een minuut opnieuw' zegt is
+     misleidend bij een permanente toestand.
+     Demo: een kaal demo-record hoort juist bij de demo-sheet, die eerlijk
+     uitlegt wat er in een echte omgeving zou gebeuren — daar verandert
+     niets aan. */
+  function docDownloadable(d) {
+    if (DS.demo) return true;
+    return !!(d && d.storagePath);
+  }
+  /* de eerlijke tegenhanger van openMissingFileSheet: het bestand ONTBREEKT
+     niet, het is er nog niet — opnieuw proberen helpt dus niet */
+  function openPendingFileSheet(doc) {
+    var body = byId('sheet-body');
+    body.textContent = '';
+    var h = el('h3', 'sh-h', docDisplayTitle(doc));
+    h.setAttribute('data-no-i18n', ''); /* documenttitel = data */
+    body.appendChild(h);
+    var note = el('div', 'sh-demo-note');
+    note.appendChild(el('div', 'mono-l', i18nT('Nog geen bestand')));
+    var p = el('p', null, i18nT('Dit document is al aangemaakt, maar het bestand staat er nog niet bij. Zodra Steffan het toevoegt, verschijnt de download hier — opnieuw proberen helpt nu niet.'));
+    p.style.marginBottom = '0';
+    note.appendChild(p);
+    body.appendChild(note);
+    var relP = relatedChipsBlock('document', doc);
+    if (relP) body.appendChild(relP);
+    openSheet();
+  }
   function openDemoDocSheet(doc) {
     var body = byId('sheet-body');
     body.textContent = '';
-    var h = el('h3', 'sh-h', doc.title);
-    h.setAttribute('data-no-i18n', ''); /* documenttitel = data */
+    var h = el('h3', 'sh-h', docDisplayTitle(doc));
+    h.setAttribute('data-no-i18n', ''); /* documenttitel = data (op renderpunt vertaald) */
     body.appendChild(h);
     var orig = el('div', 'sh-origin',
       i18nT(DOC_TYPE_LABELS[doc.docType] || doc.docType || 'Document') + ' · ' +
@@ -4504,7 +4588,31 @@ body.is-preview #btn-ask-steffan{ display:none; }
     openSheet();
   }
 
+  /* fileRef zonder blob in déze browser (andere browser, opslag gewist):
+     nette uitleg in plaats van een kapotte download — en géén logregel,
+     want er is niets gedownload */
+  function openMissingFileSheet(doc) {
+    var body = byId('sheet-body');
+    body.textContent = '';
+    var h = el('h3', 'sh-h', docDisplayTitle(doc));
+    h.setAttribute('data-no-i18n', ''); /* documenttitel = data */
+    body.appendChild(h);
+    var note = el('div', 'sh-demo-note');
+    note.appendChild(el('div', 'mono-l', i18nT('Bestand niet beschikbaar in deze browser')));
+    var p = el('p', null, i18nT('Dit bestand staat in de browseropslag van de computer waarop het is geüpload en reist niet mee naar andere browsers. Open het portaal daar, of mail steffan@customplus.nl.'));
+    p.style.marginBottom = '0';
+    note.appendChild(p);
+    body.appendChild(note);
+    var relD = relatedChipsBlock('document', doc);
+    if (relD) body.appendChild(relD);
+    openSheet();
+  }
+
   function handleDownload(doc) {
+    /* FIXRONDE R0-5/R1-5: vangnet voor elke route die hier tóch met een
+       bestandloze rij binnenkomt (diepe link, oude chip) — eerlijke uitleg,
+       en géén logregel: er is niets gedownload */
+    if (!docDownloadable(doc)) { openPendingFileSheet(doc); return; }
     var logIt = function () {
       return DS.addLog(BUNDLE.project.id, 'document', doc.id, 'download', doc.title)
         .then(function (row) {
@@ -4516,6 +4624,24 @@ body.is-preview #btn-ask-steffan{ display:none; }
         });
     };
     if (DS.demo) {
+      /* echte upload uit het beheer (fileRef): het échte bestand
+         downloaden, met behoud van de oorspronkelijke bestandsnaam */
+      if (doc.fileRef && window.CP_FILES) {
+        window.CP_FILES.getFile(doc.fileRef).then(function (rec) {
+          if (!rec || !rec.blob) { openMissingFileSheet(doc); return; }
+          var u = URL.createObjectURL(rec.blob);
+          var a = document.createElement('a');
+          a.href = u;
+          a.download = doc.fileName || (rec.meta && rec.meta.name) || doc.title || 'document';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          /* revoke ná de download-tick — de browser leest de blob async */
+          setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+          logIt();
+        });
+        return;
+      }
       logIt();
       openDemoDocSheet(doc);
       return;
@@ -4526,7 +4652,7 @@ body.is-preview #btn-ask-steffan{ display:none; }
     }).catch(function () {
       var body = byId('sheet-body');
       body.textContent = '';
-      var h = el('h3', 'sh-h', doc.title);
+      var h = el('h3', 'sh-h', docDisplayTitle(doc));
       h.setAttribute('data-no-i18n', '');
       body.appendChild(h);
       body.appendChild(el('p', null, i18nT('Het bestand kon nu niet worden opgehaald. Probeer het over een minuut opnieuw of mail steffan@customplus.nl.')));
@@ -4575,17 +4701,26 @@ body.is-preview #btn-ask-steffan{ display:none; }
           row.appendChild(dTag);
         }
         var main = el('div', 'd-main');
-        var titleR = el('div', 'd-title', d.title + (d.version > 1 ? ' (v' + d.version + ')' : ''));
-        titleR.setAttribute('data-no-i18n', ''); /* documenttitel = data */
+        var titleR = el('div', 'd-title', docDisplayTitle(d) + (d.version > 1 ? ' (v' + d.version + ')' : ''));
+        titleR.setAttribute('data-no-i18n', ''); /* documenttitel = data (op renderpunt vertaald) */
         main.appendChild(titleR);
         main.appendChild(el('div', 'd-meta', fmtDate(d.createdAt)));
-        row.appendChild(main);
-        var btn = el('button', 'btn-quiet', i18nT('Download'));
-        btn.type = 'button';
-        btn.setAttribute('aria-label', i18nTpl('Download {x}', { x: d.title }));
-        btn.setAttribute('data-magnetic', '');
-        btn.addEventListener('click', function () { handleDownload(d); });
-        row.appendChild(btn);
+        /* FIXRONDE R0-5/R1-5: zonder bestand géén downloadknop, maar de
+           eerlijke staat 'PDF volgt' — een knop die alleen een fout kan
+           geven is erger dan geen knop */
+        if (!docDownloadable(d)) {
+          main.appendChild(el('div', 'd-meta', i18nT('Het bestand wordt nog toegevoegd.')));
+          row.appendChild(main);
+          row.appendChild(el('span', 'd-pending', i18nT('PDF volgt')));
+        } else {
+          row.appendChild(main);
+          var btn = el('button', 'btn-quiet', i18nT('Download'));
+          btn.type = 'button';
+          btn.setAttribute('aria-label', i18nTpl('Download {x}', { x: docDisplayTitle(d) }));
+          btn.setAttribute('data-magnetic', '');
+          btn.addEventListener('click', function () { handleDownload(d); });
+          row.appendChild(btn);
+        }
         group.appendChild(row);
       });
       /* open slots onder de echte documenten van deze fase */
@@ -4662,6 +4797,26 @@ body.is-preview #btn-ask-steffan{ display:none; }
       }
       if (stage && stage.approvedAt) {
         main.appendChild(approvedProofEl(stage, 'i-approved', fmtDate(stage.approvedAt)));
+      }
+      /* FIXRONDE R1-6: route naar het factuurdocument. Het beheer belooft de
+         klant het document 'in zijn documenten én op het betaalpad', maar
+         hier stond nooit een verwijzing — wie de mail 'Bekijk de factuur' of
+         de melding volgde, zag bedrag en status en moest de PDF daarna zelf
+         in de Documenten-pagina zoeken. De chip verschijnt alleen als het
+         document echt bestaat (concepten zijn al aan de bron weggefilterd)
+         én er ook echt iets te downloaden valt — anders zou de chip een
+         belofte doen die de download niet waarmaakt. */
+      if (inv.documentId) {
+        var invDoc = (BUNDLE.documents || []).find(function (dd) { return dd.id === inv.documentId; });
+        if (invDoc && docDownloadable(invDoc)) {
+          var docRow = el('div', 'i-doclink');
+          var docA = el('a', 'rel-chip rel-chip--dl', docDisplayTitle(invDoc));
+          docA.href = '#/documenten@' + invDoc.id;
+          docA.setAttribute('data-no-i18n', ''); /* documenttitel = data */
+          docA.setAttribute('aria-label', i18nT('Bekijk het factuurdocument'));
+          docRow.appendChild(docA);
+          main.appendChild(docRow);
+        }
       }
       row.appendChild(main);
       /* het TE BETALEN bedrag (totalCents incl. btw waar dat bestaat) —
@@ -5169,7 +5324,7 @@ body.is-preview #btn-ask-steffan{ display:none; }
         i18nT(window.CP_SHIPPING.typeLabel(sp.type)) + ' · ' + fmtDateShort(sp.createdAt));
     }
     function docChip(d) {
-      if (d) add('#/documenten@' + d.id, d.title);
+      if (d) add('#/documenten@' + d.id, docDisplayTitle(d));
     }
 
     if (kind === 'foto') {
@@ -5848,7 +6003,7 @@ body.is-preview #btn-ask-steffan{ display:none; }
       if (d._concept) return; /* concept (42): geen melding tot publicatie */
       var pos = stagePosOf(d.stageKey);
       var dWhen = d.publishedAt || d.createdAt; /* zelfde regel als bij media */
-      pushItem(dWhen, i18nTpl('Nieuw document: {x}', { x: d.title }),
+      pushItem(dWhen, i18nTpl('Nieuw document: {x}', { x: docDisplayTitle(d) }),
         [i18nT(DOC_TYPE_LABELS[d.docType] || d.docType).toUpperCase(), pos ? i18nTpl('FASE {n}', { n: pos }) : null, relDayLabel(dWhen)],
         '#/documenten@' + d.id);
     });
@@ -5861,7 +6016,13 @@ body.is-preview #btn-ask-steffan{ display:none; }
       var doc = inv.documentId
         ? (BUNDLE.documents || []).find(function (dd) { return dd.id === inv.documentId; })
         : null;
-      var when = inv.createdAt || (doc && doc.createdAt);
+      /* FIXRONDE R1-4: meldingstijd = het moment van PUBLICEREN, precies
+         zoals bij media en documenten. Een conceptfactuur die maandag wordt
+         klaargezet en woensdag stil wordt gepubliceerd, zakte anders met
+         zijn aanmaakdatum onder de al geziene meldingen en kreeg geen
+         ongelezen-stip. publishedAt komt uit publishInvoice (beheer);
+         bestaande facturen zonder die kolom vallen terug op createdAt. */
+      var when = inv.publishedAt || inv.createdAt || (doc && (doc.publishedAt || doc.createdAt));
       if (when) {
         pushItem(when, i18nTpl('Er staat een factuur voor je klaar: {x}', { x: inv.label }),
           [i18nT('FACTUUR'), relDayLabel(when)], '#/kosten@' + inv.id);
@@ -6040,7 +6201,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
     (BUNDLE.documents || []).forEach(function (d) {
       if (d._concept) return; /* concept (42): onvindbaar tot publicatie */
       ix.push({
-        sec: 'DOCUMENTEN', label: d.title,
+        /* FIXRONDE R1-7: dezelfde renderpunt-vertaling als de Drive, de
+           meldingen en de chips — anders toont Cmd+K als enige plek nog
+           'Factuur CP-…' terwijl de rest 'Invoice CP-…' zegt */
+        sec: 'DOCUMENTEN', label: docDisplayTitle(d),
         sub: i18nT(DOC_TYPE_LABELS[d.docType] || d.docType) + ' · ' + fmtDateShort(d.createdAt),
         alt: d.docType + ' ' + (DOC_TYPE_LABELS[d.docType] || '') +
           (d.docType === 'inspection' ? ' aql rapport' : ''),
