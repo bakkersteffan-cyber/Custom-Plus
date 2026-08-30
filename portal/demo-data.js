@@ -114,6 +114,7 @@ window.CP_DEMO = {
     { id: 'doc-05', projectId: 'prj-diffuser', stageKey: 'tooling',    docType: 'invoice',    title: 'Factuur 25% — golden sample',         version: 1, createdAt: '2026-07-21' },
     { id: 'doc-06', projectId: 'prj-diffuser', stageKey: 'production', docType: 'inspection', title: 'IQC-rapport grondstoffen',            version: 1, createdAt: '2026-08-12' },
     { id: 'doc-07', projectId: 'prj-diffuser', stageKey: 'production', docType: 'inspection', title: 'IPQC-rapport batch A',                version: 1, createdAt: '2026-08-26' },
+    { id: 'doc-09', projectId: 'prj-diffuser', stageKey: 'logistics',  docType: 'shipping',   title: 'Bill of Lading — batch A',            version: 1, createdAt: '2026-08-25', shipmentId: 'shp-02' },
     { id: 'doc-08', projectId: 'prj-cookset',  docType: 'nnn',        stageKey: 'concept',    title: 'NNN-overeenkomst (concept)',          version: 1, createdAt: '2026-08-16' }
   ],
 

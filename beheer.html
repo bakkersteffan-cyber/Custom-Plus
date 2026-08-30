@@ -372,6 +372,7 @@ details.shipdet summary::-webkit-details-marker{ display:none; }
 <script src="portal/config.js"></script>
 <script src="portal/demo-data.js"></script>
 <script src="portal/shipping.js"></script>
+<script src="portal/status.js"></script>
 <script>
 (function(){
 'use strict';
@@ -1566,9 +1567,10 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
             projectName: project.name, projectCode: project.code,
             page: 'mijlpalen', portalLabel: 'Bekijk het mijlpalenpad',
             subject: (newStatus === 'done' ? stageLabel(s.stageKey) + ' is afgerond' : 'Jouw goedkeuring gevraagd') + ' — ' + project.name,
-            bodyLine: newStatus === 'done'
-              ? stageLabel(s.stageKey) + ' is afgerond.'
-              : stageLabel(s.stageKey) + ' wacht op jouw goedkeuring.'
+            /* zelfde zin als de cockpit van de klant: één statusmotor */
+            bodyLine: window.CP_STATUS.fill(
+              newStatus === 'done' ? window.CP_STATUS.templates.stageDone : window.CP_STATUS.templates.stageAwaiting,
+              { fase: stageLabel(s.stageKey) })
           });
         }
         refresh();
