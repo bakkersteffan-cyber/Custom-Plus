@@ -554,7 +554,24 @@ select.input.ownersel{ width:auto; font-size:12px; padding:5px 8px; border-radiu
 .invdoc .inv-totals .trow .num{ font-family:var(--mono); font-size:13px; }
 .invdoc .inv-totals .trow.grand{ border-top:1px solid var(--ink); margin-top:6px; padding-top:10px; font-weight:700; }
 .invdoc .inv-totals .trow.grand .num{ font-size:14.5px; font-weight:600; color:var(--green); }
-.invdoc .inv-foot{ margin-top:44px; border-top:1px solid var(--line); padding-top:16px; font-size:12.5px; color:var(--gray-69); line-height:1.7; }
+/* golf 1 (functies 1/5): het betaalblok. Het betalingskenmerk is het enige
+   dat de klant echt moet overnemen, dus het krijgt de grootste mono-regel
+   op het vel; de QR staat er strak naast en de IBAN eronder. Geen nieuwe
+   kleuren — alleen de bestaande lijn, het groen en de mono. */
+.invdoc .inv-pay{ display:flex; gap:26px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+  margin-top:34px; border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+.invdoc .inv-pay-main{ flex:1 1 300px; min-width:240px; }
+.invdoc .inv-pay .kicker{ display:block; margin-bottom:5px; }
+.invdoc .inv-ref{ font-family:var(--mono); font-size:19px; font-weight:600; letter-spacing:.06em; color:var(--green); }
+.invdoc .inv-ref.placeholder{ font-size:13px; font-weight:400; letter-spacing:.02em; color:var(--gray-69); }
+.invdoc .inv-pay-lines{ margin-top:12px; font-size:13px; line-height:1.75; }
+.invdoc .inv-pay-lines .mono{ font-family:var(--mono); font-size:12.5px; }
+.invdoc .inv-pay-lines span.lbl{ color:var(--gray-69); display:inline-block; min-width:74px; }
+.invdoc .inv-qr{ flex:0 0 auto; text-align:center; color:var(--ink); }
+.invdoc .inv-qr svg{ display:block; }
+.invdoc .inv-qr small{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--gray-69); margin-top:7px; max-width:132px; line-height:1.5; }
+.invdoc .inv-foot{ margin-top:26px; border-top:1px solid var(--line); padding-top:16px; font-size:12.5px; color:var(--gray-69); line-height:1.7; }
 .invdoc .inv-foot p{ margin:0; }
 /* voorvertoning in de modal: hetzelfde document, compact in een kader */
 .invpreview{ border:1px solid var(--line); border-radius:12px; overflow:auto; max-height:52vh; margin-bottom:16px; background:var(--gray-f9); padding:14px; }
@@ -656,6 +673,15 @@ select.input.ownersel{ width:auto; font-size:12px; padding:5px 8px; border-radiu
 <script src="portal/demo-files.js"></script>
 <script src="portal/shipping.js"></script>
 <script src="portal/status.js"></script>
+<!-- golf 1 (functie 1): de zelfgeschreven QR-encoder voor de EPC-betaal-QR
+     op de factuur. Zelfde bestand als het portaal gebruikt, nul libraries. -->
+<script src="portal/qr.js"></script>
+<!-- golf 1 (functie 3/7): de vier portaalwoordenboeken. Het factuurdocument
+     is klantzichtbaar en draagt daarom zijn verplichte vermeldingen (btw
+     verlegd, EUR-tegenwaarde, betalingskenmerk) in de taal van de klant —
+     precies dezelfde vertalingen die de klant in zijn portaal ziet, uit
+     precies dezelfde bron. De beheer-UI eromheen blijft Nederlands. -->
+<script src="portal/i18n.js"></script>
 <script>
 (function(){
 'use strict';
@@ -827,14 +853,192 @@ function invoiceNumberFor(reeks){
    gebruiken nu dit pad, en pas op het moment van aanmaken, niet bij het
    openen van een formulier.
 
-   Bewuste keuze: het nummer wordt NIET pas bij publicatie toegekend.
-   De factuur-PDF mag ook voor een concept geprint worden (Factuur-PDF →
-   Print), en het documentrecord dat daarbij ontstaat draagt het nummer in
-   zijn titel; een concept zonder nummer zou dus papier én een
-   documentrecord zonder nummer opleveren. Een gereserveerd nummer dat
-   nooit gepubliceerd wordt kost hooguit een gat in de reeks — dat is
-   eerlijker dan een factuur zonder nummer op tafel.
+   GOLF 1 — functie 9 (nummeringswaakhond) DRAAIT DE VORIGE KEUZE OM.
+   Tot nu toe kreeg ook een concept meteen een nummer, met het argument dat
+   een geprinte concept-PDF anders nummerloos op tafel ligt. Dat argument
+   verliest het van de administratieplicht: elke automatische conceptfactuur
+   die nooit gepubliceerd wordt (fase teruggedraaid, bedrag klopte niet)
+   trok een nummer uit de reeks en liet een gat achter dat twee jaar later
+   niet meer te verklaren is. Voortaan geldt:
+
+     · een CONCEPT heeft geen nummer — de PDF toont dan een nette
+       placeholder ('concept — nummer volgt bij publicatie') en het
+       documentrecord heet 'Conceptfactuur — {omschrijving}';
+     · het definitieve nummer wordt atomair getrokken op het moment van
+       PUBLICEREN (openInvoicePublishModal / de goedkeuringsmail), waarna
+       het gekoppelde documentrecord meteen zijn echte titel krijgt;
+     · een handmatige factuur die direct gepubliceerd wordt (Nieuwe
+       factuur) krijgt zijn nummer nog steeds bij opslaan — dat IS het
+       publicatiemoment.
+
+   Gaten worden daarmee zeldzaam; de waakhond onder Instellingen →
+   Facturatie vangt wat er tóch overblijft.
    ------------------------------------------------------------------ */
+/* ============================================================
+   GOLF 1 (facturen) — gedeelde bouwstenen voor functies 1/3/5/7/9
+   ============================================================ */
+/* functie 5 — HET BETALINGSKENMERK.
+   Eén bron voor alle plekken die het kenmerk tonen: PDF, portaal,
+   herinneringsmail, betaalbevestiging en de EPC-QR. Een concept heeft er
+   nog geen (functie 9), dus dit kan bewust leeg zijn. */
+function invoiceReference(inv){
+  return (inv && inv.invoiceNumber) ? String(inv.invoiceNumber) : '';
+}
+/* het patroon van een uitgegeven nummer: VOORVOEGSEL-JAAR-0000. Het
+   voorvoegsel is instelbaar, dus we accepteren 2 tot 6 letters — daarmee
+   herkent de match-hulp ook een reeks die ooit anders heette. */
+var INVOICE_REF_RE = /\b([A-Za-z]{2,6})[-\s]?((?:19|20)\d{2})[-\s]?(\d{3,6})\b/g;
+/* functie 5 — MATCH-HULP.
+   Plak een omschrijvingsregel van het bankafschrift; hieruit rollen alle
+   kenmerken die erin voorkomen, genormaliseerd naar PREFIX-JAAR-NNNN. */
+function referencesInText(text){
+  var out = [];
+  var s = String(text || '');
+  INVOICE_REF_RE.lastIndex = 0;
+  var m;
+  while((m = INVOICE_REF_RE.exec(s))){
+    out.push((m[1] + '-' + m[2] + '-' + pad4(m[3])).toUpperCase());
+  }
+  return out;
+}
+/* zoek in een lijst facturen de rij die bij een bankregel hoort.
+   Twee stappen, allebei hoofdletterongevoelig:
+     1. een herkend kenmerk uit de regel dat exact gelijk is aan een nummer;
+     2. anders: een factuurnummer dat letterlijk (als deeltekst) in de regel
+        staat — vangt 'CP20260014' zonder streepjes niet, maar wel
+        omschrijvingen waar het nummer tussen andere tekst is geplakt.
+   Nooit raden op bedrag of klantnaam: een verkeerde match kost een
+   onterechte herinnering, en dat is precies wat deze functie moet voorkomen. */
+function matchInvoiceByBankLine(text, invoices){
+  var s = String(text || '');
+  if(!s.trim()) return null;
+  var upper = s.toUpperCase();
+  var refs = referencesInText(s);
+  var list = (invoices || []).filter(function(i){ return i && i.invoiceNumber; });
+  var i, j;
+  for(i = 0; i < refs.length; i++){
+    for(j = 0; j < list.length; j++){
+      if(String(list[j].invoiceNumber).toUpperCase() === refs[i]) return { inv: list[j], ref: refs[i], how: 'kenmerk' };
+    }
+  }
+  for(j = 0; j < list.length; j++){
+    var nr = String(list[j].invoiceNumber).toUpperCase();
+    if(nr && upper.indexOf(nr) > -1) return { inv: list[j], ref: nr, how: 'deeltekst' };
+  }
+  return refs.length ? { inv: null, ref: refs[0], how: 'onbekend' } : null;
+}
+
+/* functie 3 — BTW-NUMMERS PER EU-LAND.
+   Een klein statisch patroonlijstje, geen validatie-API: dit vangt
+   typefouten (te kort, verkeerd landcijfer), niet of het nummer echt
+   bestaat. Daarvoor staat de VIES-link ernaast — verificatie blijft
+   handwerk, en dat zegt de UI ook. */
+var EU_VAT_PATTERNS = {
+  AT:/^ATU\d{8}$/,               BE:/^BE0\d{9}$/,           BG:/^BG\d{9,10}$/,
+  CY:/^CY\d{8}[A-Z]$/,           CZ:/^CZ\d{8,10}$/,         DE:/^DE\d{9}$/,
+  DK:/^DK\d{8}$/,                EE:/^EE\d{9}$/,            EL:/^EL\d{9}$/,
+  ES:/^ES[A-Z0-9]\d{7}[A-Z0-9]$/,FI:/^FI\d{8}$/,            FR:/^FR[A-Z0-9]{2}\d{9}$/,
+  HR:/^HR\d{11}$/,               HU:/^HU\d{8}$/,            IE:/^IE(\d{7}[A-Z]{1,2}|\d[A-Z*+]\d{5}[A-Z])$/,
+  IT:/^IT\d{11}$/,               LT:/^LT(\d{9}|\d{12})$/,   LU:/^LU\d{8}$/,
+  LV:/^LV\d{11}$/,               MT:/^MT\d{8}$/,            NL:/^NL\d{9}B\d{2}$/,
+  PL:/^PL\d{10}$/,               PT:/^PT\d{9}$/,            RO:/^RO\d{2,10}$/,
+  SE:/^SE\d{12}$/,               SI:/^SI\d{8}$/,            SK:/^SK\d{10}$/
+};
+function vatCompact(v){ return String(v || '').replace(/[\s.\-]/g, '').toUpperCase(); }
+/* → { ok, code, reason }. ok=false betekent: dit kan geen geldig EU-nummer
+   zijn. Een leeg veld is geen fout op zichzelf — de poortwachter beslist
+   wanneer het verplicht is. */
+function vatNumberCheck(value){
+  var v = vatCompact(value);
+  if(!v) return { ok:false, code:'', reason:'leeg' };
+  var code = v.slice(0, 2);
+  if(!/^[A-Z]{2}$/.test(code)) return { ok:false, code:'', reason:'geen landcode' };
+  /* Grieks btw-nummer draagt EL, niet GR — veelgemaakte fout, expliciet vangen */
+  if(code === 'GR') return { ok:false, code:'GR', reason:'Griekenland gebruikt EL, niet GR' };
+  var pat = EU_VAT_PATTERNS[code];
+  if(!pat) return { ok:false, code: code, reason:'geen EU-landcode' };
+  if(!pat.test(v)) return { ok:false, code: code, reason:'past niet op het formaat van ' + code };
+  return { ok:true, code: code, reason:'' };
+}
+var VIES_URL = 'https://ec.europa.eu/taxation_customs/vies/#/vat-validation';
+
+/* functie 7 — WISSELKOERSANKER.
+   Een niet-EUR-factuur draagt de koers die gold op de factuurdatum. Die
+   wordt bij publicatie vastgelegd en daarna nooit meer herrekend: alle
+   latere rapportage leest uitsluitend dit veld. */
+var ECB_RATES_URL = 'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html';
+function invoiceNeedsRate(inv){
+  return !!inv && (inv.currency || 'EUR') !== 'EUR';
+}
+function invoiceRate(inv){
+  var r = inv ? Number(inv.rateToEur) : NaN;
+  return (isFinite(r) && r > 0) ? r : null;
+}
+/* de EUR-tegenwaarde van het te betalen bedrag, of null zonder anker.
+   Er wordt hier nooit een koers verzonnen — geen koers = geen bedrag. */
+function invoiceEurCents(inv){
+  if(!inv) return null;
+  var due = invoiceDueOf(inv);
+  if((inv.currency || 'EUR') === 'EUR') return due;
+  var r = invoiceRate(inv);
+  return r ? Math.round(due / r) : null;
+}
+/* koersinvoer accepteert zowel 7,35 als 7.35 — vier decimalen is wat de
+   ECB publiceert */
+function parseRate(txt){
+  var s = String(txt || '').trim().replace(',', '.');
+  if(!/^\d+(\.\d{1,6})?$/.test(s)) return NaN;
+  var n = parseFloat(s);
+  return (isFinite(n) && n > 0) ? n : NaN;
+}
+function fmtRate(r){
+  return r ? String(r).replace('.', ',') : '';
+}
+
+/* het klantzichtbare deel van een factuur in de taal van de klant.
+   Leest de vier portaalwoordenboeken (portal/i18n.js) zodat de vermelding
+   op papier woord voor woord gelijk is aan wat de klant in zijn portaal
+   ziet. Onbekende sleutel of taal → gewoon het Nederlands. */
+function invT(nl, lang){
+  if(!lang || lang === 'nl') return nl;
+  var dict = window.CP_PORTAL_I18N && window.CP_PORTAL_I18N[lang];
+  return (dict && typeof dict[nl] === 'string' && dict[nl]) ? dict[nl] : nl;
+}
+function invTpl(nl, lang, vars){
+  return fillTemplate(invT(nl, lang), vars);
+}
+/* de portaaltaal van de klant, geldig of 'nl' */
+function clientPortalLang(client){
+  var c = client && client.portalLang;
+  return (c && PORTAL_LANGS.some(function(lg){ return lg.code === c; })) ? c : 'nl';
+}
+
+/* functie 3/7 — DE PUBLICEERPOORT.
+   Eén lijst blokkades, gebruikt door zowel het publiceervenster als het
+   vinkje 'factuur meesturen' in de goedkeuringsmail. Elke blokkade draagt
+   een sleutel zodat de UI er het juiste invulveld bij kan zetten. */
+function invoicePublishBlockers(inv, client){
+  var out = [];
+  if(!inv) return out;
+  if(!(inv.amountCents > 0)){
+    out.push({ key:'bedrag', text:'Het bedrag staat nog op nul — vul eerst het factuurbedrag in.' });
+  }
+  if((inv.vatMode || 'verlegd') === 'verlegd'){
+    var chk = vatNumberCheck(client && client.vatNumber);
+    if(!client){
+      out.push({ key:'btwnummer', text:'Btw verlegd kan alleen met een bekende afnemer — er hangt geen klant aan dit project.' });
+    } else if(chk.reason === 'leeg'){
+      out.push({ key:'btwnummer', text:'Btw verlegd zonder btw-nummer van de klant mag niet: de verleggingsregeling vereist het btw-identificatienummer van de afnemer op de factuur.' });
+    } else if(!chk.ok){
+      out.push({ key:'btwnummer', text:'Het btw-nummer “' + vatCompact(client.vatNumber) + '” ' + chk.reason + '.' });
+    }
+  }
+  if(invoiceNeedsRate(inv) && !invoiceRate(inv)){
+    out.push({ key:'koers', text:'Deze factuur staat in ' + (inv.currency || '') + ' — leg eerst de koers op de factuurdatum vast, anders is de EUR-tegenwaarde later niet meer te reconstrueren.' });
+  }
+  return out;
+}
+
 function claimInvoiceNumber(){
   return DS.claimInvoiceNumber().then(function(claim){
     /* de synchrone lezers (instellingenscherm, voorbeeldregel in het
@@ -884,6 +1088,8 @@ var MAIL_TEMPLATE_DEFS = [
   { key:'offerte',     label:'Offerte-opvolging' },
   { key:'checkin',     label:'Check-in (herbestel / reactivatie)' },
   { key:'herinnering', label:'Factuurherinnering' },
+  /* golf 1 — functie 14: de betaalbevestiging bij 'betaald markeren' */
+  { key:'betaalbevestiging', label:'Betaalbevestiging (bij betaald markeren)' },
   { key:'afscheid',    label:'Afscheid (offboarding)' }
 ];
 function mailTemplateDefaults(){
@@ -903,6 +1109,13 @@ function mailTemplateDefaults(){
     herinnering: {
       nl: { subject:'Herinnering: factuur {factuur} — {project}', body:'Vriendelijke herinnering: factuur “{factuur}” ({bedrag}) staat nog open. Betaald terwijl deze mail onderweg was? Dan mag je dit bericht negeren.' },
       en: { subject:'Reminder: invoice {factuur} — {project}', body:'Friendly reminder: invoice “{factuur}” ({bedrag}) is still open. Already paid while this email was on its way? Then please ignore this message.' }
+    },
+    /* golf 1 — functie 14: kort, feitelijk en zonder belofte die het
+       systeem niet waarmaakt. {vervolg} is de enige zin die per factuur
+       verschilt: is er een volgende fase, dan staat die erin, anders niet. */
+    betaalbevestiging: {
+      nl: { subject:'Betaling ontvangen — factuur {factuur}', body:'Je betaling van {bedrag} voor factuur “{factuur}” is ontvangen op {datum}. Bedankt. {vervolg}' },
+      en: { subject:'Payment received — invoice {factuur}', body:'Your payment of {bedrag} for invoice “{factuur}” was received on {datum}. Thank you. {vervolg}' }
     },
     afscheid: {
       nl: { subject:'Bedankt voor de samenwerking, {naam}', body:'Je dossier van {project} is afgerond en gearchiveerd. Bedankt voor het vertrouwen — voor een nieuwe batch of een nieuw product kun je altijd terecht.' },
@@ -979,8 +1192,11 @@ function settingsDefaults(){
   return {
     stilteDrempelDagen: 5,
     zendingsduurDagen: { koerier:5, luchtvracht:10, zeevracht:35 },
-    /* functie 64: bedrijfsprofiel & standaarden */
-    bedrijf: { naam:'CUSTOM+', kvk:'', btw:'', adres:'' },
+    /* functie 64: bedrijfsprofiel & standaarden.
+       golf 1 (functie 1): iban/bic horen hier thuis — ze staan op elke
+       factuur en voeden de EPC-betaal-QR. Een IBAN is geen geheim: hij
+       staat onderaan elke factuur die de deur uit gaat. */
+    bedrijf: { naam:'CUSTOM+', kvk:'', btw:'', adres:'', iban:'', bic:'' },
     mailAfzender: { naam:'Steffan — CUSTOM+', replyTo:'' },
     standaardAql: 'ANSI/ASQ Z1.4 II',
     faseSjabloonPct: STAGES.map(function(s){ return s.pct; }),
@@ -1020,7 +1236,13 @@ function settingsDefaults(){
        eenmanszaak-patroon als itemState, sleutel = project-id */
     projectDefaults: {},
     /* golf 6 — functie 70: handmatige vinkjes van de go-live-checklist */
-    goLive: {}
+    goLive: {},
+    /* golf 1 — functie 9: verklaringen bij ontbrekende factuurnummers.
+       Sleutel = het ontbrekende nummer, waarde = { tekst, op }. Zolang een
+       gat geen verklaring heeft, blijft de banner staan; zodra het er een
+       heeft, verdwijnt hij en staat het antwoord vast (ook in het
+       auditlog). Zelfde eenmanszaak-patroon als itemState. */
+    nummerVerklaringen: {}
   };
 }
 /* functie 64: het bedrijfsprofiel als LEESBARE waarde — de dossier-export,
@@ -1036,6 +1258,10 @@ function bedrijfProfiel(){
     kvk: b.kvk || '',
     btw: b.btw || '',
     adres: b.adres || '',
+    /* golf 1 (functie 1/5): betaalgegevens — voeden de IBAN-regel op de
+       factuur en de EPC-QR */
+    iban: b.iban || '',
+    bic: b.bic || '',
     afzender: m.naam || d.mailAfzender.naam,
     replyTo: m.replyTo || ''
   };
@@ -1229,15 +1455,25 @@ function csvAmount(cents){
   return (cents/100).toFixed(2).replace('.', ',');
 }
 function buildInvoiceCsv(invoices, pmap, cmap){
-  var lines = [ ['Klant','Project','Factuurnummer','Omschrijving','Valuta','Bedrag excl. btw','Btw','Totaal','Status','Fase','Aangemaakt','Betaald'].join(';') ];
+  /* golf 1 (functies 3/7): btw-nummer van de afnemer, de vastgelegde
+     koers en de EUR-tegenwaarde staan mee in de export. Die drie zijn wat
+     de boekhouder nodig heeft om verlegd én vreemde valuta te verantwoorden
+     zonder terug te hoeven naar de PDF's. Geen koers vastgelegd = lege
+     cellen, nooit een herrekening achteraf. */
+  var lines = [ ['Klant','Btw-nummer klant','Project','Factuurnummer','Omschrijving','Btw-behandeling','Valuta','Bedrag excl. btw','Btw','Totaal','Koers naar EUR','Totaal in EUR','Status','Fase','Aangemaakt','Betaald'].join(';') ];
   invoices.slice().sort(function(a,b){ return String(a.createdAt||'').localeCompare(String(b.createdAt||'')); }).forEach(function(inv){
     var p = pmap[inv.projectId];
     var c = p ? cmap[p.clientId] : null;
+    var eur = invoiceEurCents(inv);
     lines.push([
-      csvCell(c ? c.company : ''), csvCell(p ? p.name : ''),
+      csvCell(c ? c.company : ''), csvCell(c ? vatCompact(c.vatNumber) : ''),
+      csvCell(p ? p.name : ''),
       csvCell(inv.invoiceNumber||''), csvCell(inv.label||''),
+      csvCell(vatModeLabel(inv.vatMode || 'verlegd')),
       csvCell(inv.currency||'EUR'), csvAmount(inv.amountCents),
       csvAmount(inv.vatCents||0), csvAmount(typeof inv.totalCents==='number' && inv.totalCents ? inv.totalCents : (inv.amountCents||0) + (inv.vatCents||0)),
+      csvCell(invoiceRate(inv) ? fmtRate(invoiceRate(inv)) : ''),
+      csvCell(typeof eur==='number' ? csvAmount(eur) : ''),
       csvCell(isConcept(inv) ? 'concept' : (inv.status==='paid' ? 'betaald' : (inv.status==='void' ? 'vervallen' : 'open'))),
       csvCell(stageLabel(inv.stageKey)),
       csvCell(String(inv.createdAt||'').slice(0,10)), csvCell(String(inv.paidAt||'').slice(0,10))
@@ -2170,6 +2406,9 @@ function makeDemoService(){
         email: data.email, phone: data.phone||'', notes: data.notes||'',
         /* functie 30: portaaltaal vanaf de start (bv. uit een site-brief) */
         portalLang: data.portalLang || 'nl',
+        /* golf 1 (functie 3): btw-identificatienummer van de afnemer —
+           voedt de verlegd-poortwachter en de vermelding op de factuur */
+        vatNumber: data.vatNumber || '',
         createdAt: todayISO(), projects: []
       };
       state.clients.push(c); save();
@@ -2188,6 +2427,8 @@ function makeDemoService(){
         if(data.contactName!==undefined) c.contactName = data.contactName;
         if(data.email!==undefined) c.email = data.email;
         if(data.phone!==undefined) c.phone = data.phone || '';
+        /* golf 1 (functie 3) */
+        if(data.vatNumber!==undefined) c.vatNumber = data.vatNumber || '';
         save();
       }
       return Promise.resolve();
@@ -2814,6 +3055,10 @@ function makeDemoService(){
         vatMode: data.vatMode || 'verlegd',
         vatCents: data.vatCents || 0,
         totalCents: data.totalCents || data.amountCents,
+        /* golf 1 (functie 7): wisselkoersanker. Alleen betekenisvol bij
+           USD/CNY; bij EUR blijft het leeg zodat er nooit een overbodige
+           koers in de rapportage opduikt. */
+        rateToEur: (data.rateToEur && data.rateToEur > 0) ? data.rateToEur : null,
         /* golf 8: conceptstand ook op facturen — een concept bestaat voor
            de klant niet (de portal filtert hem aan de bron weg) */
         publishStatus: data.publishStatus==='concept' ? 'concept' : 'published',
@@ -2870,6 +3115,8 @@ function makeDemoService(){
       if(data.vatMode!==undefined) inv.vatMode = data.vatMode || 'verlegd';
       if(data.vatCents!==undefined) inv.vatCents = data.vatCents || 0;
       if(data.totalCents!==undefined) inv.totalCents = data.totalCents || inv.amountCents;
+      /* golf 1 (functie 7) */
+      if(data.rateToEur!==undefined) inv.rateToEur = (data.rateToEur && data.rateToEur > 0) ? data.rateToEur : null;
       save();
       return Promise.resolve(syncInvoiceDoc(inv, prevNum, prevStage));
     },
@@ -3267,7 +3514,9 @@ function makeSupaService(sb, staffUser){
         company: data.company, contact_name: data.contactName, email: data.email,
         phone: data.phone||'', notes: data.notes||'',
         /* functie 30: kolom uit 0005_admin.sql (golf 5) */
-        portal_lang: data.portalLang || 'nl'
+        portal_lang: data.portalLang || 'nl',
+        /* golf 1 (functie 3): kolom uit 0006_facturen.sql */
+        vat_number: data.vatNumber || ''
       }).select().single().then(row);
     },
     saveClientNotes: function(id, notes){
@@ -3282,6 +3531,8 @@ function makeSupaService(sb, staffUser){
       if(data.contactName!==undefined) upd.contact_name = data.contactName;
       if(data.email!==undefined) upd.email = data.email;
       if(data.phone!==undefined) upd.phone = data.phone || '';
+      /* golf 1 (functie 3): kolom uit 0006_facturen.sql */
+      if(data.vatNumber!==undefined) upd.vat_number = data.vatNumber || '';
       if(!Object.keys(upd).length) return Promise.resolve();
       return sb.from('clients').update(upd).eq('id', id).then(unwrap);
     },
@@ -4047,6 +4298,10 @@ function makeSupaService(sb, staffUser){
         vat_cents: data.vatCents || 0,
         total_cents: data.totalCents || data.amountCents
       };
+      /* golf 1 (functie 7): kolom uit 0006_facturen.sql. Alleen meesturen
+         als er echt een koers is — zo blijft insert werken zolang de
+         0006-migratie nog niet gedraaid is. */
+      if(data.rateToEur && data.rateToEur > 0) ins.rate_to_eur = data.rateToEur;
       /* golf 8: publish_status alléén meesturen als het een concept is —
          zo blijft een gewone factuur werken zolang de GOLF 8-migratie in
          0005_admin.sql nog niet gedraaid is, en kan een concept nooit stil
@@ -4099,6 +4354,8 @@ function makeSupaService(sb, staffUser){
       if(data.vatMode!==undefined) upd.vat_mode = data.vatMode || 'verlegd';
       if(data.vatCents!==undefined) upd.vat_cents = data.vatCents || 0;
       if(data.totalCents!==undefined) upd.total_cents = data.totalCents || data.amountCents || 0;
+      /* golf 1 (functie 7): kolom uit 0006_facturen.sql */
+      if(data.rateToEur!==undefined) upd.rate_to_eur = (data.rateToEur && data.rateToEur > 0) ? data.rateToEur : null;
       if(!Object.keys(upd).length) return Promise.resolve(null);
       return sb.from('invoices').select('*').eq('id', id).maybeSingle()
         .then(function(res){ return (res && res.data) ? camelRow(res.data) : null; }, function(){ return null; })
@@ -5167,9 +5424,10 @@ function buildVandaag(d){
     var age = it.age;
     var chip = el('span', { class:'chip' + (age>=30 ? ' crit' : (age>=15 ? ' awaiting' : '')), text: age + (age===1 ? ' dag open' : ' dgn open') });
     var paidBtn = el('button', { type:'button', class:'btn small', text:'Markeer betaald' });
+    /* golf 1 (functies 5/14): ook vanuit de cockpit via het betaalvenster —
+       kenmerk plakken, controleren, bevestiging sturen */
     paidBtn.addEventListener('click', function(){
-      paidBtn.disabled = true;
-      DS.markInvoicePaid(inv.id).then(refresh).catch(function(ex){ paidBtn.disabled = false; showError(ex); });
+      openMarkPaidModal(inv, c.p || null, c.c || null);
     });
     var actions = [ openProjectBtn(it.projectId) ];
     if(c.p && c.c){
@@ -5801,18 +6059,44 @@ function openMailChoiceModal(mailOpts, cfg){
   if(cfg.onDismiss) m.onDismiss(cfg.onDismiss);
   var block = mailPreviewBlock(mailOpts);
   m.body.appendChild(block);
+  var err = el('p', { class:'formerr' });
   var silentBtn = el('button', { type:'button', class:'btn ghost', text: cfg.silentLabel || 'Sla mail over (stil)' });
   var sendBtn = el('button', { type:'button', class:'btn', text: cfg.sendLabel || 'Verstuur klantmail' });
-  silentBtn.addEventListener('click', function(){
+  /* golf 1 (functie 11): een aanroeper mag een extra blok onder het
+     voorbeeld hangen (bijvoorbeeld het vinkje 'factuur meesturen') en een
+     stap laten draaien vóór de mail eruit gaat. cfg.beforeSend krijgt de
+     mailOpts mee en mag ze aanpassen; faalt hij, dan gaat er niets uit. */
+  if(cfg.extraBlock){
+    m.body.appendChild(cfg.extraBlock);
+    if(cfg.extraBlock._bindButtons) cfg.extraBlock._bindButtons(silentBtn, sendBtn);
+  }
+  m.body.appendChild(err);
+  function finishSilent(){
     closeModal();
     if(cfg.onSilent) cfg.onSilent();
+  }
+  silentBtn.addEventListener('click', function(){
+    err.classList.remove('show');
+    if(!cfg.beforeSend){ finishSilent(); return; }
+    silentBtn.disabled = true; sendBtn.disabled = true;
+    Promise.resolve().then(function(){ return cfg.beforeSend(mailOpts, false); })
+      .then(finishSilent, function(ex){
+        silentBtn.disabled = false; sendBtn.disabled = false;
+        err.textContent = ex.message || String(ex); err.classList.add('show');
+      });
   });
   sendBtn.addEventListener('click', function(){
-    sendBtn.disabled = true;
-    notifyClient(mailOpts).then(function(){
-      closeModal();
-      if(cfg.onSend) cfg.onSend();
-    });
+    err.classList.remove('show');
+    silentBtn.disabled = true; sendBtn.disabled = true;
+    Promise.resolve().then(function(){ return cfg.beforeSend ? cfg.beforeSend(mailOpts, true) : null; })
+      .then(function(){ return notifyClient(mailOpts); })
+      .then(function(){
+        closeModal();
+        if(cfg.onSend) cfg.onSend();
+      }, function(ex){
+        silentBtn.disabled = false; sendBtn.disabled = false;
+        err.textContent = ex.message || String(ex); err.classList.add('show');
+      });
   });
   m.body.appendChild(el('div', { class:'modal-actions' }, [ silentBtn, sendBtn ]));
 }
@@ -5822,19 +6106,30 @@ function openMailChoiceModal(mailOpts, cfg){
 function openReminderModal(inv, project, client){
   var lang = clientMailLang(client);
   var tpl = getMailTemplate('herinnering', lang);
+  var ref = invoiceReference(inv);
   var vars = {
     naam: (client.contactName||'').split(' ')[0] || client.contactName || '',
     bedrijf: client.company || '',
     project: project.name,
-    factuur: inv.invoiceNumber || inv.label,
-    bedrag: fmtMoneyCur(inv.amountCents, inv.currency)
+    factuur: ref || inv.label,
+    /* golf 1 (functie 5): het bedrag in een herinnering is het bedrag dat
+       de klant moet overmaken — inclusief btw waar die er is, net als op
+       het betaalpad. Het bedrag exclusief btw hoorde hier nooit. */
+    bedrag: fmtMoneyCur(invoiceDueOf(inv), inv.currency)
   };
+  var body = fillTemplate(tpl.body, vars);
+  /* golf 1 (functie 5): het betalingskenmerk staat áltijd in de mail, ook
+     als iemand het sjabloon heeft leeggehaald — zonder kenmerk kost de
+     binnengekomen betaling straks weer zoekwerk. */
+  if(ref && body.indexOf(ref) === -1){
+    body += (lang==='en' ? ' Please quote payment reference ' : ' Vermeld bij de betaling het kenmerk ') + ref + '.';
+  }
   var mailOpts = {
     client: client, projectName: project.name, projectCode: project.code,
     page:'kosten', portalLabel: lang==='en' ? 'View the invoice' : 'Bekijk de factuur',
     category:'herinnering',
     subject: fillTemplate(tpl.subject, vars),
-    bodyLine: fillTemplate(tpl.body, vars)
+    bodyLine: body
   };
   var m = openModal('Herinnering versturen', 'Vooringevuld — jij bevestigt alleen');
   m.body.appendChild(mailPreviewBlock(mailOpts));
@@ -5847,6 +6142,375 @@ function openReminderModal(inv, project, client){
     el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
     sendBtn
   ]));
+}
+
+/* ============================================================
+   GOLF 1 — functie 9: de nummeringswaakhond
+   ============================================================
+   Analyseert de uitgegeven factuurnummers per voorvoegsel én per jaar.
+   Twee soorten bevindingen, allebei even hard:
+     · GAT — een volgnummer tussen het laagste en het hoogste dat niet
+       bestaat. Vraagt om een verklaring; zonder verklaring blijft de
+       melding staan.
+     · DUBBEL — hetzelfde nummer op meer dan één factuur. Dat is geen
+       verklaarbaar gat maar een fout: de banner wijst hem aan en laat het
+       oplossen aan de bewerkfunctie, want stil hernummeren zou de al
+       verzonden PDF's ongelijk maken aan de administratie.
+   Alleen echte records, nooit een aanname; ontbreekt er niets, dan zegt de
+   kaart dat ook. */
+function analyseInvoiceSeries(invoices){
+  var groups = {};
+  (invoices || []).forEach(function(inv){
+    var nr = String((inv && inv.invoiceNumber) || '');
+    var mt = /^([A-Za-z]+)-((?:19|20)\d{2})-(\d+)$/.exec(nr);
+    if(!mt) return;   /* handmatig getypt buiten de reeks: telt niet mee */
+    var key = mt[1].toUpperCase() + '-' + mt[2];
+    var seq = parseInt(mt[3], 10);
+    if(!groups[key]) groups[key] = { prefix: mt[1].toUpperCase(), jaar: mt[2], seen: {}, list: [] };
+    if(!groups[key].seen[seq]) groups[key].seen[seq] = [];
+    groups[key].seen[seq].push(inv);
+    groups[key].list.push(seq);
+  });
+  return Object.keys(groups).sort().reverse().map(function(key){
+    var g = groups[key];
+    var lo = Math.min.apply(null, g.list), hi = Math.max.apply(null, g.list);
+    var gaps = [], dups = [];
+    for(var n = lo; n <= hi; n++){
+      if(!g.seen[n]) gaps.push(g.prefix + '-' + g.jaar + '-' + pad4(n));
+      else if(g.seen[n].length > 1) dups.push({ nr: g.prefix + '-' + g.jaar + '-' + pad4(n), rows: g.seen[n] });
+    }
+    return { key: key, prefix: g.prefix, jaar: g.jaar, laagste: lo, hoogste: hi,
+      aantal: g.list.length, gaps: gaps, dups: dups };
+  });
+}
+function renderNumberWatchdog(card, settings, saveSet){
+  DS.listAllInvoices().then(function(invoices){
+    clearNode(card);
+    var reeksen = analyseInvoiceSeries(invoices || []);
+    var verklaard = (settings.nummerVerklaringen && typeof settings.nummerVerklaringen === 'object')
+      ? settings.nummerVerklaringen : {};
+    if(!reeksen.length){
+      card.appendChild(el('p', { style:'font-size:14px;color:var(--gray-69);margin:0;max-width:64ch;', text:
+        'Nog geen gepubliceerde factuurnummers om te controleren. Zodra de eerste factuur is gepubliceerd, bewaakt deze kaart de reeks per jaar.' }));
+      return;
+    }
+    card.appendChild(el('p', { style:'font-size:14px;color:var(--gray-69);margin:0 0 14px;max-width:66ch;', text:
+      'Per voorvoegsel en per jaar wordt gecontroleerd of de reeks aaneengesloten is. Een gat verdwijnt hier pas als je opschrijft waaróm het er is — dat antwoord gaat mee in het auditlog en is bij een controle je bewijs.' }));
+    reeksen.forEach(function(r){
+      var block = el('div', { style:'border-top:1px solid var(--line);padding-top:14px;margin-top:14px;' });
+      var openGaps = r.gaps.filter(function(nr){ return !(verklaard[nr] && verklaard[nr].tekst); });
+      var ok = !openGaps.length && !r.dups.length;
+      block.appendChild(el('div', { style:'display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px;' }, [
+        el('span', { class:'chip' + (ok ? ' done' : ' crit'), text: ok ? 'Sluitend' : (openGaps.length + r.dups.length) + ' te verklaren' }),
+        el('strong', { style:'font-size:14.5px;', text: r.prefix + '-' + r.jaar }),
+        el('span', { class:'kicker', text: r.aantal + (r.aantal===1 ? ' factuur' : ' facturen') + ' · '
+          + pad4(r.laagste) + ' t/m ' + pad4(r.hoogste) })
+      ]));
+      if(ok && !r.gaps.length){
+        block.appendChild(el('p', { class:'kicker', style:'margin:0;', text:'Geen gaten, geen dubbele nummers.' }));
+      }
+      r.dups.forEach(function(d){
+        block.appendChild(el('p', { style:'font-size:13px;color:var(--critical);margin:6px 0 0;max-width:66ch;', text:
+          'Dubbel nummer ' + d.nr + ' — dit staat op ' + d.rows.length + ' facturen (' +
+          d.rows.map(function(x){ return x.label || '?'; }).join(' / ') +
+          '). Corrigeer dit via Bewerk op de factuur; het systeem hernummert niets zelf, want de al verzonden PDF draagt het oude nummer.' }));
+      });
+      r.gaps.forEach(function(nr){
+        var have = verklaard[nr] && verklaard[nr].tekst ? verklaard[nr] : null;
+        if(have){
+          block.appendChild(el('p', { style:'font-size:13px;color:var(--gray-69);margin:6px 0 0;', text:
+            nr + ' ontbreekt — verklaard op ' + fmtDate(have.op) + ': “' + have.tekst + '”' }));
+          return;
+        }
+        var input = el('input', { class:'input', type:'text', style:'max-width:320px;',
+          placeholder:'bv. concept verwijderd, testfactuur, dubbel aangemaakt',
+          'aria-label':'Verklaring voor ontbrekend nummer ' + nr });
+        var saveBtn = el('button', { type:'button', class:'btn small', text:'Vastleggen', disabled:true });
+        input.addEventListener('input', function(){ saveBtn.disabled = input.value.trim().length < 3; });
+        saveBtn.addEventListener('click', function(){
+          var tekst = input.value.trim();
+          if(tekst.length < 3) return;
+          saveBtn.disabled = true;
+          var next = clone(settings.nummerVerklaringen || {});
+          next[nr] = { tekst: tekst, op: todayISO() };
+          saveSet('nummerVerklaringen', next).then(function(){
+            settings.nummerVerklaringen = next;
+            return auditLog({ kind:'factuur', detail:'Ontbrekend factuurnummer verklaard: ' + nr + ' — ' + tekst });
+          }).then(function(){
+            renderNumberWatchdog(card, settings, saveSet);
+          }).catch(function(ex){ saveBtn.disabled = false; showError(ex); });
+        });
+        block.appendChild(el('p', { style:'font-size:13px;color:var(--critical);margin:10px 0 4px;', text:
+          nr + ' ontbreekt in de reeks — waarom?' }));
+        block.appendChild(el('div', { style:'display:flex;gap:10px;align-items:center;flex-wrap:wrap;' }, [ input, saveBtn ]));
+      });
+      card.appendChild(block);
+    });
+  }, function(ex){
+    clearNode(card);
+    card.appendChild(el('p', { style:'font-size:13px;color:var(--critical);margin:0;', text:
+      'De reeks kon niet gecontroleerd worden: ' + (ex && ex.message ? ex.message : String(ex)) }));
+  });
+}
+
+/* ============================================================
+   GOLF 1 — functie 11: de factuur mee met de goedkeuringsmail
+   ============================================================
+   BEWUSTE AFWIJKING VAN DE OORSPRONKELIJKE SPEC. Die vroeg om de PDF als
+   bijlage aan de mail. Dat kan dit systeem niet waarmaken: er is geen
+   serverside PDF-generatie — de factuur-PDF ontstaat in Steffans
+   printvenster, op zijn eigen machine. Een 'bijlage' beloven die er niet is
+   zou de mail tot een leugen maken.
+
+   Wat er WEL gebeurt, en wat de UI ook letterlijk zegt:
+     · het conceptfactuurtje van deze fase wordt in dezelfde handeling
+       gepubliceerd — inclusief het definitieve nummer uit de reeks;
+     · de mail krijgt er een factuurregel bij (nummer, bedrag inclusief btw,
+       betalingskenmerk) in de taal van de klant;
+     · de knop in de mail wijst naar het betaalpad in plaats van het
+       mijlpalenpad, want dáár staat de factuur.
+   Zonder vinkje verandert er niets: het concept blijft concept.
+   ============================================================ */
+function invoiceAttachBlock(conceptInv, project, client, mailOpts){
+  var wrap = el('div', { style:'border-top:1px solid var(--line);margin-top:16px;padding-top:14px;' });
+  var chk = el('input', { type:'checkbox' });
+  var due = invoiceDueOf(conceptInv);
+  wrap.appendChild(el('label', { class:'checkline', style:'margin-bottom:6px;' }, [ chk,
+    el('span', { text:'Factuur meesturen — ' + (conceptInv.label || 'conceptfactuur') + ' · ' + fmtMoneyCur(due, conceptInv.currency) }) ]));
+  wrap.appendChild(el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:0 0 10px;max-width:64ch;line-height:1.65;', text:
+    'Er hangt geen bestand aan de mail — dit systeem maakt geen PDF op de server. Met dit vinkje wordt het concept nú gepubliceerd (het krijgt zijn definitieve nummer) en komt er een factuurregel in de mail: de klant ontvangt de factuur in zijn portaal, op het betaalpad.' }));
+  var gateWrap = el('div');
+  wrap.appendChild(gateWrap);
+  var silentRef = null, sendRef = null;
+  function syncGate(){
+    clearNode(gateWrap);
+    if(!chk.checked) return;
+    var blockers = invoicePublishBlockers(conceptInv, client);
+    gateWrap.appendChild(invoiceGatePanel(blockers, conceptInv, project, client, syncGate));
+    if(blockers.length && sendRef){ sendRef.disabled = true; if(silentRef) silentRef.disabled = true; }
+    else if(sendRef){ sendRef.disabled = false; if(silentRef) silentRef.disabled = false; }
+  }
+  chk.addEventListener('change', syncGate);
+  wrap._bindButtons = function(silentBtn, sendBtn){ silentRef = silentBtn; sendRef = sendBtn; };
+  /* draait vlak vóór de mail (of vóór 'geen mail'): publiceren en de
+     factuurregel in de bodyLine zetten */
+  wrap._run = function(opts){
+    if(!chk.checked) return null;
+    return publishInvoiceNow(conceptInv, project, client).then(function(nr){
+      var clang = clientPortalLang(client);
+      opts.page = 'kosten';
+      opts.portalLabel = invT('Bekijk de factuur', clang);
+      opts.bodyLine = (opts.bodyLine ? opts.bodyLine + ' ' : '')
+        + invTpl('Factuur {n} ({b}) staat klaar op je betaalpad. Vermeld bij de betaling het kenmerk {n}.',
+            clang, { n: nr, b: fmtMoneyCur(invoiceDueOf(conceptInv), conceptInv.currency) });
+      chk.checked = false;   /* nooit twee keer publiceren bij een retry */
+      return nr;
+    });
+  };
+  return wrap;
+}
+
+/* ============================================================
+   GOLF 1 — betaald markeren (functies 5 + 14)
+   ============================================================
+   Eén venster voor wat vroeger één klik was. De klik was te goedkoop: hij
+   markeerde blind de factuur waar je toevallig op stond, en de klant hoorde
+   er nooit iets van.
+
+   Nu:
+     · een plakveld voor de omschrijvingsregel van je bankafschrift. Het
+       systeem zoekt daarin het betalingskenmerk en wijst de bijbehorende
+       factuur aan — óók als dat een ANDERE factuur is dan waar je vandaan
+       kwam. Er wordt nooit op bedrag of klantnaam geraden: een verkeerde
+       match is precies het scenario (onterechte herinnering) dat functie 5
+       moet uitbannen.
+     · een vinkje 'stuur bevestiging', standaard aan, met het volledige
+       mailvoorbeeld erbij. Nooit stil verstuurd, nooit stil overgeslagen —
+       beide keuzes belanden in het mail-logboek.
+   ============================================================ */
+function openMarkPaidModal(inv, project, client){
+  var m = openModal('Betaling verwerken', 'Kenmerk controleren, factuur op betaald zetten, klant bevestigen');
+  var target = { inv: inv, project: project, client: client };
+  var universe = null;   /* alle openstaande facturen, voor de match-hulp */
+
+  var rowWrap = el('div', { class:'card rowlist', style:'margin-bottom:16px;' });
+  var pasteTa = el('textarea', { class:'input', style:'min-height:70px;font-family:var(--mono);font-size:12.5px;',
+    placeholder:'bv. SEPA OVERBOEKING  MEYER GMBH  FACTUUR CP-2026-0007  EUR 3.125,00',
+    'aria-label':'Omschrijvingsregel van het bankafschrift' });
+  var matchLine = el('p', { style:'font-size:13px;color:var(--gray-69);margin:8px 0 0;min-height:18px;line-height:1.6;max-width:66ch;', 'aria-live':'polite' });
+  var switchWrap = el('div', { style:'margin-top:8px;' });
+  var mailWrap = el('div');
+  var err = el('p', { class:'formerr' });
+  var okBtn = el('button', { type:'button', class:'btn', text:'Markeer betaald' });
+  var confirmChk = el('input', { type:'checkbox' });
+  confirmChk.checked = true;
+
+  function paintRow(){
+    clearNode(rowWrap);
+    var t = target.inv;
+    var sub = [ stageLabel(t.stageKey) ];
+    if(target.client) sub.push(target.client.company);
+    if(target.project) sub.push(target.project.name);
+    rowWrap.appendChild(el('div', { class:'rowitem' }, [
+      el('span', { class:'chip awaiting', text:'Open' }),
+      el('div', { class:'rowmain' }, [
+        el('div', { class:'rowtitle', text:(t.invoiceNumber ? t.invoiceNumber + ' · ' : '') + t.label }),
+        el('div', { class:'rowsub', text: sub.join(' · ') })
+      ]),
+      el('span', { class:'rowmeta', text: fmtMoneyCur(invoiceDueOf(t), t.currency) })
+    ]));
+  }
+
+  /* functie 14: de bevestigingsmail, opgebouwd uit het sjabloon
+     'betaalbevestiging' in de taal van de klant */
+  function buildConfirmMail(){
+    var c = target.client, p = target.project, t = target.inv;
+    if(!c || !c.email || !p) return null;
+    var lang = clientMailLang(c);
+    var tpl = getMailTemplate('betaalbevestiging', lang);
+    /* {vervolg}: alleen een zin als er echt een volgende fase in dit
+       project staat — anders blijft hij leeg in plaats van een belofte */
+    var vervolg = '';
+    var stages = (p.stages || []).slice().sort(function(a,b){ return a.position - b.position; });
+    var idx = stages.findIndex(function(s){ return s.stageKey === t.stageKey; });
+    var next = idx > -1 ? stages[idx + 1] : null;
+    if(next){
+      vervolg = lang==='en'
+        ? 'We are moving on to ' + invT(stageLabel(next.stageKey), clientPortalLang(c)) + '.'
+        : 'We gaan verder met ' + stageLabel(next.stageKey) + '.';
+    }
+    var vars = {
+      naam: (c.contactName||'').split(' ')[0] || c.contactName || '',
+      bedrijf: c.company || '', project: p.name,
+      factuur: invoiceReference(t) || t.label,
+      bedrag: fmtMoneyCur(invoiceDueOf(t), t.currency),
+      datum: fmtDate(todayISO()),
+      vervolg: vervolg
+    };
+    return {
+      client: c, projectName: p.name, projectCode: p.code,
+      page:'kosten', portalLabel: lang==='en' ? 'View the invoice' : 'Bekijk de factuur',
+      category:'factuur',
+      subject: fillTemplate(tpl.subject, vars),
+      bodyLine: fillTemplate(tpl.body, vars).replace(/\s+$/, '')
+    };
+  }
+  var confirmMail = null;
+  function paintMail(){
+    clearNode(mailWrap);
+    confirmMail = buildConfirmMail();
+    mailWrap.appendChild(el('label', { class:'checkline', style:'margin-bottom:6px;' }, [ confirmChk,
+      el('span', { text:'Stuur de klant een betaalbevestiging' }) ]));
+    if(!confirmMail){
+      confirmChk.checked = false;
+      confirmChk.disabled = true;
+      mailWrap.appendChild(el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:0;', text:
+        'Geen klantmailadres bekend — er kan geen bevestiging uit.' }));
+      return;
+    }
+    confirmChk.disabled = false;
+    var prev = mailPreviewBlock(confirmMail);
+    prev.hidden = !confirmChk.checked;
+    mailWrap.appendChild(prev);
+    confirmChk.onchange = function(){ prev.hidden = !confirmChk.checked; };
+  }
+
+  function setTarget(nInv, nProject, nClient){
+    target = { inv: nInv, project: nProject, client: nClient };
+    paintRow();
+    paintMail();
+  }
+
+  /* de match-hulp draait op ALLE openstaande, gepubliceerde facturen —
+     dat is precies het probleem dat hij oplost: je weet nog niet bij welke
+     factuur de bankregel hoort */
+  function syncMatch(){
+    clearNode(switchWrap);
+    var txt = pasteTa.value;
+    if(!txt.trim()){ matchLine.textContent = ''; matchLine.style.color = ''; return; }
+    if(!universe){ matchLine.textContent = 'Facturen laden…'; return; }
+    var hit = matchInvoiceByBankLine(txt, universe.invoices);
+    if(!hit){
+      matchLine.textContent = 'Geen betalingskenmerk in deze regel gevonden — controleer zelf welke factuur dit is.';
+      matchLine.style.color = 'var(--critical)';
+      return;
+    }
+    if(!hit.inv){
+      matchLine.textContent = 'Kenmerk ' + hit.ref + ' herkend, maar er staat geen openstaande factuur met dat nummer. Al betaald gemarkeerd, of een ander jaar?';
+      matchLine.style.color = 'var(--critical)';
+      return;
+    }
+    var p2 = universe.pmap[hit.inv.projectId] || null;
+    var c2 = p2 ? (universe.cmap[p2.clientId] || null) : null;
+    if(hit.inv.id === target.inv.id){
+      matchLine.textContent = '✓ Kenmerk ' + hit.inv.invoiceNumber + ' hoort bij precies deze factuur.';
+      matchLine.style.color = 'var(--green)';
+      return;
+    }
+    matchLine.textContent = 'Kenmerk ' + hit.inv.invoiceNumber + ' hoort bij een ándere factuur: '
+      + (c2 ? c2.company + ' · ' : '') + (p2 ? p2.name + ' · ' : '') + hit.inv.label
+      + ' (' + fmtMoneyCur(invoiceDueOf(hit.inv), hit.inv.currency) + ').';
+    matchLine.style.color = 'var(--critical)';
+    switchWrap.appendChild(el('button', { type:'button', class:'btn small', text:'Gebruik die factuur', onclick:function(){
+      setTarget(hit.inv, p2, c2);
+      syncMatch();
+    } }));
+  }
+  pasteTa.addEventListener('input', syncMatch);
+
+  paintRow();
+  paintMail();
+  m.body.appendChild(rowWrap);
+  m.body.appendChild(field('Omschrijving van het bankafschrift plakken (optioneel — controleert het kenmerk)', pasteTa));
+  m.body.appendChild(matchLine);
+  m.body.appendChild(switchWrap);
+  m.body.appendChild(el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:14px 0 10px;max-width:66ch;line-height:1.65;', text:
+    'Het systeem zoekt alleen op betalingskenmerk, nooit op bedrag of klantnaam — raden zou precies de fout maken die dit moet voorkomen.' }));
+  m.body.appendChild(mailWrap);
+  m.body.appendChild(err);
+  okBtn.addEventListener('click', function(){
+    err.classList.remove('show');
+    okBtn.disabled = true;
+    var t = target.inv, p = target.project;
+    var wantMail = confirmChk.checked && confirmMail;
+    DS.markInvoicePaid(t.id).then(function(){
+      return auditLog({ kind:'factuur', clientId: p ? p.clientId : null, projectId: p ? p.id : null,
+        detail:'Factuur betaald gemarkeerd: ' + (t.invoiceNumber || t.label)
+          + ' · ' + fmtMoneyCur(invoiceDueOf(t), t.currency)
+          + (wantMail ? ' — bevestiging verstuurd' : ' — zonder bevestiging') });
+    }).then(function(){
+      return wantMail ? notifyClient(confirmMail) : null;
+    }).then(function(){
+      closeModal();
+      updateBadge();
+      refresh();
+    }).catch(function(ex){
+      okBtn.disabled = false;
+      err.textContent = ex.message || String(ex); err.classList.add('show');
+    });
+  });
+  m.body.appendChild(el('div', { class:'modal-actions' }, [
+    el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
+    okBtn
+  ]));
+
+  Promise.all([ DS.listAllInvoices(), DS.listAllProjectsWithStages(), DS.listClients() ])
+    .then(function(res){
+      var pmap = {}, cmap = {};
+      (res[1]||[]).forEach(function(p){ pmap[p.id] = p; });
+      (res[2]||[]).forEach(function(c){ cmap[c.id] = c; });
+      universe = {
+        invoices: (res[0]||[]).filter(function(i){ return !isConcept(i) && i.status === 'open'; }),
+        pmap: pmap, cmap: cmap
+      };
+      /* het project uit de aanroep kan een lichte versie zijn zonder fases —
+         de volledige rij is nodig voor de {vervolg}-zin in de bevestiging */
+      if(target.project && pmap[target.project.id]) target.project = pmap[target.project.id];
+      if(!target.client && target.project) target.client = cmap[target.project.clientId] || null;
+      paintRow();
+      paintMail();
+      syncMatch();
+    }, function(){ /* lijst niet te laden: het venster blijft gewoon werken */ });
 }
 /* ============================================================
    golf 8 — automatische factuurmaker
@@ -5876,8 +6540,18 @@ function buildInvoiceDoc(invoice, project, client){
   var vatMode = invoice.vatMode || 'verlegd';
   var vat = invoice.vatCents || 0;
   var total = invoiceDueOf(invoice);
+  /* golf 1: de verplichte vermeldingen op dit vel zijn klantzichtbaar en
+     staan daarom in de taal van de klant, uit dezelfde vier woordenboeken
+     als het portaal. De labels van het beheer eromheen (kopjes) blijven
+     Nederlands — dat is Steffans eigen document-chroom. */
+  var lang = clientPortalLang(client);
+  var ref = invoiceReference(invoice);
+  var klantBtw = client ? vatCompact(client.vatNumber) : '';
   var vanLines = [prof.adres, prof.kvk ? 'KvK ' + prof.kvk : null, prof.btw ? 'Btw ' + prof.btw : null, prof.replyTo || null].filter(Boolean);
   var aanLines = client ? [client.contactName || null, client.email || null].filter(Boolean) : [];
+  /* functie 3: het btw-nummer van de AFNEMER hoort zichtbaar op een
+     verlegd-factuur — daarom bij de partij, niet weggestopt in de voet */
+  if(klantBtw) aanLines.push(invT('Btw-nummer', lang) + ' ' + klantBtw);
   var faseLine = stageLabel(invoice.stageKey)
     + (project ? ' — ' + project.name + (project.code ? ' (' + project.code + ')' : '') : '');
 
@@ -5887,8 +6561,8 @@ function buildInvoiceDoc(invoice, project, client){
       (prof.naam && prof.naam!=='CUSTOM+') ? el('div', { class:'kicker', style:'margin-top:3px;', text:prof.naam }) : null
     ]),
     el('div', { class:'inv-doctype' }, [
-      document.createTextNode('Factuur'),
-      el('small', { text: invoice.invoiceNumber || '' })
+      document.createTextNode(isConcept(invoice) ? 'Concept' : 'Factuur'),
+      el('small', { text: ref || (isConcept(invoice) ? 'nummer volgt bij publicatie' : '') })
     ])
   ]);
   var parties = el('div', { class:'inv-parties' }, [
@@ -5901,11 +6575,21 @@ function buildInvoiceDoc(invoice, project, client){
       el('strong', { text: client ? client.company : '—' })
     ].concat(aanLines.map(function(l){ return el('div', { text:l }); })))
   ]);
-  var meta = el('div', { class:'inv-meta' }, [
-    el('div', null, [ el('span', { class:'kicker', text:'Factuurnummer' }), el('span', { class:'mono', text: invoice.invoiceNumber || '—' }) ]),
+  var metaKids = [
+    el('div', null, [ el('span', { class:'kicker', text:'Factuurnummer' }),
+      el('span', { class: ref ? 'mono' : '', text: ref || 'volgt bij publicatie' }) ]),
     el('div', null, [ el('span', { class:'kicker', text:'Factuurdatum' }), el('span', { text: fmtDate(invoice.createdAt) || fmtDate(todayISO()) }) ]),
     el('div', null, [ el('span', { class:'kicker', text:'Project' }), el('span', { text: project ? (project.code || project.name) : '—' }) ])
-  ]);
+  ];
+  /* functie 7: de vastgelegde koers hoort zichtbaar op het vel — dat is
+     het hele punt van een anker */
+  if(invoiceNeedsRate(invoice) && invoiceRate(invoice)){
+    metaKids.push(el('div', null, [
+      el('span', { class:'kicker', text:'Koers op factuurdatum' }),
+      el('span', { class:'mono', text: '1 EUR = ' + fmtRate(invoiceRate(invoice)) + ' ' + cur })
+    ]));
+  }
+  var meta = el('div', { class:'inv-meta' }, metaKids);
   var table = el('table', null, [
     el('thead', null, el('tr', null, [
       el('th', { text:'Omschrijving' }),
@@ -5924,15 +6608,87 @@ function buildInvoiceDoc(invoice, project, client){
     totRows.push(el('div', { class:'trow' }, [ el('span', { text:'Btw 21%' }), el('span', { class:'num', text: fmtMoneyCur(vat, cur) }) ]));
   }
   totRows.push(el('div', { class:'trow grand' }, [ el('span', { text:'Te betalen' }), el('span', { class:'num', text: fmtMoneyCur(total, cur) }) ]));
+  /* functie 7: de EUR-tegenwaarderegel — uitsluitend uit de vastgelegde
+     koers, nooit uit een live tarief */
+  var eurCents = invoiceEurCents(invoice);
+  if(cur !== 'EUR' && typeof eurCents === 'number' && invoiceRate(invoice)){
+    totRows.push(el('div', { class:'trow' }, [
+      el('span', { text: invT('Tegenwaarde in euro', lang) }),
+      el('span', { class:'num', text: fmtMoneyCur(eurCents, 'EUR') })
+    ]));
+  }
+
+  /* ---- golf 1, functies 1 + 5: het betaalblok ----
+     Het factuurnummer IS het betalingskenmerk; hij staat hier één keer
+     groot, zodat overtypen niet misgaat, en zit tegelijk in de QR. De QR
+     verschijnt alleen als élk ingrediënt echt bestaat (EUR, geldige IBAN,
+     bedrag > 0, een uitgegeven nummer); anders staat er de tekstuele
+     overboekingsinstructie — nooit een halve belofte. */
+  var payBlock = null;
+  var payLines = [];
+  if(prof.iban){
+    payLines.push(el('div', null, [ el('span', { class:'lbl', text: invT('IBAN', lang) }),
+      el('span', { class:'mono', text: window.CP_QR ? window.CP_QR.ibanPretty(prof.iban) : prof.iban }) ]));
+  }
+  if(prof.bic){
+    payLines.push(el('div', null, [ el('span', { class:'lbl', text: invT('BIC of SWIFT', lang) }),
+      el('span', { class:'mono', text: prof.bic }) ]));
+  }
+  payLines.push(el('div', null, [ el('span', { class:'lbl', text: invT('Op naam van', lang) }),
+    el('span', { text: prof.naam }) ]));
+  payLines.push(el('div', null, [ el('span', { class:'lbl', text: invT('Bedrag', lang) }),
+    el('span', { class:'mono', text: fmtMoneyCur(total, cur) }) ]));
+
+  var qrNode = null;
+  if(window.CP_QR && ref && cur === 'EUR'){
+    qrNode = window.CP_QR.epcSvgElement({
+      name: prof.naam, iban: prof.iban, bic: prof.bic,
+      /* bedrag als functie-argument: zodra deelbetalingen bestaan geeft de
+         aanroeper hier het RESTbedrag mee en klopt de QR meteen */
+      amountCents: total, currency: cur, reference: ref,
+      svg: { size: 132, margin: 2, color: '#111',
+        title: invTpl('Betaal-QR voor factuur {n}', lang, { n: ref }) }
+    });
+  }
+  var payMain = el('div', { class:'inv-pay-main' }, [
+    el('span', { class:'kicker', text: invT('Betalingskenmerk', lang) }),
+    ref ? el('div', { class:'inv-ref', text: ref })
+        : el('div', { class:'inv-ref placeholder', text: invT('Concept — het betalingskenmerk volgt bij publicatie.', lang) }),
+    el('div', { class:'inv-pay-lines' }, payLines)
+  ]);
+  if(ref){
+    payMain.appendChild(el('p', { style:'margin:10px 0 0;font-size:12.5px;line-height:1.6;', text:
+      (cur === 'EUR'
+        ? invTpl('Vermeld bij de overboeking het kenmerk {n} — daarmee wordt je betaling meteen aan deze factuur gekoppeld.', lang, { n: ref })
+        : invTpl('Vermeld bij de overboeking het kenmerk {n}. Deze factuur staat niet in euro; maak over via SWIFT met bovenstaande gegevens.', lang, { n: ref })) }));
+  }
+  payBlock = el('div', { class:'inv-pay' }, [
+    payMain,
+    qrNode ? el('div', { class:'inv-qr' }, [ qrNode,
+      el('small', { text: invT('Scan met je bank-app', lang) }) ]) : null
+  ]);
+
   var footLines = [];
   if(voorwaarden) footLines.push(voorwaarden);
-  if(vatMode==='verlegd') footLines.push('Btw verlegd naar de afnemer.');
-  else if(vatMode==='0') footLines.push('Btw 0% (export).');
-  if(invoice.invoiceNumber) footLines.push('Vermeld bij betaling het factuurnummer ' + invoice.invoiceNumber + '.');
+  /* functie 3: de wettelijk verplichte vermelding bij verlegging, in de
+     taal van de klant, mét beide btw-nummers — dat is precies wat een
+     controle wil zien */
+  if(vatMode==='verlegd'){
+    footLines.push(invT('Btw verlegd naar de afnemer.', lang));
+    if(prof.btw && klantBtw){
+      footLines.push(invTpl('Btw-nummer leverancier {a} · btw-nummer afnemer {b}', lang, { a: prof.btw, b: klantBtw }));
+    }
+  }
+  else if(vatMode==='0') footLines.push(invT('Btw 0% (export).', lang));
+  if(invoiceNeedsRate(invoice) && invoiceRate(invoice)){
+    footLines.push(invTpl('Omrekenkoers vastgelegd op de factuurdatum: 1 EUR = {r} {c}. De administratie rekent uitsluitend met deze koers.',
+      lang, { r: fmtRate(invoiceRate(invoice)), c: cur }));
+  }
   var profLine = [prof.naam, prof.kvk ? 'KvK ' + prof.kvk : null, prof.btw ? 'Btw ' + prof.btw : null].filter(Boolean).join(' · ');
   return el('div', { class:'invdoc' }, [
     head, parties, meta, table,
     el('div', { class:'inv-totals' }, totRows),
+    payBlock,
     el('div', { class:'inv-foot' }, footLines.map(function(l){ return el('p', { text:l }); }).concat([ el('p', { text: profLine }) ]))
   ]);
 }
@@ -5961,7 +6717,13 @@ function ensureInvoiceDocument(invoice, project){
   if(invoice.documentId) return Promise.resolve(invoice.documentId);
   return DS.addDocument(project.id, {
     stageKey: invoice.stageKey, docType:'invoice',
-    title:'Factuur ' + (invoice.invoiceNumber || invoice.label || ''),
+    /* golf 1 (functie 9): een concept heeft nog geen nummer. De titel
+       begint bewust óók dan met 'Factuur ' — dat is precies het patroon dat
+       syncInvoiceDoc herkent, dus bij publicatie schrijft het definitieve
+       nummer zichzelf in de titel. */
+    title: invoice.invoiceNumber
+      ? ('Factuur ' + invoice.invoiceNumber)
+      : ('Factuur (concept) — ' + (invoice.label || '')),
     version: 1,
     publishStatus: isConcept(invoice) ? 'concept' : 'published'
   }).then(function(d){
@@ -6080,43 +6842,83 @@ function openInvoicePublishModal(invoice, project, client){
   }
   var due = invoiceDueOf(invoice);
   var m = openModal('Factuur publiceren', project.name + ' — de klant ziet de factuur daarna op zijn betaalpad');
-  m.body.appendChild(el('div', { class:'card rowlist', style:'margin-bottom:16px;' },
-    el('div', { class:'rowitem' }, [
+  var headRow = el('div', { class:'card rowlist', style:'margin-bottom:16px;' });
+  function paintHead(){
+    clearNode(headRow);
+    headRow.appendChild(el('div', { class:'rowitem' }, [
       el('span', { class:'chip', text:'Concept' }),
       el('div', { class:'rowmain' }, [
         el('div', { class:'rowtitle', text:(invoice.invoiceNumber ? invoice.invoiceNumber + ' · ' : '') + invoice.label }),
-        el('div', { class:'rowsub', text: stageLabel(invoice.stageKey) + ' · ' + fmtMoneyCur(due, invoice.currency)
+        el('div', { class:'rowsub', text: stageLabel(invoice.stageKey) + ' · ' + fmtMoneyCur(invoiceDueOf(invoice), invoice.currency)
           + (invoice.documentId ? ' · documentrecord gekoppeld' : ' · nog geen factuurdocument (kan ook later)') })
       ])
-    ])));
-  var mailOpts = (client && client.email) ? {
+    ]));
+  }
+  paintHead();
+  m.body.appendChild(headRow);
+
+  /* golf 1 (functies 3/7/9): de poortwachter. Publiceren is het moment
+     waarop de factuur onherroepelijk naar buiten gaat — dus hier, en
+     nergens anders, staan de controles. Het gatepaneel repareert wat het
+     blokkeert: btw-nummer en koers vul je hier in, zonder het venster te
+     verlaten. */
+  var gateWrap = el('div');
+  m.body.appendChild(gateWrap);
+  var silentBtn = el('button', { type:'button', class:'btn ghost', text:'Publiceer stil' });
+  var sendBtn = el('button', { type:'button', class:'btn', text:'Publiceer + mail' });
+  var mailOpts = null;
+  function syncGate(){
+    clearNode(gateWrap);
+    var blockers = invoicePublishBlockers(invoice, client);
+    gateWrap.appendChild(invoiceGatePanel(blockers, invoice, project, client, function(){
+      paintHead();
+      syncGate();
+    }));
+    var blocked = blockers.length > 0;
+    silentBtn.disabled = blocked;
+    sendBtn.disabled = blocked || !mailOpts;
+  }
+
+  /* functie 9: het definitieve nummer valt pas bij publicatie. De preview
+     mag daar niet over liegen, dus hij toont het KIJKJE plus die zin. */
+  var peek = invoiceNumberFor(adminSettings && adminSettings.factuurReeks);
+  function bodyFor(nr){
+    return 'Factuur ' + nr + ' (' + fmtMoneyCur(invoiceDueOf(invoice), invoice.currency)
+      + ') staat voor je klaar op het betaalpad. Vermeld bij de betaling het kenmerk ' + nr + '.';
+  }
+  mailOpts = (client && client.email) ? {
     client: client, projectName: project.name, projectCode: project.code,
     page:'kosten', portalLabel:'Bekijk de factuur', category:'factuur',
     subject:'Er staat een factuur voor je klaar — ' + project.name,
-    bodyLine:'Factuur ' + (invoice.invoiceNumber || invoice.label) + ' (' + fmtMoneyCur(due, invoice.currency) + ') staat voor je klaar op het betaalpad.'
+    bodyLine: bodyFor(invoice.invoiceNumber || peek.text)
   } : null;
-  if(mailOpts) m.body.appendChild(mailPreviewBlock(mailOpts));
-  else m.body.appendChild(el('p', { style:'font-size:13px;color:var(--gray-69);', text:'Geen klantmailadres bekend — publiceren kan alleen stil.' }));
+  if(mailOpts){
+    m.body.appendChild(mailPreviewBlock(mailOpts));
+    if(!invoice.invoiceNumber){
+      m.body.appendChild(el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:-4px 0 14px;max-width:64ch;line-height:1.65;', text:
+        'Dit concept heeft nog geen nummer: het definitieve factuurnummer wordt op het moment van publiceren uit de reeks getrokken. Nu zou dat ' + peek.text + ' worden — de mail draagt hoe dan ook het echte nummer.' }));
+    }
+  } else {
+    m.body.appendChild(el('p', { style:'font-size:13px;color:var(--gray-69);', text:'Geen klantmailadres bekend — publiceren kan alleen stil.' }));
+  }
   var err = el('p', { class:'formerr' });
   m.body.appendChild(err);
-  var silentBtn = el('button', { type:'button', class:'btn ghost', text:'Publiceer stil' });
-  var sendBtn = el('button', { type:'button', class:'btn', text:'Publiceer + mail', disabled: !mailOpts });
+  syncGate();
   function run(withMail){
     err.classList.remove('show');
     silentBtn.disabled = true; sendBtn.disabled = true;
-    DS.publishInvoice(invoice.id).then(function(){
-      return invoice.documentId ? DS.publishDocument(invoice.documentId) : null;
-    }).then(function(){
-      return auditLog({ kind:'publicatie', clientId: project.clientId || null, projectId: project.id,
-        detail:'Factuur gepubliceerd: ' + (invoice.invoiceNumber || invoice.label) });
-    }).then(function(){
-      return (withMail && mailOpts) ? notifyClient(mailOpts) : null;
+    publishInvoiceNow(invoice, project, client).then(function(nr){
+      if(withMail && mailOpts){
+        mailOpts.bodyLine = bodyFor(nr);
+        return notifyClient(mailOpts);
+      }
+      return null;
     }).then(function(){
       closeModal();
       updateBadge();
       refresh();
     }).catch(function(ex){
-      silentBtn.disabled = false; sendBtn.disabled = !mailOpts;
+      syncGate();
       err.textContent = ex.message||String(ex); err.classList.add('show');
     });
   }
@@ -6126,6 +6928,156 @@ function openInvoicePublishModal(invoice, project, client){
     el('button', { type:'button', class:'btn ghost', text:'Annuleren', onclick:closeModal }),
     silentBtn, sendBtn
   ]));
+}
+/* ============================================================
+   golf 1 — het publiceermoment zelf (functies 3/7/9)
+   ============================================================
+   publishInvoiceNow doet, in deze volgorde en nergens anders:
+     1. de poort opnieuw lopen (een venster kan open hebben gestaan terwijl
+        er in een ander tabblad iets veranderde);
+     2. het definitieve factuurnummer ATOMAIR trekken als het er nog niet is
+        — via dezelfde claimInvoiceNumber als de rest van het systeem, dus
+        met de rijvergrendeling live en de gedeelde teller in demo;
+     3. dat nummer wegschrijven met updateInvoice, waardoor het gekoppelde
+        documentrecord meteen zijn echte titel krijgt;
+     4. publiceren, het document meepubliceren en een auditregel schrijven.
+   Geeft het definitieve nummer terug, zodat de mail eromheen er zeker van
+   is dat hij het echte kenmerk noemt. */
+function publishInvoiceNow(invoice, project, client){
+  var blockers = invoicePublishBlockers(invoice, client || null);
+  if(blockers.length) return Promise.reject(new Error(blockers[0].text));
+  var step = invoice.invoiceNumber
+    ? Promise.resolve(invoice.invoiceNumber)
+    : claimInvoiceNumber().then(function(claim){
+        return DS.updateInvoice(invoice.id, { invoiceNumber: claim.text }).then(function(){
+          invoice.invoiceNumber = claim.text;
+          return claim.text;
+        });
+      });
+  return step.then(function(nr){
+    return DS.publishInvoice(invoice.id).then(function(){
+      return invoice.documentId ? DS.publishDocument(invoice.documentId) : null;
+    }).then(function(){
+      invoice.publishStatus = 'published';
+      return auditLog({ kind:'publicatie', clientId: project.clientId || null, projectId: project.id,
+        detail:'Factuur gepubliceerd: ' + nr + ' · ' + (invoice.label || '') });
+    }).then(function(){ return nr; });
+  });
+}
+/* het gatepaneel: per blokkade een uitleg én het veld dat hem oplost.
+   onFixed() wordt aangeroepen zodra er iets is opgeslagen, zodat het
+   aanroepende venster zichzelf opnieuw kan tekenen. */
+function invoiceGatePanel(blockers, invoice, project, client, onFixed){
+  var wrap = el('div');
+  if(!blockers.length){
+    wrap.appendChild(el('p', { style:'font-size:12.5px;color:var(--green);margin:0 0 14px;', text:
+      '✓ Controle in orde — btw-behandeling, bedrag en valuta zijn compleet.' }));
+    return wrap;
+  }
+  var card = el('div', { class:'card', style:'padding:16px 18px;margin-bottom:16px;border-color:var(--critical);' });
+  card.appendChild(el('p', { style:'font-size:13.5px;color:var(--critical);font-weight:600;margin:0 0 4px;', text:
+    blockers.length===1 ? 'Publiceren kan nog niet' : 'Publiceren kan nog niet — ' + blockers.length + ' punten' }));
+  blockers.forEach(function(b){
+    card.appendChild(el('p', { style:'font-size:13px;color:var(--gray-33);margin:8px 0 0;max-width:64ch;', text: b.text }));
+    if(b.key === 'btwnummer' && client){
+      /* functie 3: het btw-nummer hoort op de klantkaart — dit veld schrijft
+         daar ook echt naartoe, het is geen los factuurveldje */
+      var vatIn = el('input', { class:'input', type:'text', style:'max-width:230px;text-transform:uppercase;',
+        value: vatCompact(client.vatNumber), placeholder:'bv. DE123456789', 'aria-label':'Btw-nummer van de klant' });
+      var vatHint = el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:6px 0 0;line-height:1.6;max-width:62ch;' });
+      var vatSave = el('button', { type:'button', class:'btn small', text:'Opslaan op klantkaart' });
+      var syncVatHint = function(){
+        var chk = vatNumberCheck(vatIn.value);
+        vatHint.textContent = chk.ok
+          ? 'Formaat klopt voor ' + chk.code + '. Of het nummer echt bestaat, controleer je bij VIES — dat kan dit systeem niet.'
+          : (chk.reason === 'leeg' ? 'Vul het btw-nummer inclusief landcode in.' : 'Formaatcontrole: ' + chk.reason + '.');
+        vatHint.style.color = chk.ok ? '' : 'var(--critical)';
+        vatSave.disabled = !chk.ok;
+      };
+      vatIn.addEventListener('input', syncVatHint);
+      syncVatHint();
+      vatSave.addEventListener('click', function(){
+        var val = vatCompact(vatIn.value);
+        vatSave.disabled = true;
+        DS.updateClient(client.id, { vatNumber: val }).then(function(){
+          client.vatNumber = val;
+          return auditLog({ kind:'bewerking', clientId: client.id, projectId: project ? project.id : null,
+            detail:'Btw-nummer klant vastgelegd: ' + val });
+        }).then(function(){ if(onFixed) onFixed(); }).catch(function(ex){
+          vatSave.disabled = false;
+          vatHint.textContent = ex.message || String(ex);
+          vatHint.style.color = 'var(--critical)';
+        });
+      });
+      card.appendChild(el('div', { style:'display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:8px;' }, [
+        field('Btw-nummer klant', vatIn), vatSave
+      ]));
+      card.appendChild(vatHint);
+      card.appendChild(el('p', { style:'font-size:12.5px;margin:6px 0 0;' }, [
+        el('a', { href: VIES_URL, target:'_blank', rel:'noopener', style:'color:var(--green);', text:'Controleer het nummer bij VIES (opent in een nieuw tabblad)' })
+      ]));
+    }
+    if(b.key === 'koers'){
+      /* functie 7: handmatig overnemen van de ECB-referentiekoers. Bewust
+         geen live API: een koers die zichzelf ophaalt is niet reconstrueerbaar
+         en de aangifte vraagt om precies de koers van de factuurdatum. */
+      var cur = invoice.currency || 'USD';
+      var rateIn = el('input', { class:'input', type:'text', inputmode:'decimal', style:'max-width:160px;',
+        value: invoiceRate(invoice) ? fmtRate(invoiceRate(invoice)) : '',
+        placeholder: cur === 'CNY' ? '7,8500' : '1,0850', 'aria-label':'Koers op factuurdatum' });
+      var rateHint = el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:6px 0 0;line-height:1.6;max-width:62ch;' });
+      var rateSave = el('button', { type:'button', class:'btn small', text:'Koers vastleggen' });
+      var syncRateHint = function(){
+        var r = parseRate(rateIn.value);
+        if(isNaN(r)){
+          rateHint.textContent = 'Vul de koers in als getal, bijvoorbeeld 1,0850 — hoeveel ' + cur + ' één euro was.';
+          rateHint.style.color = rateIn.value.trim() ? 'var(--critical)' : '';
+          rateSave.disabled = true;
+        } else {
+          rateHint.textContent = '1 EUR = ' + fmtRate(r) + ' ' + cur + ' · '
+            + fmtMoneyCur(invoiceDueOf(invoice), cur) + ' wordt ' + fmtMoneyCur(Math.round(invoiceDueOf(invoice) / r), 'EUR') + '.';
+          rateHint.style.color = '';
+          rateSave.disabled = false;
+        }
+      };
+      rateIn.addEventListener('input', syncRateHint);
+      syncRateHint();
+      rateSave.addEventListener('click', function(){
+        var r = parseRate(rateIn.value);
+        if(isNaN(r)) return;
+        rateSave.disabled = true;
+        DS.updateInvoice(invoice.id, { rateToEur: r }).then(function(){
+          invoice.rateToEur = r;
+          return auditLog({ kind:'factuur', clientId: project ? project.clientId : null, projectId: project ? project.id : null,
+            detail:'Wisselkoers vastgelegd: 1 EUR = ' + fmtRate(r) + ' ' + cur
+              + ' voor ' + (invoice.invoiceNumber || invoice.label || 'concept') });
+        }).then(function(){ if(onFixed) onFixed(); }).catch(function(ex){
+          rateSave.disabled = false;
+          rateHint.textContent = ex.message || String(ex);
+          rateHint.style.color = 'var(--critical)';
+        });
+      });
+      card.appendChild(el('div', { style:'display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:8px;' }, [
+        field('Koers op factuurdatum (1 EUR = … ' + cur + ')', rateIn), rateSave
+      ]));
+      card.appendChild(rateHint);
+      card.appendChild(el('p', { style:'font-size:12.5px;margin:6px 0 0;' }, [
+        el('a', { href: ECB_RATES_URL, target:'_blank', rel:'noopener', style:'color:var(--green);',
+          text:'Zoek de ECB-referentiekoers van ' + (fmtDate(invoice.createdAt) || 'de factuurdatum') + ' op (opent in een nieuw tabblad)' })
+      ]));
+      card.appendChild(el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:8px 0 0;max-width:62ch;line-height:1.65;', text:
+        'Handmatig overnemen is bewust: een koers die zichzelf ophaalt kun je later niet meer verantwoorden. Eenmaal vastgelegd rekent elke rapportage uitsluitend hiermee.' }));
+    }
+    if(b.key === 'bedrag' && project){
+      card.appendChild(el('div', { style:'margin-top:8px;' }, [
+        el('button', { type:'button', class:'btn small', text:'Bewerk factuur', onclick:function(){
+          openInvoiceModal(project.id, null, invoice);
+        } })
+      ]));
+    }
+  });
+  wrap.appendChild(card);
+  return wrap;
 }
 /* de automaat (golf 8): betaalfase → 'wacht op akkoord' zet — als het
    vinkje aan staat en er nog géén factuur voor die fase bestaat — een
@@ -6156,22 +7108,22 @@ function autoConceptInvoice(projectId, stageKey){
       var vatMode = (st.factuurStandaard && st.factuurStandaard.btwMode) || 'verlegd';
       var cur = p.valueCurrency || (st.factuurStandaard && st.factuurStandaard.valuta) || 'EUR';
       var vat = vatCentsFor(cents, vatMode);
-      /* FIXRONDE R0-1/R1-1: het nummer komt uit de atomaire uitgifte; deze
-         functie raakt de teller zelf niet meer aan (en slikt dus ook geen
-         mislukte tellersave meer stil in) */
-      return claimInvoiceNumber().then(function(claim){
-        return DS.addInvoice(projectId, {
-          label:'Fase ' + s.position + ' — ' + stageLabel(stageKey) + ', ' + s.paymentPct + '%',
-          amountCents: cents, stageKey: stageKey, invoiceNumber: claim.text,
-          currency: cur, vatMode: vatMode, vatCents: vat, totalCents: cents + vat,
-          publishStatus:'concept'
-        }).then(function(inv){
-          return auditLog({ kind:'factuur', clientId: p.clientId || null, projectId: projectId,
-            detail:'Conceptfactuur automatisch klaargezet: ' + claim.text + ' — ' + stageLabel(stageKey)
-              + (hasValue ? '' : ' (bedrag nog invullen)') }).then(function(){
-            updateBadge();
-            return inv;
-          });
+      /* GOLF 1 — functie 9: de automaat trekt GEEN nummer meer.
+         Een fase die wordt teruggedraaid of een concept dat nooit
+         gepubliceerd wordt, liet vroeger een onverklaarbaar gat achter in
+         de reeks. Dit concept blijft nummerloos tot het publiceermoment;
+         de factuur-PDF toont zolang 'nummer volgt bij publicatie'. */
+      return DS.addInvoice(projectId, {
+        label:'Fase ' + s.position + ' — ' + stageLabel(stageKey) + ', ' + s.paymentPct + '%',
+        amountCents: cents, stageKey: stageKey, invoiceNumber: '',
+        currency: cur, vatMode: vatMode, vatCents: vat, totalCents: cents + vat,
+        publishStatus:'concept'
+      }).then(function(inv){
+        return auditLog({ kind:'factuur', clientId: p.clientId || null, projectId: projectId,
+          detail:'Conceptfactuur automatisch klaargezet (nog nummerloos): ' + stageLabel(stageKey)
+            + (hasValue ? '' : ' — bedrag nog invullen') }).then(function(){
+          updateBadge();
+          return inv;
         });
       });
     });
@@ -7245,9 +8197,47 @@ function renderSettings(){
       pctRow.appendChild(field(('0'+(i+1)).slice(-2) + ' ' + (s.key==='dfm' ? 'DFM' : s.label.split(' ')[0]), inp));
     });
     syncPctSum();
+    /* golf 1 (functie 1): IBAN + BIC. Ze staan op elke factuur en vullen de
+       EPC-betaal-QR; een fout in de IBAN is een betaling die nooit aankomt,
+       dus de mod-97-controle staat er direct onder. */
+    var ibanIn = el('input', { class:'input', type:'text', 'aria-label':'IBAN',
+      value: (settings.bedrijf && settings.bedrijf.iban) || '', placeholder:'NL00 BANK 0000 0000 00' });
+    var bicIn = el('input', { class:'input', type:'text', 'aria-label':'BIC of SWIFT',
+      value: (settings.bedrijf && settings.bedrijf.bic) || '', placeholder:'ABNANL2A' });
+    var payHint = el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:-4px 0 12px;max-width:66ch;line-height:1.6;', 'aria-live':'polite' });
+    function syncPayHint(){
+      var Q = window.CP_QR;
+      var iban = ibanIn.value.trim();
+      var bic = bicIn.value.trim();
+      var parts = [];
+      if(!iban){
+        parts.push('Zonder IBAN staat er geen betaalinstructie op de factuur en verschijnt er geen betaal-QR.');
+      } else if(Q && !Q.ibanValid(iban)){
+        parts.push('Deze IBAN komt niet door de controlecijfers (mod-97) — controleer hem; zolang hij fout is verschijnt er geen QR.');
+      } else {
+        parts.push('IBAN in orde. EUR-facturen krijgen een scanbare SEPA-betaal-QR met bedrag en betalingskenmerk erin.');
+      }
+      if(bic && Q && !Q.bicValid(bic)) parts.push('De BIC klopt niet qua vorm (8 of 11 tekens) — hij wordt dan uit de QR weggelaten.');
+      payHint.textContent = parts.join(' ');
+      payHint.style.color = (iban && Q && !Q.ibanValid(iban)) ? 'var(--critical)' : '';
+    }
+    function savePayField(key, input){
+      input.addEventListener('input', syncPayHint);
+      input.addEventListener('change', function(){
+        var next = clone(settings.bedrijf || {});
+        next[key] = key === 'iban'
+          ? (window.CP_QR ? window.CP_QR.ibanCompact(input.value) : input.value.trim().toUpperCase())
+          : input.value.trim().toUpperCase();
+        input.value = next[key];
+        saveSet('bedrijf', next, bedrijfFlash).then(syncPayHint);
+      });
+    }
+    savePayField('iban', ibanIn);
+    savePayField('bic', bicIn);
+    syncPayHint();
     var bedrijfCard = el('div', { class:'card', style:'padding:18px;' }, [
       el('p', { style:'font-size:14px;color:var(--gray-69);margin-bottom:14px;max-width:64ch;', text:
-        'Deze gegevens landen in de dossier-export, de chase-teksten en het afzenderblok van klantmails; het fasesjabloon en de AQL-norm zijn de standaarden voor elk nieuw project.' }),
+        'Deze gegevens landen in de dossier-export, de chase-teksten, het afzenderblok van klantmails en op de factuur zelf; het fasesjabloon en de AQL-norm zijn de standaarden voor elk nieuw project.' }),
       el('div', { class:'formrow' }, [
         textSetting(settings, 'naam', 'bedrijf', bedrijfFlash, { label:'Bedrijfsnaam' }),
         textSetting(settings, 'kvk', 'bedrijf', bedrijfFlash, { label:'KvK-nummer' })
@@ -7256,6 +8246,11 @@ function renderSettings(){
         textSetting(settings, 'btw', 'bedrijf', bedrijfFlash, { label:'Btw-nummer' }),
         textSetting(settings, 'adres', 'bedrijf', bedrijfFlash, { label:'Adres' })
       ]),
+      el('div', { class:'formrow' }, [
+        field('IBAN (op de factuur en in de betaal-QR)', ibanIn),
+        field('BIC / SWIFT (optioneel)', bicIn)
+      ]),
+      payHint,
       el('div', { class:'formrow' }, [
         textSetting(settings, 'naam', 'mailAfzender', bedrijfFlash, { label:'Mailafzender (naam)' }),
         textSetting(settings, 'replyTo', 'mailAfzender', bedrijfFlash, { label:'Reply-to (e-mail)' })
@@ -7332,9 +8327,25 @@ function renderSettings(){
       el('label', { class:'checkline', style:'margin-bottom:6px;' }, [ autoChk,
         el('span', { text:'Maak automatisch een conceptfactuur wanneer een betaalfase op ‘wacht op goedkeuring’ gaat' }) ]),
       el('p', { style:'font-size:12.5px;color:var(--gray-69);max-width:64ch;', text:
-        'De automaat zet alleen een CONCEPT klaar: nummer uit de jaarteller, bedrag = projectwaarde × fasepercentage (zonder projectwaarde blijft het bedrag leeg, met badge ‘bedrag invullen’). Publiceren en mailen doe jij altijd zelf, via de Wachtrij of het project.' })
+        'De automaat zet alleen een CONCEPT klaar: bedrag = projectwaarde × fasepercentage (zonder projectwaarde blijft het bedrag leeg, met badge ‘bedrag invullen’). Het concept blijft nummerloos tot je het publiceert — zo trekt een fase die je terugdraait nooit een nummer uit de reeks. Publiceren en mailen doe jij altijd zelf, via de Wachtrij of het project.' })
     ]);
     content.appendChild(sectionBlock('Jaarteller, valuta en btw', 'Facturatie', null, factCard));
+
+    /* --- golf 1, functie 9: de nummeringswaakhond ---
+       De reeks moet aaneengesloten zijn; op de controlevraag 'waarom
+       ontbreekt CP-2026-0007?' heb je twee jaar later geen antwoord meer,
+       tenzij het antwoord op het moment zelf is vastgelegd. Deze kaart
+       leest ALLE facturen (ook uit andere projecten), groepeert ze per
+       jaar en per voorvoegsel en toont wat er ontbreekt of dubbel staat.
+       Een gat verdwijnt pas uit beeld als er een verklaring bij staat, en
+       die verklaring gaat als auditregel mee.
+       Bewuste plaatsing: dit systeem heeft geen apart factuuroverzicht over
+       alle projecten heen — de reeks zélf woont hier, dus hoort de
+       waakhond hier ook. */
+    var watchCard = el('div', { class:'card', style:'padding:18px;' });
+    watchCard.appendChild(el('p', { class:'kicker', style:'margin:0;', text:'Reeks controleren…' }));
+    content.appendChild(sectionBlock('Gaten en dubbelen in de reeks', 'Nummeringswaakhond', null, watchCard));
+    renderNumberWatchdog(watchCard, settings, saveSet);
 
     /* --- mailsjablonen-bibliotheek (functie 66) --- */
     var tplFlash = el('span', { class:'saveflash', text:'Opgeslagen' });
@@ -8400,11 +9411,15 @@ function renderClient(clientId){
     content.appendChild(el('button', { type:'button', class:'backbtn', text:'← Alle klanten', onclick:function(){ go({ name:'clients' }); } }));
     content.appendChild(el('div', { class:'pagehead' }, [
       el('div', null, [
-        el('span', { class:'kicker', text:'Klant sinds ' + fmtDate(c.createdAt) }),
+        el('span', { class:'kicker', text:'Klant sinds ' + fmtDate(c.createdAt)
+          /* golf 1 (functie 3): het btw-nummer hoort zichtbaar op de kaart —
+             het bepaalt of een verlegd-factuur überhaupt de deur uit mag */
+          + (vatCompact(c.vatNumber) ? ' · btw ' + vatCompact(c.vatNumber) : '') }),
         el('h1', { text:c.company })
       ]),
       el('div', { style:'display:flex;gap:8px;align-items:center;flex-wrap:wrap;' }, [
         hasReorder ? el('span', { class:'chip done', text:'Herbestelling' }) : null,
+        vatCompact(c.vatNumber) ? null : el('span', { class:'chip awaiting', title:'Zonder btw-nummer kan een factuur met btw verlegd niet gepubliceerd worden', text:'Btw-nummer ontbreekt' }),
         /* nieuw-apparaat-badge (functie 33): alleen bij een echt signaal
            uit de laatste 14 dagen */
         newDevice ? el('span', { class:'chip awaiting', title:'Onbekende apparaat/regio-combinatie: ' + newDevice.combo, text:'Nieuw apparaat' }) : null,
@@ -9670,29 +10685,46 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
            erna hem meteen toont in facturenlijst, Wachtrij en Vandaag */
         return newStatus==='awaiting_approval' ? autoConceptInvoice(pid, s.stageKey) : null;
       }).then(function(){
-        if((newStatus === 'done' || newStatus === 'awaiting_approval') && client){
-          /* mail-preview vlak vóór echte verzending (functies 44/67): de
-             status staat al om, de klantmail eerst exact zien en dan pas
-             kiezen tussen versturen of stil laten */
-          openMailChoiceModal({
-            client: client,
-            projectName: project.name, projectCode: project.code,
-            page: 'mijlpalen', portalLabel: 'Bekijk het mijlpalenpad',
-            subject: mailSubject(newStatus === 'done' ? 'faseDone' : 'faseAwaiting',
-              { fase: stageLabel(s.stageKey), project: project.name }),
-            /* zelfde zin als de cockpit van de klant: één statusmotor */
-            bodyLine: window.CP_STATUS.fill(
-              newStatus === 'done' ? window.CP_STATUS.templates.stageDone : window.CP_STATUS.templates.stageAwaiting,
-              { fase: stageLabel(s.stageKey) })
-          }, {
-            title:'Klantmail bij deze fasewissel',
-            kicker:'De status staat al om — kies of de klant een mail krijgt',
-            sendLabel:'Verstuur klantmail', silentLabel:'Geen mail (stil)',
-            onDismiss:function(){ refresh(); }
-          });
-          return;
+        if(!((newStatus === 'done' || newStatus === 'awaiting_approval') && client)){
+          refresh();
+          return null;
         }
-        refresh();
+        /* golf 1 (functie 11): het conceptfactuurtje van deze fase erbij
+           zoeken — bestaat het, dan mag het in dezelfde beweging mee */
+        return DS.listInvoices(pid).then(function(invs){
+          return (invs || []).find(function(i2){ return i2.stageKey === s.stageKey && isConcept(i2); }) || null;
+        }, function(){ return null; });
+      }).then(function(conceptInv){
+        /* niets te mailen (andere status of geen klant): de vorige stap
+           heeft al ververst */
+        if(!((newStatus === 'done' || newStatus === 'awaiting_approval') && client)) return;
+        /* mail-preview vlak vóór echte verzending (functies 44/67): de
+           status staat al om, de klantmail eerst exact zien en dan pas
+           kiezen tussen versturen of stil laten */
+        var clang = clientPortalLang(client);
+        var mailOpts = {
+          client: client,
+          projectName: project.name, projectCode: project.code,
+          page: 'mijlpalen', portalLabel: 'Bekijk het mijlpalenpad',
+          subject: mailSubject(newStatus === 'done' ? 'faseDone' : 'faseAwaiting',
+            { fase: stageLabel(s.stageKey), project: project.name }),
+          /* zelfde zin als de cockpit van de klant: één statusmotor.
+             Golf 1: en nu ook in de taal van de klant — de zin én de
+             fasenaam staan al als sleutel in alle vier de woordenboeken,
+             dus dit is dezelfde tekst die hij in zijn portaal leest. */
+          bodyLine: invTpl(
+            newStatus === 'done' ? window.CP_STATUS.templates.stageDone : window.CP_STATUS.templates.stageAwaiting,
+            clang, { fase: invT(stageLabel(s.stageKey), clang) })
+        };
+        var attach = conceptInv ? invoiceAttachBlock(conceptInv, project, client, mailOpts) : null;
+        openMailChoiceModal(mailOpts, {
+          title:'Klantmail bij deze fasewissel',
+          kicker:'De status staat al om — kies of de klant een mail krijgt',
+          sendLabel:'Verstuur klantmail', silentLabel:'Geen mail (stil)',
+          extraBlock: attach,
+          beforeSend: attach ? attach._run : null,
+          onDismiss:function(){ refresh(); }
+        });
       }).catch(function(ex){
         sel.value = s.status;
         showError(ex);
@@ -9972,8 +11004,10 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
           openReminderModal(inv, project, client);
         } }));
       }
+      /* golf 1 (functies 5/14): niet meer één blinde klik — het
+         betaalvenster met kenmerkcontrole en bevestiging */
       right.push(el('button', { type:'button', class:'btn ghost small', text:'Markeer betaald', onclick:function(){
-        DS.markInvoicePaid(inv.id).then(refresh);
+        openMarkPaidModal(inv, project, client || null);
       } }));
     }
     /* golf 7 — bewerk-alles: zelfde modal als toevoegen, voorgevuld; plus
@@ -9997,8 +11031,18 @@ function buildProjectView(project, client, media, docs, invoices, samples, inspe
       } }));
     }
     var subParts2 = [];
-    if(inv.invoiceNumber) subParts2.push(inv.invoiceNumber);
+    /* golf 1 (functies 5/9): het nummer IS het betalingskenmerk; een concept
+       heeft er nog geen en dat staat er dan ook eerlijk */
+    if(inv.invoiceNumber) subParts2.push('kenmerk ' + inv.invoiceNumber);
+    else if(isConcept(inv)) subParts2.push('nummer volgt bij publicatie');
     subParts2.push(stageLabel(inv.stageKey));
+    /* golf 1 (functie 7): de vastgelegde koers hoort in de rij zichtbaar */
+    if(invoiceNeedsRate(inv)){
+      subParts2.push(invoiceRate(inv)
+        ? 'koers 1 EUR = ' + fmtRate(invoiceRate(inv)) + ' ' + inv.currency
+          + ' · ' + fmtMoneyCur(invoiceEurCents(inv), 'EUR')
+        : 'koers ontbreekt');
+    }
     /* btw-regel (functie 65): alleen tonen als er echt btw op de factuur staat */
     if(inv.vatCents) subParts2.push('btw ' + fmtMoneyCur(inv.vatCents, inv.currency) + ' · totaal ' + fmtMoneyCur(inv.totalCents || (inv.amountCents + inv.vatCents), inv.currency));
     else if(inv.vatMode==='verlegd') subParts2.push('btw verlegd');
@@ -10952,7 +11996,22 @@ function openInvoiceModal(projectId, prefill, editInv){
   }
   var m = openModal(editInv ? 'Factuur bewerken' : 'Nieuwe factuur',
     editInv ? 'Stil — een correctie stuurt geen klantmail; status en betaaldatum blijven staan'
-            : 'Nummer uit de jaarteller, pas bij opslaan vastgelegd; btw en totaal rekenen mee');
+            : 'Nummer uit de reeks bij opslaan; btw, totaal en de publiceercontrole rekenen mee');
+  /* golf 1 (functies 3/7): een handmatige factuur wordt METEEN gepubliceerd —
+     aanmaken IS hier het publiceermoment. Dus geldt precies dezelfde poort
+     als bij het publiceren van een concept: geen verlegd-factuur zonder
+     btw-nummer van de klant, geen USD/CNY zonder vastgelegde koers.
+     De klant wordt alvast opgehaald zodat de controle bij opslaan
+     synchroon kan; mislukt dat, dan blokkeert de poort niets wat hij niet
+     kan beoordelen. */
+  var gateClient = null, gateLoaded = false;
+  if(!editInv){
+    Promise.all([ DS.getProject(projectId), DS.listClients() ]).then(function(r0){
+      var p0 = r0[0];
+      gateClient = p0 ? ((r0[1]||[]).find(function(x){ return x.id===p0.clientId; }) || null) : null;
+      gateLoaded = true;
+    }).catch(function(){});
+  }
   var nummer = el('input', { class:'input', type:'text', 'aria-label':'Factuurnummer',
     placeholder: editInv ? '' : 'automatisch uit de reeks' });
   if(editInv) nummer.value = editInv.invoiceNumber || '';
@@ -10967,6 +12026,18 @@ function openInvoiceModal(projectId, prefill, editInv){
   CURRENCIES.forEach(function(c2){ curSel.appendChild(option(c2, c2, c2===(prefill.currency||'EUR'))); });
   var vatSel = el('select', { class:'input', 'aria-label':'Btw-behandeling' });
   VAT_MODES.forEach(function(v){ vatSel.appendChild(option(v.key, v.label, v.key===(editInv ? (editInv.vatMode||'verlegd') : 'verlegd'))); });
+  /* golf 1 (functie 7): het wisselkoersanker. Alleen zichtbaar bij een
+     niet-EUR-valuta; leeg laten mag hier, maar publiceren kan dan niet —
+     de poortwachter vraagt er dan alsnog om. */
+  var rateIn = el('input', { class:'input', type:'text', inputmode:'decimal', style:'max-width:170px;',
+    value: editInv && invoiceRate(editInv) ? fmtRate(invoiceRate(editInv)) : '',
+    placeholder:'1,0850', 'aria-label':'Koers op factuurdatum' });
+  var rateField = field('Koers op factuurdatum (1 EUR = …)', rateIn);
+  var rateHint = el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:-6px 0 12px;line-height:1.6;max-width:62ch;', 'aria-live':'polite' });
+  var rateLink = el('p', { style:'font-size:12.5px;margin:-8px 0 12px;' }, [
+    el('a', { href: ECB_RATES_URL, target:'_blank', rel:'noopener', style:'color:var(--green);',
+      text:'ECB-referentiekoers opzoeken (handmatig overnemen — opent in een nieuw tabblad)' })
+  ]);
   var err = el('p', { class:'formerr' });
   /* automatische nummering (functie 65) — FIXRONDE R0-1/R1-1: het nummer
      wordt PAS bij opslaan uitgegeven, atomair via claimInvoiceNumber().
@@ -10988,6 +12059,7 @@ function openInvoiceModal(projectId, prefill, editInv){
       if(!prefill.currency && CURRENCIES.indexOf(st.factuurStandaard.valuta) > -1) curSel.value = st.factuurStandaard.valuta;
       if(VAT_MODES.some(function(v){ return v.key===st.factuurStandaard.btwMode; })) vatSel.value = st.factuurStandaard.btwMode;
       syncVatLine();
+      syncRateRow();   /* golf 1 (functie 7): standaardvaluta kan USD/CNY zijn */
     }
   }).catch(function(){});
   /* plausibiliteitshints (18) + live btw-regel en totaal (65) */
@@ -11013,8 +12085,34 @@ function openInvoiceModal(projectId, prefill, editInv){
     syncVatLine();
   });
   vatSel.addEventListener('change', syncVatLine);
-  curSel.addEventListener('change', syncVatLine);
+  /* golf 1 (functie 7): koersveld verschijnt en verdwijnt met de valuta */
+  function syncRateRow(){
+    var nonEur = curSel.value !== 'EUR';
+    /* display i.p.v. [hidden]: .field zet zelf een display en zou het
+       hidden-attribuut overrulen */
+    rateField.style.display = nonEur ? '' : 'none';
+    rateHint.style.display = nonEur ? '' : 'none';
+    rateLink.style.display = nonEur ? '' : 'none';
+    if(!nonEur){ rateHint.textContent = ''; return; }
+    var r = parseRate(rateIn.value);
+    var cents = parseEuro(amount.value);
+    if(isNaN(r)){
+      rateHint.textContent = 'Hoeveel ' + curSel.value + ' was één euro op de factuurdatum? Zonder deze koers kun je de factuur niet publiceren — de EUR-tegenwaarde is later niet meer te reconstrueren.';
+      rateHint.style.color = rateIn.value.trim() ? 'var(--critical)' : '';
+      return;
+    }
+    rateHint.style.color = '';
+    var vat2 = vatCentsFor(isNaN(cents) ? 0 : cents, vatSel.value);
+    var due2 = (isNaN(cents) ? 0 : cents) + vat2;
+    rateHint.textContent = '1 EUR = ' + fmtRate(r) + ' ' + curSel.value
+      + (due2 ? ' · totaal ' + fmtMoneyCur(due2, curSel.value) + ' = ' + fmtMoneyCur(Math.round(due2 / r), 'EUR') : '');
+  }
+  curSel.addEventListener('change', function(){ syncVatLine(); syncRateRow(); });
+  rateIn.addEventListener('input', syncRateRow);
+  amount.addEventListener('input', syncRateRow);
+  vatSel.addEventListener('change', syncRateRow);
   syncVatLine();
+  syncRateRow();
   var invSubmitBtn = el('button', { type:'submit', class:'btn', text: editInv ? 'Opslaan' : 'Factuur aanmaken' });
   var invBusy = false;
   var form = el('form', { onsubmit:function(e){
@@ -11040,12 +12138,21 @@ function openInvoiceModal(projectId, prefill, editInv){
       var prevInv = { label: editInv.label, amountCents: editInv.amountCents, stageKey: editInv.stageKey,
         invoiceNumber: editInv.invoiceNumber || '', currency: editInv.currency,
         vatMode: editInv.vatMode || 'verlegd', vatCents: editInv.vatCents || 0,
-        totalCents: editInv.totalCents || editInv.amountCents };
+        totalCents: editInv.totalCents || editInv.amountCents,
+        rateToEur: invoiceRate(editInv) };
       var labelVal = label.value.trim();
+      /* golf 1 (functie 7): een EUR-factuur draagt nooit een koers — anders
+         staat er straks een betekenisloos getal in de rapportage */
+      var rateVal = curSel.value === 'EUR' ? null : parseRate(rateIn.value);
+      if(curSel.value !== 'EUR' && rateIn.value.trim() && isNaN(rateVal)){
+        err.textContent = 'De koers is niet herkend — schrijf bijvoorbeeld 1,0850.'; err.classList.add('show');
+        invBusy = false; invSubmitBtn.disabled = false; return;
+      }
       DS.updateInvoice(editInv.id, {
         label: labelVal, amountCents: cents, stageKey: stage.value,
         invoiceNumber: usedNumber, currency: curSel.value,
-        vatMode: vatSel.value, vatCents: vat, totalCents: cents + vat
+        vatMode: vatSel.value, vatCents: vat, totalCents: cents + vat,
+        rateToEur: isNaN(rateVal) ? null : rateVal
       }).then(function(sync){
         draft.clear();
         /* FIXRONDE R1-2: het gekoppelde factuurdocument liep mee — dat mag
@@ -11066,8 +12173,30 @@ function openInvoiceModal(projectId, prefill, editInv){
       return;
     }
     var createdInv = null;
+    var newRate = curSel.value === 'EUR' ? null : parseRate(rateIn.value);
+    if(curSel.value !== 'EUR' && rateIn.value.trim() && isNaN(newRate)){
+      err.textContent = 'De koers is niet herkend — schrijf bijvoorbeeld 1,0850.'; err.classList.add('show');
+      invBusy = false; invSubmitBtn.disabled = false; return;
+    }
+    /* golf 1 (functies 3/7): dezelfde poort als bij publiceren — een
+       handmatige factuur gaat direct naar de klant. Alleen de twee nieuwe
+       compliance-punten; het bedrag houdt zijn bestaande waarschuwing (een
+       nulfactuur bewust aanmaken blijft toegestaan). Is de klant nog niet
+       ingelezen, dan oordeelt de poort niet over iets wat hij niet kent. */
+    var blockers = gateLoaded ? invoicePublishBlockers({
+      amountCents: cents || 1, vatMode: vatSel.value,
+      currency: curSel.value, rateToEur: isNaN(newRate) ? null : newRate
+    }, gateClient) : [];
+    if(blockers.length){
+      err.textContent = blockers[0].text
+        + (blockers[0].key === 'btwnummer' ? ' Vul het in op de klantkaart (Klanten → Bewerk), of kies een andere btw-behandeling.' : '');
+      err.classList.add('show');
+      invBusy = false; invSubmitBtn.disabled = false; return;
+    }
     /* FIXRONDE R0-1/R1-1: leeg veld → nummer NU atomair claimen; een zelf
-       getypt nummer wordt letterlijk gebruikt en laat de teller met rust */
+       getypt nummer wordt letterlijk gebruikt en laat de teller met rust.
+       Golf 1 (functie 9): een handmatige factuur wordt meteen gepubliceerd,
+       dus dít IS het publicatiemoment — hier hoort het nummer wél te vallen. */
     var numberStep = usedNumber
       ? Promise.resolve(usedNumber)
       : claimInvoiceNumber().then(function(claim){ return claim.text; });
@@ -11075,7 +12204,8 @@ function openInvoiceModal(projectId, prefill, editInv){
       return DS.addInvoice(projectId, {
         label: label.value.trim(), amountCents: cents, stageKey: stage.value,
         invoiceNumber: num, currency: curSel.value,
-        vatMode: vatSel.value, vatCents: vat, totalCents: cents + vat
+        vatMode: vatSel.value, vatCents: vat, totalCents: cents + vat,
+        rateToEur: isNaN(newRate) ? null : newRate
       });
     }).then(function(inv){
       createdInv = inv || null;
@@ -11097,6 +12227,10 @@ function openInvoiceModal(projectId, prefill, editInv){
     el('div', { class:'formrow' }, [ field('Bedrag (excl. btw)', amount), field('Valuta', curSel) ]),
     el('div', { class:'formrow' }, [ field('Btw-behandeling', vatSel), field('Fase', stage) ]),
     vatLine,
+    /* golf 1 (functie 7): koersanker, alleen bij USD/CNY */
+    rateField,
+    rateHint,
+    rateLink,
     amountWarn,
     err,
     el('div', { class:'modal-actions' }, [
@@ -12354,21 +13488,51 @@ function openStageDateModal(project, s){
 
 /* klantkaart: bedrijf, contactpersoon en bereikbaarheid */
 function openClientEditModal(c){
-  var m = openModal('Klantgegevens bewerken', 'Bedrijf, contactpersoon en bereikbaarheid');
+  var m = openModal('Klantgegevens bewerken', 'Bedrijf, contactpersoon, bereikbaarheid en btw-nummer');
   var company = el('input', { class:'input', type:'text', required:'required', value: c.company || '' });
   var contact = el('input', { class:'input', type:'text', required:'required', value: c.contactName || '' });
   var email = el('input', { class:'input', type:'email', required:'required', value: c.email || '' });
   var phone = el('input', { class:'input', type:'text', value: c.phone || '' });
+  /* golf 1 (functie 3): het btw-identificatienummer van de afnemer. Zonder
+     dit nummer weigert de publiceerflow een verlegd-factuur — daarom staat
+     het hier, bij de klant, en niet per factuur opnieuw. */
+  var vatIn = el('input', { class:'input', type:'text', style:'text-transform:uppercase;',
+    value: vatCompact(c.vatNumber), placeholder:'bv. DE123456789' });
+  var vatHint = el('p', { style:'font-size:12.5px;color:var(--gray-69);margin:-6px 0 6px;line-height:1.6;max-width:62ch;', 'aria-live':'polite' });
+  function syncVat(){
+    var chk = vatNumberCheck(vatIn.value);
+    if(chk.reason === 'leeg'){
+      vatHint.textContent = 'Leeg mag — maar een factuur met btw verlegd kan pas gepubliceerd worden als dit nummer er staat.';
+      vatHint.style.color = '';
+      return;
+    }
+    vatHint.textContent = chk.ok
+      ? 'Formaat klopt voor ' + chk.code + '. Of het nummer echt geldig is, controleer je bij VIES — dat kan dit systeem niet zelf.'
+      : 'Formaatcontrole: ' + chk.reason + '.';
+    vatHint.style.color = chk.ok ? '' : 'var(--critical)';
+  }
+  vatIn.addEventListener('input', syncVat);
+  syncVat();
   var err = el('p', { class:'formerr' });
   var form = el('form', { onsubmit:function(e){
     e.preventDefault();
     err.classList.remove('show');
-    var prev = { company: c.company, contactName: c.contactName, email: c.email, phone: c.phone || '' };
+    var vatVal = vatCompact(vatIn.value);
+    /* een onmogelijk formaat tegenhouden aan de bron — leeg blijft toegestaan */
+    if(vatVal && !vatNumberCheck(vatVal).ok){
+      err.textContent = 'Dit btw-nummer kan niet kloppen: ' + vatNumberCheck(vatVal).reason + '. Laat het leeg of corrigeer het.';
+      err.classList.add('show');
+      return;
+    }
+    var prev = { company: c.company, contactName: c.contactName, email: c.email, phone: c.phone || '',
+      vatNumber: c.vatNumber || '' };
     var companyVal = company.value.trim();
     DS.updateClient(c.id, {
       company: companyVal, contactName: contact.value.trim(),
-      email: email.value.trim(), phone: phone.value.trim()
+      email: email.value.trim(), phone: phone.value.trim(),
+      vatNumber: vatVal
     }).then(function(){
+      c.vatNumber = vatVal;
       draft.clear();
       return finishEdit({
         clientId: c.id,
@@ -12380,7 +13544,12 @@ function openClientEditModal(c){
   } }, [
     field('Bedrijfsnaam', company),
     el('div', { class:'formrow' }, [ field('Contactpersoon', contact), field('E-mail', email) ]),
-    field('Telefoon (optioneel)', phone),
+    el('div', { class:'formrow' }, [ field('Telefoon (optioneel)', phone), field('Btw-nummer (EU)', vatIn) ]),
+    vatHint,
+    el('p', { style:'font-size:12.5px;margin:0 0 10px;' }, [
+      el('a', { href: VIES_URL, target:'_blank', rel:'noopener', style:'color:var(--green);',
+        text:'Controleer een EU-btw-nummer bij VIES (opent in een nieuw tabblad)' })
+    ]),
     IS_DEMO ? null : el('p', { class:'kicker', style:'margin:0 0 10px;max-width:52ch;', text:
       'Een nieuw mailadres verandert alleen waar klantmails heengaan — het inlogaccount van het portaal blijft hetzelfde.' }),
     err,

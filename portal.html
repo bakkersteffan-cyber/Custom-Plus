@@ -650,6 +650,34 @@ details.stage-acc summary.acc-pulse{
 .badge-paid{color:var(--green);background:var(--green-soft)}
 .badge-open{color:var(--gray-69);background:var(--gray-f2)}
 @media (max-width:700px){ .inv-row{flex-wrap:wrap} }
+/* golf 1 (functies 1/5): het betaalvak onder een OPEN factuur — kenmerk,
+   rekeninggegevens en (bij euro) de scanbare SEPA-QR. Zelfde witte kaart,
+   zelfde radius en lijn als de rest van het portaal; geen nieuwe kleuren. */
+.pay-box{
+  display:flex;gap:22px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:16px;background:var(--white);
+  box-shadow:var(--card-shadow);padding:16px 18px;margin:12px 0 4px;
+}
+.pay-box .pay-main{flex:1 1 260px;min-width:220px}
+.pay-kicker{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gray-69);display:block;margin-bottom:5px;
+}
+.pay-ref{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:17px;font-weight:600;
+  letter-spacing:.06em;color:var(--green);
+}
+.pay-lines{margin-top:10px;font-size:12.5px;line-height:1.8;color:var(--gray-33)}
+.pay-lines .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px}
+.pay-lines .lbl{color:var(--gray-9);display:inline-block;min-width:72px}
+.pay-note{font-size:12.5px;color:var(--gray-69);margin-top:10px;line-height:1.65;max-width:46ch}
+.pay-qr{flex:0 0 auto;text-align:center;color:var(--ink)}
+.pay-qr svg{display:block;border-radius:6px}
+.pay-qr small{
+  display:block;font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray-9);margin-top:7px;max-width:128px;line-height:1.5;
+}
+@media (max-width:520px){ .pay-box{gap:14px} .pay-qr{margin:0 auto} }
 
 /* ---------- zendingen (De Reis) ---------- */
 .ship-card{
@@ -1671,6 +1699,9 @@ body.is-preview #btn-ask-steffan{ display:none; }
 <script src="portal/shipping.js"></script>
 <script src="portal/status.js"></script>
 <script src="portal/i18n.js"></script>
+<!-- golf 1 (functie 1): de zelfgeschreven QR-encoder voor de SEPA-betaal-QR
+     op een openstaande factuur. Zelfde bestand als het beheer gebruikt. -->
+<script src="portal/qr.js"></script>
 <script>
 (function () {
   'use strict';
@@ -2176,6 +2207,15 @@ body.is-preview #btn-ask-steffan{ display:none; }
         return Promise.resolve(conceptGate(bundle, ['media', 'documents'], true));
       },
 
+      /* golf 1 (functie 1): de betaalgegevens waarmee het betaalvak en de
+         SEPA-QR worden gevuld. In demomodus deelt de portal de opslag met
+         het beheer, dus dit is letterlijk hetzelfde bedrijfsprofiel dat
+         onder Instellingen staat — nooit een verzonnen IBAN. */
+      billingProfile: function () {
+        var b = (state.settings && state.settings.bedrijf) || null;
+        return Promise.resolve(b ? { naam: b.naam || '', iban: b.iban || '', bic: b.bic || '' } : null);
+      },
+
       mediaUrl: function (media) {
         /* echte upload uit het beheer (fileRef): blob uit IndexedDB als
            objectURL — demo-files.js cachet per fileRef en revoket alles
@@ -2462,6 +2502,20 @@ body.is-preview #btn-ask-steffan{ display:none; }
         });
       },
 
+      /* golf 1 (functie 1): admin_settings is staff-only, dus de klant leest
+         de betaalgegevens via de smalle SQL-functie public_billing_profile()
+         uit 0006_facturen.sql — die geeft uitsluitend naam, IBAN en BIC
+         terug, nooit de rest van de instellingen. Tolerant: zonder gedraaide
+         migratie gewoon geen QR, wel de rest van het betaalpad. */
+      billingProfile: function () {
+        if (!sb.rpc) return Promise.resolve(null);
+        return sb.rpc('public_billing_profile').then(function (res) {
+          if (!res || res.error || !res.data) return null;
+          var b = res.data;
+          return { naam: b.naam || '', iban: b.iban || '', bic: b.bic || '' };
+        }, function () { return null; });
+      },
+
       mediaUrl: function (media) {
         return sb.storage.from('project-media')
           .createSignedUrl(media.storagePath, 900)
@@ -2648,6 +2702,18 @@ body.is-preview #btn-ask-steffan{ display:none; }
   var ALL_PROJECTS = [];  /* alle projecten, ook gearchiveerd (Mijn Producten) */
   var PORTFOLIO = null;   /* cache van DS.loadPortfolio voor #/producten */
   var BUNDLE = null;
+  /* golf 1 (functie 1): naam/IBAN/BIC voor het betaalvak en de SEPA-QR.
+     Eén keer opgehaald per sessie — deze gegevens veranderen zelden en een
+     mislukte ophaal mag het betaalpad nooit blokkeren. */
+  var BILLING = null;
+  function fetchBilling() {
+    if (BILLING) return Promise.resolve(BILLING);
+    if (!DS.billingProfile) { BILLING = {}; return Promise.resolve(BILLING); }
+    return DS.billingProfile().then(function (b) {
+      BILLING = b || {};
+      return BILLING;
+    }, function () { BILLING = {}; return BILLING; });
+  }
   var lastFocused = null;
   var sbHasContent = false;
 
@@ -4786,8 +4852,11 @@ body.is-preview #btn-ask-steffan{ display:none; }
       var lbl = el('div', 'i-label', inv.label);
       lbl.setAttribute('data-no-i18n', ''); /* factuurlabel = data */
       main.appendChild(lbl);
-      /* golf 3 (functie 65): factuurnummer tonen waar het bestaat */
-      if (inv.invoiceNumber) {
+      /* golf 3 (functie 65): factuurnummer tonen waar het bestaat.
+         Golf 1 (functie 5): bij een BETAALDE factuur is dat gewoon het
+         nummer; bij een openstaande krijgt het zijn eigen betaalvak
+         hieronder, want daar is het het betalingskenmerk. */
+      if (inv.invoiceNumber && inv.status !== 'open') {
         var nr = el('div', 'i-paidat mono', i18nTpl('Factuurnummer {n}', { n: inv.invoiceNumber }));
         nr.setAttribute('data-no-i18n', ''); /* op renderpunt vertaald; nummer = data */
         main.appendChild(nr);
@@ -4829,7 +4898,84 @@ body.is-preview #btn-ask-steffan{ display:none; }
       row.appendChild(el('span', 'badge ' + (inv.status === 'paid' ? 'badge-paid' : 'badge-open'),
         inv.status === 'paid' ? i18nT('Betaald') : i18nT('Open')));
       root.appendChild(row);
+      /* golf 1 (functies 1/5): het betaalvak onder een openstaande factuur */
+      if (inv.status === 'open') {
+        var box = buildPayBox(inv);
+        if (box) root.appendChild(box);
+      }
     });
+  }
+
+  /* ============================================================
+     golf 1 (functies 1 + 5) — het betaalvak op het betaalpad
+     ============================================================
+     Het factuurnummer is het betalingskenmerk: één keer groot, in mono, en
+     bij euro tegelijk ingebakken in een SEPA-betaal-QR (EPC069-12) die
+     bedrag én kenmerk al meebrengt. De QR wordt hier volledig in de browser
+     getekend door portal/qr.js — geen provider, geen netwerkverzoek, geen
+     externe afbeelding.
+
+     Eerlijkheid boven volledigheid:
+       · geen nummer, geen IBAN of geen bedrag → geen vak;
+       · wel gegevens maar geen euro → hetzelfde vak, mét IBAN en BIC voor
+         een SWIFT-overboeking, zónder QR (de EPC-standaard kent alleen EUR);
+       · een IBAN die niet door de mod-97-controle komt → geen QR, wel de
+         tekstuele instructie. Nooit een QR die naar niets leidt. */
+  function buildPayBox(inv) {
+    var Q = window.CP_QR;
+    var ref = inv.invoiceNumber || '';
+    var due = invoiceDueCents(inv);
+    var cur = inv.currency || 'EUR';
+    var b = BILLING || {};
+    if (!ref || !due) return null;
+    if (!b.iban) return null;
+
+    var box = el('div', 'pay-box');
+    var main = el('div', 'pay-main');
+    main.appendChild(el('span', 'pay-kicker', i18nT('Betalingskenmerk')));
+    var refEl = el('div', 'pay-ref', ref);
+    refEl.setAttribute('data-no-i18n', ''); /* factuurnummer = data */
+    main.appendChild(refEl);
+
+    var lines = el('div', 'pay-lines');
+    function payLine(label, value, mono) {
+      var d = el('div', '');
+      d.appendChild(el('span', 'lbl', i18nT(label)));
+      var v = el('span', mono ? 'mono' : '', value);
+      v.setAttribute('data-no-i18n', ''); /* IBAN, BIC, naam en bedrag = data */
+      d.appendChild(v);
+      lines.appendChild(d);
+    }
+    payLine('IBAN', Q ? Q.ibanPretty(b.iban) : b.iban, true);
+    if (b.bic) payLine('BIC of SWIFT', b.bic, true);
+    if (b.naam) payLine('Op naam van', b.naam, false);
+    payLine('Bedrag', fmtMoney(due, cur), true);
+    main.appendChild(lines);
+
+    var qrSvg = null;
+    if (Q && cur === 'EUR') {
+      qrSvg = Q.epcSvgElement({
+        name: b.naam || '', iban: b.iban, bic: b.bic,
+        /* het bedrag komt als argument binnen: zodra deelbetalingen bestaan
+           geeft de aanroeper hier het restbedrag mee */
+        amountCents: due, currency: cur, reference: ref,
+        svg: { size: 128, margin: 2, color: '#111', title: i18nTpl('Betaal-QR voor factuur {n}', { n: ref }) }
+      });
+    }
+    main.appendChild(el('p', 'pay-note', qrSvg
+      ? i18nT('Scan de code met je bank-app: bedrag en kenmerk staan er al in. Liever handmatig? Neem dan bovenstaande gegevens over en vermeld het kenmerk.')
+      : (cur === 'EUR'
+        ? i18nT('Vermeld het kenmerk bij je overboeking — daarmee wordt je betaling meteen aan deze factuur gekoppeld.')
+        : i18nT('Deze factuur staat niet in euro. Maak over via SWIFT met bovenstaande gegevens en vermeld het kenmerk.'))));
+    box.appendChild(main);
+    if (qrSvg) {
+      var qrWrap = el('div', 'pay-qr');
+      qrWrap.appendChild(qrSvg);
+      var cap = el('small', '', i18nT('Scan met je bank-app'));
+      qrWrap.appendChild(cap);
+      box.appendChild(qrWrap);
+    }
+    return box;
   }
 
   /* ============================================================
@@ -5716,7 +5862,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
   }
 
   function enterProject(project, landing) {
-    DS.loadBundle(project.id).then(function (bundle) {
+    /* golf 1: de betaalgegevens komen in dezelfde ronde mee, zodat het
+       betaalvak meteen compleet staat in plaats van na te springen */
+    Promise.all([ DS.loadBundle(project.id), fetchBilling() ]).then(function (res) {
+      var bundle = res[0];
       BUNDLE = bundle;
       if (!PREVIEW) {
         try { localStorage.setItem(lastProjKey(), project.id); } catch (e) { /* privémodus */ }
