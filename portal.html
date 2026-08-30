@@ -456,6 +456,11 @@ details.stage-acc summary.acc-pulse{
   100%{box-shadow:0 0 0 2px transparent,0 0 0 8px transparent}
 }
 .acc-body{padding:4px 20px 20px;border-top:1px solid var(--line)}
+/* update-composer (golf 5, functie 43): gebundelde update met tekst erboven */
+.upd-group{margin-top:16px;padding-bottom:6px}
+.upd-group + .upd-group{border-top:1px dashed var(--line)}
+.upd-note-card{padding-top:14px}
+.upd-note{font-size:14.5px;line-height:1.6;margin-top:6px;max-width:64ch;color:var(--gray-33)}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;padding-top:16px}
 .media-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--white);padding:0;text-align:left;cursor:pointer;box-shadow:var(--card-shadow);transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}
 .media-card:hover{border-color:var(--gray-a7);box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
@@ -600,6 +605,10 @@ details.stage-acc summary.acc-pulse{
   padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:2px;
 }
 .doc-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+/* documentslot 'verwacht' (golf 6, functie 52): eerlijke lege staat */
+.doc-row.doc-expected{opacity:.66}
+.doc-row.doc-expected .d-type{border-style:dashed}
+.doc-row.doc-expected .d-title{font-weight:500;color:var(--gray-9)}
 .doc-row .d-type{
   font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;
   text-transform:uppercase;color:var(--gray-69);min-width:118px;flex:none;
@@ -1313,6 +1322,28 @@ button.term-link{
   .wl-current-seg{animation:none}
   #moment .mo-img.kb-in,#moment .mo-img.kb-out{animation:none;transform:none}
 }
+/* ---------- golf 3: voorvertoning-beheerder (46) + concept-watermerk (42) ---------- */
+#preview-banner{
+  position:fixed; left:0; right:0; bottom:0; z-index:400;
+  background:#111; color:#fff; text-align:center; padding:9px 16px;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase;
+}
+body.is-preview{ padding-bottom:38px; }
+body.is-preview #btn-ask-steffan{ display:none; }
+.media-card{ position:relative; }
+.concept-tag{
+  position:absolute; top:10px; left:10px; z-index:2; pointer-events:none;
+  background:#b3830f; color:#fff; padding:3px 8px; border-radius:4px;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10px;
+  font-weight:600; letter-spacing:.14em;
+}
+.concept-tag-inline{
+  display:inline-block; background:#b3830f; color:#fff; padding:2px 7px;
+  border-radius:4px; margin-left:8px; vertical-align:middle;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:9.5px;
+  font-weight:600; letter-spacing:.12em;
+}
 </style>
 </head>
 <body>
@@ -1643,6 +1674,24 @@ button.term-link{
   var DEMO_KEY = 'cp_portal_demo_v1';
   var SESSION_KEY = 'cp_portal_session_v1';
 
+  /* ============================================================
+     Voorvertoning — beheerder (golf 3, functie 46)
+     ?preview=<clientId>&lang=<taal> opent dit portaal read-only met
+     exact de data van die klant. De parameter telt ALLEEN in
+     demomodus of (Supabase) voor een ingelogde staff-gebruiker —
+     voor iedereen anders wordt hij stil genegeerd en geldt de
+     normale loginstroom. In de voorvertoning: banner onderin, geen
+     vraagformulieren, geen klant-logregels (alleen één systeemregel
+     'Voorvertoning door beheerder' — eerlijkheid), en concepten
+     zichtbaar mét CONCEPT-watermerk.
+     ============================================================ */
+  var PREVIEW = null; /* { clientId, lang } zolang de aanvraag nog niet gevalideerd is */
+  try {
+    var previewQs = new URLSearchParams(location.search);
+    var previewCid = previewQs.get('preview');
+    if (previewCid) PREVIEW = { clientId: previewCid, lang: String(previewQs.get('lang') || '').toLowerCase() };
+  } catch (e) { PREVIEW = null; }
+
   var STAGE_ORDER = ['concept', 'dfm', 'sourcing', 'tooling', 'production', 'logistics'];
   var STAGE_NAMES = {
     concept: 'Concept & Industrieel Ontwerp',
@@ -1703,10 +1752,22 @@ button.term-link{
   var I18N = window.CP_PORTAL_I18N || {};
   var LOCALES = { nl: 'nl-NL', en: 'en-GB', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
   var currentLang = 'nl';
+  /* portaaltaal per klant (golf 5, functie 30): zolang de bezoeker in deze
+     browser nooit zélf een taal koos, geldt na inloggen de standaardtaal
+     van de klantkaart. Een eigen keuze (cp_lang) wint altijd. */
+  var langExplicit = false;
   try {
     var savedLang = localStorage.getItem('cp_lang');
-    if (savedLang && LANGS.some(function (l) { return l.code === savedLang; })) { currentLang = savedLang; }
+    if (savedLang && LANGS.some(function (l) { return l.code === savedLang; })) {
+      currentLang = savedLang;
+      langExplicit = true;
+    }
   } catch (e) { /* privémodus */ }
+  /* voorvertoning (46): start in de portaaltaal van de klant, zonder de
+     eigen taalvoorkeur van deze browser (cp_lang) te overschrijven */
+  if (PREVIEW && PREVIEW.lang && LANGS.some(function (l) { return l.code === PREVIEW.lang; })) {
+    currentLang = PREVIEW.lang;
+  }
 
   function i18nLocale() { return LOCALES[currentLang] || 'nl-NL'; }
 
@@ -1762,9 +1823,16 @@ button.term-link{
   function setLang(code) {
     if (!LANGS.some(function (l) { return l.code === code; })) return;
     currentLang = code;
-    try { localStorage.setItem('cp_lang', code); } catch (e) { /* privémodus */ }
+    langExplicit = true; /* eigen keuze wint voortaan van de klant-standaard (30) */
+    /* R1-8: in de voorvertoning is een taalwissel alleen voor deze tab —
+       cp_lang wordt gedeeld met de hoofdsite én het eigen portaal, en de
+       beheerder mag zijn eigen taalvoorkeur niet kwijtraken door even in
+       de taal van een klant te kijken */
+    if (!PREVIEW) {
+      try { localStorage.setItem('cp_lang', code); } catch (e) { /* privémodus */ }
+    }
     document.documentElement.setAttribute('lang', code);
-    moneyFmt = null; /* valutanotatie volgt de nieuwe taal */
+    moneyFmts = {}; /* valutanotatie volgt de nieuwe taal */
     closeTermPop(false);
     closeNotifPanel(false);
     translateNode(document.body);
@@ -1808,10 +1876,27 @@ button.term-link{
     return d.toLocaleDateString(i18nLocale(), { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' +
       d.toLocaleTimeString(i18nLocale(), { hour: '2-digit', minute: '2-digit' });
   }
-  var moneyFmt = null;
-  function fmtMoney(cents) {
-    if (!moneyFmt) moneyFmt = new Intl.NumberFormat(i18nLocale(), { style: 'currency', currency: 'EUR' });
-    return moneyFmt.format((cents || 0) / 100);
+  /* golf 3 (functie 65): facturen kunnen naast EUR ook USD/CNY dragen —
+     het bedrag volgt de valuta van het factuurrecord, nooit een aanname */
+  var moneyFmts = {};
+  function fmtMoney(cents, cur) {
+    cur = cur || 'EUR';
+    if (!moneyFmts[cur]) {
+      try { moneyFmts[cur] = new Intl.NumberFormat(i18nLocale(), { style: 'currency', currency: cur }); }
+      catch (e) { moneyFmts[cur] = new Intl.NumberFormat(i18nLocale(), { style: 'currency', currency: 'EUR' }); }
+    }
+    return moneyFmts[cur].format((cents || 0) / 100);
+  }
+  /* golf 3 (functie 65): het TE BETALEN bedrag van een factuurrecord —
+     totalCents (incl. btw, gezet door het beheer) als die bestaat, anders
+     amountCents zoals voorheen. Er wordt hier nooit zelf btw gerekend:
+     elk bedrag komt letterlijk uit het factuurrecord. */
+  function invoiceDueCents(inv) {
+    return (typeof inv.totalCents === 'number' && inv.totalCents > 0) ? inv.totalCents : (inv.amountCents || 0);
+  }
+  /* true als het getoonde bedrag btw bevat — dan hoort er 'incl. btw' bij */
+  function invoiceInclVat(inv) {
+    return typeof inv.totalCents === 'number' && inv.totalCents > 0 && (inv.vatCents || 0) > 0;
   }
 
   function camelRow(r) {
@@ -1832,6 +1917,43 @@ button.term-link{
       if (s) sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
       else sessionStorage.removeItem(SESSION_KEY);
     } catch (e) { /* privémodus */ }
+  }
+
+  /* ============================================================
+     Conceptstand (golf 3, functie 42) — de poort op ALLE leespaden
+     Media en documenten met publishStatus 'concept' bestaan voor de
+     klant niet: beide dataservices halen ze hier aan de bron uit de
+     bundel en het portfolio, dus elke weergave, melding, zoekindex,
+     momentkaart en 'Hoort bij'-chip is automatisch schoon. Een
+     ontbrekend veld telt als gepubliceerd (migratie-veilig; demodata
+     blijft dus volledig zichtbaar). Alleen de beheerder-voorvertoning
+     (functie 46) houdt concepten vast, gemarkeerd als _concept, zodat
+     de media- en documentweergaven ze mét CONCEPT-watermerk tonen —
+     meldingen, zoeken en het moment slaan _concept ook daar over.
+     CONTRACT (bewuste keuze, reviewbevinding R1-3): alle AFGELEIDE
+     klantsignalen — nextStep, de 'Laatste update'-cockpitkaart, de
+     bewijsketting (newestMediaForStage), de voor/na-vergelijker en
+     sample-miniaturen — slaan _concept ook in de voorvertoning over,
+     zodat de beheerder daar exact ziet wat de klant ziet; alléén de
+     media- en documentlijsten tonen concepten, met watermerk.
+     ============================================================ */
+  function conceptGate(obj, keys, keepForPreview) {
+    (keys || []).forEach(function (k) {
+      if (!Array.isArray(obj[k])) return;
+      if (PREVIEW && keepForPreview) {
+        /* markeer op een KOPIE: de demoservice deelt rij-objecten met zijn
+           opslagstaat, en _concept mag nooit in localStorage terechtkomen */
+        obj[k] = obj[k].map(function (r) {
+          if (!r || r.publishStatus !== 'concept') return r;
+          var copy = Object.assign({}, r);
+          copy._concept = true;
+          return copy;
+        });
+      } else {
+        obj[k] = obj[k].filter(function (r) { return !r || r.publishStatus !== 'concept'; });
+      }
+    });
+    return obj;
   }
 
   /* ============================================================
@@ -1857,7 +1979,9 @@ button.term-link{
             /* collecties die een oudere schrijver kan missen, altijd aanvullen;
                een later geïntroduceerde collectie vullen we vanuit de seed zodat
                een bestaande demo-opslag de nieuwe functie meteen toont */
-            ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories','shipments','shipmentEvents'].forEach(function (k) {
+            /* 'docSlots' (golf 6, functie 52): de portal toont lege slots als
+               eerlijke "wordt verwacht"-staat, dus de guard staat ook hier */
+            ['media','documents','invoices','samples','inspections','questions','disclosures','accessLog','factories','shipments','shipmentEvents','docSlots'].forEach(function (k) {
               if (!Array.isArray(state[k])) {
                 var seedArr = (window.CP_DEMO && Array.isArray(window.CP_DEMO[k])) ? window.CP_DEMO[k] : [];
                 try { state[k] = structuredClone(seedArr); }
@@ -1911,7 +2035,9 @@ button.term-link{
       try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch (e) { /* privémodus */ }
     }
     function sessionFromClient(c) {
-      return { mode: 'demo', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email };
+      return { mode: 'demo', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email,
+        /* portaaltaal per klant (golf 5, functie 30) */
+        portalLang: c.portalLang || '' };
     }
 
     return {
@@ -1936,6 +2062,25 @@ button.term-link{
         var s = sessionFromClient(c);
         writeSession(s);
         return Promise.resolve(s);
+      },
+
+      /* voorvertoning (functie 46): in demomodus mag de beheerder elke
+         klant bekijken; de sessie blijft in het geheugen (geen
+         writeSession), zodat een echte demosessie ongemoeid blijft */
+      previewLogin: function (clientId) {
+        load();
+        var c = state.clients.find(function (x) { return x.id === clientId; });
+        return Promise.resolve(c ? sessionFromClient(c) : null);
+      },
+      /* de enige logregel die een voorvertoning schrijft — eerlijkheid */
+      addPreviewNote: function (projectId) {
+        state.accessLog.push({
+          id: 'log-' + Date.now(), projectId: projectId, actor: 'system',
+          assetKind: 'system', assetId: null, action: 'view',
+          detail: 'Voorvertoning door beheerder', createdAt: new Date().toISOString()
+        });
+        save();
+        return Promise.resolve();
       },
 
       logout: function () {
@@ -1968,14 +2113,14 @@ button.term-link{
         function pick(arr) {
           return (arr || []).filter(function (r) { return ids[r.projectId]; });
         }
-        return Promise.resolve({
+        return Promise.resolve(conceptGate({
           projects: projs,
           media: pick(state.media),
           samples: pick(state.samples),
           invoices: pick(state.invoices),
           questions: pick(state.questions),
           shipments: pick(state.shipments)
-        });
+        }, ['media'], false));
       },
 
       loadBundle: function (projectId) {
@@ -1998,6 +2143,8 @@ button.term-link{
             return new Date(b.createdAt) - new Date(a.createdAt);
           }),
           disclosures: forProject(state.disclosures),
+          /* documentslots (golf 6, functie 52): eerlijke lege staat in de drive */
+          docSlots: forProject(state.docSlots),
           factories: state.factories.slice(),
           shipments: forProject(state.shipments).slice().sort(function (a, b) {
             return String(a.createdAt).localeCompare(String(b.createdAt));
@@ -2011,7 +2158,7 @@ button.term-link{
               String(a.createdAt).localeCompare(String(b.createdAt));
           })
         };
-        return Promise.resolve(bundle);
+        return Promise.resolve(conceptGate(bundle, ['media', 'documents'], true));
       },
 
       mediaUrl: function (media) {
@@ -2092,15 +2239,19 @@ button.term-link{
       return res.data;
     }
     function clientForUser(userId) {
+      /* select('*'): de eigen klantrij is via RLS al beperkt tot deze
+         gebruiker, en zo reist portal_lang (golf 5, functie 30) mee zonder
+         te breken op een nog niet gedraaide migratie */
       return sb.from('clients')
-        .select('id, company, contact_name, email')
+        .select('*')
         .eq('auth_user_id', userId)
         .maybeSingle()
         .then(function (res) {
           var row = need(res);
           if (!row) throw new Error('Dit account is nog niet aan een klant gekoppeld. Mail steffan@customplus.nl.');
           var c = camelRow(row);
-          return { mode: 'supabase', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email };
+          return { mode: 'supabase', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email,
+            portalLang: c.portalLang || '' };
         });
     }
 
@@ -2128,6 +2279,37 @@ button.term-link{
 
       demoLogin: function () {
         return Promise.reject(new Error('De demo-omgeving is hier niet actief.'));
+      },
+
+      /* voorvertoning (functie 46): alleen voor een ingelogde
+         staff-gebruiker — voor iedereen anders levert dit null op en
+         geldt de normale loginstroom. RLS dekt de rest: alleen staff
+         kan andermans klantrij en concepten lezen. */
+      previewLogin: function (clientId) {
+        return client().then(function () {
+          return sb.auth.getSession();
+        }).then(function (res) {
+          var session = res.data ? res.data.session : null;
+          if (!session || !session.user) return null;
+          return sb.from('staff_users').select('user_id').eq('user_id', session.user.id).maybeSingle()
+            .then(function (r2) {
+              if (r2.error || !r2.data) return null;
+              return sb.from('clients').select('id, company, contact_name, email').eq('id', clientId).maybeSingle()
+                .then(function (r3) {
+                  if (r3.error || !r3.data) return null;
+                  var c = camelRow(r3.data);
+                  return { mode: 'supabase', clientId: c.id, company: c.company, contactName: c.contactName, email: c.email };
+                });
+            });
+        }).catch(function () { return null; });
+      },
+      addPreviewNote: function (projectId) {
+        return client().then(function () {
+          return sb.from('access_log').insert({
+            project_id: projectId, actor: 'system', asset_kind: 'system',
+            asset_id: null, action: 'view', detail: 'Voorvertoning door beheerder'
+          });
+        }).then(function () { return null; }, function () { return null; });
       },
 
       logout: function () {
@@ -2176,10 +2358,10 @@ button.term-link{
             projects.forEach(function (p) {
               p.stages = r[0].filter(function (s) { return s.projectId === p.id; });
             });
-            return {
+            return conceptGate({
               projects: projects, media: r[1], samples: r[2],
               invoices: r[3], questions: r[4], shipments: r[5]
-            };
+            }, ['media'], false);
           });
         });
       },
@@ -2204,7 +2386,14 @@ button.term-link{
           sb.from('factories_partners').select('*')
             .then(function (res) { return camelRows(need(res)); }),
           q('file_disclosures', 'disclosed_at'),
-          q('shipments', 'created_at')
+          q('shipments', 'created_at'),
+          /* documentslots (golf 6, functie 52) — tolerant: zonder gedraaide
+             0005-migratie gewoon geen slots, nooit een kapotte drive */
+          sb.from('doc_slots').select('*').eq('project_id', projectId)
+            .then(function (res) {
+              if (res && res.error) return [];
+              return camelRows((res && res.data) || []);
+            }, function () { return []; })
         ]).then(function (r) {
           var factories = r[9];
           var facById = {};
@@ -2227,8 +2416,10 @@ button.term-link{
             project: r[0], stages: r[1], media: r[2], documents: r[3],
             invoices: r[4], samples: r[5], inspections: r[6], questions: r[7],
             accessLog: log, disclosures: r[10], factories: factories,
-            shipments: r[11], shipmentEvents: []
+            shipments: r[11], shipmentEvents: [],
+            docSlots: r[12]
           };
+          conceptGate(bundle, ['media', 'documents'], true);
           /* events hangen aan zendingen, niet direct aan het project */
           var shipIds = r[11].map(function (s) { return s.id; });
           if (!shipIds.length) return bundle;
@@ -2337,15 +2528,86 @@ button.term-link{
   }
 
   var DS = DEMO_MODE ? demoService() : supaService();
+
+  /* ============================================================
+     Apparaatinfo in het toegangslogboek (golf 6, functie 33 — beheer).
+     Minimaal en zonder verzonnen fingerprints: browserfamilie, OS-familie
+     en tijdzone — drie feiten die de browser zelf meldt. Het beheer
+     vergelijkt die combinatie per klant en markeert een nog niet eerder
+     geziene combinatie als 'Nieuw apparaat'. De tag hangt achter het
+     detail (' — apparaat: …'); beide apps strippen hem in de weergave
+     van de regel zelf. Geen '—' in de tag: dat teken is de scheider.
+     ============================================================ */
+  function deviceComboTag() {
+    try {
+      var ua = navigator.userAgent || '';
+      var browser = 'Browser';
+      if (/edg\//i.test(ua)) browser = 'Edge';
+      else if (/opr\//i.test(ua)) browser = 'Opera';
+      else if (/chrome|crios/i.test(ua)) browser = 'Chrome';
+      else if (/firefox|fxios/i.test(ua)) browser = 'Firefox';
+      else if (/safari/i.test(ua)) browser = 'Safari';
+      var os = 'Onbekend OS';
+      if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
+      else if (/android/i.test(ua)) os = 'Android';
+      else if (/mac os x|macintosh/i.test(ua)) os = 'macOS';
+      else if (/windows/i.test(ua)) os = 'Windows';
+      else if (/linux/i.test(ua)) os = 'Linux';
+      var tz = '';
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e2) { tz = ''; }
+      return [browser, os, tz].filter(Boolean).join(' · ').replace(/—/g, '-');
+    } catch (e) { return ''; }
+  }
+  var DEVICE_TAG_RE = / — apparaat: [^—]+$/;
+  function stripDeviceTag(detail) {
+    return String(detail == null ? '' : detail).replace(DEVICE_TAG_RE, '');
+  }
+  (function () {
+    var baseAddLog = DS.addLog;
+    DS.addLog = function (projectId, assetKind, assetId, action, detail) {
+      var tag = deviceComboTag();
+      var full = String(detail == null ? '' : detail) + (tag ? ' — apparaat: ' + tag : '');
+      return baseAddLog.call(DS, projectId, assetKind, assetId, action, full);
+    };
+  })();
+
   if (!DEMO_MODE) {
     var demoBlock = byId('login-demo-block');
     if (demoBlock) demoBlock.hidden = true;
+  }
+  if (PREVIEW) {
+    /* voorvertoning (46) is read-only: GEEN klant-logregels — bekijken en
+       downloaden loggen hier dus niets; de enige rij die wél geschreven
+       wordt is de systeemregel via addPreviewNote (eerlijkheid).
+       R1-7: de stub geeft null terug, zodat het logboek van de
+       voorvertoning nooit een regel 'Jij downloadde …' toont die de
+       klant niet heeft gemaakt — aanroepers checken op null. */
+    DS.addLog = function () { return Promise.resolve(null); };
   }
 
   /* ============================================================
      UI-state
      ============================================================ */
   var SESSION = null;
+  var previewNoted = {};  /* voorvertoning (46): één systeemregel per project */
+  function mountPreviewBanner(company) {
+    var b = byId('preview-banner');
+    if (!b) {
+      b = el('div');
+      b.id = 'preview-banner';
+      b.setAttribute('data-no-i18n', ''); /* beheerderstekst, bewust NL */
+      document.body.appendChild(b);
+      document.body.classList.add('is-preview');
+    }
+    b.textContent = 'Voorvertoning — beheerder' + (company ? ' · ' + company : '') + ' · alleen-lezen';
+    /* R1-5: 'Uitloggen' verbergen — sb.auth.signOut() heeft scope 'global'
+       en zou vanuit deze read-only tab óók de staff-sessie van het beheer
+       intrekken. De voorvertoning verlaat je door de tab te sluiten. */
+    ['btn-logout', 'picker-logout'].forEach(function (id) {
+      var btn = byId(id);
+      if (btn) { btn.hidden = true; btn.style.display = 'none'; }
+    });
+  }
   var PROJECTS = [];      /* actieve projecten (picker en wisselknop) */
   var ALL_PROJECTS = [];  /* alle projecten, ook gearchiveerd (Mijn Producten) */
   var PORTFOLIO = null;   /* cache van DS.loadPortfolio voor #/producten */
@@ -2560,7 +2822,7 @@ button.term-link{
         title: openInv.length === 1
           ? i18nT(ST.invoiceOne)
           : i18nTpl(ST.invoiceMany, { n: openInv.length }),
-        meta: inv.label + (inv.amountCents ? ' · ' + fmtMoney(inv.amountCents) : ''),
+        meta: inv.label + (invoiceDueCents(inv) ? ' · ' + fmtMoney(invoiceDueCents(inv), inv.currency) + (invoiceInclVat(inv) ? ' ' + i18nT('incl. btw') : '') : ''),
         actionLabel: i18nT('Bekijk de factuur'),
         actionHref: '#/kosten'
       };
@@ -2578,9 +2840,11 @@ button.term-link{
       };
     }
 
-    /* 4: foto's nieuwer dan 7 dagen */
+    /* 4: foto's nieuwer dan 7 dagen — concepten (voorvertoning, R1-3)
+       tellen niet mee: de klant ziet ze niet, dus ze zijn geen signaal */
     var cutoff = Date.now() - 7 * 86400000;
     var fresh = (bundle.media || []).filter(function (m) {
+      if (m._concept) return false;
       var d = parseDay(m.capturedAt);
       return d && d.getTime() > cutoff;
     });
@@ -2750,9 +3014,13 @@ button.term-link{
     /* drie doorklikkaarten */
     var cards = el('div', 'cockpit-cards');
 
-    var latest = (BUNDLE.media || []).slice().sort(function (a, b) {
-      return parseDay(b.capturedAt) - parseDay(a.capturedAt);
-    })[0] || null;
+    /* 'Laatste update' = de nieuwste foto die de KLANT ziet — concepten
+       (voorvertoning, R1-3) doen niet mee, anders wijkt de cockpit
+       ongemarkeerd af van wat de klant te zien krijgt */
+    var latest = (BUNDLE.media || []).filter(function (m) { return !m._concept; })
+      .sort(function (a, b) {
+        return parseDay(b.capturedAt) - parseDay(a.capturedAt);
+      })[0] || null;
     var aU = el('a', 'ccard fl-reveal');
     aU.href = '#/updates';
     if (latest) {
@@ -2782,7 +3050,8 @@ button.term-link{
       var lblI = el('div', 'ccard-t', openList[0].label);
       lblI.setAttribute('data-no-i18n', ''); /* factuurlabel = klantdata */
       padI.appendChild(lblI);
-      var amtI = el('div', 'ccard-amount mono', fmtMoney(openList[0].amountCents));
+      var amtI = el('div', 'ccard-amount mono', fmtMoney(invoiceDueCents(openList[0]), openList[0].currency)
+        + (invoiceInclVat(openList[0]) ? ' ' + i18nT('incl. btw') : ''));
       amtI.setAttribute('data-no-i18n', '');
       padI.appendChild(amtI);
       padI.appendChild(el('div', 'ccard-m', openList.length > 1
@@ -2919,6 +3188,7 @@ button.term-link{
   }
 
   function openReorderSheet(project) {
+    if (PREVIEW) return; /* voorvertoning (46): geen aanvraagformulieren */
     var body = byId('sheet-body');
     body.textContent = '';
     body.appendChild(el('h3', 'sh-h', i18nT('Vraag een nieuwe batch aan')));
@@ -3077,7 +3347,7 @@ button.term-link{
     });
     art.appendChild(open);
 
-    if (completed) {
+    if (completed && !PREVIEW) {
       var actions = el('div', 'prod-actions');
       var rb = el('button', 'btn btn-dark', i18nT('Vraag een nieuwe batch aan'));
       rb.type = 'button';
@@ -3375,6 +3645,12 @@ button.term-link{
     orgM.setAttribute('data-no-i18n', ''); /* mono-datastrip */
     card.appendChild(orgM);
     card.addEventListener('click', function () { openMediaSheet(m); });
+    if (m._concept) {
+      /* voorvertoning (46): concept zichtbaar met watermerk */
+      var tag = el('div', 'concept-tag', 'CONCEPT');
+      tag.setAttribute('data-no-i18n', '');
+      card.appendChild(tag);
+    }
     return card;
   }
 
@@ -3447,9 +3723,40 @@ button.term-link{
       det.appendChild(sum);
 
       var body = el('div', 'acc-body');
-      var grid = el('div', 'media-grid');
-      media.forEach(function (m) { grid.appendChild(mediaCard(m)); });
-      body.appendChild(grid);
+      /* update-composer (golf 5, functie 43): foto's met dezelfde updateId
+         horen bij één samenhangende update en tonen de begeleidende tekst
+         van Steffan erboven; losse foto's blijven in het gewone raster */
+      var groups = {}, loose = [];
+      media.forEach(function (m) {
+        if (m.updateId) { (groups[m.updateId] = groups[m.updateId] || []).push(m); }
+        else { loose.push(m); }
+      });
+      var groupList = Object.keys(groups).map(function (k) { return { id: k, items: groups[k] }; });
+      groupList.sort(function (a, b) {
+        return parseDay(b.items[0].capturedAt) - parseDay(a.items[0].capturedAt);
+      });
+      groupList.forEach(function (g) {
+        var noteTxt = '';
+        g.items.forEach(function (m) { if (!noteTxt && m.updateNote) noteTxt = m.updateNote; });
+        var blk = el('div', 'upd-group');
+        var head = el('div', 'upd-note-card');
+        head.appendChild(el('div', 'qc-meta', i18nT('Update van Steffan') + ' · ' + fmtDateShort(g.items[0].capturedAt)));
+        if (noteTxt) {
+          var nt = el('div', 'upd-note', noteTxt);
+          nt.setAttribute('data-no-i18n', ''); /* begeleidende tekst = data */
+          head.appendChild(nt);
+        }
+        blk.appendChild(head);
+        var gGrid = el('div', 'media-grid');
+        g.items.forEach(function (m) { gGrid.appendChild(mediaCard(m)); });
+        blk.appendChild(gGrid);
+        body.appendChild(blk);
+      });
+      if (loose.length) {
+        var grid = el('div', 'media-grid');
+        loose.forEach(function (m) { grid.appendChild(mediaCard(m)); });
+        body.appendChild(grid);
+      }
       det.appendChild(body);
       root.appendChild(det);
     });
@@ -3524,8 +3831,9 @@ button.term-link{
      (en dus ook met het toetsenbord bedienbaar). Notities van de rondes
      als mono-chips eronder; de goedgekeurde ronde draagt het groene zegel. */
   function beforeAfterBlock(older, newer) {
-    var mOld = BUNDLE.media.find(function (m) { return m.id === older.mediaId; });
-    var mNew = BUNDLE.media.find(function (m) { return m.id === newer.mediaId; });
+    /* concepten (voorvertoning, R1-3) doen niet mee — zie conceptGate */
+    var mOld = BUNDLE.media.find(function (m) { return m.id === older.mediaId && !m._concept; });
+    var mNew = BUNDLE.media.find(function (m) { return m.id === newer.mediaId && !m._concept; });
     var wrap = el('div', 'ba-wrap');
     wrap.appendChild(el('p', 'kicker', i18nTpl('Voor en na · {a} → {b}', { a: older.roundLabel, b: newer.roundLabel })));
 
@@ -3596,7 +3904,8 @@ button.term-link{
       return parseDay(a.roundDate) - parseDay(b.roundDate);
     });
     var withPhoto = chrono.filter(function (smp) {
-      return BUNDLE.media.some(function (m) { return m.id === smp.mediaId; });
+      /* conceptfoto's (voorvertoning, R1-3) tellen niet als 'heeft foto' */
+      return BUNDLE.media.some(function (m) { return m.id === smp.mediaId && !m._concept; });
     });
     if (withPhoto.length >= 2) {
       root.appendChild(beforeAfterBlock(withPhoto[withPhoto.length - 2], withPhoto[withPhoto.length - 1]));
@@ -3607,7 +3916,8 @@ button.term-link{
       return parseDay(b.roundDate) - parseDay(a.roundDate);
     });
     rows.forEach(function (smp) {
-      var media = BUNDLE.media.find(function (m) { return m.id === smp.mediaId; }) || null;
+      /* miniatuur alleen als de klant de foto ook ziet (R1-3) */
+      var media = BUNDLE.media.find(function (m) { return m.id === smp.mediaId && !m._concept; }) || null;
       var row = el('button', 'sample-row' + (smp.status === 'superseded' ? ' superseded' : ''));
       row.type = 'button';
       row.setAttribute('data-eid', smp.id); /* anker voor '#/samples@{id}' */
@@ -4177,7 +4487,15 @@ button.term-link{
     var note = el('div', 'sh-demo-note');
     note.appendChild(el('div', 'mono-l', i18nT('Demo-omgeving')));
     note.appendChild(el('p', null, i18nT('In de demo staat hier het echte bestand. In je eigen omgeving opent de download direct, via een beveiligde link die 15 minuten geldig is.')));
-    var p2 = el('p', null, i18nT('Deze download is wel in je toegangslogboek genoteerd, zodat je ziet hoe dat werkt.'));
+    /* voorvertoning (R1-7): daar wordt bewust NIETS gelogd, dus die
+       belofte zou onwaar zijn — toon dan de eerlijke variant */
+    var p2;
+    if (PREVIEW) {
+      p2 = el('p', null, 'Voorvertoning — deze download wordt niet in het toegangslogboek genoteerd.');
+      p2.setAttribute('data-no-i18n', ''); /* beheerderstekst, bewust NL */
+    } else {
+      p2 = el('p', null, i18nT('Deze download is wel in je toegangslogboek genoteerd, zodat je ziet hoe dat werkt.'));
+    }
     p2.style.marginBottom = '0';
     note.appendChild(p2);
     body.appendChild(note);
@@ -4190,6 +4508,9 @@ button.term-link{
     var logIt = function () {
       return DS.addLog(BUNDLE.project.id, 'document', doc.id, 'download', doc.title)
         .then(function (row) {
+          /* voorvertoning (R1-7): er is niets gelogd (row = null), dus er
+             komt ook geen regel in het getoonde logboek bij */
+          if (!row) return;
           BUNDLE.accessLog.unshift(row);
           renderLog();
         });
@@ -4218,14 +4539,23 @@ button.term-link{
   function renderDocs() {
     var root = byId('docs-list');
     root.textContent = '';
-    if (!BUNDLE.documents.length) {
+    /* documentslots (golf 6, functie 52): een open slot toont "wordt
+       verwacht in deze fase" — eerlijke lege staat, geen verzonnen inhoud.
+       Een slot telt als open zolang er geen voor de klant zichtbaar
+       document aan hangt (een concept blijft dus eerlijk 'verwacht'). */
+    var openSlots = (BUNDLE.docSlots || []).filter(function (sl) {
+      if (!sl.documentId) return true;
+      return !BUNDLE.documents.some(function (d) { return d.id === sl.documentId; });
+    });
+    if (!BUNDLE.documents.length && !openSlots.length) {
       root.appendChild(outlookBlock(olDrawDrawer, null,
         i18nT('Zodra Steffan het eerste document deelt — meestal de NNN overeenkomst — staat het hier, geordend per fase en permanent bewaard.')));
       return;
     }
     STAGE_ORDER.forEach(function (key) {
       var docs = BUNDLE.documents.filter(function (d) { return d.stageKey === key; });
-      if (!docs.length) return;
+      var slots = openSlots.filter(function (sl) { return sl.stageKey === key; });
+      if (!docs.length && !slots.length) return;
       docs.sort(function (a, b) {
         var da = DOC_TYPE_ORDER.indexOf(a.docType); if (da < 0) da = 99;
         var db = DOC_TYPE_ORDER.indexOf(b.docType); if (db < 0) db = 99;
@@ -4238,6 +4568,12 @@ button.term-link{
         var row = el('div', 'doc-row');
         row.setAttribute('data-eid', d.id); /* anker voor '#/documenten@{id}' */
         row.appendChild(el('span', 'd-type', i18nT(DOC_TYPE_LABELS[d.docType] || d.docType)));
+        if (d._concept) {
+          /* voorvertoning (46): concept zichtbaar met watermerk */
+          var dTag = el('span', 'concept-tag-inline', 'CONCEPT');
+          dTag.setAttribute('data-no-i18n', '');
+          row.appendChild(dTag);
+        }
         var main = el('div', 'd-main');
         var titleR = el('div', 'd-title', d.title + (d.version > 1 ? ' (v' + d.version + ')' : ''));
         titleR.setAttribute('data-no-i18n', ''); /* documenttitel = data */
@@ -4252,6 +4588,16 @@ button.term-link{
         row.appendChild(btn);
         group.appendChild(row);
       });
+      /* open slots onder de echte documenten van deze fase */
+      slots.forEach(function (sl) {
+        var row = el('div', 'doc-row doc-expected');
+        row.appendChild(el('span', 'd-type', i18nT(DOC_TYPE_LABELS[sl.docType] || sl.docType)));
+        var main = el('div', 'd-main');
+        main.appendChild(el('div', 'd-title', i18nT('Wordt verwacht in deze fase')));
+        main.appendChild(el('div', 'd-meta', i18nT('Verschijnt hier zodra Steffan het deelt.')));
+        row.appendChild(main);
+        group.appendChild(row);
+      });
       root.appendChild(group);
     });
   }
@@ -4263,7 +4609,9 @@ button.term-link{
      de foto waarop de goedkeuring rust — alleen gezocht als de fase
      echt een approvedAt heeft, nooit iets suggereren zonder data */
   function newestMediaForStage(stageKey) {
-    var list = (BUNDLE.media || []).filter(function (m) { return m.stageKey === stageKey; });
+    /* concepten (voorvertoning, R1-3) doen niet mee: de goedkeuring kan
+       nooit rusten op een foto die de klant niet ziet */
+    var list = (BUNDLE.media || []).filter(function (m) { return m.stageKey === stageKey && !m._concept; });
     if (!list.length) return null;
     return list.slice().sort(function (a, b) { return parseDay(b.capturedAt) - parseDay(a.capturedAt); })[0];
   }
@@ -4303,6 +4651,12 @@ button.term-link{
       var lbl = el('div', 'i-label', inv.label);
       lbl.setAttribute('data-no-i18n', ''); /* factuurlabel = data */
       main.appendChild(lbl);
+      /* golf 3 (functie 65): factuurnummer tonen waar het bestaat */
+      if (inv.invoiceNumber) {
+        var nr = el('div', 'i-paidat mono', i18nTpl('Factuurnummer {n}', { n: inv.invoiceNumber }));
+        nr.setAttribute('data-no-i18n', ''); /* op renderpunt vertaald; nummer = data */
+        main.appendChild(nr);
+      }
       if (inv.status === 'paid' && inv.paidAt) {
         main.appendChild(el('div', 'i-paidat', i18nTpl('Betaald op {d}', { d: fmtDate(inv.paidAt) })));
       }
@@ -4310,7 +4664,11 @@ button.term-link{
         main.appendChild(approvedProofEl(stage, 'i-approved', fmtDate(stage.approvedAt)));
       }
       row.appendChild(main);
-      var amt = el('span', 'i-amount', fmtMoney(inv.amountCents));
+      /* het TE BETALEN bedrag (totalCents incl. btw waar dat bestaat) —
+         de kop belooft 'elk bedrag komt van een echte factuur', dus het
+         bedrag hier moet het bedrag van het factuurdocument zijn */
+      var amt = el('span', 'i-amount', fmtMoney(invoiceDueCents(inv), inv.currency)
+        + (invoiceInclVat(inv) ? ' ' + i18nT('incl. btw') : ''));
       amt.setAttribute('data-no-i18n', ''); /* bedrag */
       row.appendChild(amt);
       row.appendChild(el('span', 'badge ' + (inv.status === 'paid' ? 'badge-paid' : 'badge-open'),
@@ -4334,26 +4692,45 @@ button.term-link{
     barRoot.textContent = '';
 
     var invoices = BUNDLE.invoices || [];
+    /* eerlijk over valuta (functie 65): sommen ALLEEN binnen één valuta —
+       nooit euro's en dollars bij elkaar optellen of stil omrekenen. Bij
+       meerdere valuta toont elke tegel één regel per valuta. */
+    var costCur = (invoices[0] && invoices[0].currency) || 'EUR';
+    var curOrder = [];
+    invoices.forEach(function (i) {
+      var c = i.currency || 'EUR';
+      if (curOrder.indexOf(c) === -1) curOrder.push(c);
+    });
+    if (!curOrder.length) curOrder = [costCur];
+    var singleCurrency = curOrder.length === 1;
     var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
     var payStages = stages.filter(function (s) { return s.paymentPct > 0; });
 
-    var paidCents = 0, openCents = 0;
+    /* te betalen bedragen (totalCents incl. btw waar dat bestaat), per valuta */
+    var paidBy = {}, openBy = {};
     invoices.forEach(function (i) {
-      if (i.status === 'paid') paidCents += (i.amountCents || 0);
-      else if (i.status === 'open') openCents += (i.amountCents || 0);
+      var c = i.currency || 'EUR';
+      if (i.status === 'paid') paidBy[c] = (paidBy[c] || 0) + invoiceDueCents(i);
+      else if (i.status === 'open') openBy[c] = (openBy[c] || 0) + invoiceDueCents(i);
     });
+    var openTotal = curOrder.reduce(function (a, c) { return a + (openBy[c] || 0); }, 0);
+    function moneyLines(byCur) {
+      return curOrder.map(function (c) { return fmtMoney(byCur[c] || 0, c); });
+    }
 
     function invFor(key) {
       return invoices.find(function (i) { return i.stageKey === key; }) || null;
     }
 
-    /* projectsom alleen afleiden als elke gekoppelde factuur op
-       dezelfde som uitkomt (binnen afronding) */
+    /* projectsom alleen afleiden als alle facturen dezelfde valuta hebben
+       én elke gekoppelde factuur op dezelfde som uitkomt (binnen afronding) */
     var implied = [];
-    payStages.forEach(function (s) {
-      var inv = invFor(s.stageKey);
-      if (inv && inv.amountCents > 0) implied.push(inv.amountCents * 100 / s.paymentPct);
-    });
+    if (singleCurrency) {
+      payStages.forEach(function (s) {
+        var inv = invFor(s.stageKey);
+        if (inv && invoiceDueCents(inv) > 0) implied.push(invoiceDueCents(inv) * 100 / s.paymentPct);
+      });
+    }
     var consistent = implied.length > 0 &&
       (Math.max.apply(null, implied) - Math.min.apply(null, implied)) <= Math.max.apply(null, implied) * 0.005;
     var restStages = payStages.filter(function (s) { return !invFor(s.stageKey); });
@@ -4363,20 +4740,24 @@ button.term-link{
     function tile(label, value, note) {
       var t = el('div', 'cost-tile');
       t.appendChild(el('div', 'ccard-l', label));
-      var num = el('div', 'cost-num', value);
-      num.setAttribute('data-no-i18n', ''); /* bedrag */
-      t.appendChild(num);
+      /* value: string of array van regels (één per valuta) */
+      var lines = Array.isArray(value) ? value : [value];
+      lines.forEach(function (v) {
+        var num = el('div', 'cost-num', v);
+        num.setAttribute('data-no-i18n', ''); /* bedrag */
+        t.appendChild(num);
+      });
       if (note) t.appendChild(el('div', 'cost-note', note));
       return t;
     }
-    tiles.appendChild(tile(i18nT('Betaald'), fmtMoney(paidCents), null));
-    tiles.appendChild(tile(i18nT('Open'), fmtMoney(openCents), openCents > 0 ? i18nT('Zie de factuur hieronder.') : null));
+    tiles.appendChild(tile(i18nT('Betaald'), moneyLines(paidBy), null));
+    tiles.appendChild(tile(i18nT('Open'), moneyLines(openBy), openTotal > 0 ? i18nT('Zie de factuur hieronder.') : null));
     if (!payStages.length) {
       tiles.appendChild(tile(i18nT('Nog te verwachten'), '—', i18nT('Er zijn nog geen betaalmomenten vastgelegd.')));
     } else if (!restStages.length) {
-      tiles.appendChild(tile(i18nT('Nog te verwachten'), fmtMoney(0), i18nT('Alle betaalmomenten zijn gefactureerd.')));
+      tiles.appendChild(tile(i18nT('Nog te verwachten'), singleCurrency ? fmtMoney(0, costCur) : moneyLines({}), i18nT('Alle betaalmomenten zijn gefactureerd.')));
     } else if (consistent) {
-      tiles.appendChild(tile(i18nT('Nog te verwachten'), fmtMoney(Math.round(implied[0] * restPct / 100)),
+      tiles.appendChild(tile(i18nT('Nog te verwachten'), fmtMoney(Math.round(implied[0] * restPct / 100), costCur),
         restStages.length > 1
           ? i18nTpl('{p}% van de projectsom, verdeeld over {n} betaalmomenten.', { p: restPct, n: restStages.length })
           : i18nTpl('{p}% van de projectsom, verdeeld over 1 betaalmoment.', { p: restPct })));
@@ -4443,17 +4824,20 @@ button.term-link{
      Toegangslogboek
      ============================================================ */
   function logSentence(row) {
+    /* de apparaat-tag (golf 6, functie 33) is meta-informatie voor het
+       beheer — in de leesbare zin hier wordt hij gestript */
+    var det = stripDeviceTag(row.detail);
     if (row.actor === 'client') {
       /* het detail (bestandsnaam) is data; het werkwoord is UI */
       var tpl = 'Jij bekeek ‘{x}’';
       if (row.action === 'download') tpl = 'Jij downloadde ‘{x}’';
       if (row.action === 'share') tpl = 'Jij deelde ‘{x}’';
-      return i18nTpl(tpl, { x: row.detail || i18nT('een bestand') });
+      return i18nTpl(tpl, { x: det || i18nT('een bestand') });
     }
     if (row.actor === 'staff') {
-      return 'Steffan: ' + (row.detail || '');
+      return 'Steffan: ' + (det || '');
     }
-    return row.detail || '';
+    return det || '';
   }
 
   function renderLog() {
@@ -4897,6 +5281,13 @@ button.term-link{
       wrapT.appendChild(th);
     });
 
+    if (PREVIEW) {
+      /* voorvertoning (46): vraagformulieren verborgen */
+      var pvNote = el('p', 't-pending', 'Voorvertoning — het vraagformulier is hier uitgeschakeld.');
+      pvNote.setAttribute('data-no-i18n', '');
+      wrapT.appendChild(pvNote);
+      return wrapT;
+    }
     var form = el('form', 'ask-form');
     var lbl = el('label', null, i18nT('Stel een vraag over deze foto'));
     var taId = 'ask-' + media.id;
@@ -4957,7 +5348,7 @@ button.term-link{
     var capS = el('p', 'sh-cap', media.caption || '');
     capS.setAttribute('data-no-i18n', ''); /* caption = klantdata */
     body.appendChild(capS);
-    var orgS = el('div', 'sh-origin', originLine(media));
+    var orgS = el('div', 'sh-origin', (media._concept ? 'CONCEPT · ' : '') + originLine(media));
     orgS.setAttribute('data-no-i18n', ''); /* mono-datastrip */
     body.appendChild(orgS);
     body.appendChild(el('div', 'sh-divider'));
@@ -5018,6 +5409,7 @@ button.term-link{
     } catch (e) { return null; }
   }
   function markSeen() {
+    if (PREVIEW) return; /* voorvertoning laat 'gezien'-status van de klant intact */
     try {
       var ids = (BUNDLE && BUNDLE.media ? BUNDLE.media : []).map(function (m) { return m.id; });
       localStorage.setItem(lastseenKey(), JSON.stringify(ids));
@@ -5062,6 +5454,7 @@ button.term-link{
   }
 
   function maybeShowMoment() {
+    if (PREVIEW) return; /* het moment is de ervaring van de klant zelf */
     var seen = readSeenIds();
     var fresh;
     if (seen === null) {
@@ -5170,7 +5563,13 @@ button.term-link{
   function enterProject(project, landing) {
     DS.loadBundle(project.id).then(function (bundle) {
       BUNDLE = bundle;
-      try { localStorage.setItem(lastProjKey(), project.id); } catch (e) { /* privémodus */ }
+      if (!PREVIEW) {
+        try { localStorage.setItem(lastProjKey(), project.id); } catch (e) { /* privémodus */ }
+      } else if (DS.addPreviewNote && !previewNoted[project.id]) {
+        /* één eerlijke systeemregel per bekeken project, nooit klantregels */
+        previewNoted[project.id] = true;
+        DS.addPreviewNote(project.id);
+      }
       byId('hdr-project-name').textContent = bundle.project.name;
       printProjectCode(bundle.project.code || '');
       byId('hdr-client-name').textContent = SESSION.contactName + ' — ' + SESSION.company;
@@ -5226,7 +5625,22 @@ button.term-link{
      een hash staat (diepe link of herlaad). */
   function afterLogin(session) {
     SESSION = session;
-    writeSession(DS.demo ? session : null);
+    if (PREVIEW) mountPreviewBanner(session.company);
+    else writeSession(DS.demo ? session : null);
+    /* portaaltaal per klant (golf 5, functie 30): standaardtaal van de
+       klantkaart, alleen zolang deze browser nooit zelf een taal koos.
+       Bewust ZONDER cp_lang te schrijven: wijzigt Steffan de taal later,
+       dan volgt het portaal vanzelf mee. */
+    if (!PREVIEW && !langExplicit && session.portalLang && session.portalLang !== currentLang &&
+        LANGS.some(function (l) { return l.code === session.portalLang; })) {
+      currentLang = session.portalLang;
+      document.documentElement.setAttribute('lang', currentLang);
+      moneyFmts = {};
+      translateNode(document.body);
+      document.querySelectorAll('.lang-btn').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === currentLang));
+      });
+    }
     return fetchPortfolio(true).then(function (pf) {
       var all = (pf.projects || []).slice().sort(function (a, b) {
         return String(a.createdAt).localeCompare(String(b.createdAt));
@@ -5241,7 +5655,9 @@ button.term-link{
          het nieuwste actieve project, en zonder actieve projecten het
          nieuwste gearchiveerde (het archief blijft toegankelijk) */
       var lastId = null;
-      try { lastId = localStorage.getItem(lastProjKey()); } catch (e) { /* privémodus */ }
+      if (!PREVIEW) {
+        try { lastId = localStorage.getItem(lastProjKey()); } catch (e) { /* privémodus */ }
+      }
       var open = (lastId && all.find(function (p) { return p.id === lastId; })) ||
         PROJECTS[PROJECTS.length - 1] || all[all.length - 1];
       enterProject(open, (all.length > 1 && !location.hash) ? 'producten' : null);
@@ -5370,6 +5786,7 @@ button.term-link{
     } catch (e) { return 0; }
   }
   function notifMarkSeen() {
+    if (PREVIEW) return; /* voorvertoning laat de meldingsstatus van de klant intact */
     try { localStorage.setItem(notifSeenKey(), String(Date.now())); } catch (e) { /* privémodus */ }
   }
 
@@ -5407,7 +5824,11 @@ button.term-link{
     }
 
     (BUNDLE.media || []).forEach(function (m) {
-      var when = m.createdAt || m.capturedAt;
+      if (m._concept) return; /* concept (42): geen melding tot publicatie */
+      /* meldingstijd = het moment van publiceren (publishedAt, gezet door
+         het beheer) — een concept dat dagen na de upload wordt gepubliceerd
+         zakt anders met zijn upload-datum diep weg en mist de ongelezen-stip */
+      var when = m.publishedAt || m.createdAt || m.capturedAt;
       var pos = stagePosOf(m.stageKey);
       var f = factoryById(m.factoryId);
       pushItem(when, i18nTpl('Nieuwe foto: {x}', { x: shorten(m.caption || i18nT('update uit de fabriek'), 80) }),
@@ -5424,9 +5845,11 @@ button.term-link{
     });
 
     (BUNDLE.documents || []).forEach(function (d) {
+      if (d._concept) return; /* concept (42): geen melding tot publicatie */
       var pos = stagePosOf(d.stageKey);
-      pushItem(d.createdAt, i18nTpl('Nieuw document: {x}', { x: d.title }),
-        [i18nT(DOC_TYPE_LABELS[d.docType] || d.docType).toUpperCase(), pos ? i18nTpl('FASE {n}', { n: pos }) : null, relDayLabel(d.createdAt)],
+      var dWhen = d.publishedAt || d.createdAt; /* zelfde regel als bij media */
+      pushItem(dWhen, i18nTpl('Nieuw document: {x}', { x: d.title }),
+        [i18nT(DOC_TYPE_LABELS[d.docType] || d.docType).toUpperCase(), pos ? i18nTpl('FASE {n}', { n: pos }) : null, relDayLabel(dWhen)],
         '#/documenten@' + d.id);
     });
 
@@ -5529,7 +5952,10 @@ button.term-link{
     closeNotifPanel(false);
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeNotifPanel(true);
+    if (e.key !== 'Escape') return;
+    /* R1-6: Esc in de snelzoek-dialog sluit alleen die laag */
+    if (qsDialog && qsDialog.open) return;
+    closeNotifPanel(true);
   });
 
   /* ============================================================
@@ -5612,6 +6038,7 @@ button.term-link{
       });
     });
     (BUNDLE.documents || []).forEach(function (d) {
+      if (d._concept) return; /* concept (42): onvindbaar tot publicatie */
       ix.push({
         sec: 'DOCUMENTEN', label: d.title,
         sub: i18nT(DOC_TYPE_LABELS[d.docType] || d.docType) + ' · ' + fmtDateShort(d.createdAt),
@@ -5621,6 +6048,7 @@ button.term-link{
       });
     });
     (BUNDLE.media || []).forEach(function (m) {
+      if (m._concept) return; /* concept (42): onvindbaar tot publicatie */
       ix.push({
         sec: 'FOTO’S', label: m.caption || i18nT('Foto'), sub: originLine(m),
         run: function () { openMediaSheet(m); }
@@ -5637,7 +6065,7 @@ button.term-link{
     (BUNDLE.invoices || []).forEach(function (inv) {
       ix.push({
         sec: 'FACTUREN', label: inv.label,
-        sub: fmtMoney(inv.amountCents) + ' · ' + (inv.status === 'paid' ? i18nT('betaald') : i18nT('open')),
+        sub: fmtMoney(invoiceDueCents(inv), inv.currency) + ' · ' + (inv.status === 'paid' ? i18nT('betaald') : i18nT('open')),
         alt: 'factuur',
         run: function () { location.hash = '#/kosten'; }
       });
@@ -5877,6 +6305,9 @@ button.term-link{
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    /* R1-6: staat de snelzoek-dialog bovenop, dan sluit de native
+       dialog-cancel alléén die laag — sheet/moment blijven staan */
+    if (qsDialog && qsDialog.open) return;
     if (byId('sheet').classList.contains('open')) { closeSheet(); return; }
     if (byId('moment').classList.contains('open')) closeMoment();
   });
@@ -6021,10 +6452,19 @@ button.term-link{
   translateNode(document.body);
 
   showView('login');
-  DS.init().then(function (session) {
-    if (session) return afterLogin(session);
-    return null;
-  }).catch(function () {
+  (PREVIEW && DS.previewLogin
+    ? DS.previewLogin(PREVIEW.clientId).then(function (session) {
+        if (session) return afterLogin(session);
+        /* geen recht op voorvertoning (geen staff / onbekende klant):
+           parameter stil negeren en de normale stroom volgen */
+        PREVIEW = null;
+        return DS.init().then(function (s2) { return s2 ? afterLogin(s2) : null; });
+      })
+    : DS.init().then(function (session) {
+        if (session) return afterLogin(session);
+        return null;
+      })
+  ).catch(function () {
     showView('login');
   });
 })();

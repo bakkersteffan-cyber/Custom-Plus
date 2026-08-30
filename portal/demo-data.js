@@ -118,6 +118,15 @@ window.CP_DEMO = {
     { id: 'doc-08', projectId: 'prj-cookset',  docType: 'nnn',        stageKey: 'concept',    title: 'NNN-overeenkomst (concept)',          version: 1, createdAt: '2026-08-16' }
   ],
 
+  /* documentslots met status 'verwacht' (golf 6, functie 52): lege slots die
+     beheer én portaal tonen als eerlijke lege staat ("wordt verwacht in fase
+     X") tot een upload ze vult. documentId koppelt een gevuld slot aan het
+     document; status 'verwacht' = nog leeg. */
+  docSlots: [
+    { id: 'slot-01', projectId: 'prj-diffuser', docType: 'compliance', stageKey: 'logistics', status: 'verwacht', documentId: null, createdAt: '2026-04-04T09:00:00Z' },
+    { id: 'slot-02', projectId: 'prj-cookset',  docType: 'quote',      stageKey: 'concept',   status: 'verwacht', documentId: null, createdAt: '2026-08-16T09:00:00Z' }
+  ],
+
   invoices: [
     { id: 'inv-g1', projectId: 'prj-geurflacon', stageKey: 'concept',   label: '25% — ontwerpaftekening', amountCents: 210000, currency: 'EUR', status: 'paid', paidAt: '2025-10-08', createdAt: '2025-10-06', documentId: null },
     { id: 'inv-g2', projectId: 'prj-geurflacon', stageKey: 'sourcing',  label: '35% — start tooling',     amountCents: 294000, currency: 'EUR', status: 'paid', paidAt: '2025-11-10', createdAt: '2025-11-07', documentId: null },
@@ -203,6 +212,36 @@ window.CP_DEMO = {
     { id: 'shev-07', shipmentId: 'shp-02', milestoneKey: 'aankomst_haven',  occurredAt: '2026-08-21', location: 'Yantian',  note: '', createdAt: '2026-08-21T14:20:00Z' },
     { id: 'shev-08', shipmentId: 'shp-02', milestoneKey: 'geladen_schip',   occurredAt: '2026-08-24', location: 'Yantian',  note: '', createdAt: '2026-08-24T10:15:00Z' },
     { id: 'shev-09', shipmentId: 'shp-02', milestoneKey: 'vertrek_zee',     occurredAt: '2026-08-25', location: 'Yantian',  note: '', createdAt: '2026-08-25T18:00:00Z' }
+  ],
+
+  /* Site-briefs (golf 5, functie 21): instroom vanaf de CUSTOM+-site die nog
+     geen klant of project is. Alleen het beheer leest deze collectie; de
+     portal raakt hem nooit aan. */
+  aanvragen: [
+    {
+      id: 'req-01', name: 'Lotte Meijer', email: 'lotte@studiomeer.nl',
+      company: 'Studio Meer', lang: 'nl',
+      product: 'Keramische mok met houten deksel, eigen glazuur, eerste oplage 1.000 stuks',
+      status: 'nieuw', clientId: null, projectId: null,
+      createdAt: '2026-08-27T10:20:00Z'
+    },
+    {
+      id: 'req-02', name: 'Jonas Weber', email: 'jonas@formbank.de',
+      company: 'Formbank GmbH', lang: 'de',
+      product: 'Aluminium desk organizer, geanodiseerd in 3 kleuren, doeloplage 2.500 stuks',
+      status: 'nieuw', clientId: null, projectId: null,
+      createdAt: '2026-08-29T15:41:00Z'
+    }
+  ],
+
+  /* Contactpersonen (golf 5, functie 26): extra ontvangers per klant met
+     aanvinkbare mailcategorieën. Beheer-only; de portal leest dit nooit. */
+  contacts: [
+    {
+      id: 'ct-01', clientId: 'cli-noor', name: 'Rens de Boer', role: 'Boekhouding',
+      email: 'administratie@ateliernoor.nl', lang: 'nl',
+      cats: ['factuur'], active: true, createdAt: '2026-06-02T09:00:00Z'
+    }
   ],
 
   accessLog: [
