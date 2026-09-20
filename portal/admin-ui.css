@@ -1,0 +1,2902 @@
+/* CUSTOM+ — stijlblad van de nieuwe beheerindeling.
+   ------------------------------------------------------------------
+   WAARVOOR DIT BESTAND BESTAAT
+   De eigenaar heeft op 30-08-2026 tien schermafbeeldingen aangeleverd met de
+   opdracht: "volg deze UI 1:1 ik wil niet dat je afwijkt en ik wil dat je
+   ervoor zorgt dat we niet stoppen tot dat het er zo uit ziet, het groene mag
+   zwart worden zoals onze branding." Dit bestand is de uitvoering daarvan in
+   CSS. De vorm komt uit .claude/beheer-ui-mockup-spec.md, het gedrag uit
+   .claude/beheer-migratieplan.md. Spreken die twee elkaar tegen over VORM,
+   dan wint de mockupspec; over GEDRAG wint het migratieplan.
+
+   WAAR HET GELADEN WORDT
+   In beheer.html en in dev/admin-ui.html, met één <link>-regel NA het
+   bestaande <style>-blok. Die volgorde is geen detail maar het hele
+   mechanisme: dit bestand overschrijft een handvol bestaande regels op
+   gelijke specificiteit en wint uitsluitend omdat het later in de cascade
+   staat. Verplaats de link dus nooit naar boven.
+
+   AFSPRAAK: ALLE NIEUWE KLASSEN BEGINNEN MET u-
+   Er staat ruim 17.000 regels beheercode in één bestand en er werkt op dit
+   moment een tweede bouw (de factuurmodule) in datzelfde bestand. Een prefix
+   is de enige manier om te garanderen dat een nieuwe klasse nooit stil een
+   bestaande regel raakt. Wat hieronder GEEN u- heeft, is bewust een
+   overschrijving van een bestaande klasse en staat in hoofdstuk 2, met de
+   bronregel erbij. Nergens anders staat een selector zonder u-, behalve waar
+   hij binnen een u-context genest is (bijvoorbeeld .u-side .navbtn) — daar
+   kan hij het oude scherm niet bereiken.
+
+   DE GROEN-NAAR-ZWART REGEL (hoofdstuk 0 van de mockupspec)
+   De mockups gebruiken groen op twee heel verschillende manieren, en die
+   worden NIET allebei hetzelfde vertaald:
+
+     MERKGROEN WORDT ZWART (--ink)
+       primaire knop, actieve tabonderstreping, actief zijbalkitem (warme
+       grijze pil --tint-ink met zwarte tekst), tekstlinks, de vandaag-cirkel
+       in de kalender, voortgangsringen en sparklines, de focusring.
+     BETEKENISKLEUR BLIJFT KLEUR
+       statusstip betaald/op koers/gereed blijft groen --ok, wacht/aandacht
+       oranje --warn, extern/onderweg blauw --info, te laat rood --crit, en
+       de categorische grafieksegmenten houden hun pastelpalet.
+
+   Waarom niet alles zwart: een donut met zes zwarte segmenten is geen donut.
+   Kleur die BETEKENIS draagt moet onderscheidbaar blijven; kleur die MERK
+   draagt wordt zwart. Dat is precies wat "zoals onze branding" op de rest van
+   de site betekent: zwarte knoppen, kleur alleen waar hij iets zegt.
+
+   DE NIEUWE SHELL DRAAGT DE OUDE KLASSEN NIET
+   .u-shell / .u-side / .u-main vervangen .shell / .side / .main. Zet ze niet
+   samen op hetzelfde element. Zo blijft de bestaande 820px-regel van
+   beheer.html volledig intact: hij kan de nieuwe shell simpelweg niet vinden.
+
+   WAT DIT BESTAND NIET DOET
+   Geen dark mode (het beheer is bewust een lichte app), geen extra fonts,
+   geen externe bronnen, geen !important behalve in het printblok — daar staat
+   waarom.
+
+   OPENSTAANDE RESTPOST VAN FASE 0 — BEWUST BLIJVEN LATEN STAAN
+   De twee dode tokens --line-dark en --card-shadow-hover staan nog in het
+   :root-blok van beheer.html. Ze hebben elk precies één treffer (hun eigen
+   declaratie), dus er breekt niets zolang ze blijven staan; ze kosten alleen
+   twee regels ruis. Ze gaan eruit zodra beheer.html weer veilig te bewerken
+   is — nu loopt daar de factuurmodulebouw en zou een bewerking dwars door dat
+   werk heen gaan. In dev/admin-ui.html zijn ze al weg.
+
+   INHOUD
+      1. Tokens
+      2. De oude klassen, en dezelfde klassen binnen de nieuwe shell
+      3. Zichtbare focus
+      4. Typografie
+      5. De omlijsting: shell, zijbalk, topbalk, werkkolom, rail
+      6. Knoppen
+      7. Bouwstenen: avatar, icoontegel, stip, chip, link, kaart, sectiekop
+      8. Componenten van de tien schermen
+      9. Vijf responsieve niveaus
+     10. Verminderde beweging
+     11. Print (staat als laatste; hoofdstuk 10 legt uit waarom)
+   ------------------------------------------------------------------ */
+
+
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+
+/* --- 1a. WAT AAN :root BLIJFT STAAN — NIET AANRAKEN ------------------
+   Deze vier kleuren zijn in de vorige ronde met de hand doorgerekend en
+   worden gebruikt door de overschrijvingen in hoofdstuk 2a, die op HET HELE
+   BESTAND beheer.html werken — dus ook op de elf oude schermen die nog niets
+   met de nieuwe indeling te maken hebben. Ze staan hier op :root en niet in
+   de shell, zodat die oude schermen precies houden wat ze hadden.
+
+   Het nieuwe mockuppalet staat in 1b en is afgebakend op .u-shell. Zo staat
+   het letterlijk in hoofdstuk 1 van de mockupspec: "dit vervangt het oude
+   palet NIET in beheer.html; de nieuwe tokens leven in portal/admin-ui.css en
+   overschrijven binnen de nieuwe shell."
+
+   NAGEREKEND, NIET GESCHAT (WCAG-formule, tekst tegen zijn eigen grond):
+     --warn        #8d5510   wit 6,11:1   paper 5,76:1
+     --info        #35607f   wit 6,71:1   paper 6,33:1
+     --critical-ink #b0502e  wit 5,21:1   paper 4,91:1 */
+:root{
+  /* oranje: vraagt aandacht, maar is nog niet te laat */
+  --warn:#8d5510;
+  --warn-soft:rgba(141,85,16,.09);
+  --warn-line:rgba(141,85,16,.45);
+
+  /* blauw: de bal ligt bij iemand anders — klant, fabriek, vervoerder */
+  --info:#35607f;
+  --info-soft:rgba(53,96,127,.09);
+  --info-line:rgba(53,96,127,.45);
+
+  /* --critical #d97654 is een lichte terracotta: prima als vlak en als rand,
+     maar als TEKST haalt hij 3,15:1 op wit en dat is onder de norm. Deze
+     donkere variant uit dezelfde tintfamilie is er uitsluitend voor rode
+     tekst op een lichte grond. --critical zelf blijft ongewijzigd. */
+  --critical-ink:#b0502e;
+
+  /* maatvoering van de OUDE omlijsting. Blijft staan als terugval voor wie
+     dit bestand buiten de shell gebruikt; 1b zet er de mockupmaten overheen. */
+  --u-top-h:57px;
+  --u-side-w:244px;
+  --u-side-w-collapsed:64px;
+  --u-md-detail:328px;
+}
+
+
+/* --- 1b. HET MOCKUPPALET, AFGEBAKEND OP .u-shell ---------------------
+   Hoofdstuk 1 van de mockupspec, letterlijk overgenomen, plus vier soorten
+   aanvullingen die de spec zelf vraagt maar niet uitschrijft. Custom
+   properties erven, dus alles binnen de shell krijgt ze — ook de elf oude
+   schermen van beheer.html, want CP_SHELL.monteer verplaatst #content in de
+   nieuwe werkkolom. Hoofdstuk 2b vangt de gevolgen daarvan op.
+
+   AANVULLING 1 — DE -ink VARIANTEN (nieuw, en niet optioneel)
+   De vier betekeniskleuren uit de spec zijn VLAKKLEUREN. Als TEKST halen ze
+   de norm geen van vieren:
+     --ok   #5f8a4f   op wit 4,01:1     onder 4,5:1
+     --warn #d98b4a   op wit 2,71:1     ver onder 4,5:1, en zelfs onder 3:1
+     --crit #c5563f   op wit 4,40:1     net onder 4,5:1
+     --info #6d92b8   op wit 3,25:1     onder 4,5:1
+   En op hun eigen -soft vlak wordt het slechter: --warn op --warn-soft haalt
+   2,38:1. Hoofdstuk 8 van de spec is niet onderhandelbaar, dus naast elke
+   betekeniskleur staat een donkere tekstvariant uit dezelfde tintfamilie:
+     --ok-ink   #43663a   wit 6,56:1   ok-soft   5,69:1   paper 6,13:1
+     --warn-ink #8d5510   wit 6,11:1   warn-soft 5,36:1   paper 5,71:1
+     --crit-ink #a8402b   wit 6,12:1   crit-soft 5,19:1   paper 5,72:1
+     --info-ink #35607f   wit 6,71:1   info-soft 5,84:1   paper 6,27:1
+   Wit op een -ink vlak haalt dezelfde waarden, dus een gevulde badge met
+   witte tekst kan alleen op -ink en nooit op de volle betekeniskleur.
+   REGEL: --ok/--warn/--crit/--info zijn voor VLAKKEN, LIJNEN en STIPPEN;
+   --ok-ink/--warn-ink/--crit-ink/--info-ink zijn voor TEKST en ICONEN.
+
+   AANVULLING 2 — DE -ink VARIANTEN VAN HET CATEGORISCHE PALET
+   Hetzelfde probleem, en zichtbaarder: --cat-2 op --cat-2-soft haalt 1,83:1,
+   dus een outline-icoon in een perzikkleurige tegel zou letterlijk bijna
+   onzichtbaar zijn. Elke categorische kleur krijgt daarom een donkere broer
+   die ≥4,5:1 haalt op wit EN op zijn eigen -soft vlak:
+     --cat-1-ink #546e44  wit 5,69:1   soft 4,84:1
+     --cat-2-ink #9a5a23  wit 5,44:1   soft 4,77:1
+     --cat-3-ink #436385  wit 6,25:1   soft 5,40:1
+     --cat-4-ink #665290  wit 6,62:1   soft 5,63:1
+     --cat-5-ink #746445  wit 5,75:1   soft 5,10:1
+     --cat-6-ink #53504a  wit 8,03:1   soft 6,81:1
+   De volle --cat-N blijven precies wat de spec zegt: grafieksegmenten en
+   tegelvlakken. Ze worden nooit tekst — op wit zitten ze tussen 1,82:1 en
+   2,65:1, met alleen --cat-6 (#6f6a62, 5,37:1) als uitzondering.
+
+   AANVULLING 3 — --line-ctrl, DE RAND VAN EEN BEDIENINGSELEMENT
+   --line (#ebe6dd) haalt 1,24:1 op wit. Als hairline tussen twee rijen is dat
+   precies goed: die lijn draagt geen betekenis. Maar de rand van een LEEG
+   invoerveld is wél de enige aanwijzing dát daar een veld staat, en dan geldt
+   3:1. Vandaar --line-ctrl #948b80: wit 3,35:1, card-2 3,27:1, side 3,19:1,
+   paper 3,13:1. LET OP: op --tint-ink haalt hij 2,90:1 — zet daar dus geen
+   invoerveld op, of geef het veld een witte vulling.
+   Knoppen mét een zichtbaar tekstlabel houden gewoon --line: die zijn aan hun
+   label te herkennen en vallen niet onder 1.4.11.
+
+   AANVULLING 4 — DE MAATVOERING UIT HOOFDSTUK 3 ALS TOKEN
+   Zodat een plakkende rail weet waar de werkkolom begint en niemand die
+   getallen twee keer hoeft op te schrijven.
+
+   DE REGEL VOOR MICROTEKST — DE ONDERGRENS IS --ink-2, NOOIT --ink-4
+   Hoofdstuk 8 van de spec: --ink-3 (#8a8175) haalt 3,58:1 op het papier en
+   mag daarom niet onder 14px voor informatiedragende tekst; voor 12 tot 13px
+   gebruiken we --ink-2. Dit bestand houdt zich daaraan en trekt er één lijn
+   bij: ook INTERACTIEVE tekst (een kruimelpadlink, een tablabel) staat op
+   --ink-2, ongeacht de maat. --ink-4 (#b3aba0, 2,27:1 op wit) draagt nooit
+   informatie: alleen assen, uitgeschakelde bediening en dagen buiten de
+   maand. Val hier niet op terug — klein is niet hetzelfde als onbelangrijk.
+     --ink      #14120f   wit 18,70:1   paper 17,47:1   tint-ink 16,15:1
+     --ink-2    #4a443c   wit  9,62:1   paper  8,99:1   tint-ink  8,31:1
+     --ink-hint #736b60   wit  5,25:1   paper  4,91:1   tint-ink  4,53:1
+     --ink-3    #8a8175   wit  3,83:1   paper  3,58:1   tint-ink  3,31:1
+     --ink-4    #b3aba0   wit  2,27:1   paper  2,12:1   tint-ink  1,96:1
+
+   DE DRIE PLEKKEN WAAR --ink-3 ALS LOPENDE TEKST STOND, EN WAAROM ZE WEG ZIJN
+   De spec staat --ink-3 toe boven 14px. De NORM doet dat niet: AA vraagt
+   4,5:1 voor alles onder 18,66px vet of 24px normaal, en --ink-3 haalt dat
+   nergens op een lichte grond. Drie plekken vielen daaronder en zijn
+   verplaatst; het beeldverschil is klein, de leesbaarheid niet:
+     .u-tlrail-text  14,5px op --card    was 3,83:1  →  --ink-2   9,62:1
+     .u-thread-org   15px  op --card-2   was 3,74:1  →  --ink-2   9,38:1
+     .u-search .input::placeholder       was 3,58:1  →  --ink-hint 4,91:1
+   Wat WEL op --ink-3 blijft staan: de bijzin in de h1 (36px en groter, daar
+   volstaat 3:1) en de vormen die geen tekst zijn — het chevronnetje, de
+   assen, het vergrootglas. */
+.u-shell{
+  /* vlakken */
+  --paper:#f9f7f3;
+  --side:#fbf9f6;
+  --card:#ffffff;
+  --card-2:#fdfcfa;
+  --tint-ink:#f1eee8;
+  --line:#ebe6dd;
+  --line-2:#f3efe8;
+  --line-ctrl:#948b80;
+
+  /* inkt */
+  --ink:#14120f;
+  --ink-2:#4a443c;
+  --ink-3:#8a8175;
+  --ink-4:#b3aba0;
+
+  /* AANVULLING 5 — --ink-hint, DE KLEUR VAN EEN PLACEHOLDER
+     Een placeholder heeft twee eisen die elkaar tegenwerken. Hij moet leesbaar
+     zijn (AA vraagt 4,5:1, want hij is bij een leeg veld de enige tekst die
+     zegt wat er in het veld hoort) én hij moet er lichter uitzien dan echte
+     invoer, anders lijkt het veld gevuld en typt niemand erin.
+     --ink-3 haalde 3,58:1 op het papier en viel dus af; --ink-2 (8,99:1) is
+     zo donker dat het veld gevuld lijkt. --ink-hint #736b60 zit er precies
+     tussenin: papier 4,91:1, wit 5,25:1, card-2 5,12:1 — ruim boven de norm
+     en zichtbaar lichter dan de --ink waarin echte invoer staat. */
+  --ink-hint:#736b60;
+
+  /* betekenis — vlak, lijn en stip */
+  --ok:#5f8a4f;     --ok-soft:#eaf1e5;    --ok-ink:#43663a;
+  --warn:#d98b4a;   --warn-soft:#fbeee2;  --warn-ink:#8d5510;
+  --crit:#c5563f;   --crit-soft:#f9e9e5;  --crit-ink:#a8402b;
+  --info:#6d92b8;   --info-soft:#eaf0f6;  --info-ink:#35607f;
+
+  /* categorisch — grafieken en icoontegels, nooit voor status */
+  --cat-1:#8fae7c;  --cat-1-soft:#e8efe2;  --cat-1-ink:#546e44;   /* salie   */
+  --cat-2:#e0a878;  --cat-2-soft:#fbeee1;  --cat-2-ink:#9a5a23;   /* perzik  */
+  --cat-3:#8aa6c4;  --cat-3-soft:#e9eff6;  --cat-3-ink:#436385;   /* blauw   */
+  --cat-4:#a698c4;  --cat-4-soft:#efebf6;  --cat-4-ink:#665290;   /* paars   */
+  --cat-5:#cbbfa8;  --cat-5-soft:#f5f1e8;  --cat-5-ink:#746445;   /* zand    */
+  --cat-6:#6f6a62;  --cat-6-soft:#eeece8;  --cat-6-ink:#53504a;   /* grafiet */
+
+  /* vorm */
+  --r-card:20px;
+  --r-hero:24px;
+  --r-tile:14px;
+  --r-input:12px;
+  --r-pill:999px;
+  --shadow:0 1px 2px rgba(20,18,15,.04), 0 12px 32px -20px rgba(20,18,15,.18);
+  --shadow-2:0 2px 4px rgba(20,18,15,.05), 0 24px 48px -28px rgba(20,18,15,.22);
+
+  /* de bestaande .card, .modal en .u-menu van beheer.html lezen
+     --card-shadow. Binnen de shell wijst die naar de nieuwe schaduw, zodat
+     een oude kaart en een nieuwe kaart naast elkaar niet twee verschillende
+     dieptes hebben. Buiten de shell blijft hij wat hij was. */
+  --card-shadow:var(--shadow);
+
+  /* maatvoering, hoofdstuk 3 en 6 van de spec */
+  --u-top-h:72px;
+  --u-side-w:232px;
+  --u-side-w-collapsed:68px;
+  --u-rail-w:400px;
+  --u-rail-top:24px;
+  --u-work-max:1180px;
+  --u-work-max-rail:1480px;
+  --u-work-pad:40px;
+  --u-md-detail:620px;
+}
+
+/* De tintklassen zijn de DRY-vorm van "dit element staat in de perzikkleur".
+   Elk component hieronder leest --vlak / --volle / --inkt met een terugval,
+   dus één tintklasse kleurt een icoontegel, een grote stattegel, een stip en
+   een chip in één keer goed — inclusief de juiste tekstkleur, want --inkt
+   wijst altijd naar de doorgerekende -ink variant. */
+.u-tint-ok{   --vlak:var(--ok-soft);    --volle:var(--ok);    --inkt:var(--ok-ink); }
+.u-tint-warn{ --vlak:var(--warn-soft);  --volle:var(--warn);  --inkt:var(--warn-ink); }
+.u-tint-crit{ --vlak:var(--crit-soft);  --volle:var(--crit);  --inkt:var(--crit-ink); }
+.u-tint-info{ --vlak:var(--info-soft);  --volle:var(--info);  --inkt:var(--info-ink); }
+.u-tint-1{ --vlak:var(--cat-1-soft); --volle:var(--cat-1); --inkt:var(--cat-1-ink); }
+.u-tint-2{ --vlak:var(--cat-2-soft); --volle:var(--cat-2); --inkt:var(--cat-2-ink); }
+.u-tint-3{ --vlak:var(--cat-3-soft); --volle:var(--cat-3); --inkt:var(--cat-3-ink); }
+.u-tint-4{ --vlak:var(--cat-4-soft); --volle:var(--cat-4); --inkt:var(--cat-4-ink); }
+.u-tint-5{ --vlak:var(--cat-5-soft); --volle:var(--cat-5); --inkt:var(--cat-5-ink); }
+.u-tint-6{ --vlak:var(--cat-6-soft); --volle:var(--cat-6); --inkt:var(--cat-6-ink); }
+/* de neutrale stand: warme grijze pil, zwarte inkt. Ook de terugval van elk
+   component dat zonder tintklasse wordt neergezet. */
+.u-tint-neutraal{ --vlak:var(--tint-ink); --volle:var(--ink-3); --inkt:var(--ink); }
+
+
+/* ============================================================
+   2. DE OUDE KLASSEN, EN DEZELFDE KLASSEN BINNEN DE NIEUWE SHELL
+   ============================================================ */
+
+/* --- 2a. OVERSCHRIJVINGEN VOOR beheer.html — ONGEWIJZIGD -------------
+   Elke regel hieronder vervangt een regel uit de <style> van beheer.html en
+   werkt op het HELE bestand. Ze zijn in de vorige ronde doorgerekend en
+   blijven letterlijk staan. Geen van deze overschrijvingen gebruikt
+   !important — ze staan simpelweg later in de cascade op gelijke
+   specificiteit.
+
+   NOG TE OPRUIMEN IN beheer.html ZELF (kan dit bestand niet doen):
+   · #8a5a00 staat nog los in .invline-warn en in twee inline
+     style-attributen; die liggen in de zone van de factuurmodulebouw en
+     blijven met rust tot die bouw af is.
+   · De dode tokens --line-dark en --card-shadow-hover, zie het kopblok.
+
+   2a-1. .awaiting en .crit uit elkaar (bron: beheer.html regel 189 en 190).
+   Beide stonden op exact dezelfde drie waarden terwijl ze iets heel anders
+   betekenen. Twee identieke chips zijn erger dan één chip: de gebruiker leert
+   dat de rode rand niets zegt. .awaiting wordt oranje omdat de teksten bijna
+   allemaal naar mij wijzen ("Bedrag invullen", "Concept"); .crit blijft
+   kritiek maar wordt leesbaar. */
+.chip.awaiting{ background:var(--warn-soft); color:var(--warn); border-color:transparent; }
+.chip.crit{ background:var(--white); color:var(--critical-ink); border-color:var(--critical); }
+
+/* 2a-2. de klok-chips (bron: regel 374). Hier zaten twee hardgecodeerde
+   oranjes: #8a5a00 als tekst en #c99a2e als rand. Die rand haalde 2,58:1 op
+   wit en was eerder een vermoeden dan een rand. */
+.chip.klok-oranje{ color:var(--warn); border-color:var(--warn-line); }
+
+/* 2a-3. de statusstippen (bron: regel 361 en 369, beide #c08a1d). Een stip
+   draagt zijn betekenis mede via kleur en heeft dus minstens 3:1 nodig tegen
+   zijn ondergrond; #c08a1d haalde 3,05:1 op wit en 2,87:1 op het papier —
+   precies op de grens en eronder. --warn zet dat op 6,11:1 en 5,76:1. */
+.dot.warn{ background:var(--warn); }
+.gl-dot.warn{ background:var(--warn); }
+
+/* 2a-4. de losse oranje hinttekstjes (bron: regel 414 en 432, beide #8a5a00) */
+.warnhint{ color:var(--warn); }
+.batchwarn{ color:var(--warn); }
+
+/* 2a-5. nieuwe chiptonen (aanvullend, overschrijft niets) */
+.chip.info{ background:var(--info-soft); color:var(--info); border-color:transparent; }
+.chip.warn{ background:var(--warn-soft); color:var(--warn); border-color:transparent; }
+.chip.ok{ background:var(--green-soft); color:var(--green); border-color:transparent; }
+.chip.neutral{ background:var(--gray-f2); color:var(--gray-69); border-color:transparent; }
+
+/* 2a-6. de vijf activiteitssoorten. CP_MODEL.mergeActivity() geeft elke
+   tijdlijnregel een eigen klassenaam mee en CP_UI.timelineRow() zet die náást
+   .chip.neutral op de soortchip.
+   ZE STAAN NA .chip.neutral EN DAT IS HET MECHANISME: gelijke specificiteit
+   (0,2,0), dus alleen de volgorde laat ze winnen. Niet naar boven verplaatsen
+   en er geen !important op zetten.
+   Kleur is hier nooit het enige signaal: de chip draagt altijd zijn eigen
+   woord ("Klant", "E-mail", "Systeem", "Bestanden", "Financieel").
+     act-klant       --info op info-soft      5,90:1
+     act-mail        --info op wit            6,71:1
+     act-financieel  --green op green-soft    5,48:1
+     act-bestanden   --gray-33 op gray-f2    11,29:1
+     act-systeem     --gray-69 op gray-f2     4,90:1 */
+.chip.act-klant{ background:var(--info-soft); color:var(--info); border-color:transparent; }
+.chip.act-mail{ background:var(--white); color:var(--info); border-color:var(--info-line); }
+.chip.act-financieel{ background:var(--green-soft); color:var(--green); border-color:transparent; }
+.chip.act-bestanden{ background:var(--gray-f2); color:var(--gray-33); border-color:transparent; }
+/* systeem is bewust de neutrale basis en herhaalt hem expliciet: zo is aan
+   dit blok te zien dat alle vijf de soorten bekeken zijn. */
+.chip.act-systeem{ background:var(--gray-f2); color:var(--gray-69); border-color:transparent; }
+/* de vijf klantacties (2026-09, spiegelplan): wat de klant zelf in het
+   portaal deed komt in het beheer als activiteit terug. Ze delen de tokens van
+   de bestaande soorten, zodat het contrast al bewezen is:
+     akkoord      = klant gaf akkoord op een fase      → klant-blauw
+     samplekeuze  = klant beoordeelde een sampleronde  → klant-blauw
+     betaling     = klant meldde een betaling          → financieel-groen
+     klantbestand = klant leverde een bestand aan      → bestanden-grijs
+     bezwaar      = klant maakte bezwaar op een factuur → oranje (vraagt werk) */
+.chip.act-akkoord{ background:var(--info-soft); color:var(--info); border-color:transparent; }
+.chip.act-samplekeuze{ background:var(--info-soft); color:var(--info); border-color:transparent; }
+.chip.act-betaling{ background:var(--green-soft); color:var(--green); border-color:transparent; }
+.chip.act-klantbestand{ background:var(--gray-f2); color:var(--gray-33); border-color:transparent; }
+.chip.act-bezwaar{ background:var(--warn-soft); color:var(--warn); border-color:transparent; }
+
+
+/* --- 2b. DEZELFDE KLASSEN, MAAR BINNEN DE SHELL ----------------------
+   DIT BLOK IS GEEN OPSMUK MAAR EEN NOODZAAK, en het is de moeite waard om te
+   begrijpen waarom. Binnen .u-shell wijst --warn naar #d98b4a (de perzikkleur
+   uit de mockup) in plaats van naar #8d5510, en --info naar #6d92b8 in plaats
+   van naar #35607f. Elke regel uit 2a die BINNEN de shell wordt gebruikt zou
+   daardoor stil van 6,11:1 naar 2,38:1 zakken. En binnen de shell gebeurt
+   precies dat: CP_SHELL.monteer VERPLAATST #content naar de nieuwe werkkolom,
+   dus de elf oude schermen van beheer.html tekenen zichzelf gewoon binnen
+   .u-shell.
+
+   De regels hieronder zetten die zes chips en twee hinttekstjes terug op een
+   doorgerekende waarde, in de tinten van het nieuwe palet. Specificiteit
+   0,3,0 tegen 0,2,0: ze winnen zonder !important en zonder volgordetruc.
+
+   BUITEN de shell verandert er niets — daar gelden 2a en het oude palet.
+
+   NAGEREKEND, tekst tegen het vlak waar hij op staat:
+     awaiting / warn   --warn-ink op --warn-soft   5,36:1
+     crit              --crit-ink op --card        6,12:1
+     info / act-klant  --info-ink op --info-soft   5,84:1
+     ok / financieel   --ok-ink op --ok-soft       5,69:1
+     act-mail          --info-ink op --card        6,71:1
+     bestanden         --ink op --tint-ink        16,15:1
+     systeem           --ink-2 op --tint-ink       8,31:1 */
+.u-shell .chip.awaiting,
+.u-shell .chip.warn{ background:var(--warn-soft); color:var(--warn-ink); border-color:transparent; }
+.u-shell .chip.crit{ background:var(--card); color:var(--crit-ink); border-color:var(--crit); }
+.u-shell .chip.info{ background:var(--info-soft); color:var(--info-ink); border-color:transparent; }
+.u-shell .chip.ok,
+.u-shell .chip.done{ background:var(--ok-soft); color:var(--ok-ink); border-color:transparent; }
+.u-shell .chip.neutral{ background:var(--tint-ink); color:var(--ink-2); border-color:transparent; }
+.u-shell .chip.klok-oranje{ color:var(--warn-ink); border-color:var(--warn); }
+.u-shell .chip.klok-groen{ color:var(--ok-ink); border-color:var(--ok); }
+.u-shell .chip.klok-rood{ background:var(--crit-ink); color:var(--card); border-color:var(--crit-ink); }
+.u-shell .chip.current{ background:var(--ink); color:var(--card); }
+.u-shell .warnhint,
+.u-shell .batchwarn{ color:var(--warn-ink); }
+
+/* de vijf activiteitssoorten binnen de shell. Ze staan NA .u-shell
+   .chip.neutral om dezelfde reden als in 2a: gelijke specificiteit (0,3,0),
+   dus de volgorde beslist. */
+.u-shell .chip.act-klant{ background:var(--info-soft); color:var(--info-ink); border-color:transparent; }
+.u-shell .chip.act-mail{ background:var(--card); color:var(--info-ink); border-color:var(--info); }
+.u-shell .chip.act-financieel{ background:var(--ok-soft); color:var(--ok-ink); border-color:transparent; }
+.u-shell .chip.act-bestanden{ background:var(--tint-ink); color:var(--ink); border-color:transparent; }
+.u-shell .chip.act-systeem{ background:var(--tint-ink); color:var(--ink-2); border-color:transparent; }
+.u-shell .chip.act-akkoord{ background:var(--info-soft); color:var(--info-ink); border-color:transparent; }
+.u-shell .chip.act-samplekeuze{ background:var(--info-soft); color:var(--info-ink); border-color:transparent; }
+.u-shell .chip.act-betaling{ background:var(--ok-soft); color:var(--ok-ink); border-color:transparent; }
+.u-shell .chip.act-klantbestand{ background:var(--tint-ink); color:var(--ink); border-color:transparent; }
+.u-shell .chip.act-bezwaar{ background:var(--warn-soft); color:var(--warn-ink); border-color:transparent; }
+
+/* de oude statusstippen binnen de shell. Ze houden de winst van de vorige
+   ronde — een stip van 6px met een 1px rand eromheen is geen stip meer, dus
+   hier geen randtruc maar gewoon de donkere tint. De NIEUWE .u-dot van
+   hoofdstuk 7 is 8px en doet het wél met een rand, zodat die de perzikkleur
+   van de mockup kan houden. */
+.u-shell .dot.warn,
+.u-shell .gl-dot.warn{ background:var(--warn-ink); }
+.u-shell .dot.ok,
+.u-shell .gl-dot.ok{ background:var(--ok); }
+.u-shell .dot.bad,
+.u-shell .gl-dot.bad{ background:var(--crit); }
+
+/* de oude kaartvorm meebewegen met de mockup: radius 16 wordt 20. Alleen de
+   vorm — vulling, rand en schaduw komen al uit de tokens van 1b. */
+.u-shell .card{ border-radius:var(--r-card); }
+.u-shell .modal{ border-radius:var(--r-card); }
+
+/* de kicker van beheer.html staat op --gray-9 (#999, 2,85:1 op wit). Dat is
+   binnen de shell te licht voor een label dat vertelt wat er onder staat.
+   Hoofdstuk 2 van de spec wil 13px / 500 / uppercase / .1em; hoofdstuk 8 wil
+   voor 13px --ink-2 in plaats van --ink-3. Hoofdstuk 8 wint. */
+.u-shell .kicker{
+  font-size:13px; font-weight:500; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-2);
+}
+
+/* de oude tekstlink. Groen bestaat niet meer als merkkleur, en --gray-69 is
+   binnen dit palet een vreemde eend: --ink met onderstreping bij hover is wat
+   hoofdstuk 0 voor tekstlinks voorschrijft. */
+.u-shell .linkbtn{ color:var(--ink); }
+.u-shell .linkbtn:hover{ color:var(--ink); }
+
+/* invoervelden binnen de shell: de mockupvorm (52px hoog, radius 12) plus de
+   rand die hoofdstuk 8 verlangt. Zie aanvulling 3 in 1b voor waarom de rand
+   hier --line-ctrl is en niet --line. */
+.u-shell .input,
+.u-shell textarea.input,
+.u-shell select.input{
+  background:var(--card); border:1px solid var(--line-ctrl);
+  border-radius:var(--r-input); padding:14px 14px; font-size:15px;
+  min-height:52px; color:var(--ink);
+}
+.u-shell textarea.input{ min-height:112px; padding:12px 14px; }
+/* dezelfde reden als bij het zoekveld: een placeholder is bij een leeg veld
+   de enige tekst die het veld benoemt en moet dus 4,5:1 halen. --ink-hint,
+   niet --ink-3. Zie aanvulling 5 in 1b. */
+.u-shell .input::placeholder{ color:var(--ink-hint); }
+.u-shell .flabel{
+  font-family:var(--font); font-size:13px; font-weight:500;
+  letter-spacing:0; text-transform:none; color:var(--ink-2); margin-bottom:7px;
+}
+
+
+/* --- 2c. GROEN WORDT ZWART — de plekken die niet in een chip zitten --
+   Hoofdstuk 0 van de spec, uitgevoerd op de bestaande klassen die de shell
+   hergebruikt. De navigatieknoppen blijven bewust .navbtn (dat is de afspraak
+   met admin-shell.js), dus hier staat de vertaling en niet in hoofdstuk 5. */
+.u-side .navbtn.active svg{ stroke:currentColor; }
+/* de inboxbadge: pil in --tint-ink met zwarte tekst, niet in het groen van
+   beheer.html. Op een ACTIEF item is de ondergrond zelf al --tint-ink, dus
+   dan wisselt de pil naar wit — anders verdwijnt zijn vorm. Het getal blijft
+   in beide standen --ink (18,70:1 op wit, 16,15:1 op --tint-ink). */
+.u-side .navbadge{
+  font-family:var(--font); font-size:12px; font-weight:600;
+  background:var(--tint-ink); color:var(--ink);
+  min-width:22px; height:22px; border-radius:var(--r-pill);
+  padding:0 7px; font-variant-numeric:tabular-nums;
+}
+.u-side .navbtn.active .navbadge,
+.u-side .navbtn:hover .navbadge{ background:var(--card); }
+
+
+/* ============================================================
+   3. ZICHTBARE FOCUS
+   ============================================================
+
+   beheer.html zet een globale ring (:focus-visible{ outline:2px solid
+   var(--green) }) en haalt hem voor elk invoerveld weer weg:
+   .input:focus-visible{ outline:none; border-color:var(--ink); }
+   Wat overblijft is een randkleurwissel van 1px. Dat is genoeg om te zien DAT
+   er iets gebeurde, maar te weinig om met het toetsenbord een formulier van
+   veertien velden te volgen.
+
+   De ring hieronder is dezelfde vorm in het hele beheer, ook in formulieren.
+   De zwarte rand blijft eronder staan, zodat het veld twee onafhankelijke
+   signalen geeft (rand en ring) en niet alleen een kleur.
+
+   BINNEN DE SHELL IS DE RING ZWART EN NIET GROEN. Dat is hoofdstuk 0: de
+   merkkleur wordt inkt. Het is bovendien de betere ring — --ink haalt 17,47:1
+   op het papier van de shell tegen 5,84:1 voor --green — beide getallen dus
+   op dezelfde grond. De offset van 2px zorgt dat de ring ook rond een zwarte
+   primaire knop zichtbaar blijft: tussen knop en ring ligt dan een strook
+   papier.
+
+   VERMINDERDE BEWEGING: de ring animeert niet. Hij verschijnt hard, in één
+   frame. Dat is de enige focusweergave die onder prefers-reduced-motion
+   gegarandeerd hetzelfde doet als eronder. */
+.input:focus-visible,
+textarea.input:focus-visible,
+select.input:focus-visible{
+  outline:2px solid var(--green);
+  outline-offset:2px;
+  border-color:var(--ink);
+}
+/* :focus zonder -visible blijft alleen de rand doen — een muisklik hoort
+   geen ring op te leveren */
+.input:focus{ border-color:var(--ink); }
+.checkline input:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
+
+/* binnen de shell: dezelfde ring, in inkt */
+.u-shell :focus-visible{ outline-color:var(--ink); }
+.u-shell .input:focus-visible,
+.u-shell textarea.input:focus-visible,
+.u-shell select.input:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; border-color:var(--ink); }
+.u-shell .input:focus{ border-color:var(--ink); }
+.u-shell .checkline input:focus-visible{ outline-color:var(--ink); }
+.u-shell .checkline input{ accent-color:var(--ink); }
+
+
+/* ============================================================
+   4. TYPOGRAFIE
+   ============================================================
+
+   Hoofdstuk 2 van de spec. Hanken Grotesk overal; JetBrains Mono uitsluitend
+   voor bedragen in tabellen, projectcodes en datumkickers.
+
+   TWEE PLEKKEN WAAR HOOFDSTUK 8 VAN HOOFDSTUK 2 WINT, en dat is bewust:
+   1. De kicker staat in hoofdstuk 2 op --ink-3 bij 13px. Hoofdstuk 8 zegt dat
+      12 tot 13px op --ink-2 hoort. Hoofdstuk 8 wint (zie 2b).
+   2. De subregel staat op --ink-3 bij 13,5px. Diezelfde grens: onder 14px
+      wordt het --ink-2. Boven 14px mag --ink-3 gewoon.
+   Dat kost 0 pixels en levert 8,99:1 op in plaats van 3,58:1.
+
+   De basiskleur van de shell is --ink-2 (lopende tekst); alles wat een TITEL
+   is, staat expliciet op --ink. Zo hoeft geen enkel component zijn eigen
+   lichaamstekstkleur te zetten. */
+.u-shell{ color:var(--ink-2); background:var(--paper); }
+
+/* --- 4a. LANGE WOORDEN BREKEN, NOOIT UITSTEKEN (responsieve ronde 2026-09)
+   Een tekstblok in een smalle kolom (de rail van 340px, een telefoon van
+   320px) krijgt woorden als "Kwaliteitscontrole" of een projectcode die
+   breder zijn dan de kolom zelf. Zonder deze regels steekt zo'n woord uit
+   de kaart en scrolt de hele pagina opzij (nagemeten: html 408px breed op
+   een venster van 320). Twee lagen, met opzet:
+   · break-word op de shell: erft overal, breekt een woord alleen als het
+     echt niet past en verandert de min-content-maat van flexkinderen NIET
+     (anders zou elk flexkind tot nul kunnen krimpen);
+   · anywhere op de tekstrollen die in smalle kolommen wonen: daar mag de
+     minimale maat wél per letter zijn, zodat een raster met minmax(0,1fr)
+     de kolom nooit breder maakt dan zijn deel. */
+.u-shell{ overflow-wrap:break-word; }
+.u-task-title, .u-task-ctx, .u-task-why,
+.u-row-title, .u-row-sub, .u-row-next,
+.u-tlrail-title, .u-tlrail-text,
+.u-projectcard-titel, .u-projectcard-sub, .u-projectcard-next,
+.u-thread-tekst, .u-empty-text, .u-emptytile-text,
+.u-stat-lbl, .u-stat-sub, .u-setcard-text,
+.u-invoicerow-titel, .u-invoicerow-sub,
+.u-factorycard-naam{ overflow-wrap:anywhere; }
+
+.u-shell h1,
+.u-shell .pagehead h1{
+  font-size:clamp(36px,3.4vw,52px);
+  font-weight:500; line-height:1.08; letter-spacing:-.026em;
+  color:var(--ink); text-wrap:balance;
+}
+/* een titel met bijzin: "Relaties — Fabrieken". De bijzin is lichter van
+   gewicht, niet van maat, en staat op --ink-3 — dat mag hier, want de bijzin
+   is met zijn 36px en meer ruimschoots grote tekst (3,58:1 ≥ 3:1). */
+.u-shell h1 .u-bijzin{ font-weight:300; color:var(--ink-3); }
+
+.u-shell h2{ font-size:20px; font-weight:500; letter-spacing:-.012em; color:var(--ink); }
+/* de paneeltitel in een detailscherm is groter dan een gewone sectiekop */
+.u-shell .u-paneeltitel{ font-size:30px; font-weight:500; letter-spacing:-.02em; line-height:1.14; color:var(--ink); }
+.u-shell h3{ font-size:16px; font-weight:500; color:var(--ink); }
+
+/* de vaste tekstrollen uit hoofdstuk 2 als losse hulpklassen, zodat een
+   scherm ze niet elke keer opnieuw hoeft te zetten */
+.u-lees{ font-size:15px; line-height:1.6; color:var(--ink-2); }
+.u-sub{ font-size:13.5px; line-height:1.5; color:var(--ink-2); }
+.u-kicker{
+  display:block; font-size:13px; font-weight:500; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-2);
+}
+/* de datumkicker uit de mockup ("VR 16 MEI"). Hoofdstuk 2 zet hem op --warn;
+   dat haalt bij 12px 2,53:1 op het papier en dat kan niet. --warn-ink is
+   dezelfde tintfamilie en haalt 5,71:1. Dit is de enige tekstkleurafwijking
+   van hoofdstuk 2 die niet uit de --ink-3 regel volgt. */
+.u-datekicker{
+  display:block; font-family:var(--mono); font-size:12px; font-weight:600;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--warn-ink);
+}
+.u-bedrag{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.u-groot{ font-size:34px; font-weight:500; letter-spacing:-.02em; line-height:1.1; color:var(--ink); font-variant-numeric:tabular-nums; }
+.u-enorm{ font-size:40px; font-weight:500; letter-spacing:-.022em; line-height:1.05; color:var(--ink); font-variant-numeric:tabular-nums; }
+
+/* --- 4b. DE PAGINAKOP, IN TWEE VORMEN --------------------------------
+   .pagehead zelf woont in de <style> van beheer.html en wordt hier niet
+   aangeraakt (display:flex, align-items:flex-end, justify-content:
+   space-between, gap 16, flex-wrap:wrap, margin-bottom 26). Wat hieronder
+   staat zijn NIEUWE klassen die CP_UI.pageHeader erbij zet; ze raken de elf
+   oude schermen dus niet.
+
+   DE MOCKUP HEEFT TWEE KOPPEN EN DAT IS GEEN TOEVAL
+     .acties-rechts   Overzicht, Financiën, Relaties, Fabrieken, Instellingen:
+                      titel links, primaire knop rechts uitgelijnd op dezelfde
+                      regel.
+     .acties-naast    Projecten: de knop sluit direct aan op de tekst van de
+                      titel. CP_UI hangt het actiegroepje dan letterlijk in de
+                      titelregel, dus hier hoeft alleen de wikkel te weten dat
+                      er niets meer naar rechts hoeft.
+
+   WAAROM flex-wrap:nowrap OP HET BASISNIVEAU. .pagehead staat op wrap, en
+   omdat de h1 tot 52px groot wordt en zijn eigen breedte opeist, viel het
+   actiegroepje op een breed venster naar de volgende regel — en daar zet
+   space-between hem LINKS. Dat is precies wat er op Overzicht te zien was: de
+   knop stond een regel lager, aan de verkeerde kant. Nowrap plus min-width:0
+   op de linkerkolom laat de titel afbreken in plaats van de knop weg te
+   duwen. Onder 700px keert wrap terug — daar is de knop onder de titel juist
+   de goede plek. */
+/* .pagehead.u-pagehead is 0,2,0 en slaat daarmee de .pagehead uit de <style>
+   van beheer.html, ongeacht welk van de twee bestanden later wordt geladen —
+   dat is hier geen luxe: de hele fout hing op cascadevolgorde. */
+.pagehead.u-pagehead{ flex-wrap:nowrap; }
+.u-pagehead-links{ min-width:0; }
+/* …MAAR NIET TEN KOSTE VAN DE TITEL (responsieve ronde 2026-09). In een
+   werkkolom van 432px (1100px met rail) hield de titel naast "Nieuw project"
+   en het ••• 200px over en liep "Goedemiddag, Steffan" uit zijn vak. De
+   linkerkolom vraagt nu minstens 320px; alleen als dat niet naast het
+   actiegroepje past, valt het groepje eronder — en dan rechts, door
+   margin-left:auto, niet links zoals space-between het zou zetten. Op een
+   breed venster (792px werkkolom op 1536px) past 320 + 216 ruim en verandert
+   er niets: de basis van 320px in plaats van auto is precies wat de titel
+   ervan weerhoudt zijn eigen breedte op te eisen. */
+.pagehead.u-pagehead{ flex-wrap:wrap; }
+.u-pagehead-links{ flex:1 1 320px; }
+.u-pagehead-acts{ margin-left:auto; }
+.u-pagehead-titel{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.u-pagehead-status{ margin-top:10px; }
+/* de primaire knop en het ••• horen bij elkaar en verhuizen samen; ze staan
+   daarom altijd in dit ene groepje en nooit los in de kolom */
+.u-pagehead-acts{ display:flex; align-items:center; gap:10px; flex:none; }
+/* in de vorm 'naast' zit het groepje binnen .u-pagehead-titel; de gap van 10px
+   daar is de afstand tot de titel, en dan hoeft er hier niets meer bij */
+.u-pagehead.acties-naast .u-pagehead-acts{ margin-left:2px; }
+
+/* Elk tekstslot is een BLOK, welke tag de bouwer er ook voor kiest. Een rij
+   die volledig klikbaar is, is een <button>, en binnen een button hoort
+   frasering-inhoud te staan: <span>, geen <div>. Een span is van zichzelf
+   inline, dus zonder deze regel schuiven titel, subtitel en volgende-actie op
+   één regel aan elkaar. Dat is precies het soort verschil waardoor een
+   component per pagina "net even anders" gaat werken. */
+.u-row-title, .u-row-sub, .u-row-next,
+.u-task-title, .u-task-ctx, .u-task-why,
+.u-stat-lbl, .u-stat-num, .u-stat-sub,
+.u-setcard-title, .u-setcard-text, .u-setcard-meta,
+.u-empty-title, .u-empty-text,
+.u-emptytile-title, .u-emptytile-text,
+.u-tl-detail, .u-crumb-cur,
+.u-tlrail-title, .u-tlrail-text, .u-tlrail-dag, .u-tlrail-datum, .u-tlrail-tijd,
+.u-meta-label, .u-meta-waarde,
+.u-thread-naam, .u-thread-org, .u-thread-tijd, .u-thread-tekst,
+.u-productrow-naam, .u-productrow-klant,
+.u-factorycard-plaats, .u-invoicerow-sub,
+.u-side-brand .wordmark{ display:block; }
+
+
+/* ============================================================
+   5. DE OMLIJSTING — SHELL, ZIJBALK, TOPBALK, WERKKOLOM, RAIL
+   ============================================================
+
+   STAPELVOLGORDE (z-index), in één keer vastgelegd zodat niemand hoeft te
+   raden. De twee bestaande waarden uit beheer.html staan ertussen:
+     20  .u-savebar       zwevende opslagbalk rechtsonder
+     26  .u-side          plakt links
+     27  .u-side tooltip  het label van een ingeklapt navigatie-item
+     30  .u-sticky-bar    vaste primaire actie onderaan op mobiel
+     40  .u-md-scrim      waas onder het detailpaneel
+     41  .u-md-detail     detail dat over de lijst schuift
+     44  .u-side-scrim    waas onder de uitschuifzijbalk (telefoon)
+     45  .u-side (mobiel) de uitschuifzijbalk zelf
+     50  .u-drawer-scrim  waas onder het filterpaneel
+     51  .u-drawer        filterpaneel
+     60  .overlay         BESTAAND — dialoogvensters
+     70  .u-menu          context- en aanmaakmenu's, ook boven een dialoog
+     80  .undotoast       BESTAAND — de ongedaan-maken-balk wint altijd */
+
+/* --- 5a. skiplink ----------------------------------------------------
+   Eerste tabstop van de pagina, onzichtbaar tot hij focus krijgt. Nodig omdat
+   de zijbalk zeven navigatieknoppen plus een topbalk vol bediening heeft:
+   zonder skiplink tabt iemand die alleen het toetsenbord gebruikt bij élke
+   paginawissel eerst door de hele omlijsting. Geen clip-rect-truc maar buiten
+   beeld schuiven — dat leest netter voor schermlezers en is makkelijker te
+   debuggen. */
+.u-skip{
+  position:fixed; top:10px; left:-9999px; z-index:90;
+  background:var(--ink); color:var(--card);
+  font-size:15px; font-weight:500;
+  padding:12px 22px; border-radius:var(--r-pill);
+  box-shadow:var(--shadow-2);
+}
+.u-skip:focus{ left:10px; }
+
+/* --- 5b. shell en werkkolom ------------------------------------------ */
+.u-shell{ display:flex; min-height:100vh; align-items:stretch; }
+.u-main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+
+/* De werkkolom is het bestaande #content-element; CP_SHELL verplaatst dat
+   element en hernoemt het niet, want elke renderfunctie in beheer.html houdt
+   er een verwijzing naar vast die bij het laden is vastgelegd.
+   .u-main .content is 0,2,0 en wint daarmee van .content (0,1,0) uit
+   beheer.html — óók van de regel binnen diens mediaquery op 820px, want
+   specificiteit gaat vóór volgorde en een mediaquery telt niet mee.
+   Maten uit hoofdstuk 3: 1180px normaal, 1480px zodra er een rail staat. */
+.u-main .content{
+  width:100%; max-width:var(--u-work-max); margin:0 auto;
+  padding:8px var(--u-work-pad) 100px;
+}
+/* Twee wegen naar de brede stand, met opzet allebei:
+   · .u-breed  — de pagina zegt het zelf, werkt in elke browser;
+   · :has()    — de pagina hoeft niets te zeggen zodra er een .u-cols in staat.
+   Een browser zonder :has() negeert de tweede regel geruisloos en houdt dan
+   1180px; dat is een smallere kolom, geen kapotte kolom. */
+.u-main .content.u-breed{ max-width:var(--u-work-max-rail); }
+.u-main .content:has(.u-cols),
+.u-main .content:has(.u-md){ max-width:var(--u-work-max-rail); }
+/* .u-md staat er bewust bij. Hoofdstuk 3 noemt alleen "een rechterrail",
+   maar het detailpaneel van de Inbox is 620px breed (hoofdstuk 5.2) en dat
+   is precies zo'n rechterkolom: op 1180px houdt de lijst er 456px van over,
+   en daar past een rij met icoontegel, titel, subregel, statusstip en
+   relatieve tijd niet in zonder te breken. Met 1480px wordt de lijst 756px
+   en klopt de verhouding weer met de mockup. */
+
+/* --- 5c. zijbalk (232px, --side, hairline rechts) --------------------
+   Hoofdstuk 3 van de spec. De zijbalk loopt bewust door tot boven de
+   topbalk: de werkgebiedkeuze staat boven de paginabediening in de
+   hiërarchie. */
+.u-side{
+  width:var(--u-side-w); flex:0 0 var(--u-side-w);
+  background:var(--side); border-right:1px solid var(--line);
+  display:flex; flex-direction:column;
+  position:sticky; top:0; height:100vh; overflow-y:auto; z-index:26;
+  transition:width .28s var(--ease-fl), flex-basis .28s var(--ease-fl);
+}
+.u-side-head{ padding:28px 24px 22px; display:flex; align-items:flex-start; gap:10px; }
+.u-side-brand{ flex:1; min-width:0; }
+/* "CUSTOM+" is één woord zonder spatie, en het plusje is inkt en geen groen —
+   hoofdstuk 3 corrigeert zichzelf daar expliciet op. */
+.u-side-brand .wordmark{
+  font-size:22px; font-weight:700; letter-spacing:-.02em;
+  line-height:1.05; color:var(--ink);
+}
+.u-side-brand .kicker{ font-size:11px; margin-top:5px; }
+.u-side-nav{ padding:0 14px 16px; display:flex; flex-direction:column; gap:2px; }
+
+/* DE VOET VAN DE ZIJBALK. Hoofdstuk 3 zet de inklapknop "onderaan links" en
+   dit is het element dat dat waarmaakt: admin-shell.js hangt de knop in
+   .u-side-foot, ná de navigatie, en zet zelf geen enkele stijl meer.
+
+   Dat is een AFSPRAAK MET TWEE KANTEN, en dit is de kant die hier hoort. De
+   shell had de plaatsing eerder in een style-attribuut staan, precies omdat
+   deze klasse nog niet bestond. Een inline stijl wint van het stijlblad, dus
+   zolang dat zo was, deed elke regel die iemand hier zou toevoegen stilletjes
+   niets. Nu staat de plaatsing hier en nergens anders.
+
+   margin-top:auto duwt de voet naar de onderkant van de kolom (.u-side is een
+   flexkolom van 100vh); de padding sluit links aan op .u-side-nav (14px), en
+   20px onderaan houdt de knop van de rand af. */
+.u-side-foot{ margin-top:auto; display:flex; padding:6px 14px 20px; }
+
+/* de inklapknop zelf. Vorm, maat en kleur volgen de spec letterlijk
+   (32px, --tint-ink, --ink-3 — 3,31:1, ruim boven de 3:1 die een
+   bedieningsicoon nodig heeft). */
+.u-side-toggle{
+  flex:0 0 32px; width:32px; height:32px; border-radius:var(--r-pill);
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--tint-ink); color:var(--ink-3);
+  transition:background .2s ease, color .2s ease;
+}
+.u-side-toggle:hover{ background:var(--line); color:var(--ink); }
+.u-side-toggle svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+/* het navigatie-item. .navbtn blijft de klasse — dat is de afspraak met
+   admin-shell.js — maar krijgt binnen .u-side (0,2,0) de mockupvorm. Deze
+   regels winnen ook van de 820px-mediaquery van beheer.html, die .navbtn op
+   width:auto zet: 0,2,0 slaat 0,1,0. */
+.u-side .navbtn{
+  display:flex; align-items:center; gap:13px; width:100%; text-align:left;
+  min-height:44px; padding:0 12px; border-radius:12px;
+  font-size:15px; font-weight:400; color:var(--ink-2);
+  transition:background .2s ease, color .2s ease;
+}
+.u-side .navbtn:hover{ background:var(--tint-ink); color:var(--ink); }
+/* actief onderscheidt zich door VLAK en GEWICHT, niet door een kleuraccent.
+   Dat is hoofdstuk 0: geen groen icoon meer. */
+.u-side .navbtn.active{ background:var(--tint-ink); color:var(--ink); font-weight:500; }
+.u-side .navbtn svg{
+  width:20px; height:20px; flex:none; fill:none; stroke:currentColor;
+  stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; opacity:1;
+}
+.u-side .navbtn .nl{ flex:1; min-width:0; }
+/* de scheidingslijn vóór Activiteit. Expliciet op display:block, want de
+   820px-regel van beheer.html zet .navsep op display:none en die zou binnen
+   de nieuwe zijbalk de enige visuele knip weghalen. */
+.u-side .navsep{ display:block; height:1px; background:var(--line); margin:14px 20px; }
+
+/* INGEKLAPT: alleen icoontjes, 68px breed (hoofdstuk 6). De shell-JS zet
+   .collapsed; CSS doet dat expres niet zelf, anders vecht een mediaquery met
+   de keuze die de gebruiker net maakte. */
+.u-side.collapsed{ width:var(--u-side-w-collapsed); flex-basis:var(--u-side-w-collapsed); }
+.u-side.collapsed .u-side-head{ padding:22px 0 16px; justify-content:center; }
+.u-side.collapsed .u-side-brand{ display:none; }
+.u-side.collapsed .u-side-nav{ padding:0 10px 16px; }
+/* in de rail van 68px staat de knop gecentreerd en niet op de linkerlijn: er
+   IS geen linkerlijn meer, de icoontjes staan zelf ook in het midden. De
+   padding blijft 14px aan beide kanten en dus symmetrisch, zodat "midden" hier
+   echt het midden van de rail is. */
+.u-side.collapsed .u-side-foot{ justify-content:center; }
+.u-side.collapsed .navbtn{ position:relative; justify-content:center; padding:0; gap:0; }
+
+/* HET LABEL VERDWIJNT NIET, HET WORDT EEN TOOLTIP — en dat is een echte
+   correctie, geen versiering. Het label stond hier op display:none, en een
+   knop met een verborgen label heeft GEEN toegankelijke naam meer: een
+   schermlezer las zeven knoppen voor die allemaal "knop" heetten. Nu blijft
+   het label in de toegankelijkheidsboom staan en verschijnt het bij hover én
+   bij toetsenbordfocus als tooltip naast het icoon — precies wat hoofdstuk 6
+   vraagt ("alleen icoontjes, tooltip op hover").
+   pointer-events:none zodat de tooltip nooit de klik van de knop opvangt. */
+.u-side.collapsed .navbtn .nl{
+  position:absolute; left:calc(100% + 12px); top:50%; transform:translateY(-50%);
+  z-index:27; white-space:nowrap; pointer-events:none; flex:none;
+  background:var(--ink); color:var(--card);
+  font-size:13.5px; font-weight:500; padding:7px 11px; border-radius:9px;
+  box-shadow:var(--shadow-2);
+  opacity:0; visibility:hidden; transition:opacity .16s ease, visibility .16s;
+}
+.u-side.collapsed .navbtn:hover .nl,
+.u-side.collapsed .navbtn:focus-visible .nl{ opacity:1; visibility:visible; }
+/* de tooltip steekt buiten de zijbalk uit, en overflow-y:auto maakt van
+   overflow-x óók auto — dan wordt hij afgeknipt. In ingeklapte stand mag de
+   overflow dus zichtbaar zijn. Dat kan hier veilig: zeven items van 44px plus
+   de kop passen ruim binnen 100vh. Op een heel lage viewport valt de onderste
+   knop weg; dat is de prijs, en die is kleiner dan zeven naamloze knoppen. */
+.u-side.collapsed{ overflow:visible; }
+
+/* de badge kan niet naast een verborgen label staan en wordt een stip op het
+   icoon. Zwart en niet groen (hoofdstuk 0), met een ring in de zijbalkkleur
+   zodat hij als apart element leesbaar blijft. Het getal blijft als tekst in
+   de knop staan — font-size:0 verkleint het, maar haalt het niet uit de
+   toegankelijkheidsboom, dus de knop heet nog steeds "Inbox 4". */
+.u-side.collapsed .navbadge{
+  position:absolute; top:5px; right:12px; min-width:9px; height:9px; padding:0;
+  border-radius:var(--r-pill); font-size:0;
+  background:var(--ink); color:transparent; border:1.5px solid var(--side);
+}
+/* en die stip blijft zwart, óók op het actieve item. Zonder deze regel wint
+   ".u-side .navbtn.active .navbadge" (0,3,0) van de regel hierboven (0,2,0)
+   en wordt de stip wit binnen zijn eigen rand van --side — 1,05:1, oftewel
+   weg (en 1,16:1 tegen de --tint-ink pil eromheen: even weg). Precies de
+   knop waar de badge het vaakst op staat (Inbox) is ook de knop die het
+   vaakst actief is, dus dit is geen randgeval. */
+.u-side.collapsed .navbtn.active .navbadge,
+.u-side.collapsed .navbtn:hover .navbadge{ background:var(--ink); }
+
+/* --- 5d. topbalk (72px, geen achtergrond, geen onderlijn) ------------
+   Hoofdstuk 3: "hij zweeft op het papier". Dat betekent geen vulling, geen
+   rand en geen schaduw — en daarmee ook GEEN position:sticky, want een
+   doorzichtige balk waar tekst onderdoor schuift is geen zwevende balk maar
+   een leesfout. De balk scrollt dus gewoon mee. De plakkende rail hieronder
+   rekent daarom met --u-rail-top (24px) en niet met de balkhoogte. */
+.u-topbar{
+  display:flex; align-items:center; gap:18px;
+  min-height:var(--u-top-h);
+  padding:14px var(--u-work-pad) 6px;
+  background:transparent; border:0;
+  max-width:var(--u-work-max-rail); width:100%; margin:0 auto;
+}
+.u-topbar-grow{ flex:1 1 auto; min-width:0; }
+.u-topbar-acts{ display:flex; align-items:center; gap:18px; flex:none; }
+
+/* het zoekveld pakt de volle resterende breedte en is in rust onzichtbaar:
+   alleen een vergrootglas en een placeholder. Bij focus wordt het een witte
+   pil met --line rand en --shadow.
+   De placeholder staat op --ink-hint en niet op --ink-4 zoals hoofdstuk 3
+   voorstelt: --ink-4 haalt 2,12:1 op het papier en een placeholder is de
+   enige tekst die dit veld benoemt. Hij stond een ronde lang op --ink-3
+   (3,58:1) met de opmerking dat hoofdstuk 8 dat toestaat boven 14px — maar de
+   NORM staat het niet toe, en dat is de maat die telt. --ink-hint haalt
+   4,91:1 en blijft zichtbaar lichter dan de --ink waarin echte invoer staat;
+   zie aanvulling 5 in hoofdstuk 1b. */
+.u-search{ position:relative; flex:1 1 auto; min-width:0; }
+.u-search .input{
+  width:100%; height:44px; min-height:44px;
+  padding:0 16px 0 40px; border-radius:var(--r-pill);
+  background:transparent; border:1px solid transparent; box-shadow:none;
+  font-size:15px; color:var(--ink);
+  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.u-search .input::placeholder{ color:var(--ink-hint); }
+.u-search .input:hover{ background:var(--card-2); }
+.u-search .input:focus,
+.u-search .input:focus-visible{
+  background:var(--card); border-color:var(--line); box-shadow:var(--shadow);
+}
+.u-search-ico{
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  width:18px; height:18px; pointer-events:none;
+  fill:none; stroke:var(--ink-3); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ronde icoonknoppen in de topbalk: bel, kalender, vraagteken, •••.
+   40px is de kleinste maat die op een aanraakscherm nog comfortabel raak te
+   tikken is naast een zoekveld van 44px. */
+.u-iconbtn{
+  position:relative; width:40px; height:40px; border-radius:var(--r-pill);
+  display:inline-flex; align-items:center; justify-content:center; flex:none;
+  color:var(--ink-2); transition:background .2s ease, color .2s ease;
+}
+.u-iconbtn:hover{ background:var(--tint-ink); color:var(--ink); }
+.u-iconbtn svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+/* de hamburgerknop van het uitschuifpaneel. admin-shell.js bouwt hem als
+   eerste kind van de topbalk (het paneel komt van links) en zet hem boven
+   700px op het hidden-attribuut. Deze klasse is de STIJLHAAK ernaast, voor het
+   geval een gastheer hem met CSS wil verbergen in plaats van met een
+   attribuut: 0,2,0, zodat de display:inline-flex van .u-iconbtn hem niet
+   terugzet — precies de fout die de terugknop van het detailpaneel wél
+   maakte. Hij staat op display:none tot de paneelstand in 9e hem aanzet. */
+.u-topbar .u-side-open{ display:none; margin-right:-6px; }
+/* de bel draagt zijn "er is iets nieuws" als stip; het aantal staat in het
+   menu erachter, want een getal in een knop van 40px is niet te lezen. De
+   stip staat naast een knop met een aria-label dat het aantal noemt, dus
+   kleur is hier niet de enige drager. */
+.u-bell-dot{
+  position:absolute; top:7px; right:8px; width:8px; height:8px; border-radius:var(--r-pill);
+  background:var(--crit); border:1.5px solid var(--paper);
+}
+
+/* gebruikersmenu: avatar 36 + naam 15/500 + chevron 16 in --ink-3
+   (3,58:1 — een chevron is vorm, geen tekst, en 3:1 is de eis)
+
+   DE KNOP HEEFT DRIE KINDEREN, EN ELK VAN DE DRIE WORDT HIER GERAAKT.
+   admin-shell.js bouwt hem als:
+     el('span', { class: 'u-avatar' })
+     el('span', { class: 'u-userbtn-naam', text: g.naam })
+     icon('chevronOmlaag', 16)
+   De maten komen alle drie uit dit stijlblad en nergens uit JS: de avatar is
+   36px omdat .u-avatar dat is (hoofdstuk 7a), de naam 15px/500 omdat de knop
+   dat is en de naam het erft, en de chevron 16px in --ink-3 door de
+   svg-regel onderaan dit blok. Dat is precies wat hoofdstuk 3 van de spec
+   vraagt: "avatar 36px rond + naam 15px weight 500 + chevron 16px --ink-3".
+
+   De typografie staat op de KNOP en niet op de naamspan, zodat er maar één
+   plek is waar 15/500 staat. Wie de naam ooit apart wil zetten, zet hem hier
+   en niet in JS. */
+.u-userbtn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:4px 10px 4px 4px; border-radius:var(--r-pill);
+  font-size:15px; font-weight:500; color:var(--ink);
+  transition:background .2s ease;
+}
+.u-userbtn:hover{ background:var(--tint-ink); }
+/* DE NAAM KRIJGT EEN BOVENGRENS EN DAT IS GEEN AFWIJKING VAN DE MOCKUP.
+   .u-topbar-acts staat op flex:none, dus elke letter extra in de naam gaat
+   rechtstreeks van de breedte van het zoekveld af. In de mockup staat een
+   korte naam en verandert er dus niets; bij "Christina van der Meulen-Bakker"
+   houdt het zoekveld zonder deze regel niets over. Afbreken mag hier omdat de
+   VOLLEDIGE naam in het aria-label van de knop staat ("Account: …"): voor een
+   schermlezer gaat er niets verloren, en voor het oog staat hij in het menu
+   dat eronder opengaat. */
+.u-userbtn-naam{
+  min-width:0; max-width:16ch;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.u-userbtn svg{ width:16px; height:16px; flex:none; fill:none; stroke:var(--ink-3); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+/* demo-badge: compact, klikbaar (het statusvenster zit erachter). De
+   bestaande .dot-kleurklassen blijven werken en krijgen hier hun maat.
+   DE RING IS GEEN VERSIERING: onder 700px valt het woord "Demo"/"Live"
+   grotendeels weg en draagt deze stip zijn betekenis bijna alleen nog met
+   kleur. Een ring geeft de stip een VORM die los van de vulkleur zichtbaar
+   is. De klasseloze stand is HOL — dat betekent "geen stand gemeten", en dat
+   is eerlijker dan een vierde, kalme kleur. */
+.u-demobadge{
+  display:inline-flex; align-items:center; gap:7px; flex:none;
+  font-family:var(--mono); font-size:10px; font-weight:500; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-2);
+  border:1px solid var(--line-ctrl); border-radius:var(--r-pill); padding:5px 11px;
+  transition:border-color .2s ease, color .2s ease;
+}
+.u-demobadge:hover{ border-color:var(--ink-3); color:var(--ink); }
+.u-demobadge .dot{
+  box-sizing:border-box;
+  width:7px; height:7px; flex:0 0 7px; border-radius:var(--r-pill);
+  background:transparent; border:1px solid var(--ink-2);
+}
+.u-demobadge .dot.ok{ background:var(--ok); }
+.u-demobadge .dot.warn{ background:var(--warn-ink); }
+.u-demobadge .dot.bad{ background:var(--crit); }
+
+/* --- 5e. kruimelpad --------------------------------------------------
+   Bewust NIET in mono: een kruimelpad eindigt op een productnaam of een
+   klantnaam, en dat is lopende tekst, geen code. 14px zoals hoofdstuk 3
+   vraagt; de KLIKBARE delen staan op --ink-2 en niet op --ink-3, omdat
+   interactieve tekst geen 3,58:1 hoort te zijn. Het scheidingsteken zegt
+   niets en mag daarom wel lichter. */
+.u-crumb{ display:flex; align-items:center; gap:8px; min-width:0; font-size:14px; line-height:1.4; }
+.u-crumb a, .u-crumb button{
+  color:var(--ink-2); text-decoration:none; white-space:nowrap;
+  border-radius:4px; transition:color .2s ease;
+}
+.u-crumb a:hover, .u-crumb button:hover{ color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+.u-crumb-sep{ color:var(--ink-4); flex:none; }
+.u-crumb-cur{
+  color:var(--ink); font-weight:500; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* --- 5f. de rail (400px, plakkend) -----------------------------------
+   Hoofdstuk 3: raster minmax(0,1fr) 400px, gap 32px, rail plakt op top 24px.
+   .u-cols is één document met een zijkolom — geen lijst met een selectie.
+   Dat laatste is .u-md hieronder, en die klapt op een ander moment om. */
+.u-cols{ display:grid; grid-template-columns:minmax(0,1fr) var(--u-rail-w); gap:32px; align-items:start; }
+.u-cols-main{ min-width:0; }
+.u-cols-side{ min-width:0; }
+/* DE KOLOMMEN ZIJN CONTAINERS (responsieve ronde 2026-09). Een taakkaart of
+   projectkaart weet niet of hij in een werkkolom van 792px staat of in een
+   rail van 340px — en hetzelfde venster van 1180px levert beide. Een
+   mediaquery kijkt naar het venster en kan dat verschil niet zien; een
+   containerquery kijkt naar de kolom zelf. inline-size en niet size: de
+   hoogte blijft van de inhoud afhangen. De vier kolommen krijgen hun breedte
+   allemaal van het raster (minmax(0,1fr), de railmaat, min(45%,…)), dus de
+   containment neemt niets weg dat er was. Een browser zonder
+   containerqueries negeert dit én de @container-blokken verderop en houdt de
+   mediaquery-terugval van hoofdstuk 9. */
+.u-cols-main, .u-cols-side, .u-md-list, .u-md-detail{ container-type:inline-size; }
+/* de rail als geheel vastzetten is opt-in: een rail die hoger is dan het
+   venster en tóch plakt, laat zijn onderkant permanent buiten beeld hangen.
+   Standaard plakt daarom alleen het paneel binnenin (.u-sticky), en dat is
+   in de mockups precies het blok "Volgende actie" / "Kerngegevens". */
+.u-cols-side.u-vast{ position:sticky; top:var(--u-rail-top); }
+
+/* --- 5g. lijst met detail (Inbox, Financiën) -------------------------
+   De maatvoering komt van .inved, de factuureditor, en is hierheen
+   GEKOPIEERD — .inved zelf is niet aangeraakt, daar loopt de
+   factuurmodulebouw in.
+   Twee bewuste verschillen met .inved:
+   1. De rollen liggen omgekeerd. In de editor is de lijst het werk en de
+      zijkolom een samenvatting; hier is LINKS de werkvoorraad en RECHTS het
+      geselecteerde item. Vandaar --u-md-detail als variabele: hoofdstuk 5.2
+      vraagt 620px voor de Inbox, een ander scherm mag afwijken zonder deze
+      klasse te forken.
+   2. Het detail krijgt een eigen maximale hoogte en scrollt zelf. Een
+      Inbox-detail bevat een antwoordveld en een gespreksdraad en zou anders
+      de pagina meeslepen. */
+/* DE VERHOUDING IS 55/45 EN DE LIJST IS DE HOOFDZAAK.
+   De detailkolom stond op een vaste 620px. Dat klopt precies op de breedte
+   waarop de mockup gemaakt is, en op elke andere breedte niet: op een venster
+   van 1536px hield de lijst er 580px van over — minder dan de helft — en dan
+   wikkelen de rijtitels over drie regels terwijl het detail half leeg staat.
+   min(45%, --u-md-detail) houdt allebei: de lijst krijgt altijd minstens 55%,
+   en het detail wordt nooit breder dan de 620px die hoofdstuk 5.2 noemt.
+   Een scherm dat een andere maat wil, zet --u-md-detail; de 55/45-ondergrens
+   blijft dan staan, en dat is de bedoeling. */
+.u-md{
+  display:grid;
+  /* de vaste maat staat er als terugval onder: kent een browser min() binnen
+     minmax() niet, dan valt alleen de tweede regel weg en blijft het raster
+     tweekoloms in plaats van dat het hele sjabloon verdwijnt */
+  grid-template-columns:minmax(0,1fr) var(--u-md-detail,620px);
+  grid-template-columns:minmax(0,1fr) minmax(0,min(45%,var(--u-md-detail,620px)));
+  gap:24px; align-items:start;
+}
+.u-md-list{ min-width:0; }
+/* een rijtitel in de lijst-met-detail kapt af op ÉÉN regel. In de mockup is
+   elke rij even hoog en scant de lijst als een lijst; met wikkelende titels
+   wordt hij een stapel alinea's van wisselende hoogte. De volledige titel
+   staat in het detailpaneel ernaast, dus er gaat niets verloren. */
+.u-md-list .u-row-title,
+.u-md-list .u-row-sub{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* de paneeltitel (30px, hoofdstuk 4) in een smal detail: op 900–1000px is
+   het detail 320–349px breed en brak "Nog iets over de eerste 500 voor het
+   hotelproject" over tien regels. Onder 480px kolombreedte 22px; op 1536px
+   (551px) blijft het 30px (responsieve ronde 2026-09). */
+@container (max-width:480px){
+  .u-md-detail .u-paneeltitel{ font-size:22px; line-height:1.2; }
+}
+.u-md-detail{
+  min-width:0;
+  position:sticky; top:var(--u-rail-top);
+  max-height:calc(100vh - (var(--u-rail-top) * 2));
+  overflow-y:auto; overscroll-behavior:contain;
+}
+/* de waas en de terugknop bestaan alleen in de over-de-lijst-stand.
+   0,2,0 EN NIET 0,1,0, en dat is de hele bug: ".u-md-back{display:none}"
+   stond eerder in dit bestand dan ".u-btn{display:inline-flex}", en de knop
+   draagt allebei die klassen. Op gelijke specificiteit wint de laatste regel,
+   dus de terugknop stond op ELKE breedte in beeld — ook op 1536px, waar lijst
+   en detail gewoon naast elkaar staan en "Terug naar de lijst" nergens heen
+   gaat. Met .u-md ervoor kan de volgorde in dit bestand er niet meer toe doen. */
+.u-md-scrim{ display:none; }
+.u-md .u-md-back{ display:none; }
+
+/* --- 5h. vast actiepaneel -------------------------------------------
+   Twee elementen met één taak, bewust gescheiden:
+   .u-sticky     de plakkende rechterkolom op ruimte (volgende actie,
+                 kerngegevens, "Wijzigingen opslaan" op instellingen).
+                 Onder 700px wordt hij gewoon een blok in de leesvolgorde —
+                 hem daar vastpinnen zou het halve scherm opeten.
+   .u-sticky-bar de vaste primaire actie onderaan, ALLEEN op mobiel. Apart,
+                 omdat CSS de knop niet uit de zijkolom naar de onderkant kan
+                 verplaatsen en het verstoppen van de rest van de zijkolom
+                 informatie zou kosten. De JS rendert beide; de mediaquery
+                 bepaalt welke van de twee zichtbaar is. */
+.u-sticky{ position:sticky; top:var(--u-rail-top); display:flex; flex-direction:column; gap:16px; }
+.u-sticky-bar{ display:none; }
+
+
+/* ============================================================
+   6. KNOPPEN
+   ============================================================
+
+   BEWUSTE BREUK MET DE OUDE HUISSTIJL. De mockupknoppen zijn NIET uppercase
+   11px met letterafstand. Ze zijn 15px, normale schrijfwijze, pilvormig.
+   Hoofdstuk 2 van de spec zegt dat met zoveel woorden.
+
+   DE OUDE .btn WORDT HIER NERGENS AANGERAAKT, en dat is geen slordigheid.
+   CP_SHELL verplaatst #content in de nieuwe werkkolom, dus de elf oude
+   schermen van beheer.html — inclusief de factuureditor die op dit moment in
+   aanbouw is — tekenen zichzelf BINNEN .u-shell. Een regel als
+   ".u-shell .btn{...}" zou dus rechtstreeks door dat werk heen lopen. De
+   nieuwe schermen gebruiken .u-btn; waar een component vandaag nog .btn
+   plaatst (lege toestand, taakrij, mobiele actiebalk) staan hieronder beide
+   selectors naast elkaar, zodat de overstap per component kan.
+
+   CONTRAST (nagerekend):
+     primair   wit op --ink                    18,70:1
+     ghost     --ink op --card                 18,70:1
+     stil      --ink op --paper                17,47:1
+     gevaar    --crit-ink op --card             6,12:1
+   De rand van een ghostknop staat op --line (1,24:1). Dat mag: de knop is aan
+   zijn tekstlabel te herkennen, niet aan zijn rand, en valt daarmee niet
+   onder de 3:1 van 1.4.11. Een LEEG invoerveld heeft dat label niet en krijgt
+   daarom --line-ctrl (zie 1b, aanvulling 3). */
+.u-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  min-height:44px; padding:11px 22px;
+  border-radius:var(--r-pill); border:1px solid transparent;
+  font-family:var(--font); font-size:15px; font-weight:500; line-height:1.2;
+  letter-spacing:0; text-transform:none; text-decoration:none; white-space:nowrap;
+  background:var(--ink); color:var(--card);
+  transition:opacity .25s ease, background .25s ease, border-color .25s ease, transform .3s var(--ease-fl);
+}
+/* .primair is hetzelfde als de kale .u-btn en bestaat zodat een scherm zijn
+   bedoeling kan opschrijven in plaats van hem te laten raden */
+.u-btn.primair{ background:var(--ink); color:var(--card); border-color:var(--ink); }
+.u-btn:hover{ opacity:.86; }
+.u-btn:active{ transform:scale(.985); }
+.u-btn:disabled,
+.u-btn[aria-disabled="true"]{ opacity:.4; cursor:default; transform:none; }
+.u-btn svg{ width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+.u-btn.ghost{ background:var(--card); color:var(--ink); border-color:var(--line); }
+.u-btn.ghost:hover{ opacity:1; background:var(--card-2); border-color:var(--ink-4); }
+
+/* stil: alleen tekst, voor de secundaire actie naast een primaire knop */
+.u-btn.stil{ background:transparent; color:var(--ink); border-color:transparent; padding:11px 14px; }
+.u-btn.stil:hover{ opacity:1; background:var(--tint-ink); }
+
+.u-btn.gevaar{ background:var(--card); color:var(--crit-ink); border-color:var(--line); }
+.u-btn.gevaar:hover{ opacity:1; border-color:var(--crit); background:var(--crit-soft); }
+
+.u-btn.klein{ min-height:36px; padding:8px 16px; font-size:13.5px; gap:7px; }
+.u-btn.klein svg{ width:16px; height:16px; }
+.u-btn.breed{ width:100%; }
+
+/* de ronde icoonknop uit de mockup — de pijl rechtsonder op een grote
+   stattegel, de ‹ en › van de kalenderkop, het ••• in een kaartkop */
+.u-btn.rond{
+  width:40px; height:40px; min-height:0; padding:0; border-radius:var(--r-pill);
+  background:var(--card); color:var(--ink); border-color:var(--line);
+}
+.u-btn.rond:hover{ opacity:1; background:var(--tint-ink); border-color:var(--ink-4); }
+.u-btn.rond.klein{ width:32px; height:32px; }
+/* 36px is de enige maat die hoofdstuk 4.10 hier noemt ("rechtsonder een ronde
+   pijlknop 36px"), en die bestond niet — de knop werd daardoor .klein en dus
+   32px. Aparte klasse en geen wijziging van .klein: die 32px is elders wél de
+   goede maat (de ‹ en › van de kalenderkop). */
+.u-btn.rond.m36{ width:36px; height:36px; }
+.u-btn.rond.groot{ width:48px; height:48px; }
+.u-btn.rond.primair{ background:var(--ink); color:var(--card); border-color:var(--ink); }
+.u-btn.rond.primair:hover{ opacity:.86; background:var(--ink); }
+.u-btn.rond svg{ width:18px; height:18px; }
+
+/* de tekstlink met pijl ("Bekijk alles →", "8 instellingen →"). Zwart met
+   onderstreping bij hover — hoofdstuk 0. */
+.u-link{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:14px; font-weight:500; color:var(--ink);
+  text-decoration:none; border-radius:4px;
+  transition:opacity .2s ease;
+}
+.u-link:hover{ text-decoration:underline; text-underline-offset:3px; }
+.u-link svg{ width:15px; height:15px; flex:none; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+
+/* ============================================================
+   7. BOUWSTENEN
+   ============================================================ */
+
+/* --- 7a. avatar (hoofdstuk 4.8) --------------------------------------
+   Rond, vier maten. Met foto object-fit:cover; zonder foto initialen op --ink
+   met witte tekst (18,70:1). Het alt-attribuut is altijd de volledige naam —
+   dat is JS-werk, maar het hoort bij deze component en staat er daarom bij.
+   Initialen zijn een VOLWAARDIGE variant en geen gebrek: hoofdstuk 7 bouwt
+   avatar_url wel als veld, maar een leeg veld toont een eerlijke lege stand. */
+.u-avatar{
+  width:36px; height:36px; flex:0 0 36px; border-radius:var(--r-pill);
+  object-fit:cover; overflow:hidden;
+  background:var(--ink); color:var(--card);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family:var(--font); font-size:13px; font-weight:500; letter-spacing:.01em;
+  line-height:1; text-transform:uppercase; user-select:none;
+}
+.u-avatar.klein{ width:28px; height:28px; flex-basis:28px; font-size:10.5px; }
+.u-avatar.groot{ width:48px; height:48px; flex-basis:48px; font-size:17px; }
+.u-avatar.xl{ width:72px; height:72px; flex-basis:72px; font-size:24px; }
+/* een avatar met een foto heeft geen zwarte grond nodig; die zou door een
+   transparante PNG heen schijnen */
+img.u-avatar{ background:var(--tint-ink); }
+/* de ronde vinkbadge rechtsboven op een klantkaart (hoofdstuk 5.5). Groen
+   blijft groen: dit is betekenis ("geverifieerd"), geen merk. Het vinkje is
+   wit op --ok (4,01:1) — dat is een vorm en geen tekst, dus de eis is 3:1. */
+.u-avatar-wrap{ position:relative; display:inline-flex; flex:none; }
+.u-avatar-badge{
+  /* RECHTSBOVEN, zoals hoofdstuk 5.5 en de regel hierboven allebei zeggen.
+     Hij stond op bottom:-2px, dus rechtsONDER — het commentaar en de code
+     spraken elkaar twee regels na elkaar tegen. */
+  position:absolute; right:-2px; top:-2px;
+  width:22px; height:22px; border-radius:var(--r-pill);
+  background:var(--ok); color:var(--card);
+  display:inline-flex; align-items:center; justify-content:center;
+  border:2px solid var(--card);
+}
+.u-avatar-badge svg{ width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+
+/* de gestapelde avatargroep ("wie werkt er aan dit project"). CP_UI zette
+   deze klassenaam al, maar hij bestond hier niet: de stapeling stond met de
+   hand in JS, drie keer, met een negatieve marge en een witte ring per
+   gezicht. De overlap hoort bij het STAPELEN en niet bij de avatar, dus hij
+   hoort hier. Voor een schermlezer is de groep één afbeelding (CP_UI zet
+   role=img met alle namen erin), daarom hebben de kinderen geen eigen naam.
+   De ring is de kaartkleur en niet wit: op een --card-2 hero zou wit een
+   zichtbaar randje geven. */
+.u-avatargroep{ display:inline-flex; align-items:center; }
+.u-avatargroep > *{ box-shadow:0 0 0 2px var(--card); }
+.u-avatargroep > * + *{ margin-left:-10px; }
+/* de "+3" die de rest van de groep samenvat: zelfde vorm als een avatar, maar
+   met de warme grijstint in plaats van zwart — het is een getal en geen
+   gezicht, en dat mag je zien. */
+.u-avatargroep-meer{ background:var(--tint-ink); color:var(--ink-2); }
+
+/* --- 7b. icoontegel (hoofdstuk 4.9) ----------------------------------
+   Het meest herhaalde element van de hele mockup. Vier maten, elk in een
+   -soft tint met een outline-icoon in de bijhorende DONKERE tint — niet in de
+   volle tint, want --cat-2 op --cat-2-soft haalt 1,83:1 en dan is het icoon
+   er wel maar zie je het niet. Met --cat-2-ink is het 4,77:1. Zie 1b,
+   aanvulling 2.
+   De radius komt van --r-tile (14px): hoofdstuk 1 noemt dat token letterlijk
+   "icoontegels", en dat is specifieker dan het woord "rond" in 4.9. */
+.u-tile{
+  width:44px; height:44px; flex:0 0 44px; border-radius:var(--r-tile);
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--vlak,var(--tint-ink)); color:var(--inkt,var(--ink));
+}
+.u-tile svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.u-tile.m40{ width:40px; height:40px; flex-basis:40px; }
+.u-tile.m48{ width:48px; height:48px; flex-basis:48px; }
+.u-tile.m48 svg{ width:22px; height:22px; }
+.u-tile.m56{ width:56px; height:56px; flex-basis:56px; border-radius:16px; }
+.u-tile.m56 svg{ width:24px; height:24px; }
+
+/* --- 7c. statusstip --------------------------------------------------
+   Kleur is nooit de enige drager: naast elke stip staat een woord
+   (hoofdstuk 8). De stip krijgt daarbovenop een rand in zijn eigen donkere
+   tint, zodat hij ook een VORM heeft die los van de vulling zichtbaar is.
+   Dat is nodig voor precies één van de vier: --warn (#d98b4a) haalt 2,71:1 op
+   wit en 2,53:1 op het papier, en zou als kaal vlakje onder de 3:1 blijven.
+   De rand is --warn-ink, en die haalt tegen de OMLIGGENDE grond 6,11:1 op wit
+   en 5,71:1 op het papier — dat is wat 1.4.11 vraagt. De stip houdt zo de
+   perzikkleur van de mockup én een zichtbare omtrek. De andere drie halen het
+   ook zonder rand (--ok 4,01:1, --crit 4,40:1, --info 3,25:1) en krijgen hem
+   alleen voor de eenvormigheid. */
+.u-dot{
+  display:inline-block; flex:none; width:8px; height:8px; border-radius:var(--r-pill);
+  background:var(--volle,var(--ink-3));
+  box-shadow:inset 0 0 0 1px var(--inkt,var(--ink-3));
+}
+.u-dot.ok{   background:var(--ok);   box-shadow:inset 0 0 0 1px var(--ok-ink); }
+.u-dot.warn{ background:var(--warn); box-shadow:inset 0 0 0 1px var(--warn-ink); }
+.u-dot.crit{ background:var(--crit); box-shadow:inset 0 0 0 1px var(--crit-ink); }
+.u-dot.info{ background:var(--info); box-shadow:inset 0 0 0 1px var(--info-ink); }
+.u-dot.neutraal{ background:var(--ink-4); box-shadow:inset 0 0 0 1px var(--ink-3); }
+/* stip plus woord als één blokje, zodat niemand ze uit elkaar kan zetten */
+.u-status{ display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-2); }
+
+/* --- 7d. tabs en filterchips ----------------------------------------
+   Dit zijn twee verschillende dingen en ze mogen er dus niet hetzelfde
+   uitzien. In het oude beheer doet .tabbtn beide, en dat is precies waarom
+   niemand ziet of hij van weergave wisselt of iets wegfiltert.
+
+   .u-tabs = echte tabs (role=tab). Ze wisselen WAT je ziet. Lopende tekst met
+   een onderstreping, altijd precies één actief. De onderstreping is ZWART
+   (hoofdstuk 0).
+   .u-chips = filters (aria-pressed). Ze verkleinen WAT ER AL IS. Pilvorm, er
+   kunnen er meerdere aan staan of geen enkele. */
+.u-tabs{
+  display:flex; gap:26px; align-items:stretch;
+  border-bottom:1px solid var(--line); margin-bottom:24px;
+  overflow-x:auto; scrollbar-width:none;
+}
+.u-tabs::-webkit-scrollbar{ display:none; }
+.u-tab{
+  position:relative; white-space:nowrap; flex:none;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 1px 14px; margin-bottom:-1px;
+  font-size:15px; font-weight:400; color:var(--ink-2);
+  border-bottom:2px solid transparent;
+  transition:color .2s ease, border-color .2s ease;
+}
+.u-tab:hover{ color:var(--ink); }
+.u-tab[aria-selected="true"]{ color:var(--ink); font-weight:500; border-bottom-color:var(--ink); }
+
+.u-chips{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:18px; }
+.u-chip{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font); font-size:13.5px; font-weight:500; letter-spacing:0;
+  text-transform:none; padding:8px 15px; border-radius:var(--r-pill);
+  border:1px solid var(--line); color:var(--ink-2); background:var(--card);
+  transition:border-color .25s ease, color .25s ease, background .25s ease;
+}
+.u-chip:hover{ color:var(--ink); border-color:var(--ink-4); }
+.u-chip[aria-pressed="true"]{ background:var(--ink); color:var(--card); border-color:var(--ink); }
+
+/* telling achter een tab of chip. Mono met tabular-nums, want het is een
+   getal dat bij elke verversing kan veranderen en niet mag verspringen. Dit
+   getal is het antwoord op "hoeveel wachten er nog" en staat daarom op
+   --ink-2 (8,99:1) en niet op iets lichters. Op een actieve chip ligt het op
+   een zwarte grond; daar is --line het leesbare grijs (15,04:1 op --ink). */
+.u-count{ font-family:var(--mono); font-size:12px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+.u-tab[aria-selected="true"] .u-count{ color:var(--ink); }
+.u-chip[aria-pressed="true"] .u-count{ color:var(--line); }
+
+/* --- 7e. kaart, hero en sectiekop ----------------------------------- */
+.u-card{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r-card); box-shadow:var(--shadow);
+}
+/* de grote kaarten en detailpanelen uit de mockup: --card-2, radius 24 en
+   ruimer van binnen. position:relative omdat hier de takjes in hangen. */
+.u-hero{
+  position:relative;
+  background:var(--card-2); border:1px solid var(--line);
+  border-radius:var(--r-hero); box-shadow:var(--shadow);
+  padding:32px;
+}
+.u-hero-kop{ display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:22px; }
+/* de kop mag wikkelen (responsieve ronde 2026-09). Links staat de tekst
+   (kicker, titel, subregel), rechts een chip of een knop op flex:none. In
+   een detailkolom van 354px (Berichten op 1180px) kreeg de tekst 192px en
+   brak de titel over acht regels; op 320px stak de chip uit de kaart. De
+   tekst vraagt minstens 240px en anders valt de rechterkant eronder; alles
+   krijgt min-width:0 zodat een lange titel afbreekt in plaats van uitsteekt.
+   Op een brede kaart verandert er niets: alles past op één regel. */
+.u-hero-kop{ flex-wrap:wrap; }
+.u-hero-kop > *{ min-width:0; }
+.u-hero-kop > :first-child{ flex:1 1 240px; }
+/* staat er een avatar of tegel vóór het tekstblok, dan is het tekstblok
+   niet het eerste kind; het is dan het kind met de kop erin (Berichten op
+   900–1000px: detail 349px, titel op acht regels in 209px) */
+.u-hero-kop > div:has(h1, h2, h3, .u-paneeltitel, .u-kicker){ flex:1 1 240px; }
+/* een chiprijtje in de kop (inline display:flex vanuit de schermen) mag
+   zelf ook wikkelen; op een element dat geen flexcontainer is doet dit niets */
+.u-hero-kop > div{ flex-wrap:wrap; }
+
+.u-sectionhead{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  margin:0 0 14px;
+}
+.u-sectionhead h2{ font-size:20px; font-weight:500; letter-spacing:-.012em; color:var(--ink); }
+/* de kop mag wikkelen (responsieve ronde 2026-09): "Koerier via DHL" naast
+   een actieknop van 179px kreeg op 390px 117px en brak in tweeën; met wrap
+   valt de actie onder de titel zodra ze samen niet passen. Op een brede
+   kaart past alles en verandert er niets. */
+.u-sectionhead{ flex-wrap:wrap; row-gap:8px; }
+.u-sectionhead > *{ min-width:0; }
+.u-sectionhead .u-kicker{ margin-bottom:3px; }
+.u-section{ margin-bottom:40px; }
+
+/* twee eenvoudige rasters, zodat "drie compacte items naast elkaar"
+   (hoofdstuk 5.1) en "twee grote kaarten naast elkaar" (5.9) niet elke keer
+   opnieuw met de hand gezet worden */
+.u-grid-2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+/* drie naast elkaar zolang elk minstens 240px krijgt (op 1536px met rail is
+   dat 253px, dus daar staan er drie zoals de mockup wil); in een werkkolom van
+   698px (1366px met rail) of 512px (1180px) worden het er twee plus één, in
+   plaats van drie torens van 222px waarin een titel naast de icoontegel 116px
+   krijgt en per woord breekt. min(100%,240px) zodat het raster op 320px nooit
+   breder wordt dan zijn kolom. */
+.u-grid-3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:16px; }
+
+/* --- 7f. de takjes (hoofdstuk 4.20) ---------------------------------
+   Zelfgetekende SVG, aria-hidden, ~35% dekking, en weg onder 900px. Het
+   ELEMENT is .u-ornament; de kaart die er een draagt krijgt .u-ornament-host
+   zodat de absolute positionering ergens op aangrijpt.
+   CP_CHART.leafOrnament levert dezelfde vorm als .cpch-blad; beide vormen
+   staan hier zodat het niet uitmaakt welke van de twee een scherm gebruikt. */
+.u-ornament-host{ position:relative; overflow:hidden; }
+.u-ornament{
+  position:absolute; pointer-events:none; opacity:.35;
+  color:var(--line); width:120px; height:auto;
+}
+.u-ornament.lb{ top:0; left:0; }
+.u-ornament.rb{ top:0; right:0; }
+.u-ornament.ro{ bottom:0; right:0; }
+.u-ornament.lo{ bottom:0; left:0; }
+
+
+/* ============================================================
+   8. COMPONENTEN VAN DE TIEN SCHERMEN
+   ============================================================ */
+
+/* --- 8a. stattegel (hoofdstuk 4.10) ---------------------------------
+   Drie varianten, exact als in de mockup. De KALE .u-stat blijft bestaan en
+   houdt zijn gedrag (klikbare kaart naar een gefilterde lijst) — hij krijgt
+   alleen de nieuwe typografie: het label is geen mono-kicker meer maar een
+   gewone regel van 15px, en het getal is 34px in plaats van 24px mono.
+
+   flex-kolom en niet display:block, omdat deze kaart een <button> is. Een
+   button centreert zijn inhoud verticaal, en de kaarten zijn door het grid
+   even hoog: een kaart ZONDER onderregel zou daardoor zijn label lager zetten
+   dan zijn buren en de rij scheef laten staan. Expliciet naar boven uitlijnen
+   dus. */
+.u-stats{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-bottom:32px; }
+/* de rij van precies drie op Overzicht (hoofdstuk 5.1). Los van de auto-fit
+   hierboven, want CP_UI.summaryCard zet er soms vier neer en die mogen niet
+   in drie kolommen geperst worden. */
+.u-stats.drie{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+
+.u-stat{
+  display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start;
+  width:100%; text-align:left; padding:22px 24px 24px;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+  box-shadow:var(--shadow);
+  transition:border-color .25s ease, background .25s ease;
+}
+.u-stat:hover{ border-color:var(--ink-4); background:var(--card-2); }
+.u-stat-lbl{ font-size:15px; font-weight:500; color:var(--ink); line-height:1.35; }
+.u-stat-num{
+  font-size:34px; font-weight:500; line-height:1.1; letter-spacing:-.02em;
+  color:var(--ink); font-variant-numeric:tabular-nums; margin-top:8px;
+}
+.u-stat-sub{ font-size:13px; color:var(--ink-2); margin-top:4px; line-height:1.45; }
+/* de vier betekenistinten op het GETAL, nooit op het hele vlak: een kaart die
+   helemaal oranje is schreeuwt ook als de waarde 1 is. Op 34px is elk van
+   deze -ink kleuren ruim boven de norm (≥6,1:1 op wit). */
+.u-stat.crit .u-stat-num{ color:var(--crit-ink); }
+.u-stat.warn .u-stat-num{ color:var(--warn-ink); }
+.u-stat.info .u-stat-num{ color:var(--info-ink); }
+.u-stat.ok   .u-stat-num{ color:var(--ok-ink); }
+
+/* VARIANT 1 — ring: links de voortgangsring, rechts icoon + label + subregel
+
+   DE TUSSENLAGEN ZIJN <span> EN GEEN <div>, want deze tegel is een <button>
+   zodra hij een bestemming heeft en binnen een button hoort frasering-inhoud.
+   Een span is van zichzelf inline, dus de weergave moet hier staan: zonder de
+   display-regels hieronder schuiven icoontegel, label en subregel op één
+   regel aan elkaar. Dit is dus geen opsmuk maar de andere helft van de keuze
+   die CP_UI.statTile maakt. */
+.u-stat.ring{ flex-direction:row; align-items:center; gap:20px; }
+.u-stat.ring .u-stat-ringslot{ flex:none; }
+.u-stat.ring .u-stat-body{ display:block; flex:1; min-width:0; }
+.u-stat.ring .u-stat-lbl{ font-size:16px; }
+.u-stat.ring .u-stat-num{ display:none; }
+.u-stat.ring .u-stat-kop{ display:flex; align-items:center; gap:10px; }
+
+/* VARIANT 2 — groot: gevulde kaart in een -soft tint, enorm getal in de
+   donkere tint van diezelfde familie, en rechtsonder een ronde pijlknop.
+   Hoofdstuk 4.10 zet het getal in "de volle tint"; op --cat-2-soft haalt
+   --cat-2 1,83:1 en dan staat er een getal van 56px dat je niet kunt lezen.
+   --cat-2-ink haalt 4,77:1 en is dezelfde kleur, alleen donkerder. */
+.u-stat.groot{
+  background:var(--vlak,var(--cat-2-soft)); border-color:transparent;
+  position:relative; padding-bottom:64px; box-shadow:none;
+}
+.u-stat.groot:hover{ background:var(--vlak,var(--cat-2-soft)); border-color:transparent; }
+.u-stat.groot .u-stat-num{
+  font-size:56px; font-weight:400; letter-spacing:-.03em; line-height:1;
+  color:var(--inkt,var(--cat-2-ink)); margin-top:0;
+}
+.u-stat.groot .u-stat-lbl{ font-size:16px; font-weight:500; margin-top:12px; max-width:22ch; }
+.u-stat.groot .u-stat-pijl{ position:absolute; right:20px; bottom:20px; }
+
+/* VARIANT 3 — trend: label, bedrag, subregel, rechtsboven een sparkline en
+   onderaan de vergelijking met vorige maand. Die laatste regel is 13px en
+   staat daarom op --ok-ink / --crit-ink en niet op --ok / --crit. */
+.u-stat.trend .u-stat-kop{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+/* het tekstblok links van de sparkline. Het had geen klasse en dus geen enkele
+   regel die het kon bereiken; het stond er alleen omdat een <div> toevallig
+   een blok is. Nu het een <span> in een knop is (zie de ringvariant hierboven)
+   moet die weergave hier staan. min-width:0 laat het krimpen naast de
+   sparkline van 130px, zodat een lang label afbreekt in plaats van de grafiek
+   de kaart uit te duwen. */
+.u-stat.trend .u-stat-koptekst{ display:block; min-width:0; }
+/* 130px is de ONTWERPmaat uit hoofdstuk 4.2 en niet meer de vaste maat. Hij
+   stond op flex:none en dan gebeurt er dit: op Overzicht mét rechterrail is de
+   tegel 253px breed, houdt de tekstkolom 90px over en steekt de grafiek 8px
+   BUITEN de kaart. Hoofdstuk 6 zegt precies wat hier hoort: "elke grafiek is
+   een SVG met viewBox, dus hij schaalt mee zonder herberekening" — .cpch-svg
+   staat al op width:100% en height:auto. Met flex:0 1 130px geeft de grafiek
+   mee zodra er te weinig ruimte is en blijft hij 130px zodra er genoeg is;
+   min-width:0 laat hem daarbij ook echt onder zijn eigen inhoudsmaat komen. */
+.u-stat.trend .u-stat-spark{ flex:0 1 130px; min-width:0; }
+.u-stat.trend .u-stat-num{ font-size:28px; margin-top:6px; }
+/* DRIE TEGELS WORDEN TWEE PLUS ÉÉN IN EEN SMALLE WERKKOLOM (responsieve
+   ronde 2026-09). Hoofdstuk 6 van de spec houdt ze op 1100–1400px met z'n
+   drieën; nagemeten is dat in de werkkolom van 612–698px (rail 340px) een
+   tegel van 193–222px, en in de ringvariant houdt het label naast ring en
+   icoontegel dan 12 tot 30px over ("Nieuwe aanvragen" in vijftien regels).
+   De kolom zelf beslist (5f): onder 640px twee kolommen — op 1536px is de
+   kolom 792px en verandert er niets. In de trendvariant gaat de sparkline
+   dan onder de tekst in plaats van ernaast; boven 640px staat hij rechts
+   zoals hoofdstuk 4.10 hem tekent. */
+@container (max-width:720px){
+  .u-stats.drie,
+  .u-cols-main .u-stats{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .u-stat.trend .u-stat-kop{ flex-wrap:wrap; }
+  .u-stat.trend .u-stat-koptekst{ flex:1 1 150px; }
+  .u-stat.trend .u-stat-spark{ flex:1 1 130px; }
+  /* in de ringvariant gaat het label onder de icoontegel zodra het er niet
+     naast past (twee tegels in 512px: 58px naast de tegel, 108px eronder) */
+  .u-stat.ring .u-stat-kop{ flex-wrap:wrap; }
+}
+/* Zonder rail (900–1100px, zijbalk ingeklapt) is de werkkolom 804–900px en
+   de kolomquery hierboven ziet dat als ruim — maar drie tegels van 257–290px
+   zijn daar even krap als op 1536px (label 43–66px). Op 1536px is dat de
+   mockupmaat en blijft hij staan; onder 1400px is er geen mockup die drie
+   afdwingt, dus daar twee kolommen, ongeacht de rail. 9d en 9e (twee, dan
+   één kolom) blijven daaronder gelden. */
+@media (max-width:1399.98px){
+  .u-stats.drie,
+  .u-cols-main .u-stats{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .u-stat.trend .u-stat-kop{ flex-wrap:wrap; }
+  .u-stat.trend .u-stat-koptekst{ flex:1 1 150px; }
+  .u-stat.trend .u-stat-spark{ flex:1 1 130px; }
+  .u-stat.ring .u-stat-kop{ flex-wrap:wrap; }
+}
+/* in een werkkolom van 432px (precies 1100px, rail 340px) is ook een halve
+   kolom te smal voor ring, tegel en label: één kolom. Staat NA de
+   mediaquery hierboven, want die zet op gelijke specificiteit twee kolommen
+   en de volgorde beslist. */
+@container (max-width:480px){
+  /* 0,3,0: 9d zet .u-stats.drie (0,2,0) op twee kolommen voor 700–900px en
+     staat later in het bestand; de kolom van 412–480px moet dat winnen */
+  .u-cols-main .u-stats.drie,
+  .u-cols-main .u-stats{ grid-template-columns:minmax(0,1fr); }
+}
+.u-stat-trendregel{ display:flex; align-items:center; gap:6px; font-size:13px; margin-top:12px; color:var(--ink-2); }
+.u-stat-trendregel.op{ color:var(--ok-ink); }
+.u-stat-trendregel.af{ color:var(--crit-ink); }
+
+/* --- 8b. taakkaart ("Nu doen") --------------------------------------
+   Beantwoordt de vier vragen in leesvolgorde: wat speelt er (titel), waar
+   hoort het bij (context), waarom nu (reden), en wat is de volgende actie
+   (één knop). Alle overige bediening zit achter de ••• ernaast.
+   De urgentie zit in een 3px binnenrand links, gezet met een inset-schaduw en
+   niet met een border, omdat een border van 3px de radius scheeftrekt en de
+   rij 3px zou verschuiven zodra hij dringend wordt. */
+.u-task{ display:flex; align-items:flex-start; gap:16px; padding:18px 24px; }
+.u-task-body{ flex:1; min-width:0; }
+
+/* DE KAARTVORM IS EEN RASTER, GEEN RIJ (responsieve ronde 2026-09).
+   De oorzaak van "elk woord op een eigen regel" in de taakkaart: vier
+   flexkinderen op één regel — beeld (44px), chip (nowrap, tot 230px voor
+   "WACHT AL LANGER DAN EEN WEEK"), tekst (flex:1, min-width:0) en de knoppen
+   (flex:none, ±200px). Alles wat vast is houdt zijn maat en de tekst krijgt
+   de rest: in een werkkolom van 512px (1180px met rail) is dat ±100px, op een
+   telefoon 8px, en dan breekt "Kwaliteitscontrole" de kaart open.
+   Het raster zet de chip BOVEN de tekst, in dezelfde kolom, en de knoppen
+   ernaast:
+       beeld | chip         | knoppen
+       beeld | titel/tekst  | knoppen
+   De kolomafstand staat op 0 en zit als marge op beeld en knoppen, zodat een
+   kaart zónder beeld of zónder knoppen geen lege kolom met een gat overhoudt
+   (een lege auto-kolom is 0px, maar de column-gap ernaast niet). Een kaart
+   met alleen beeld en tekst (Recente activiteit in het beheer) ziet er dus
+   precies zo uit als in de rij: tegel, 16px, tekst.
+   Het beeldslot heeft geen vaste klasse (tegel of avatar, van de aanroeper);
+   het is het kind dat geen chip, tekst of knoppen is. De rijvorm
+   (.u-task-rij) houdt zijn eigen flexopbouw. */
+.u-task:not(.u-task-rij){
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:"beeld chip acts" "beeld body acts";
+  column-gap:0; row-gap:0; align-items:start;
+}
+.u-task:not(.u-task-rij) > .chip{ grid-area:chip; justify-self:start; margin-bottom:10px; max-width:100%; }
+.u-task:not(.u-task-rij) > .u-task-body{ grid-area:body; }
+.u-task:not(.u-task-rij) > .u-task-acts{ grid-area:acts; margin-left:16px; }
+.u-task:not(.u-task-rij) > :not(.chip):not(.u-task-body):not(.u-task-acts){ grid-area:beeld; margin-right:16px; }
+/* in een smalle kolom (het Inbox-detail van 420px op 1100–1400px, de rail,
+   een telefoon) gaan de knoppen onder de tekst over de volle breedte —
+   dezelfde stand die hoofdstuk 9e onder 700px al kende, nu ook gestuurd door
+   de kolom zelf (5f). 520px: daaronder houdt de tekst naast een knop van
+   ±200px minder dan 200px over. */
+@container (max-width:520px){
+  .u-task:not(.u-task-rij){ grid-template-columns:auto minmax(0,1fr); grid-template-areas:"beeld chip" "beeld body" "acts acts"; }
+  .u-task:not(.u-task-rij) > .u-task-acts{ margin-left:0; margin-top:14px; width:100%; }
+  .u-task:not(.u-task-rij) > .u-task-acts .btn,
+  .u-task:not(.u-task-rij) > .u-task-acts .u-btn{ flex:1; }
+}
+.u-task-title{ font-size:16px; font-weight:500; line-height:1.4; color:var(--ink); }
+.u-task-ctx{ font-size:13px; color:var(--ink-2); margin-top:3px; }
+.u-task-why{ font-size:13.5px; color:var(--ink-2); margin-top:8px; line-height:1.5; }
+.u-task-meta{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:10px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
+}
+.u-task-acts{ display:flex; align-items:center; gap:10px; flex:none; }
+.u-task.crit{ box-shadow:inset 3px 0 0 var(--crit); }
+.u-task.warn{ box-shadow:inset 3px 0 0 var(--warn); }
+.u-task.info{ box-shadow:inset 3px 0 0 var(--info); }
+
+/* --- 8b-2. de RIJVORM van dezelfde taakkaart ------------------------
+   De mockup tekent "Nu doen" en de Inbox-lijst niet als kaarten met een knop
+   erin maar als rijen: tegel · kicker+titel · meta rechts · chevron. Geen
+   knop in de rij. Hoofdstuk 5.1 schrijft dat ook zo op; de kaartvorm
+   hierboven blijft bestaan voor het Inbox-DETAIL, waar de actie zelf in beeld
+   hoort.
+   Waarom die knop daar weg moet: een rij met een volle knop erin heeft twee
+   even zware doelen naast elkaar, en dan moet de gebruiker per rij lezen wélk
+   van de twee hij wil. Met één doel en een chevron is de belofte overal
+   dezelfde. Alle bediening zit achter het •••.
+   De vorm is bewust die van .u-row: dezelfde hoogte, dezelfde padding,
+   dezelfde hover. Een taakrij en een entiteitsrij horen in één lijst niet uit
+   elkaar te vallen. */
+.u-task-rij{
+  align-items:center; gap:16px; padding:16px 24px;
+  width:100%; text-align:left; transition:background .25s ease;
+}
+.u-task-rij:hover{ background:var(--card-2); }
+/* de klikbare helft, voor het geval er ook een ••• in de rij staat: een knop
+   in een knop bestaat niet, dus beeld en tekst vormen samen één tabstop */
+.u-task-klik{ display:flex; align-items:center; gap:16px; flex:1; min-width:0; text-align:left; }
+.u-task-rij .u-task-body{ display:block; flex:1; min-width:0; }
+/* de kickerregel BOVEN de titel ("Klantenvraag · Nordisk Retail"). Bewust
+   geen .u-kicker: die is uppercase met letterafstand en dat is een
+   sectielabel, terwijl dit gewone tekst is die zegt waar de rij bij hoort. */
+.u-task-kicker{ display:block; font-size:13px; color:var(--ink-2); margin-bottom:2px; }
+/* één regel, met afkapping. Dezelfde reden als bij .u-md-list: een lijst
+   waarin elke rij een andere hoogte heeft, scant niet meer als lijst. */
+.u-task-rij .u-task-title{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.u-task-end{ display:flex; align-items:center; gap:14px; flex:none; }
+/* de meta staat in de rijvorm RECHTS en niet onder de titel, en hij staat in
+   gewone tekst en niet in mono met letterafstand: "30 min" en "Vandaag" zijn
+   woorden, geen codes. */
+.u-task-metarechts{
+  display:flex; align-items:center; gap:12px;
+  font-size:13px; color:var(--ink-2); white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+/* DE RIJVORM IN EEN SMALLE KOLOM (responsieve ronde 2026-09). De staart
+   (meta, chip, •••, chevron) is tot 305px en stond op flex:none; in de
+   werkkolom van 512px (1180px met rail) hield de kicker "Openstaande
+   factuur · Atelier Noor" 77px over. Onder 640px kolombreedte vraagt de
+   klikbare helft minstens 140px en valt de staart naar een tweede regel,
+   rechts uitgelijnd. Dezelfde regels staan in 9e als terugval onder 700px
+   venster; op 792px (1536px) verandert er niets. */
+@container (max-width:640px){
+  .u-task-rij{ flex-wrap:wrap; row-gap:8px; }
+  /* 240px: met een staart van 328px (meta 227 + ••• + chevron) is dat in een
+     rij van 496px (834px venster) precies te veel voor één regel, zodat de
+     staart eronder valt; met 140px bleef hij ernaast en kreeg de tekst 96px */
+  .u-task-rij > .u-task-klik,
+  .u-task-rij > .u-task-body{ flex:1 1 240px; min-width:0; }
+  .u-task-rij > .u-task-end{ flex:1 1 auto; min-width:0; justify-content:flex-end; flex-wrap:wrap; row-gap:8px; }
+  .u-task-metarechts{ flex-wrap:wrap; white-space:normal; justify-content:flex-end; text-align:right; min-width:0; }
+}
+
+/* --- 8c. entiteitsrij met beeldslot ---------------------------------
+   Altijd volledig klikbaar, met een beeldslot vooraan. Het slot is er ook als
+   er geen foto is: .u-thumb.ph houdt de plek vast, zodat een lijst met en
+   zonder foto's niet gaat trappen. */
+.u-row{
+  display:flex; align-items:center; gap:16px; width:100%; text-align:left;
+  padding:16px 24px; transition:background .25s ease;
+}
+/* DE STAART MAG ONDER DE TITEL VALLEN (responsieve ronde 2026-09).
+   .u-row-end stond op flex:none en .u-row-main op flex:1 (basis 0): de staart
+   hield altijd zijn volle breedte en de titel kreeg wat overbleef. In de rail
+   van 340px is dat 128px ("Verwachte levering van Hervulbaar diffuservat" op
+   vier regels), in het Fases-overzicht op 1180px 78px, op een telefoon 5px.
+   Nu vraagt de hoofdtekst minstens 180px; past de staart daar niet naast,
+   dan valt hij naar een tweede regel. De groeiverhouding 20:1 zorgt dat
+   vrije ruimte naar de titel gaat en de staart rechts blijft staan, precies
+   waar hij stond — op een brede rij verandert er dus niets. 180 en niet 200:
+   in de rail van 400px (1536px, beheer) is een rij 304px binnen, en met
+   180 + 16 + de stip "Staat gepland" (102px) past dat nog precies op één
+   regel, zoals vóór deze ronde (nagemeten); in de rail van 340px wikkelt
+   dezelfde rij wél, en dat is de bedoeling. Binnen de staart mogen stip,
+   chip en meta ook zelf wikkelen. */
+.u-row{ flex-wrap:wrap; row-gap:8px; }
+.u-row > .u-row-main,
+.u-row > .u-row-klik{ flex:20 1 180px; min-width:0; }
+.u-row > .u-row-end{ flex:1 1 auto; min-width:0; flex-wrap:wrap; justify-content:flex-end; row-gap:8px; }
+.u-row:hover{ background:var(--card-2); }
+/* de gekozen rij in een lijst-met-detail: --tint-ink en radius 14
+   (hoofdstuk 5.2 corrigeert zichzelf daar expliciet op — niet --ok-soft) */
+.u-row[aria-selected="true"],
+.u-row.gekozen{ background:var(--tint-ink); border-radius:14px; }
+.u-thumb{
+  width:56px; height:56px; flex:0 0 56px; border-radius:var(--r-tile);
+  object-fit:cover; background:var(--tint-ink); border:1px solid var(--line);
+}
+/* de initialen in het lege beeldslot: 12px, dus --ink-2 en niet --ink-3.
+   Dat is letterlijk de eigen regel voor microtekst uit hoofdstuk 1b
+   (--ink-3 haalde hier 3,31:1 op --tint-ink, --ink-2 haalt 8,31:1). De
+   initialen dragen weliswaar aria-hidden, maar een ziende gebruiker leest ze
+   wel degelijk. */
+.u-thumb.ph{
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--ink-2);
+}
+/* .u-row-main is een <span> (binnen een button hoort frasering-inhoud te
+   staan); als flexkind wordt hij vanzelf blokniveau, maar display:block staat
+   er expliciet bij zodat hij ook buiten een flexouder klopt. .u-row-klik is
+   diezelfde klasse als KNOP: de opbouw van .u-row zonder de padding. */
+.u-row-main{ display:block; flex:1; min-width:0; }
+.u-row-klik{ display:flex; align-items:center; gap:14px; text-align:left; }
+.u-row-title{ font-weight:500; font-size:16px; color:var(--ink); }
+.u-row-sub{ font-size:13.5px; color:var(--ink-2); margin-top:2px; }
+.u-row-next{ font-size:13.5px; color:var(--ink); margin-top:4px; }
+/* "geen volgende actie" is zelf ook een antwoord en moet leesbaar blijven */
+.u-row-next.none{ color:var(--ink-2); }
+.u-row-meta{
+  font-family:var(--mono); font-size:12px; color:var(--ink-2);
+  white-space:nowrap; font-variant-numeric:tabular-nums; flex:none;
+}
+.u-row-end{ display:flex; align-items:center; gap:12px; flex:none; }
+.u-row-chevron{ width:18px; height:18px; flex:none; fill:none; stroke:var(--ink-3); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+/* de rijenlijst met binnenlijnen in --line-2, zoals hoofdstuk 1 dat token
+   omschrijft ("binnenlijnen in lijsten") */
+.u-rows > *{ border-bottom:1px solid var(--line-2); }
+.u-rows > *:last-child{ border-bottom:0; }
+
+/* --- 8d. gespreksdraad (hoofdstuk 4.12) ----------------------------- */
+.u-thread{ display:flex; flex-direction:column; }
+.u-thread-item{ display:flex; gap:14px; padding:22px 0; border-bottom:1px solid var(--line); }
+.u-thread-item:last-child{ border-bottom:0; }
+.u-thread-body{ flex:1; min-width:0; }
+.u-thread-kop{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+.u-thread-naam{ font-size:15px; font-weight:600; color:var(--ink); }
+/* de organisatie staat in hoofdstuk 4.12 op --ink-3 bij 15px. Dat mocht van
+   de spec (≥14px) maar niet van de norm: 3,74:1 op --card-2 tegen de 4,5:1
+   die AA vraagt onder 18,66px vet. --ink-2 haalt 9,38:1 en het beeldverschil
+   naast de naam ernaast (weight 600, --ink) blijft groot genoeg. */
+.u-thread-org{ font-size:15px; color:var(--ink-2); }
+.u-thread-tijd{ margin-left:auto; font-size:13px; color:var(--ink-2); white-space:nowrap; }
+.u-thread-tekst{ font-size:15px; line-height:1.6; color:var(--ink-2); margin-top:8px; }
+
+/* --- 8e. metadataraster (hoofdstuk 4.13) ---------------------------- */
+.u-meta{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px 24px; }
+.u-meta-cel{ min-width:0; }
+/* twee kolommen zodra de kolom smal is (responsieve ronde 2026-09): in het
+   Inbox-detail van 420px (1100–1400px) waren de drie cellen 102px en liep
+   "Massaproductie & Kwaliteitscontrole" uit zijn cel. Alleen in de werkkolom
+   en het detail; een raster in de rail houdt zijn drie kolommen. */
+@container (max-width:520px){
+  .u-cols-main .u-meta,
+  .u-md-detail .u-meta{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+/* het Inbox-detail is op 1000px maar 320px breed (45% van de lijst-met-
+   detail): daar één kolom, en een woord als "Kwaliteitscontrole" mag in een
+   cel breken in plaats van eruit te lopen */
+@container (max-width:360px){
+  .u-cols-main .u-meta,
+  .u-md-detail .u-meta{ grid-template-columns:minmax(0,1fr); }
+}
+.u-meta-waarde{ min-width:0; overflow-wrap:anywhere; }
+.u-meta-label{ display:flex; align-items:center; gap:7px; font-size:13px; color:var(--ink-2); }
+.u-meta-label svg{ width:15px; height:15px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.u-meta-waarde{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:500; color:var(--ink); margin-top:5px; }
+
+/* --- 8f. chiprij met specialisaties (hoofdstuk 4.16) ---------------- */
+.u-chiprow{ display:flex; flex-wrap:wrap; gap:8px; }
+.u-chiprow-chip{
+  display:inline-flex; align-items:center; gap:7px;
+  border:1px solid var(--line); border-radius:var(--r-pill);
+  padding:5px 12px; font-size:13.5px; color:var(--ink-2); background:var(--card);
+  /* geen nowrap meer (responsieve ronde 2026-09): "Updates, documenten &
+     antwoorden" is 247px en stak op 320px uit de kaart. Een chip die over
+     twee regels breekt is nog steeds een chip; een chip die uit de kaart
+     loopt niet. Op een brede rij breekt er niets. */
+  max-width:100%; white-space:normal; text-align:left;
+}
+.u-chiprow-chip svg{ width:14px; height:14px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+/* de overloopchip "+2". Hij krijgt van de JS een title met de rest; hier
+   alleen de cursor die verraadt dat er iets te lezen valt. */
+.u-chiprow-chip.meer{ cursor:help; color:var(--ink-2); background:var(--tint-ink); border-color:transparent; }
+
+/* --- 8g. zwevende opslagbalk (hoofdstuk 4.18) ----------------------
+   De zichtbare vorm van het omgekeerde opslagmodel: geen elf losse
+   "Opgeslagen"-teksten meer, maar één knop per pagina. Dan moet je wél op elk
+   moment kunnen zien of er iets openstaat, anders loop je weg met werk dat je
+   denkt te hebben opgeslagen.
+   role="status" hoort erop (JS-werk) zodat de balk zich ook meldt aan wie hem
+   niet ziet. */
+.u-savebar{
+  position:fixed; right:24px; bottom:24px; z-index:20;
+  display:flex; align-items:center; gap:14px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:16px; box-shadow:var(--shadow-2);
+  padding:14px 18px;
+}
+.u-savebar-merk{ display:inline-flex; align-items:center; gap:9px; font-size:14px; color:var(--ink-2); }
+
+/* --- 8h. voorbeeldkaart (hoofdstuk 4.19) ---------------------------- */
+.u-preview{
+  background:var(--card-2); border:1px solid var(--line);
+  border-radius:var(--r-card); padding:22px;
+}
+.u-preview-kop{ font-size:13px; color:var(--ink-2); margin-bottom:14px; }
+
+/* --- 8i. lege toestanden -------------------------------------------
+   Twee vormen, met opzet gescheiden:
+   .u-empty     de lege LIJST — gecentreerd in de kaart, met een knop. Een
+                lege lijst is bijna altijd óf goed nieuws ("alles is
+                bijgewerkt") óf een uitnodiging ("nog geen projecten"); zonder
+                knop is het alleen een gat.
+   .u-emptytile de lege SECTIE uit het projectdetail (hoofdstuk 4.21) —
+                achtergrond --card-2, geen rand, icoon 40px in --ink-4. Dat
+                icoon is decoratie: de titel eronder zegt hetzelfde in
+                woorden, dus 2,21:1 op --card-2 is hier geen drager en geen
+                probleem. */
+.u-empty{ padding:44px 24px 46px; text-align:center; }
+.u-empty-title{ font-size:16px; font-weight:500; color:var(--ink); }
+.u-empty-text{ font-size:14px; color:var(--ink-2); line-height:1.6; margin:7px auto 0; max-width:46ch; }
+.u-empty .btn,
+.u-empty .u-btn{ margin-top:20px; }
+
+.u-emptytile{
+  background:var(--card-2); border:0; border-radius:var(--r-card);
+  padding:40px 24px; text-align:center;
+}
+.u-emptytile svg{ width:40px; height:40px; margin:0 auto 14px; display:block; fill:none; stroke:var(--ink-4); stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+.u-emptytile-title{ font-size:15px; font-weight:500; color:var(--ink); }
+.u-emptytile-text{ font-size:13.5px; color:var(--ink-2); line-height:1.55; margin:6px auto 0; max-width:44ch; }
+.u-emptytile .u-btn{ margin-top:18px; }
+
+/* --- 8j. tijdlijnrij (compact) --------------------------------------
+   Eén vorm voor wat vandaag twee vormen zijn (.tlrow op klantdetail, .logrow
+   in het logboek). De projectkolom is optioneel: laat .u-tl-proj weg waar de
+   context al vaststaat. */
+.u-tl > *{ border-bottom:1px solid var(--line-2); }
+.u-tl > *:last-child{ border-bottom:0; }
+.u-tl-row{ display:flex; gap:14px; align-items:baseline; padding:13px 24px; font-size:14px; }
+/* het tijdstip is in een tijdlijn de halve inhoud van de regel en staat
+   daarom net zo goed leesbaar als de tekst ernaast */
+.u-tl-when{ flex:0 0 132px; font-family:var(--mono); font-size:12px; color:var(--ink-2); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.u-tl-kind{ flex:0 0 100px; min-width:0; }
+.u-tl-detail{ flex:1; min-width:0; }
+.u-tl-proj{ font-family:var(--mono); font-size:12px; color:var(--ink-2); white-space:nowrap; flex:none; }
+
+/* --- 8k. activiteitstijdlijn met datumkolom (hoofdstuk 5.8) ---------
+   De grote variant: links een datumkolom, dan een verticale lijn met een stip
+   erop, dan tijd, icoontegel, titel en beschrijving.
+   De lijn loopt DOOR de stippen heen en is decoratie; hij staat op --line en
+   hoeft dus geen 3:1 te halen. De stip staat altijd naast de tijd en de
+   titel, dus ook daar is kleur niet de enige drager. */
+.u-tlrail{ display:flex; flex-direction:column; }
+.u-tlrail-row{ display:grid; grid-template-columns:96px 24px 1fr; gap:0 16px; align-items:start; }
+.u-tlrail-datum-kol{ text-align:right; padding:20px 0; }
+.u-tlrail-dag{ font-size:16px; font-weight:500; color:var(--ink); line-height:1.2; }
+.u-tlrail-datum{ font-size:13px; color:var(--ink-2); margin-top:2px; }
+/* de lijnkolom: een 1px lijn over de volle hoogte met de stip erop
+   gecentreerd. De eerste en laatste rij snijden hem netjes af. */
+.u-tlrail-lijn{ position:relative; align-self:stretch; }
+.u-tlrail-lijn::before{
+  content:''; position:absolute; left:50%; top:0; bottom:0; width:1px;
+  margin-left:-.5px; background:var(--line);
+}
+.u-tlrail-row:first-child .u-tlrail-lijn::before{ top:26px; }
+.u-tlrail-row:last-child .u-tlrail-lijn::before{ bottom:auto; height:26px; }
+/* de halo van 3px snijdt de doorlopende lijn achter de stip weg. Hij stond in
+   --paper (#f9f7f3) terwijl de tijdlijn altijd binnen een .u-card (#ffffff)
+   staat — dat gaf een zichtbare beige ring rond elke stip in plaats van een
+   onzichtbare onderbreking. --tlrail-grond laat een kaart met een andere
+   grond (een .u-hero op --card-2 bijvoorbeeld) zijn eigen kleur meegeven;
+   zonder die variabele is het gewoon --card. */
+.u-tlrail-stip{
+  position:absolute; left:50%; top:22px; transform:translateX(-50%);
+  width:9px; height:9px; border-radius:var(--r-pill);
+  background:var(--volle,var(--ink-3));
+  box-shadow:0 0 0 3px var(--tlrail-grond,var(--card)), inset 0 0 0 1px var(--inkt,var(--ink-3));
+}
+.u-tlrail-body{ display:flex; gap:14px; padding:20px 0; min-width:0; border-bottom:1px solid var(--line-2); }
+.u-tlrail-row:last-child .u-tlrail-body{ border-bottom:0; }
+/* display:block erbij: dit slot zit binnen de rijknop van de activiteitenlijst
+   en hoort daar een <span> te zijn (zie hoofdstuk 4) */
+.u-tlrail-tekstkol{ display:block; flex:1; min-width:0; }
+.u-tlrail-tijd{ font-size:13px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+.u-tlrail-title{ font-size:16px; font-weight:500; color:var(--ink); margin-top:3px; }
+/* 14,5px op --card was 3,83:1 met --ink-3 — de spec liet het toe boven 14px,
+   AA niet. Dit is de beschrijvingsregel van élke rij op het scherm
+   Activiteit, dus juist de plek waar het telt. --ink-2 haalt 9,62:1. */
+.u-tlrail-text{ font-size:14.5px; color:var(--ink-2); line-height:1.55; margin-top:4px; }
+.u-tlrail-refs{ display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; }
+
+/* --- 8l. projectkaart (hoofdstuk 5.3) ------------------------------- */
+.u-projectcard{
+  display:flex; gap:24px; align-items:flex-start;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r-card); box-shadow:var(--shadow); padding:20px;
+}
+.u-projectcard-beeld{
+  width:260px; height:180px; flex:0 0 260px; border-radius:16px;
+  object-fit:cover; background:var(--tint-ink); border:1px solid var(--line);
+}
+.u-projectcard-body{ flex:1; min-width:0; }
+/* de tekst naast het beeld vraagt minstens 260px, anders valt hij ONDER het
+   beeld (responsieve ronde 2026-09). Beeld (200–320px), ring (±75px) en
+   tussenruimtes zijn vast; in een werkkolom van 512px (1100–1400px met rail)
+   of 480px (tablet staand) bleef er 100–120px voor kicker, titel, status en
+   volgende stap — elk woord op een eigen regel. Op 792px past alles naast
+   elkaar en verandert er niets. */
+.u-projectcard{ flex-wrap:wrap; }
+.u-projectcard-body{ flex:1 1 260px; }
+.u-projectcard-kop{ display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+/* dezelfde regel voor de kopregel: titel en subregel links, de projectleider
+   rechts op flex:none; wordt het krap, dan valt de leider eronder */
+.u-projectcard-kop{ flex-wrap:wrap; }
+.u-projectcard-kop > :first-child{ flex:1 1 200px; min-width:0; }
+.u-projectcard-titel{ font-size:24px; font-weight:500; letter-spacing:-.016em; color:var(--ink); line-height:1.2; }
+.u-projectcard-sub{ font-size:14px; color:var(--ink-2); margin-top:5px; }
+.u-projectcard-lead{ display:inline-flex; align-items:center; gap:9px; font-size:14px; color:var(--ink-2); flex:none; }
+.u-projectcard-stepper{ margin-top:22px; }
+.u-projectcard-next{ font-size:14px; color:var(--ink); margin-top:18px; }
+/* ook een <span> binnen de kaartknop; display:block zodat de ring niet als
+   inline-element op de tekstbasislijn gaat zweven */
+.u-projectcard-ring{ display:block; flex:none; margin-left:8px; }
+
+/* --- 8m. fabriekskaart (hoofdstuk 5.6) ------------------------------ */
+.u-factorycard{
+  display:flex; gap:24px; align-items:flex-start;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r-card); box-shadow:var(--shadow); padding:20px;
+}
+.u-factorycard-beeld{
+  width:300px; height:200px; flex:0 0 300px; border-radius:16px;
+  object-fit:cover; background:var(--tint-ink); border:1px solid var(--line);
+}
+.u-factorycard-body{ flex:1; min-width:0; }
+.u-factorycard-kop{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.u-factorycard-naam{ font-size:22px; font-weight:500; letter-spacing:-.014em; color:var(--ink); }
+.u-factorycard-plaats{ display:flex; align-items:center; gap:7px; font-size:14px; color:var(--ink-2); margin-top:6px; }
+.u-factorycard-plaats svg{ width:15px; height:15px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+/* drie stats, waarde boven label */
+.u-factorycard-stats{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:20px; }
+.u-factorycard-stat-waarde{ display:block; font-size:20px; font-weight:500; color:var(--ink); font-variant-numeric:tabular-nums; }
+.u-factorycard-stat-label{ display:block; font-size:13px; color:var(--ink-2); margin-top:2px; }
+.u-factorycard-chips{ margin-top:20px; }
+.u-factorycard-rating{ display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:18px; }
+
+/* --- 8n. producttegelrij (hoofdstuk 5.5) ---------------------------- */
+.u-productrow{ display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:12px 0; }
+.u-productrow-beeld{
+  width:64px; height:64px; flex:0 0 64px; border-radius:var(--r-tile);
+  object-fit:cover; background:var(--tint-ink); border:1px solid var(--line);
+}
+.u-productrow-body{ flex:1; min-width:0; }
+.u-productrow-naam{ font-size:15px; font-weight:500; color:var(--ink); }
+.u-productrow-klant{ font-size:13px; color:var(--ink-2); margin-top:2px; }
+
+/* --- 8o. factuurrij (hoofdstuk 5.7) --------------------------------
+   Vijf vaste sloten: icoontegel, titel + sub, bedrag + datum, status, chevron.
+   Het bedrag staat in mono met tabular-nums zodat een kolom bedragen op de
+   komma uitlijnt. */
+.u-invoicerow{
+  display:flex; align-items:center; gap:16px; width:100%; text-align:left;
+  padding:16px 24px; transition:background .25s ease;
+}
+.u-invoicerow:hover{ background:var(--card-2); }
+.u-invoicerow-main{ flex:1; min-width:0; }
+.u-invoicerow-titel{ display:block; font-size:16px; font-weight:500; color:var(--ink); }
+.u-invoicerow-sub{ font-size:13.5px; color:var(--ink-2); margin-top:2px; }
+.u-invoicerow-geld{ flex:none; text-align:right; }
+.u-invoicerow-bedrag{ display:block; font-family:var(--mono); font-size:16px; font-weight:500; color:var(--ink); font-variant-numeric:tabular-nums; }
+.u-invoicerow-datum{ display:block; font-size:13px; color:var(--ink-2); margin-top:2px; }
+.u-invoicerow-status{ flex:0 0 140px; display:flex; align-items:center; gap:9px; font-size:14px; color:var(--ink-2); }
+
+/* --- 8p. instellingenkaarten (hoofdstuk 5.9) ------------------------
+   .u-setcard-groot  de twee grote kaarten bovenaan (Bedrijfsprofiel breed op
+                     --card-2 met het logo in een witte cirkel van 130px,
+                     Facturatie wit met een icoontegel van 56px)
+   .u-setcard-klein  de zes categorierijen eronder
+   .u-setcard        blijft de bestaande klasse en is nu een alias van de
+                     kleine variant, zodat CP_UI.settingsCard blijft werken */
+/* min(100%,300px): op een venster van 320px is de kolom 288px en zou een
+   vaste ondergrens van 300px het raster 12px buiten de pagina zetten */
+.u-setgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px; }
+
+.u-setcard-groot{
+  position:relative;
+  display:flex; align-items:center; gap:24px;
+  background:var(--card-2); border:1px solid var(--line);
+  border-radius:var(--r-hero); box-shadow:var(--shadow); padding:28px;
+}
+.u-setcard-groot.wit{ background:var(--card); }
+.u-setcard-logo{
+  width:130px; height:130px; flex:0 0 130px; border-radius:var(--r-pill);
+  background:var(--card); border:1px solid var(--line);
+  display:inline-flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.u-setcard-logo img{ max-width:76px; max-height:76px; object-fit:contain; }
+.u-setcard-groot-body{ flex:1; min-width:0; }
+
+.u-setcard,
+.u-setcard-klein{
+  display:flex; align-items:flex-start; gap:16px;
+  width:100%; text-align:left; padding:20px 22px;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r-card);
+  box-shadow:var(--shadow);
+  transition:border-color .25s ease, background .25s ease;
+}
+.u-setcard:hover,
+.u-setcard-klein:hover{ border-color:var(--ink-4); background:var(--card-2); }
+.u-setcard-body{ flex:1; min-width:0; }
+.u-setcard-title{ font-size:17px; font-weight:500; color:var(--ink); }
+.u-setcard-text{ font-size:13.5px; color:var(--ink-2); line-height:1.55; margin-top:5px; }
+/* de "n instellingen →" regel. margin-top:auto duwt hem naar de onderrand,
+   zodat de regels van kaarten met ongelijke tekstlengte toch op één lijn
+   staan — de kaarten zijn door het grid immers even hoog. */
+.u-setcard-meta{
+  font-size:14px; font-weight:500; color:var(--ink);
+  font-variant-numeric:tabular-nums; margin-top:auto; padding-top:14px;
+}
+
+/* --- 8q. systeemstatus in de rail (hoofdstuk 5.9) ------------------- */
+.u-statusring{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px; padding:8px 0 4px; }
+.u-statusring-titel{ font-size:16px; font-weight:500; color:var(--ink); }
+.u-statusring-sub{ font-size:13px; color:var(--ink-2); }
+
+/* --- 8r. onopgeslagen staat -----------------------------------------
+   .u-dirty       het markertje bij de opslaanknop ("Niet opgeslagen").
+                  Oranje: het vraagt aandacht, het is niet fout. De tekst
+                  staat op --warn-ink (6,11:1), de stip op --warn met de
+                  ring uit 7c.
+   .u-dirty-field optioneel per veld, zodat je op een pagina van veertig
+                  velden terugvindt wélke je hebt aangeraakt. Een inset-lijn
+                  links, niet de randkleur van het veld zelf — die is voor
+                  focus en voor fouten. */
+.u-dirty{
+  display:none; align-items:center; gap:8px;
+  font-size:14px; font-weight:500; color:var(--warn-ink);
+}
+.u-dirty.on{ display:inline-flex; }
+.u-dirty::before{
+  content:''; width:8px; height:8px; border-radius:var(--r-pill); flex:none;
+  background:var(--warn); box-shadow:inset 0 0 0 1px var(--warn-ink);
+}
+.u-dirty-field .input{ box-shadow:inset 3px 0 0 var(--warn); }
+
+/* --- 8s. menu (contextmenu ••• en aanmaakmenu + Nieuw) --------------
+   Er bestaat in het oude beheer geen enkel menu-, dropdown- of
+   popoverprimitief; dit is het. Vorm van .u-card, maar met een kleinere
+   radius dan 20px omdat de rijen erin recht zijn en een grote radius dan een
+   gat in de hoek laat.
+   Positionering: standaard linksuitgelijnd; .to-right hangt hem aan de
+   rechterkant (voor een ••• helemaal rechts in een rij), .to-up klapt hem
+   omhoog (voor een rij onderaan het scherm). De JS kiest, de CSS voert uit.
+   Escape sluit hem en zet de focus terug — dat is admin-shell.js, en het is
+   niet optioneel (hoofdstuk 8). */
+.u-menuwrap{ position:relative; display:inline-flex; }
+.u-menu{
+  position:absolute; top:calc(100% + 6px); left:0; z-index:70;
+  min-width:224px; max-width:320px; padding:6px;
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  box-shadow:var(--shadow-2);
+  transform-origin:top left;
+  animation:u-menu-in .16s var(--ease-fl);
+}
+.u-menu.to-right{ left:auto; right:0; transform-origin:top right; }
+.u-menu.to-up{ top:auto; bottom:calc(100% + 6px); transform-origin:bottom left; }
+.u-menu.to-up.to-right{ transform-origin:bottom right; }
+@keyframes u-menu-in{ from{ opacity:0; transform:scale(.97); } to{ opacity:1; transform:none; } }
+
+.u-menu-label{
+  display:block; padding:9px 12px 5px;
+  font-size:12px; font-weight:500; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-2);
+}
+.u-menu-item{
+  display:flex; align-items:center; gap:11px; width:100%; text-align:left;
+  padding:10px 12px; border-radius:10px; font-size:14.5px; color:var(--ink-2);
+  transition:background .18s ease, color .18s ease;
+}
+.u-menu-item:hover,
+.u-menu-item:focus-visible{ background:var(--tint-ink); color:var(--ink); }
+.u-menu-item svg{ width:17px; height:17px; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+/* uitgeschakelde bediening is expliciet uitgezonderd van de contrastnorm;
+   --ink-4 mag hier dus wél */
+.u-menu-item[aria-disabled="true"]{ color:var(--ink-4); cursor:default; }
+.u-menu-item[aria-disabled="true"]:hover{ background:transparent; color:var(--ink-4); }
+/* sneltoetshint rechts in de rij — mono, want het is een code */
+.u-menu-hint{ margin-left:auto; font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-2); }
+.u-menu-item.danger{ color:var(--crit-ink); }
+.u-menu-item.danger:hover,
+.u-menu-item.danger:focus-visible{ background:var(--crit-soft); color:var(--crit-ink); }
+.u-menu-sep{ height:1px; background:var(--line); margin:6px 8px; }
+
+/* --- 8t. filterpaneel (mobiel) — NOG NIET GEBOUWD, KOMT IN FASE 10 ---
+   LET OP: hieronder staat de complete vorm van een filterpaneel, maar er is
+   op dit moment GEEN uitvoerder. CP_UI heeft geen drawer()-component, en
+   .u-drawer wordt door geen enkel bestand op een element gezet. Wie deze
+   klassen ziet staan en aanneemt dat er een component achter zit, heeft het
+   mis. Dat geldt voor alles wat hier .u-drawer heet: de scrim, de grip, de
+   kop, het lijf, de voet, de mediaqueries verderop en de regel in het
+   printblok.
+
+   WAAROM HET BLIJFT STAAN EN WAAROM WE HET NU NIET AFBOUWEN
+   De vorm is af en doorgerekend en het zou zonde zijn hem weg te gooien. Maar
+   de bediening van het paneel — openen, sluiten, focus vasthouden, filters
+   toepassen — hoort bij het filterwerk van fase 10, en die fase bouwt het
+   component in één keer goed. Half bouwen wat fase 10 opnieuw doet is
+   verspilling, en een half component is erger dan geen component: dan staat
+   er wél iets, maar doet het niet alles.
+
+   WAT ER AL KLAAR LIGT VOOR FASE 10
+   admin-shell.js houdt `lagen.drawer` bij en Escape sluit eerst het menu, dan
+   de drawer, dan het detail. Een drawer()-component hoeft zich alleen aan te
+   melden met registreerLaag('drawer', sluit) en zich bij het opruimen weer af
+   te melden. Wat ontbreekt is het component zelf.
+
+   OVER DE VORM: filters passen op een telefoon niet naast de lijst en horen
+   daar ook niet permanent te staan. Ze schuiven van onderen in — dichter bij
+   de duim dan een paneel van opzij, en het laat de lijst eronder zichtbaar
+   zodat je ziet waar je in filtert. Open en dicht loopt via zichtbaarheid en
+   niet via display, zodat de mediaquery die het paneel op grotere schermen
+   uitzet altijd wint. */
+.u-drawer-scrim{
+  position:fixed; inset:0; z-index:50; background:rgba(20,18,15,.45);
+  opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s;
+}
+.u-drawer-scrim.open{ opacity:1; visibility:visible; }
+.u-drawer{
+  position:fixed; left:0; right:0; bottom:0; z-index:51;
+  max-height:82vh; display:flex; flex-direction:column;
+  background:var(--card); border-top:1px solid var(--line);
+  border-radius:24px 24px 0 0; box-shadow:0 -8px 30px rgba(20,18,15,.12);
+  transform:translateY(100%); visibility:hidden;
+  transition:transform .3s var(--ease-fl), visibility .3s;
+}
+.u-drawer.open{ transform:none; visibility:visible; }
+.u-drawer-grip{ width:38px; height:4px; border-radius:2px; background:var(--line); margin:10px auto 2px; flex:none; }
+.u-drawer-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 20px 12px; border-bottom:1px solid var(--line); flex:none; }
+.u-drawer-body{ padding:16px 20px; overflow-y:auto; overscroll-behavior:contain; flex:1; min-height:0; }
+.u-drawer-foot{
+  display:flex; gap:10px; padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line); flex:none;
+}
+.u-drawer-foot .btn,
+.u-drawer-foot .u-btn{ flex:1; }
+
+/* --- 8u. de grafiekbijschriften uit admin-charts.js -----------------
+   admin-charts.js injecteert zijn eigen stijlblok (id cp-chart-stijl) in
+   <head>, dus NA deze <link>. Op gelijke specificiteit wint dat blok. Eén
+   regel daarin zet de waarde rechts in een donutlegenda op --ink-3 bij
+   13,5px, en dat valt onder de grens van hoofdstuk 8 (3,58:1 bij minder dan
+   14px). Deze regel is 0,3,0 tegen 0,2,0 en tilt hem naar --ink-2 (8,99:1).
+   Hij hoort eigenlijk in admin-charts.js thuis; zodra dat bestand hem daar
+   zelf zet, mag deze weg. */
+.u-shell .cpch-dlegenda .cpch-w{ color:var(--ink-2); }
+
+/* DE FASELABELS VAN DE STEPPER EN HET FASEPAD KAPPEN NETJES AF.
+   Dit was de lelijkste fout van het projectenscherm: de stepper toont de
+   volledige Nederlandse fasenamen ("Bloksourcing & Engineering Sampling",
+   "Massaproductie & Iteratiekwaliteitscontrole") in vijf kolommen van een
+   kaartbreedte, en die wikkelen tot een onleesbare brij waarin de kolommen
+   niet meer uit elkaar te houden zijn.
+
+   De ECHTE oplossing is een kort label ("Concept · Ontwerp · Prototyping ·
+   Productie · Levering") met de volledige naam in title en aria-label. Dat
+   hoort in het component zelf, en CP_CHART.stepper/stagePath wonen in
+   portal/admin-charts.js — buiten dit bestand. Wat hier hoort en wat hier dus
+   staat, is de andere helft van dezelfde eis: dat een label dat tóch te lang
+   is, netjes wordt afgekapt in plaats van de rij uit elkaar te trekken.
+   Een kort label raakt deze regels nooit; alleen een te lang label wel.
+
+   0,2,0 en niet 0,1,0: admin-charts.js injecteert zijn stijlblok in <head>,
+   dus ná deze <link>, en wint anders op gelijke specificiteit.
+
+   ÉÉN REGEL VOOR DE STEPPER (13px, vijf of zes kolommen binnen één
+   projectkaart — daar past niets méér dan één regel), TWEE VOOR HET FASEPAD
+   (14px, volle werkkolom, en daar is de fasenaam de kop van een kolom met
+   nog drie regels eronder). */
+.u-shell .cpch-stap-label{
+  display:block; max-width:100%;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.u-shell .cpch-fase-label{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  overflow:hidden;
+}
+/* het fasepad in een smalle werkkolom (responsieve ronde 2026-09): zes
+   kolommen in 612px zijn 82px per fase en "Akkoord van Noor van Dijk op
+   24 apr 2026" breekt dan over zes regels. Onder 700px kolombreedte drie per
+   rij; op 1536px (792px) blijven het er zes. Onder 700px venster nemen 9e en
+   9f het over (twee, dan één kolom). */
+@container (max-width:700px){
+  .u-shell .cpch-stage .cpch-kolommen{ grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:16px; }
+}
+/* zonder rail (900–1100px) is de werkkolom 876–900px en zijn zes kolommen
+   146px: nog steeds vijf regels per zin. Onder 1100px venster dus ook drie. */
+@media (max-width:1099.98px){
+  .u-shell .cpch-stage .cpch-kolommen{ grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:16px; }
+}
+
+/* de beoordelingsrij in zijn LEGE stand ("Nog niet beoordeeld") en zijn
+   terugval zonder CP_CHART. Die stonden op .cpch-rating en .cpch-rating-label
+   — klassen die alleen bestaan in het stijlblok dat CP_CHART zelf injecteert,
+   en dat blok wordt uitsluitend geplaatst door een TEKENfunctie. In de lege
+   tak wordt niets getekend, dus op een pagina zonder enkele grafiek (het
+   fabrieksdetail van de fabriek die in de demoseed met opzet zonder scores
+   staat) stond er ongestileerde tekst. Deze twee klassen hangen nergens van
+   af en zijn met opzet op exact dezelfde maat en kleur gezet als hun
+   cpch-tegenhangers, zodat het niet uitmaakt welke van de twee wint. */
+/* --- 8u-bis. de oude fasetabel van het projectdetail (beheer.html) ------
+   .stagerow is een flexrij (naam flex:1 met basis 0 · select 190px ·
+   knoppen) die in beheer.html pas onder 820px wikkelt. In een werkkolom van
+   512px (1180px met rail) kreeg de naam daardoor 27px en brak "Concept &
+   Industrieel Ontwerp" over negen regels. De naam vraagt nu 180px en de rij
+   mag op elke breedte wikkelen; op 792px past alles op één regel en
+   verandert er niets. 0,2,0 tegen beheer.html (0,1,0). */
+.u-shell .stagerow{ flex-wrap:wrap; }
+.u-shell .stagerow > .stagename{ flex:1 1 180px; }
+
+.u-ratingrij{ display:flex; align-items:center; gap:10px; }
+.u-ratingrij-label{ font-size:13px; color:var(--ink-2); }
+.u-ratingrij-leeg{ font-size:13px; color:var(--ink-2); }
+
+
+/* ============================================================
+   9. VIJF RESPONSIEVE NIVEAUS
+   ============================================================
+
+   Hoofdstuk 6 van de spec. beheer.html heeft er vandaag één: op 820px wordt
+   de zijbalk een horizontaal scrollende knoppenrij. Die regel blijft
+   ongemoeid — hij grijpt op .shell/.side/.main en de nieuwe omlijsting draagt
+   die klassen niet.
+
+   De grenzen gebruiken .98 (699.98 / 899.98 / 1099.98 / 1399.98) zodat er
+   geen halve pixel tussen twee niveaus valt op schermen met een fractionele
+   breedte.
+
+     >= 1400px   zijbalk vast, rail 400px, alles naast elkaar
+     1100-1400   rail 340px, projectbeeld 200px, drie stattegels blijven drie
+     900-1100    rail onder de werkkolom, zijbalk ingeklapt naar 68px
+     700-900     detail schuift over de lijst, stattegels twee op een rij
+     < 700px     één kolom, zijbalk als uitschuifpaneel, grafieken op volle
+                 breedte, opslagbalk vast onderaan, takjes weg
+
+   DE AFWIJKING VAN VORIGE RONDE IS WEG — HET OMSLAGPUNT IS NU 900px
+   Hier stond dat het detailpaneel al vanaf 1100px over de lijst schoof,
+   terwijl hoofdstuk 6 dat pas onder 900px voorschrijft. De reden was echt:
+   CP_UI las diezelfde stand uit met matchMedia, en zouden de twee op
+   verschillende maten omklappen, dan hangt er tussen 900 en 1100 een waas
+   zonder paneel. Het antwoord was toen "dan blijft de CSS ook op 1100".
+   Dat kostte wel iets: tussen 900 en 1100 stonden lijst en detail volgens de
+   spec náást elkaar, maar hier lag het detail eroverheen — met een terugknop
+   erbij die nergens heen ging.
+   Nu verhuizen ze samen. admin-ui.js zet de grens in één constante
+   (MD_SMAL = '(max-width:899.98px)'), dit blok gebruikt dezelfde waarde, en
+   de afspraak blijft precies wat ze was: verschuift er ooit één, dan moet de
+   ander in dezelfde beweging mee. */
+
+/* --- 9a. vanaf 1400px: het basisniveau ------------------------------
+   Alles hierboven is al op deze maat geschreven; hier hoeft niets bij. De
+   drawer wordt uitgezet omdat hij alleen op de telefoon bestaat. */
+@media (min-width:1100px){
+  /* de zijbalk is hier altijd uitgeklapt beschikbaar; .collapsed blijft
+     werken omdat het een keuze van de gebruiker mag zijn, geen dwang */
+  .u-drawer, .u-drawer-scrim{ display:none; }
+}
+
+/* --- 9b. 1100 tot 1400px: de rail wordt smaller --------------------- */
+@media (min-width:1100px) and (max-width:1399.98px){
+  /* --u-md-detail krimpt mee. Hoofdstuk 6 noemt op dit niveau alleen de
+     rail, maar het Inbox-detail is dezelfde soort rechterkolom en is met
+     620px hier te breed: bij 1200px venster houdt de lijst er dan 260px van
+     over en past er geen rij meer in. 420px laat beide kolommen leefbaar. */
+  .u-shell{ --u-rail-w:340px; --u-work-pad:32px; --u-md-detail:420px; }
+  .u-projectcard-beeld{ width:200px; height:150px; flex-basis:200px; }
+  .u-factorycard-beeld{ width:240px; height:170px; flex-basis:240px; }
+  /* drie stattegels blijven met z'n drieën — expliciet, want de auto-fit van
+     .u-stats zou er bij 240px minimum twee van maken */
+  .u-stats{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+
+/* --- 9c. onder 1100px: de rail schuift onder de werkkolom -----------
+   Hier gaat het ALLEEN nog over de rail. Lijst en detail staan op deze maat
+   gewoon naast elkaar, precies zoals hoofdstuk 6 het zegt; ze krijgen alleen
+   een smallere detailkolom mee (9b zet --u-md-detail al op 420px). */
+@media (max-width:1099.98px){
+  /* --u-md-detail krimpt op dit niveau mee, om dezelfde reden als in 9b: 620px
+     laat de lijst hier te weinig over. De 55%-ondergrens van .u-md blijft
+     staan, dus dit is een bovengrens en geen maat. */
+  .u-shell{ --u-work-pad:28px; --u-md-detail:420px; }
+
+  /* --- 9c-1. MET DE DUIM TE RAKEN: ÉÉN GRENS, 1100PX (responsieve ronde
+     2026-09; stond eerder alleen in portaal-skin.css 8c en gold dus niet
+     voor het beheer). Een tablet is een duimapparaat; alles wat bediening
+     is wordt hier minstens 44px. Alleen MATEN, geen kleur en geen vorm. */
+  .u-iconbtn{ width:44px; height:44px; }
+  .u-side-toggle{ flex-basis:44px; width:44px; height:44px; }
+  .u-btn.klein:not(.rond){ min-height:44px; }
+  .u-btn.rond, .u-btn.rond.klein, .u-btn.rond.m36{ width:44px; height:44px; }
+  .u-chip{ min-height:44px; }
+  .u-menu-item{ min-height:44px; }
+  .u-demobadge{ min-height:44px; min-width:44px; justify-content:center; }
+  .u-task-rij{ min-height:44px; }
+  /* een knop is nooit breder dan zijn kolom: "Ronde beoordelen of goedkeuren"
+     (236px, nowrap) stak op 700px 8px uit de samplekaart en op 414px 15px uit
+     de kaart zelf. Onder 1100px mag het label breken; boven 1100px blijft het
+     één regel zoals de mockup hem tekent. */
+  .u-btn{ max-width:100%; white-space:normal; }
+  .u-savebar .u-btn{ min-height:44px; }
+  /* de oude + Nieuw-knop van de topbalk (.btn.small uit beheer.html, 31px);
+     alleen in de topbalk, de factuureditor blijft buiten schot */
+  .u-topbar-acts .btn.small{ min-height:44px; }
+  /* de maandkalender (admin-charts.js): ‹ › van 28px en dagcellen van 36px.
+     0,2,0 tegen het geïnjecteerde stijlblok (0,1,0). Het cijferschijfje
+     blijft 32px en schuift 4px omlaag; de gebeurtenisstip blijft onderaan. */
+  .u-shell .cpch-rond{ width:44px; height:44px; }
+  .u-shell .cpch-dag,
+  .u-shell .cpch-dag-uit{ height:44px; padding-top:4px; }
+  /* DE TEKSTLINKS EN KRUIMELS: regels lopende tekst van ±20px. Ze 44px hoog
+     maken zou elke alinea uit elkaar duwen; het tikvlak groeit met 13px
+     vulling en een even grote negatieve marge geeft die ruimte in de
+     tekstlijn terug (verhuisd uit portaal-skin.css 8c). Waar zo'n link in
+     een WIKKELENDE rij staat, snijdt dat vlak de regel erboven; die drie
+     plekken staan hieronder apart. */
+  .u-main .u-link,
+  .u-shell .u-crumb :is(a, button){ padding-top:13px; padding-bottom:13px; margin-top:-13px; margin-bottom:-13px; }
+  /* …behalve een link IN lopende tekst (een alinea, een leesregel, een
+     lijstitem, het paneel van de wizard): daar snijdt een vlak van 46px
+     de regel erboven en eronder, en daar geldt de uitzondering van WCAG
+     2.5.8 voor links in een tekstregel. Die houden hun eigen regelhoogte. */
+  .u-main :is(p, .u-lees, .u-sub, li, .u-accordeon-paneel) .u-link,
+  .u-main :is(p, .u-lees, .u-sub, .u-kicker) + .u-link,
+  .u-main :is(p, .u-lees, .u-sub, .u-kicker) + div > .u-link,
+  .u-main .u-link:has(+ :is(p, .u-lees, .u-sub)){ padding-top:0; padding-bottom:0; margin-top:0; margin-bottom:0; }
+  /* 1. de verwijzingen onder een tijdlijnitem: rij-afstand 26px zodat twee
+        rijen tikvlakken elkaar niet raken, en 14px boven de eerste rij zodat
+        het vlak de beschrijving erboven niet snijdt (13px vlak + 1px) */
+  .u-tlrail-refs{ row-gap:26px; margin-top:14px; }
+  /* 2. de sectiekop met "Bekijk alles →": valt de link onder de titel (7e
+        laat de kop wikkelen), dan houdt 14px rij-afstand zijn tikvlak van
+        13px vrij van de titel; op één regel doet row-gap niets */
+  .u-sectionhead{ row-gap:14px; }
+  /* 3. een link in een wikkelende kopregel (de banner "Wacht op jou" in het
+        portaal, .k-nodig-banner-kop): zie portaal-skin.css 8c */
+
+  /* --- 9c-2. DE TOPBALK MAG WIKKELEN (verhuisd uit portaal-skin.css 8c/8d,
+     want het beheer had dit niet en liep op 320px 85px over de rand: 405px
+     minimale breedte). De actierij krimpt en wikkelt, het kruimelvak krijgt
+     basis 0 zodat het de rij nooit tot krimpen dwingt. */
+  .u-topbar-acts{ flex:0 1 auto; min-width:0; flex-wrap:wrap; justify-content:flex-end; row-gap:6px; }
+  .u-topbar-grow{ flex:1 1 0px; }
+
+  /* de rail schuift ONDER de werkkolom. Niet erboven zoals in de oude
+     versie: op deze maat is er nog genoeg breedte om de hoofdinhoud eerst te
+     lezen, en de rail is hier context en geen kop. Onder 700px keert die
+     keuze om (zie 9e). */
+  .u-cols{ grid-template-columns:minmax(0,1fr); gap:24px; }
+  .u-cols-side.u-vast{ position:static; }
+  .u-sticky{ position:static; }
+  .u-main .content{ max-width:var(--u-work-max); }
+}
+
+/* --- 9c-2. onder 900px: het detail schuift OVER de lijst ------------
+   Dezelfde grens als MD_SMAL in admin-ui.js — zie de afspraak in het kopblok
+   van dit hoofdstuk. Vanaf hier is de lijst de pagina en is het detail een
+   paneel dat er overheen komt. Zichtbaarheid regelt de toegankelijkheid: een
+   paneel dat alleen met transform buiten beeld staat, blijft tabbaar. */
+@media (max-width:899.98px){
+  .u-md{ grid-template-columns:minmax(0,1fr); }
+  .u-md-detail{
+    position:fixed; top:0; right:0; bottom:0; z-index:41;
+    width:min(620px,100%); max-height:none;
+    background:var(--card); border-left:1px solid var(--line);
+    box-shadow:-8px 0 30px rgba(20,18,15,.12);
+    padding:16px 24px calc(24px + env(safe-area-inset-bottom));
+    overflow-y:auto; overscroll-behavior:contain;
+    transform:translateX(100%); visibility:hidden;
+    transition:transform .3s var(--ease-fl), visibility .3s;
+  }
+  .u-md.detail-open .u-md-detail{ transform:none; visibility:visible; }
+  .u-md-scrim{
+    display:block; position:fixed; inset:0; z-index:40;
+    background:rgba(20,18,15,.35);
+    opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s;
+  }
+  .u-md.detail-open .u-md-scrim{ opacity:1; visibility:visible; }
+  /* zonder terugknop is er op aanraking geen weg terug uit het paneel — en
+     ALLEEN hier, want alleen hier ligt er iets over de lijst heen */
+  .u-md .u-md-back{ display:inline-flex; margin-bottom:14px; }
+  /* de lijst is nu de hele breedte; een titel op één regel afkappen hoeft
+     daar niet meer en zou juist informatie kosten */
+  .u-md-list .u-row-title,
+  .u-md-list .u-row-sub{ white-space:normal; overflow:visible; text-overflow:clip; }
+}
+
+/* --- 9d. 700 tot 900px: twee stattegels, compactere kaarten --------- */
+@media (min-width:700px) and (max-width:899.98px){
+  .u-stats{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .u-stats.drie{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .u-grid-2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  /* .u-grid-3 houdt zijn auto-fit van 7e: twee vaste kolommen van 232px in
+     een werkkolom van 480px gaven een taakkaart met 126px tekst
+     (responsieve ronde 2026-09) */
+  .u-meta{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .u-projectcard-beeld{ width:180px; height:130px; flex-basis:180px; }
+  .u-factorycard-beeld{ width:200px; height:140px; flex-basis:200px; }
+  .u-topbar{ gap:12px; padding:12px 24px 6px; }
+  .u-topbar-acts{ gap:10px; }
+  /* .u-drawer: zie 8t — vorm zonder uitvoerder, het component komt in fase 10 */
+  .u-drawer, .u-drawer-scrim{ display:none; }
+}
+
+/* --- 9d-2. 700 tot 1100px: het kruimelpad in de paginakop -------------
+   Het tikvlak van een kruimel (9c-1) steekt 13px onder de regel uit en de
+   kicker "REQ 0402" begint direct daaronder (nagemeten: 0px ertussen). Deze
+   marge houdt de twee uit elkaar; onder 700px staan de kruimellinks niet in
+   beeld (9e) en boven 1100px is er geen tikvlak. */
+@media (min-width:700px) and (max-width:1099.98px){
+  .u-pagehead-links > .u-crumb{ margin-bottom:13px; }
+}
+
+/* --- 9e. onder 700px: één kolom en een uitschuifzijbalk -------------
+   DE ZIJBALK WORDT EEN PANEEL EN GEEN display:none MEER.
+   Hij stond hier op display:none, met de navigatie in een menu in de topbalk.
+   Dat menu blijft bestaan en blijft een weg die werkt: admin-shell.js hangt de
+   zeven werkgebieden daar zelf in.
+
+   ER IS NU WÉL EEN UITVOERDER, EN HIJ ZIT IN admin-shell.js.
+   Dit blok was een vorm zonder bediening: geen enkele regel JS zette
+   .u-side.open en .u-side-scrim werd nergens gemaakt, dus op een telefoon was
+   de navigatie alleen via dat menu bereikbaar — een plek waar niemand
+   navigatie zoekt. CP_SHELL.monteer() bouwt sinds deze ronde de menuknop
+   (vóór het kruimelpad, .u-iconbtn met aria-controls naar de zijbalk) en het
+   scrim-element, en doet het werk dat CSS niet kan: openen en sluiten, Escape,
+   de focus, en de achtergrond uit de leesvolgorde halen zolang het paneel over
+   de pagina ligt.
+   Dat hoort daar en niet in CP_UI: de zijbalk is van de shell, en twee
+   uitvoerders van hetzelfde paneel zouden twee hamburgers in dezelfde topbalk
+   opleveren. Dit stijlblad levert de vorm en de stijlhaak .u-side-open.
+   Dicht is het paneel niet tabbaar (visibility:hidden), dus ook zonder die
+   bediening kan er geen spookfocus ontstaan. */
+@media (max-width:699.98px){
+  .u-shell{ display:block; --u-work-pad:16px; }
+  .u-main{ display:block; }
+
+  .u-side{
+    position:fixed; top:0; left:0; bottom:0; z-index:45;
+    width:min(288px,86vw); flex-basis:auto; height:100vh;
+    border-right:1px solid var(--line);
+    box-shadow:8px 0 30px rgba(20,18,15,.12);
+    transform:translateX(-100%); visibility:hidden;
+    transition:transform .3s var(--ease-fl), visibility .3s;
+  }
+  .u-side.open{ transform:none; visibility:visible; }
+  /* in het paneel is de zijbalk altijd uitgeklapt: een ingeklapte rail van
+     68px als uitschuifpaneel is het slechtste van twee werelden */
+  .u-side.collapsed{ width:min(288px,86vw); flex-basis:auto; overflow-y:auto; }
+  .u-side.collapsed .u-side-brand{ display:block; }
+  .u-side.collapsed .u-side-head{ padding:24px 20px 18px; justify-content:space-between; }
+  .u-side.collapsed .u-side-nav{ padding:0 12px 16px; }
+  /* de voet gaat mee terug naar de uitgeklapte stand: in het paneel staat de
+     knop links onder de navigatie en niet in het midden van een rail die hier
+     niet bestaat */
+  .u-side.collapsed .u-side-foot{ justify-content:flex-start; padding:6px 12px 20px; }
+  .u-side.collapsed .navbtn{ justify-content:flex-start; padding:0 12px; gap:13px; }
+  .u-side.collapsed .navbtn .nl{
+    position:static; transform:none; z-index:auto; background:none; color:inherit;
+    font-size:15px; font-weight:inherit; padding:0; border-radius:0; box-shadow:none;
+    opacity:1; visibility:visible; flex:1; white-space:normal;
+  }
+  .u-side.collapsed .navbadge{
+    position:static; min-width:22px; height:22px; padding:0 7px; font-size:12px;
+    background:var(--tint-ink); color:var(--ink); border:0;
+  }
+  .u-side-scrim{
+    position:fixed; inset:0; z-index:44; background:rgba(20,18,15,.4);
+    opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s;
+  }
+  .u-side-scrim.open{ opacity:1; visibility:visible; }
+  /* hier, en alleen hier, bestaat de hamburgerknop */
+  .u-topbar .u-side-open{ display:inline-flex; }
+
+  .u-topbar{ gap:10px; padding:10px 16px 4px; min-height:60px; }
+  .u-topbar-acts{ gap:6px; }
+  /* de menuknop (hamburger) hoort op de EERSTE regel te staan als de
+     actierij over twee regels valt, niet gecentreerd tegen twee regels aan */
+  .u-topbar{ align-items:flex-start; }
+
+  /* de titel: 36px is op een telefoon van 320px een kop van drie regels;
+     7.5vw geeft 28px op 320 en 36px vanaf 480. anywhere als vangnet voor een
+     productnaam die op deze maat breder is dan het scherm. */
+  .u-shell h1,
+  .u-shell .pagehead h1{ font-size:clamp(28px,7.5vw,36px); overflow-wrap:anywhere; }
+  /* het zoekveld wordt een icoonknop die het zoekvenster opent — een veld van
+     300px past niet naast kruimelpad, bel en gebruiker */
+  .u-search{ display:none; }
+  .u-crumb{ font-size:13px; }
+  .u-crumb .u-crumb-sep, .u-crumb a, .u-crumb button{ display:none; }
+  .u-crumb .u-crumb-cur{ display:block; }
+  /* de naam naast de avatar kost meer ruimte dan hij hier waard is; de knop
+     houdt zijn aria-label, dus de naam blijft hoorbaar */
+  .u-userbtn .u-userbtn-naam{ display:none; }
+  .u-userbtn{ padding:4px; }
+
+  /* de badge wordt smal, maar NIET tekstloos. Het hele woord "Demo" of "Live"
+     kost meer ruimte dan het waard is; de eerste letter kost bijna niets en
+     is genoeg om D van L te onderscheiden. width:1ch werkt hier exact omdat
+     de badge in --mono staat: in een monospace is 1ch precies één
+     letterbreedte, dus er wordt nooit een halve letter afgesneden. De
+     volledige tekst blijft in de DOM en in de title en het aria-label die de
+     shell zet, dus een schermlezer hoort nog steeds het hele woord.
+     Nadrukkelijk :not(.dot) — de stip is ook een span en houdt zijn maat. */
+  .u-demobadge{ padding:5px 9px; gap:5px; }
+  .u-demobadge span:not(.dot){ display:inline-block; width:1ch; overflow:hidden; white-space:nowrap; }
+
+  .u-main .content{ padding:4px var(--u-work-pad) 96px; }
+
+  /* op deze breedte MAG de paginakop wel wikkelen: hier is de knop onder de
+     titel de goede plek, en nowrap zou de titel tot een paar letters knijpen.
+     Boven 700px staat hij op nowrap, zie hoofdstuk 4b. */
+  .pagehead.u-pagehead{ flex-wrap:wrap; }
+  .u-pagehead-acts{ margin-top:2px; }
+
+  /* het detailpaneel vult hier het hele scherm */
+  .u-md-detail{ width:100%; border-left:0; box-shadow:none; }
+
+  /* alles onder elkaar */
+  .u-stats,
+  .u-stats.drie{ grid-template-columns:minmax(0,1fr); gap:12px; margin-bottom:24px; }
+  .u-grid-2, .u-grid-3{ grid-template-columns:minmax(0,1fr); gap:14px; }
+  .u-meta{ grid-template-columns:minmax(0,1fr); gap:16px; }
+  .u-factorycard-stats{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+
+  /* op deze breedte staat de rail wél BOVEN de hoofdinhoud: "volgende actie"
+     en "eerstvolgende datum" zijn precies wat je op een telefoon eerst wilt
+     zien */
+  .u-cols-side{ order:-1; }
+
+  /* de kaarten worden stapels in plaats van rijen */
+  .u-projectcard,
+  .u-factorycard{ flex-direction:column; gap:16px; padding:16px; }
+  .u-projectcard-beeld,
+  .u-factorycard-beeld{ width:100%; height:auto; aspect-ratio:3/2; flex-basis:auto; }
+  .u-setcard-groot{ flex-direction:column; align-items:flex-start; gap:18px; padding:22px; }
+  .u-setcard-logo{ width:96px; height:96px; flex-basis:96px; }
+  .u-hero{ padding:22px; }
+
+  .u-task{ padding:16px; }
+  /* de kaartvorm (8b, raster): de knoppen onder de tekst over de volle
+     breedte — dezelfde stand als de containerquery daar, hier als terugval
+     voor een browser zonder containerqueries */
+  .u-task:not(.u-task-rij){ grid-template-columns:auto minmax(0,1fr); grid-template-areas:"beeld chip" "beeld body" "acts acts"; }
+  .u-task:not(.u-task-rij) > .u-task-acts{ margin-left:0; margin-top:14px; width:100%; }
+  .u-task:not(.u-task-rij) > .u-task-acts .btn,
+  .u-task:not(.u-task-rij) > .u-task-acts .u-btn{ flex:1; }
+  /* DE RIJVORM WIKKELT NU WÉL (responsieve ronde 2026-09). Hij stond op
+     nowrap omdat "een chevron op een eigen regel geen chevron meer is" —
+     maar de staart (meta, chip, •••, chevron) is tot 305px breed en op
+     flex:none, dus op een telefoon kreeg de kicker 0px en de titel 5px. De
+     klikbare helft vraagt minstens 140px (past naast de tegel op 320px); de
+     staart valt dan naar een tweede regel, rechts uitgelijnd, chevron als
+     laatste. Een chevron rechts van de meta is nog steeds een chevron. */
+  .u-task-rij{ flex-wrap:wrap; gap:12px; padding:14px 16px; row-gap:8px; }
+  .u-task-rij > .u-task-klik,
+  .u-task-rij > .u-task-body{ flex:1 1 240px; min-width:0; }
+  .u-task-rij > .u-task-end{ flex:1 1 auto; min-width:0; justify-content:flex-end; flex-wrap:wrap; row-gap:8px; }
+  .u-task-end{ gap:10px; }
+  .u-task-metarechts{ flex-wrap:wrap; white-space:normal; justify-content:flex-end; text-align:right; min-width:0; }
+  /* de meta van een entiteitsrij ("25% van de projectsom · € 3.125 · betaald",
+     mono, 295px) mag hier breken: de staart staat toch al onder de titel */
+  .u-row-end .u-row-meta{ white-space:normal; flex:0 1 auto; min-width:0; }
+  /* (de oude fasetabel .stagerow/.stagename: zie 8u-bis, geldt op elke breedte) */
+  /* het fasepad (CP_CHART.stagePath): zes kolommen van 28px zijn geen
+     kolommen; twee per rij, links uitgelijnd. 0,2,0 tegen het geïnjecteerde
+     stijlblok. De stepper in een projectkaart houdt zijn rij van korte
+     labels (.cpch-stepper is een ander element). */
+  .u-shell .cpch-stage .cpch-kolommen{ grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:14px; }
+  .u-shell .cpch-stage .cpch-fase{ text-align:left; padding-left:0; padding-right:8px; }
+  /* de accordeonkop van de wizard (10-bis): nummer, titel en stand op één
+     regel; de titel vraagt 160px, de stand valt anders eronder */
+  .u-accordeon-kop{ flex-wrap:wrap; }
+  .u-accordeon-kop .u-row-title{ flex:1 1 160px; min-width:0; }
+  .u-row,
+  .u-invoicerow{ padding:14px 16px; gap:12px; }
+  .u-thumb{ width:44px; height:44px; flex-basis:44px; }
+  .u-invoicerow{ flex-wrap:wrap; }
+  .u-invoicerow-status{ flex-basis:100%; }
+  .u-tl-row{ flex-wrap:wrap; padding:12px 16px; }
+  .u-tl-when{ flex-basis:100%; }
+  .u-tl-kind{ flex-basis:auto; }
+  .u-tl-proj{ flex-basis:100%; }
+  /* 72px en niet 64: "26 sep 2026" is op 13px 68px breed en brak in 64px
+     over twee regels (responsieve ronde 2026-09); minmax(0,1fr) zodat een
+     lange titel de tekstkolom niet oprekt */
+  .u-tlrail-row{ grid-template-columns:72px 20px minmax(0,1fr); gap:0 12px; }
+  .u-tabs{ gap:20px; }
+  .u-menu{ min-width:200px; max-width:calc(100vw - 28px); }
+
+  /* de opslagbalk pakt de volle breedte onderaan */
+  .u-savebar{
+    left:0; right:0; bottom:0; border-radius:0;
+    border-left:0; border-right:0; border-bottom:0;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    justify-content:space-between;
+  }
+
+  /* de vaste primaire actie onderaan. Alleen hier zichtbaar; op grotere
+     schermen staat dezelfde knop in .u-sticky. */
+  .u-sticky-bar{
+    display:flex; align-items:center; gap:10px;
+    position:fixed; left:0; right:0; bottom:0; z-index:30;
+    background:var(--card); border-top:1px solid var(--line);
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    box-shadow:0 -2px 14px rgba(20,18,15,.06);
+  }
+  .u-sticky-bar .btn,
+  .u-sticky-bar .u-btn{ flex:1; }
+  /* CP_UI.stickyPanel zet .u-has-bar zelf op .u-main zodra hij een balk toont,
+     en haalt hem in zijn stop() weer weg. Dus niet "de JS" en niet de shell:
+     er is precies één uitvoerder, en dat is het component dat de balk ook
+     maakt. Geen enkel scherm hoeft hieraan te denken.
+     Zonder de klasse ligt de laatste rij van de lijst onder de balk, want
+     .u-sticky-bar staat hierboven op position:fixed met z-index 30. */
+  .u-main.u-has-bar{ padding-bottom:78px; }
+}
+
+/* de takjes zijn decoratie en verdwijnen onder 900px, zodat ze op een smal
+   scherm geen ruimte of aandacht kosten. Dezelfde grens die
+   admin-charts.js voor .cpch-blad aanhoudt. */
+@media (max-width:899.98px){
+  .u-ornament{ display:none; }
+}
+
+/* --- 9f. onder 480px: de tijdlijn als stapel, de chip mag breken ------
+   (responsieve ronde 2026-09)
+   DE DATUMKOLOM GAAT BOVEN DE TEKST. Op 320px hield de tekstkolom van
+   .u-tlrail-row na datumkolom (70px), lijn (20px), tussenruimtes en de
+   icoontegel 52px over: "Betaling gemeld op factuur" op negen regels. Het
+   raster wordt twee kolommen — de lijn en de rest — en de datum staat als
+   eerste regel boven het item, dag en datum naast elkaar. De stip op de lijn
+   schuift mee naar die datumregel, en de eerste en laatste rij snijden de
+   lijn daar af. Elke rij is een eigen raster, dus dit werkt per rij. */
+@media (max-width:479.98px){
+  .u-tlrail-row{ grid-template-columns:20px minmax(0,1fr); gap:0 12px; }
+  .u-tlrail-datum-kol{
+    grid-column:2; grid-row:1; text-align:left; padding:18px 0 0;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:0 8px;
+  }
+  .u-tlrail-dag{ font-size:14px; }
+  .u-tlrail-datum{ margin-top:0; }
+  .u-tlrail-lijn{ grid-column:1; grid-row:1 / span 2; }
+  .u-tlrail-body{ grid-column:2; grid-row:2; padding-top:6px; }
+  .u-tlrail-stip{ top:24px; }
+  .u-tlrail-row:first-child .u-tlrail-lijn::before{ top:28px; }
+  .u-tlrail-row:last-child .u-tlrail-lijn::before{ bottom:auto; height:28px; }
+  /* de icoontegel in het item: 36px, zodat de tekst op 390px ruim 200px houdt */
+  .u-tlrail-body > .u-tile{ width:36px; height:36px; flex-basis:36px; }
+}
+/* de titel met bijzin ("Berichten — 4 gesprekken wachten op je"): onder
+   900px op een eigen regel en een maat kleiner, anders breekt de bijzin op
+   36px in drie regels van drie woorden (nagemeten op 768px, werkkolom
+   480px). Op een bureaublad staat hij naast de titel zoals de mockup hem
+   tekent. */
+@media (max-width:899.98px){
+  .u-shell h1 .u-bijzin{ display:block; font-size:.8em; margin-top:2px; }
+}
+@media (max-width:399.98px){
+  /* op de smalste telefoons (320–400px) valt de icoontegel van een
+     tijdlijnitem weg: de titel zegt al wat voor item het is, en de tekst
+     houdt dan 200px in plaats van 160px (nagemeten: "Malbestanden gedeeld
+     met Toolmaker Wei" brak anders over vier regels) */
+  .u-tlrail-body > .u-tile{ display:none; }
+
+  /* EEN RIJ MET EEN BEELD VOORAAN WORDT EEN STAPEL. De samplekaart van het
+     projectdetail (beheer) is een inline flexrij: foto 120px · tekst
+     (flex:1, min-width:0); op 320px hield de tekst 104px over en brak de
+     knop "Ronde beoordelen of goedkeuren" over vier regels. De richting
+     staat niet inline en mag dus van hier: foto boven, tekst eronder. */
+  .u-card > div:has(> img:first-child){ flex-direction:column; }
+
+  /* TWEE INLINE-STIJLEN DIE ALLEEN MET !important TE OVERRULEN ZIJN, allebei
+     in admin-schermen-*.js (beheer) en niet van deze ronde:
+     · de portfoliokaart op Projecten zet grid-template-columns:
+       minmax(0,1fr) 190px inline; op 320px hield de grafiek 24px over. Eén
+       kolom onder 700px, alleen voor een kaartinhoud met zo'n inline raster;
+     · de wizardpanelen (#golive-paneel-*) zetten padding-left:58px inline
+       (de klasse .u-accordeon-paneel uit 10-bis zetten ze niet); op 320px
+       hield de lijst 136px over. 18px, zoals 10-bis onder 640px al bedoelde.
+     Zodra die twee inline-stijlen uit de schermen zijn, kunnen deze regels
+     zonder !important verder (of weg). */
+  .u-card > div[style*="grid-template-columns"]{ grid-template-columns:minmax(0,1fr) !important; }
+  [id^="golive-paneel-"]{ padding-left:18px !important; }
+
+  /* de statuschip boven de taakkaart: "WACHT AL LANGER DAN EEN WEEK" is
+     230px in mono-kapitalen en past niet naast een tegel in 256px; hij mag
+     hier over twee regels, want een chip die uit de kaart loopt zegt niets */
+  .u-task:not(.u-task-rij) > .chip{ white-space:normal; text-align:left; line-height:1.5; }
+  /* het fasepad: één kolom */
+  .u-shell .cpch-stage .cpch-kolommen{ grid-template-columns:minmax(0,1fr); }
+}
+
+
+/* ============================================================
+   10. VERMINDERDE BEWEGING
+   ============================================================
+
+   beheer.html zet onder prefers-reduced-motion alle transitions en animaties
+   op .01ms. Dat is genoeg voor een kleurovergang, maar niet voor de
+   bewegingen die dit bestand toevoegt: een paneel dat van translateY(100%)
+   naar 0 gaat in .01ms is nog steeds een sprong van een volle schermhoogte,
+   en een menu dat vanuit scale(.97) opent knipt. Hieronder verdwijnt de
+   beweging zelf, niet alleen de duur.
+
+   Dit blok staat VOOR het printblok en niet erna. Dat is geen smaak maar
+   noodzaak: het zet transform:translateX(100%) op het detailpaneel, en het
+   printblok moet dat kunnen terugzetten naar none. Andersom zou een afdruk op
+   een smal venster met "verminderde beweging" aan het detailpaneel een volle
+   paneelbreedte naar rechts schuiven — van het papier af. */
+@media (prefers-reduced-motion: reduce){
+  .u-side{ transition:none; }
+  .u-side.collapsed .navbtn .nl{ transition:none; }
+  .u-menu{ animation:none; }
+  .u-drawer{ transition:visibility 0s; transform:translateY(100%); }
+  .u-drawer.open{ transform:none; }
+  .u-md-detail{ transition:visibility 0s; }
+  .u-btn:active{ transform:none; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width:899.98px){
+  /* apart, omdat de transform van het detailpaneel pas in de
+     over-de-lijst-stand bestaat en anders op bureaublad niets te maken heeft.
+     Dezelfde grens als 9c-2 en als MD_SMAL in admin-ui.js. */
+  .u-md-detail{ transform:translateX(100%); }
+  .u-md.detail-open .u-md-detail{ transform:none; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width:699.98px){
+  /* zelfde reden voor de uitschuifzijbalk */
+  .u-side{ transition:visibility 0s; transform:translateX(-100%); }
+  .u-side.open{ transform:none; }
+}
+
+
+/* ============================================================
+   11. PRINT — staat bewust als laatste, zie hoofdstuk 10
+   ============================================================
+
+   beheer.html verbergt bij het printen van een factuur alle directe kinderen
+   van body en toont daarna alleen #invoiceprint:
+     body.print-invoice > *{ display:none !important; }
+   Die regel blijft de baas, en de nieuwe omlijsting mag er niet doorheen
+   breken. Twee dingen zijn nodig:
+
+   1. De topbalk, de zijbalk, het filterpaneel, het detailpaneel, de
+      actiebalk, de opslagbalk en de menu's staan op position:fixed of sticky.
+      Bij een GEWONE afdruk — iemand die een projectpagina print — bestaat de
+      regel hierboven niet en zou de hele omlijsting op papier staan. Daarom
+      hieronder expliciet.
+
+   2. HIER STAAT HET ENIGE !important VAN DIT BESTAND. Reden: deze elementen
+      krijgen hun display uit een mediaquery (bijvoorbeeld .u-sticky-bar dat
+      onder 700px display:flex krijgt) en een printafdruk erft de laatst
+      geldende schermbreedte. Zonder !important wint die mediaquery van deze
+      regel bij gelijke specificiteit. Het volgt bovendien exact de conventie
+      die het printblok van beheer.html zelf al hanteert. */
+/* ---- 8o-bis. Financiën: Te doen · Archief en de gemelde klantbetaling ----
+   (UX-ronde 2026-09, voorstel 9). De schermlaag zet dezelfde waarden nog
+   inline; hier staat de nette plek, plus de regel die inline NIET kan: het
+   raakvlak van 44px op een smal scherm. */
+.u-invoicerow-melding{
+  flex-basis:100%; display:flex; flex-direction:column; gap:8px;
+  margin-top:4px; padding-top:12px; border-top:1px solid var(--line);
+}
+.u-invoicerow-melding-regel{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.u-invoicerow-melding-regel .u-invoicerow-sub{ display:block; flex:1 1 240px; min-width:0; }
+.u-invoicerow-titel .chip{ margin-left:8px; vertical-align:middle; }
+.u-fin-standrij{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+.u-fin-standrij .u-chips{ margin-bottom:0; }
+@media (max-width:699.98px){
+  .u-invoicerow .u-btn.klein{ min-height:44px; padding:11px 18px; }
+}
+
+/* ---- 10-bis. De wizard "Klaar voor live" (Instellingen → Integraties) ----
+   Een accordeonkop is een <button.u-btn.stil> die een rij is en geen pil;
+   min-height 56px zodat nummer, titel én stand op mobiel mogen omlopen
+   zonder dat het raakvlak onder 44px zakt. */
+.u-accordeon-kop{ width:100%; justify-content:flex-start; text-align:left; white-space:normal; border-radius:0; padding:16px 18px; gap:12px; min-height:56px; }
+/* nummer, titel en stand op één regel zolang het past; in een werkkolom van
+   432px (1100px met rail) kreeg de titel naast de stand 107px en brak
+   "Supabase-project en portal/config.js" over vier regels. De titel vraagt
+   160px, anders valt de stand eronder (responsieve ronde 2026-09). */
+.u-accordeon-kop{ flex-wrap:wrap; }
+.u-accordeon-kop .u-row-title{ flex:1 1 160px; min-width:0; }
+/* het scherm zet op de wizardkop alleen .u-btn.stil (niet .u-accordeon-kop);
+   dezelfde regel dus op de vorm zelf: een stille knop met een rijtitel als
+   kind is zo'n kop. :has() in een eigen regel, zoals hoofdstuk 5 dat doet. */
+.u-shell button.u-btn.stil:has(> .u-row-title){ flex-wrap:wrap; }
+.u-shell button.u-btn.stil:has(> .u-row-title) > .u-row-title{ flex:1 1 160px; min-width:0; }
+.u-accordeon-nr{ flex:none; min-width:2.2ch; }
+.u-accordeon-stand{ margin-left:auto; flex:none; }
+.u-accordeon-paneel{ padding:2px 18px 22px 58px; }
+@media (max-width:640px){ .u-accordeon-paneel{ padding-left:18px; } }
+/* de dunne voortgangsbalk: inkt op --line-2, geen groen; de betekenis staat
+   al per stap in de kop, de balk is alleen hoeveelheid */
+.u-voortgang{ height:4px; background:var(--line-2); border-radius:999px; overflow:hidden; margin-top:8px; }
+.u-voortgang-vulling{ display:block; height:100%; width:0; background:var(--ink); border-radius:999px; transition:width .3s ease; }
+@media (prefers-reduced-motion: reduce){ .u-voortgang-vulling{ transition:none; } }
+/* een exacte naam in lopende tekst: mono, één maat kleiner, geen blokje */
+.u-lees code, .u-sub code{ font-family:var(--mono); font-size:13px; }
+.u-migratierij{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px 0; border-top:1px solid var(--line-2); }
+.u-migratierij-nr{ font-family:var(--mono); font-size:13px; }
+
+@media print{
+  .u-topbar,
+  .u-side,
+  .u-side-scrim,
+  .u-side-open,
+  .u-skip,
+  .u-menu,
+  .u-drawer,
+  .u-drawer-scrim,
+  .u-md-scrim,
+  .u-md-back,
+  .u-sticky-bar,
+  .u-savebar,
+  .u-ornament,
+  .u-tabs,
+  .u-chips{ display:none !important; }
+
+  /* wat overblijft moet als gewoon document afdrukken: geen kolommen, geen
+     plakkende blokken, geen paneel dat half over de tekst hangt */
+  .u-shell{ display:block; background:none; }
+  .u-main{ display:block; padding-bottom:0; }
+  .u-main .content{ max-width:none; padding:0; }
+  .u-md, .u-cols, .u-meta, .u-grid-2, .u-grid-3, .u-stats{ display:block; }
+  /* transition:none erbij, want zonder dat staat er nog een overgang van .3s
+     op visibility en transform. Een afdruk kent geen tijd: de eerste frame IS
+     het papier, en een paneel dat nog "aan het verschijnen" is wordt
+     onzichtbaar afgedrukt. */
+  .u-md-detail{
+    position:static; transform:none; visibility:visible; transition:none;
+    width:auto; max-height:none; overflow:visible;
+    border-left:0; box-shadow:none; padding:0;
+  }
+  .u-sticky{ position:static; }
+  .u-stat, .u-setcard, .u-setcard-klein, .u-setcard-groot,
+  .u-task, .u-card, .u-hero, .u-projectcard, .u-factorycard{ box-shadow:none; }
+}

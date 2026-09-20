@@ -66,7 +66,11 @@ window.CP_DEMO = {
         { stageKey: 'concept',    position: 1, status: 'done',    paymentPct: 25, approvedAt: '2026-04-24' },
         { stageKey: 'dfm',        position: 2, status: 'done',    paymentPct: 0,  approvedAt: '2026-05-15' },
         { stageKey: 'sourcing',   position: 3, status: 'done',    paymentPct: 35, approvedAt: '2026-06-03' },
-        { stageKey: 'tooling',    position: 4, status: 'done',    paymentPct: 25, approvedAt: '2026-07-21' },
+        /* met tijd en niet alleen de dag: dit is het akkoord via het portaal
+           (blok A van demo-data-portaal.js) en de logregel log-p03 daar draagt
+           hetzelfde moment — zo ziet mergeActivity fase en logregel als één
+           gebeurtenis en niet als twee */
+        { stageKey: 'tooling',    position: 4, status: 'done',    paymentPct: 25, approvedAt: '2026-07-21T10:44:00Z' },
         { stageKey: 'production', position: 5, status: 'current', paymentPct: 0,  approvedAt: null },
         { stageKey: 'logistics',  position: 6, status: 'upcoming', paymentPct: 15, approvedAt: null }
       ]
@@ -123,8 +127,10 @@ window.CP_DEMO = {
      X") tot een upload ze vult. documentId koppelt een gevuld slot aan het
      document; status 'verwacht' = nog leeg. */
   docSlots: [
-    { id: 'slot-01', projectId: 'prj-diffuser', docType: 'compliance', stageKey: 'logistics', status: 'verwacht', documentId: null, createdAt: '2026-04-04T09:00:00Z' },
-    { id: 'slot-02', projectId: 'prj-cookset',  docType: 'quote',      stageKey: 'concept',   status: 'verwacht', documentId: null, createdAt: '2026-08-16T09:00:00Z' }
+    /* expectedFrom (doc_slots.expected_from, 0021): van wie het bestand komt.
+       Deze twee levert de staf; alleen een slot met 'klant' mag de klant vullen. */
+    { id: 'slot-01', projectId: 'prj-diffuser', docType: 'compliance', stageKey: 'logistics', status: 'verwacht', expectedFrom: 'staf', documentId: null, createdAt: '2026-04-04T09:00:00Z' },
+    { id: 'slot-02', projectId: 'prj-cookset',  docType: 'quote',      stageKey: 'concept',   status: 'verwacht', expectedFrom: 'staf', documentId: null, createdAt: '2026-08-16T09:00:00Z' }
   ],
 
   invoices: [

@@ -1,0 +1,1266 @@
+/* CUSTOM+ — de KLANTVARIANT van het stijlblad (portal/portaal-skin.css).
+   ------------------------------------------------------------------
+   WAARVOOR DIT BESTAND BESTAAT
+   Het klantportaal (portal.html) wordt herbouwd op precies dezelfde lagen
+   als het beheer: admin-ui.css, admin-ui.js, admin-charts.js, admin-model.js
+   en admin-shell.js. Daar zijn die lagen voor gebouwd. Maar een klant is
+   geen staf, en een beeld dat 1:1 uit de beheermockup komt, heeft op een
+   paar plekken een andere bewoner nodig: geen Demo-badge, geen + Nieuw, de
+   klantnaam onder het logo, rood alleen waar de klant het zelf opzoekt, een
+   taalkeuze in de topbalk en een telefoon als eerste scherm in plaats van
+   een breed bureaublad. Dit bestand is dat verschil, en niets meer.
+
+   WAAR HET GELADEN WORDT
+   In portal.html, met één <link>-regel NA portal/admin-ui.css. Die volgorde
+   is geen detail maar het hele mechanisme: alles hieronder overschrijft op
+   gelijke of hogere specificiteit en wint uitsluitend omdat het later in de
+   cascade staat. Verplaats de link dus nooit naar boven. Het beheer laadt
+   dit bestand NIET.
+
+   DIT BESTAND DUPLICEERT NIETS UIT admin-ui.css
+   Elke regel hier is óf een overschrijving van een regel daar (met de
+   bronregel in het commentaar), óf een klasse die daar niet bestaat omdat
+   het beheer haar niet nodig heeft. Wie hier een tweede versie van een
+   u-component wil maken, zit in het verkeerde bestand.
+
+   AFSPRAAK: NIEUWE KLASSEN VAN HET PORTAAL BEGINNEN MET k-
+   admin-ui.css houdt u- voor de gedeelde laag. Wat hier nieuw is en alleen
+   in het portaal bestaat, heet k- (klant): .k-betalingen, .k-productlijst,
+   .k-side-klant, .k-nodig, .k-lang-menu, .k-alleen-klant, en het token
+   --k-preview-h. Elk daarvan is een HAAK die een scherm of de shell mag
+   zetten; geen enkele is verplicht — zonder de haak werkt het portaal, met
+   de haak werkt het preciezer. Zie de hoofdstukken 3 t/m 8.
+
+   DE ENE AFSPRAAK DIE HET GROOTSTE DEEL VAN DIT BESTAND VERKLAART
+   admin-ui.css is geschreven bovenop de <style> van beheer.html, en steunt
+   daar stilzwijgend op: de universele reset (*{margin:0;padding:0}), de kale
+   knop (button{background:none;border:0;cursor:pointer}), de hidden-regel
+   met !important, de tokens --font en --mono, en een handvol basisklassen
+   (.chip, .input, .pagehead, .navbadge, .jumprow, .undotoast, ...) die de
+   componenten in CP_UI en CP_SHELL nog steeds op elementen zetten.
+   portal.html HEEFT DIE NIET: het is een andere app met een eigen <style>.
+   Zonder hoofdstuk 1 hieronder staat een h1 met een marge van 0,67em, een
+   navigatieknop met een grijze browserrand, een chip zonder vorm en een
+   verborgen knop die toch te zien is. Hoofdstuk 1 is dus geen opsmuk maar
+   de grond waar de rest op staat. De basisklassen zijn LETTERLIJK
+   overgenomen uit beheer.html (via de gecureerde kopie in dev/admin-ui.html)
+   en staan achter :where(.u-shell), zodat hun specificiteit EXACT gelijk
+   blijft aan het origineel — een .chip is 0,1,0 in beheer.html en blijft
+   dat hier, dus elke overschrijving in admin-ui.css wint precies zoals hij
+   daar wint.
+
+   GEEN BLAUWDRUKSTAND BINNEN DE SHELL — BEWUST
+   portal.html kent een donkere blauwdrukstand (:root[data-mode="blueprint"],
+   gedeeld met de site via cp_blueprint). admin-ui.css zet het mockuppalet
+   op .u-shell en schrijft: "geen dark mode, het beheer is bewust een lichte
+   app". Dit bestand volgt dat: binnen .u-shell is het portaal altijd licht,
+   ook als de root in blauwdruk staat. Hoofdstuk 1c pint daarvoor de zeven
+   oude tokens die admin-ui.css nog leest (--white, --green, --gray-*,
+   --critical) op hun lichte waarde. Een donkere klantvariant zou een
+   compleet nieuw, doorgerekend palet vragen en is een eigen ronde; een half
+   donkere shell met onleesbare chips is erger dan een lichte.
+
+   CONTRAST — NAGEREKEND, NIET GESCHAT
+   Dit bestand introduceert GEEN ENKELE nieuwe kleur. Elke tint komt uit de
+   doorgerekende tokens van admin-ui.css hoofdstuk 1b. De paren die hier
+   nieuw gecombineerd worden, tegen hun eigen grond (WCAG-formule):
+     klantnaam         --ink-2  #4a443c  op --side  #fbf9f6     9,15:1
+     taalknop          --ink-2  #4a443c  op --paper #f9f7f3     8,99:1
+     taalknop, hover   --ink-2           op --tint-ink #f1eee8  8,31:1
+     taalknop, actief  --card   #ffffff  op --ink   #14120f    18,70:1
+     belstip           --ink    #14120f  op --paper            17,47:1
+     voorvertoning     #ffffff           op #14120f            18,70:1
+     gedempt rood      --warn-ink op --warn-soft (chip)          5,36:1
+                       --warn-ink op --card (stattegel, 34px)    6,11:1
+   Alles onder 14px staat op --ink-2 of donkerder (regel voor microtekst,
+   admin-ui.css 1b); --ink-3 komt in dit bestand niet als tekstkleur voor.
+
+   INHOUD
+      1. De grond die beheer.html gratis gaf en portal.html niet heeft
+         (1f: twee kleine correcties op de gedeelde laag — telling, donut)
+      2. Wat de klant niet ziet
+      3. De zijbalk van de klant: logo en klantnaam
+      4. Producten: grotere, rijkere projectkaarten
+      5. Betekeniskleur: rood alleen in Betalingen
+      6. De taalkeuze in de topbalk
+      7. De voorvertoningsband (eigenaar kijkt mee als klant)
+      8. Responsief: de telefoon als eerste scherm
+         8c tikdoelen onder 1100px · 8d topbalk en kaarten onder 700px ·
+         8e lijstrijen onder 700px · 8f de voorvertoningsband op de telefoon
+      9. Verminderde beweging en print
+   ------------------------------------------------------------------ */
+
+
+/* ============================================================
+   1. DE GROND DIE beheer.html GRATIS GAF EN portal.html NIET HEEFT
+   ============================================================ */
+
+/* --- 1a. de reset van beheer.html, afgebakend op de shell -------------
+   beheer.html regel 26: *{ box-sizing:border-box; margin:0; padding:0; }
+   portal.html heeft alleen box-sizing. :where() houdt de specificiteit op
+   0,0,0 — precies wat * in beheer.html ook is — zodat élke klasse en élk
+   elementselectortje uit portal.html er nog van wint. Alleen de
+   browserstandaard (h1-marge, ul-inspringing, fieldset-rand) verliest, en
+   dat is de bedoeling. Buiten .u-shell (inlogscherm, voorvertoningsband)
+   verandert er niets. */
+:where(.u-shell, .u-shell *){ box-sizing:border-box; margin:0; padding:0; }
+
+/* beheer.html regel 34: de kale knop. portal.html zet alleen font en color;
+   zonder background:none en border:0 tekent de browser een grijze knop
+   onder elk navigatie-item, elke tab, elke rij en elke icoonknop van de
+   nieuwe laag. 0,0,1, exact als het origineel. */
+:where(.u-shell) button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+:where(.u-shell) :is(input, textarea, select){ font:inherit; color:var(--ink); }
+
+/* beheer.html regel 38: [hidden]{ display:none !important; }
+   portal.html regel 230 heeft dezelfde regel ZONDER !important, en dat is
+   niet genoeg: .u-iconbtn{display:inline-flex} (0,1,0) staat later in de
+   cascade dan [hidden] (0,1,0) en wint dus. Concreet: de kalenderknop en de
+   vraagtekenknop uit het derde topbalkslot, de zoekknop op de telefoon, de
+   waas onder het uitschuifpaneel en de inboxbadge op nul staan allemaal op
+   het hidden-attribuut — en zouden allemaal in beeld staan.
+   DIT IS HET ENIGE !important BUITEN HET PRINTBLOK, en het is letterlijk de
+   regel van beheer.html. Globaal en niet afgebakend: "verborgen" betekent
+   overal hetzelfde, en een regel die het ene deel van de pagina wél en het
+   andere niet verbergt, is precies het soort verrassing dat dit voorkomt. */
+[hidden]{ display:none !important; }
+
+/* --- 1b. de twee lettertokens en de basismaat -------------------------
+   admin-ui.css leest overal var(--font) en var(--mono) — .u-btn, .u-avatar,
+   .u-datekicker, .u-count, .u-row-meta, de hele mono-familie. beheer.html
+   zet ze op :root; portal.html niet (daar staat het lettertype in de
+   font-shorthand van body). Een ontbrekende --mono valt terug op het geërfde
+   lettertype, en dan staan bedragen en projectcodes stil in Hanken in plaats
+   van in JetBrains Mono. Zelfde stapel als beheer.html regel 22 en 23.
+   font-size en line-height zijn die van body in beheer.html (15px / 1.55);
+   portal.html zet 15,5px / 1,65 en dat verschuift elk verticaal ritme van
+   de componenten net een beetje. */
+.u-shell{
+  --font:'Hanken Grotesk', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono:'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  font-family:var(--font); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* --- 1c. de oude tokens waar admin-ui.css nog op leest ---------------
+   Hoofdstuk 2a van admin-ui.css (.chip.ok, .chip.neutral, .chip.act-*) en
+   de basisklassen in 1d hieronder lezen --white, --green, --green-soft,
+   --gray-f2, --gray-69, --gray-33, --gray-9, --gray-a7 en --critical.
+   portal.html heeft ze op :root — maar wisselt ze in de blauwdrukstand naar
+   cyaan en donkerblauw. Binnen de shell horen ze op de waarde te staan
+   waarmee admin-ui.css is doorgerekend; dat zijn letterlijk de waarden uit
+   beheer.html regel 13 tot 18. Zie het kopblok: geen blauwdruk in de shell. */
+.u-shell{
+  --black:#000; --white:#fff;
+  --gray-9:#999; --gray-33:#333; --gray-69:#696969; --gray-a7:#a7a7a7;
+  --gray-f9:#f9f9f9; --gray-f2:#f2f2f2;
+  --green:#1B6E45; --green-soft:rgba(27,110,69,.09);
+  --critical:#d97654;
+}
+
+/* --- 1d. de basisklassen die de gedeelde laag nog op elementen zet ---
+   Letterlijk uit beheer.html (via dev/admin-ui.html, dat per klasse noteert
+   waarom hij nog nodig is). Alleen wat CP_UI en CP_SHELL in het PORTAAL
+   daadwerkelijk uitsturen; wat het beheer alleen zelf gebruikt (.btn, .card,
+   .stagegrid, .linkbtn, .demobar) staat er niet in — het portaal heeft
+   daar zijn eigen vormen voor of gebruikt de u-variant.
+   Achter :where(.u-shell), dus met de specificiteit van het origineel. */
+
+/* de paginakop. admin-ui.css 4b: ".pagehead zelf woont in de <style> van
+   beheer.html en wordt hier niet aangeraakt". De h1-typografie staat wél in
+   admin-ui.css (.u-shell .pagehead h1); hier alleen de flexcontainer. */
+:where(.u-shell) .pagehead{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:16px; margin-bottom:26px; flex-wrap:wrap;
+}
+:where(.u-shell) .pagehead .kicker{ margin-bottom:8px; display:block; }
+
+/* de chip. admin-ui.css 2b kleurt élke toon die CP_UI.statusChip kan
+   uitsturen (neutral, done, current, warn, info, crit, klok-*, act-*); dit
+   is uitsluitend de VORM en de neutrale terugval. */
+:where(.u-shell) .chip{
+  font-family:var(--mono); font-size:10.5px; font-weight:500; letter-spacing:.1em;
+  text-transform:uppercase; padding:4px 11px; border-radius:100px; white-space:nowrap;
+  border:1px solid transparent; color:var(--gray-69); background:var(--gray-f2);
+}
+
+/* de inboxbadge in de zijbalk. .u-side .navbadge (admin-ui.css 2c) zet
+   maat, kleur en lettertype, maar niet display:inline-flex — en een span
+   met height:22px zonder display is een span zonder hoogte. */
+:where(.u-shell) .navbadge{
+  font-family:var(--mono); font-size:10px; font-weight:600;
+  background:var(--green-soft); color:var(--green); border-radius:999px;
+  min-width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;
+  padding:0 6px; font-variant-numeric:tabular-nums;
+}
+
+/* formulieren. .u-shell .input (admin-ui.css 2b) zet vulling, rand, radius
+   en maat, maar niet width:100% en niet resize; .u-shell .flabel zet het
+   lettertype, maar niet display:block — en een inline label zet het veld
+   naast zich in plaats van eronder. */
+:where(.u-shell) .field{ display:block; margin-bottom:14px; }
+:where(.u-shell) .flabel{
+  display:block; font-family:var(--mono); font-size:10.5px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--gray-69); margin-bottom:6px;
+}
+:where(.u-shell) :is(.input, textarea.input, select.input){
+  width:100%; background:var(--white); border:1px solid var(--line); border-radius:10px;
+  padding:10px 12px; font-size:14.5px; transition:border-color .25s ease;
+}
+:where(.u-shell) .input:focus{ border-color:var(--ink); }
+:where(.u-shell) textarea.input{ resize:vertical; min-height:96px; }
+:where(.u-shell) .formrow{ display:flex; gap:12px; }
+:where(.u-shell) .formrow > *{ flex:1; }
+:where(.u-shell) .checkline{ display:flex; align-items:center; gap:9px; font-size:14px; margin-bottom:14px; cursor:pointer; }
+:where(.u-shell) .checkline input{ width:16px; height:16px; accent-color:var(--black); }
+
+/* dialoog. CP_SHELL herkent een open venster aan .overlay (modaalOpen) en
+   admin-ui.css rondt .u-shell .modal af op --r-card; beide veronderstellen
+   deze vorm. */
+:where(.u-shell) .overlay{
+  position:fixed; inset:0; background:rgba(17,17,17,.45); z-index:60;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:6vh 18px 18px; overflow-y:auto;
+}
+:where(.u-shell) .modal{
+  background:var(--white); border-radius:16px; width:100%; max-width:520px;
+  border:1px solid var(--line); padding:24px 26px 26px; margin-bottom:6vh;
+  box-shadow:var(--card-shadow);
+}
+:where(.u-shell) .modal h2{ font-size:16px; font-weight:700; margin-bottom:4px; }
+:where(.u-shell) .modal .kicker{ margin-bottom:16px; display:block; }
+:where(.u-shell) .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap; }
+
+/* zoekresultaten (CP_UI.searchField), toetsenbordselectie (CP_UI.kb) en de
+   ongedaan-maken-pil (CP_UI.toast). Het zoekveld staat in de topbalk van
+   het portaal, dus deze drie zijn geen theorie. */
+:where(.u-shell) .kbsel{ outline:2px solid var(--ink); outline-offset:-2px; border-radius:8px; }
+:where(.u-shell) .jumprow{
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+  padding:10px 12px; border-radius:10px; transition:background .2s ease;
+}
+:where(.u-shell) :is(.jumprow:hover, .jumprow.sel){ background:var(--gray-f2); }
+:where(.u-shell) .jumprow .jr-main{ flex:1; min-width:0; font-weight:600; font-size:14px; }
+:where(.u-shell) .jumprow .jr-sub{ font-size:12.5px; color:var(--gray-69); font-weight:400; }
+:where(.u-shell) .undotoast{
+  position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:80;
+  display:flex; align-items:center; gap:14px; max-width:calc(100vw - 32px);
+  background:var(--black); color:var(--white); border-radius:50px;
+  padding:10px 12px 10px 22px; font-size:13.5px; box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+:where(.u-shell) .undotoast .undobtn{
+  background:var(--white); color:var(--ink); border-radius:50px; padding:8px 16px;
+  font-size:10px; font-weight:600; letter-spacing:.44px; text-transform:uppercase; white-space:nowrap;
+}
+
+
+/* --- 1e. wat op body wordt gemonteerd, staat BUITEN de shell ----------
+   Het mockuppalet leeft op .u-shell (admin-ui.css 1b). Een zwevend element
+   dat een scherm op document.body hangt — de opslagbalk is de klassieke
+   kandidaat, want position:fixed nodigt daartoe uit — erft die tokens dus
+   niet. Nagemeten in de proef: .u-btn leest var(--card) voor zijn tekst,
+   die bestaat daar niet, de tekst erft #111 van body en de zwarte
+   opslaanknop staat met ZWARTE letters op een zwart vlak.
+   In het beheer komt dit niet voor (CP_UI.stickyPanel monteert zijn balk in
+   .u-main), maar de portaalschermen zijn nieuw en het is precies het soort
+   fout dat pas bij de klant opvalt. Daarom hier het kleine setje tokens dat
+   de balk en de twee knoppen erin lezen — uitsluitend voor een DIRECT kind
+   van body, zodat dit blok binnen de shell nooit meedoet. Dezelfde waarden
+   als admin-ui.css 1b; de balk hoort natuurlijk gewoon IN .u-main. */
+body > .u-savebar,
+body > .u-sticky-bar{
+  --card:#ffffff; --card-2:#fdfcfa; --tint-ink:#f1eee8; --line:#ebe6dd; --paper:#f9f7f3;
+  --ink:#14120f; --ink-2:#4a443c; --ink-4:#b3aba0;
+  --warn:#d98b4a; --warn-ink:#8d5510; --crit:#c5563f; --crit-ink:#a8402b; --crit-soft:#f9e9e5;
+  --r-pill:999px;
+  --shadow-2:0 2px 4px rgba(20,18,15,.05), 0 24px 48px -28px rgba(20,18,15,.22);
+  --font:'Hanken Grotesk', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --ease-fl:cubic-bezier(.83,0,.17,1);
+  font-family:var(--font); font-size:15px; line-height:1.55;
+}
+
+
+/* --- 1f. twee kleine correcties op de gedeelde laag -------------------
+   Geen portaalsmaak maar meetbare gebreken van componenten die het portaal
+   uit admin-ui.css/admin-charts.js overneemt. Beide gelden op ELKE breedte,
+   want ze zijn op elke breedte nagemeten. */
+
+/* DE TELLING ACHTER EEN SECTIEKOP. CP_UI.sectionHead zet de telling als
+   .u-count direct achter de tekst van de h2 ("Facturen9"). In .u-tab en
+   .u-chip staat diezelfde .u-count in een inline-flex met een gap en valt er
+   vanzelf ruimte; een h2 is gewone tekst en dan plakt het getal ertegenaan.
+   Nagemeten: op 390px, 768px ÉN 1280px staat het getal op 0px van de tekst —
+   het is dus geen smalschermfout maar een gat in admin-ui.css (dat kent geen
+   regel voor .u-sectionhead .u-count). De beheerschermen plakken er per
+   scherm 8px inline op (admin-schermen-beheer.js, sectiekop()); de
+   portaalschermen doen dat niet allemaal. Hier één keer, voor allemaal,
+   dezelfde 8px. 0,3,0 tegen .u-count (0,1,0). Verdwijnt zodra admin-ui.css
+   de regel zelf krijgt. */
+.u-sectionhead h2 .u-count{ margin-left:8px; }
+
+/* DE DONUT MAG NOOIT BREDER ZIJN DAN ZIJN KOLOM. CP_CHART.donut zet width en
+   height als ATTRIBUUT op de svg (200px op Activiteit) en geeft hem, anders
+   dan de andere grafieken, geen .cpch-svg met width:100% — bewust, want een
+   ring hoort niet mee te rekken. Maar een vaste 200px in een kolom van 180px
+   loopt uit de kaart. max-width:100% met height:auto houdt de verhouding (de
+   svg heeft een viewBox) en doet niets zolang de kolom breder is dan de ring:
+   op 390px is de kaart 356px, op 768px 478px, in de rail 340px. 0,1,1. */
+.cpch-donut svg{ max-width:100%; height:auto; }
+
+
+/* ============================================================
+   2. WAT DE KLANT NIET ZIET
+   ============================================================
+
+   Per element staat hier WAAROM het via CSS gaat en niet via "gewoon niet
+   renderen". Het antwoord is steeds hetzelfde: CP_SHELL.monteer() bouwt de
+   topbalk in één vaste volgorde (admin-shell.js, "acties.appendChild" bij
+   het inhangen) en kent geen opts om een slot over te slaan. De shell
+   veranderen is niet aan dit bestand; verbergen wel.
+
+   WAT HIER BEWUST NIET STAAT: stafacties in het •••. CP_UI.contextMenu is
+   een leeg menu dat de AANROEPER vult; de portaalschermen zetten er alleen
+   klantacties in, dus er is niets te verbergen. Een CSS-regel die
+   menuitems verbergt zou bovendien liegen tegen een schermlezer, die het
+   item nog steeds hoort. Dat is dus JS-verantwoordelijkheid, geen CSS. */
+
+/* de Demo-badge en het statusvenster erachter. Voor de klant is de
+   omgevingsstand (demo of live, gezondheidscontroles, go-live-checklist)
+   stafinformatie. display:none haalt de knop ook uit de tabvolgorde, dus
+   er blijft geen onbereikbare knop achter. Bron: admin-ui.css 5d
+   (.u-demobadge{display:inline-flex}). 0,2,0 tegen 0,1,0. */
+.u-topbar .u-demobadge{ display:none; }
+
+/* het + Nieuw-menu. Een klant maakt geen klant, project, factuur of fabriek
+   aan. De knop draagt de oude klasse .btn.small (admin-shell.js) en zit in
+   een .u-menuwrap; het menu-element erin bestaat pas na een klik, dus met
+   de knop weg is het menu weg. Twee regels met opzet:
+   · de eerste haalt de hele wikkel weg, zodat de gap van 18px in
+     .u-topbar-acts er ook niet meer staat — maar :has() kent niet elke
+     browser;
+   · de tweede is de terugval zonder :has(): alleen de knop weg, en dan
+     blijft een lege wikkel van 0px over die één gap kost. Smaller, geen
+     kapotte topbalk.
+   ONDER 700PX DRAAGT DIT MENU IN HET BEHEER OOK DE NAVIGATIE ("Ga naar").
+   Voor het portaal is dat geen verlies: admin-shell.js bouwt sinds de
+   mockupronde het uitschuifpaneel met de menuknop links in de topbalk, en
+   dat is de weg die een klant op de telefoon verwacht. */
+.u-topbar-acts > .u-menuwrap:has(> .btn.small){ display:none; }
+.u-topbar .btn.small{ display:none; }
+
+/* de belstip. admin-ui.css 5d zet hem op --crit. In dit palet betekent
+   rood "te laat, mislukt" — en een nieuw bericht van Steffan is geen van
+   beide. De stip zegt alleen "er is iets nieuws"; dat is merk, geen
+   betekenis, en merk is zwart (hoofdstuk 0 van de mockupspec). Dezelfde
+   keuze die admin-ui.css al maakte voor de badge-stip op het ingeklapte
+   Inbox-icoon (.u-side.collapsed .navbadge{background:var(--ink)}).
+   --ink op --paper 17,47:1; de ring in --paper blijft de vorm. */
+.u-topbar .u-bell-dot{ background:var(--ink); }
+
+
+/* ============================================================
+   3. DE ZIJBALK VAN DE KLANT: LOGO EN KLANTNAAM
+   ============================================================
+
+   Het logo van CUSTOM+ is het woordmerk: op de site (.fl-wordmark), in het
+   beheer en in het inlogscherm van het portaal staat het als tekst, en er
+   bestaat geen los logobestand (images/logos bevat alleen klantlogo's). De
+   zijbalk houdt dus .u-side-brand .wordmark uit admin-ui.css 5c — één
+   woord, plusje in inkt — en krijgt ERONDER de klantnaam.
+
+   admin-shell.js bouwt onder het woordmerk een .kicker met de tekst "Beheer".
+   Het portaal zet daar de klantnaam in (JS). Een klantnaam is geen kicker:
+   geen kapitalen, geen letterafstand, geen 11px — "Fjell Outdoor AS" leest
+   als een naam, niet als een label. Vandaar hieronder de gewone
+   schrijfwijze op 13,5px in --ink-2 (9,15:1 op --side), op één regel met
+   afkapping; de volledige naam hoort in een title (JS).
+   0,3,0: wint van .u-shell .kicker (admin-ui.css 2b, 0,2,0) en van
+   .u-side-brand .kicker (5c, 0,2,0), zonder volgordetruc.
+   .k-side-klant is dezelfde regel als HAAK, voor een shell die de naam in
+   een eigen element zet in plaats van in de kicker. */
+.u-side .u-side-brand .kicker,
+.u-side .u-side-brand .k-side-klant{
+  display:block; margin-top:6px;
+  font-family:var(--font); font-size:13.5px; font-weight:400; line-height:1.35;
+  letter-spacing:0; text-transform:none; color:var(--ink-2);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+/* ingeklapt (68px) verbergt admin-ui.css 5c het hele merkblok — dus ook de
+   klantnaam. Dat klopt: de rail heeft geen ruimte voor een naam, en de naam
+   staat ook in het gebruikersmenu rechtsboven. Hier hoeft niets bij. */
+
+
+/* ============================================================
+   4. PRODUCTEN: GROTERE, RIJKERE PROJECTKAARTEN
+   ============================================================
+
+   Steffan ziet honderd projecten en wil ze scannen; een klant ziet er één
+   of drie en wil ze BEKIJKEN. Dezelfde kaart (admin-ui.css 8l), maar met
+   het beeld op 320px zoals de opdracht vraagt, meer lucht binnenin en meer
+   lucht ertussen. De verhouding van het beeld blijft die van de mockup
+   (260×180 → 320×222, afgerond op 220).
+   Bron: admin-ui.css 8l (.u-projectcard{padding:20px; gap:24px},
+   .u-projectcard-beeld{260×180, radius 16}). Gelijke specificiteit, later. */
+.u-projectcard{ padding:24px; gap:28px; }
+.u-projectcard-beeld{ width:320px; height:220px; flex:0 0 320px; border-radius:18px; }
+/* DE KAART WORDT EEN STAPEL ZODRA ZIJN KOLOM SMAL IS (responsieve ronde
+   2026-09). Dit was het tweede schermbeeld van de eigenaar: op een venster
+   van ±1200px staat rechts "Belangrijke datums" (rail 340px) en houdt de
+   werkkolom 512px over; beeld (260px), ring (±75px) en tussenruimtes lieten
+   de tekst 101px — kicker, titel, status en "→ Sample P1 wacht op jouw
+   akkoord." elk per woord gebroken. Op een tablet staand (werkkolom 480px)
+   hetzelfde met 120px. Een mediaquery ziet het verschil tussen "1200px met
+   rail" en "1000px zonder rail" niet; de kolom zelf wel (admin-ui.css 5f
+   maakt .u-cols-main een container). Onder 600px kolombreedte: beeld op
+   volle breedte in 3:2, tekst eronder, ring eronder — de stand die 9e van
+   admin-ui.css onder 700px al kende. De twee mediaquery-blokken eronder zijn
+   de terugval voor een browser zonder containerqueries: exact dezelfde
+   maten, voor de twee vensterbreedtes waar de kolom smal is. */
+@container (max-width:600px){
+  .u-projectcard{ flex-direction:column; gap:16px; padding:18px; }
+  .u-projectcard-beeld{ width:100%; height:auto; aspect-ratio:3/2; flex-basis:auto; }
+  .u-projectcard-titel{ font-size:22px; }
+  .u-projectcard-ring{ margin-left:0; }
+}
+@media (min-width:1100px) and (max-width:1399.98px){
+  .u-projectcard{ flex-direction:column; gap:16px; padding:18px; }
+  .u-projectcard-beeld{ width:100%; height:auto; aspect-ratio:3/2; flex-basis:auto; }
+  .u-projectcard-titel{ font-size:22px; }
+  .u-projectcard-ring{ margin-left:0; }
+}
+@media (min-width:700px) and (max-width:899.98px){
+  .u-projectcard{ flex-direction:column; gap:16px; padding:18px; }
+  .u-projectcard-beeld{ width:100%; height:auto; aspect-ratio:3/2; flex-basis:auto; }
+  .u-projectcard-titel{ font-size:22px; }
+  .u-projectcard-ring{ margin-left:0; }
+}
+/* het metadataraster van de tab Details (admin-ui.css 8e: drie kolommen)
+   in dezelfde smalle werkkolom: drie cellen van 139px lieten "Fabriek Chen,
+   Dongguan · Toolmaker Wei, …" over vier regels breken; twee kolommen. Ook
+   hier de containerquery met de mediaquery als terugval; onder 700px zet
+   admin-ui.css 9d/9e het raster zelf op twee en één kolom. */
+@container (min-width:480px) and (max-width:600px){
+  .u-meta{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (min-width:1100px) and (max-width:1399.98px){
+  .u-cols-main .u-meta{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+/* de titel mag een tikje groter: het is de naam van HET product van deze
+   klant, niet regel 37 van een lijst. 26px blijft onder de paneeltitel
+   (30px) en boven de sectiekop (20px), zodat de hiërarchie klopt. */
+.u-projectcard-titel{ font-size:26px; }
+.u-projectcard-stepper{ margin-top:24px; }
+.u-projectcard-next{ margin-top:20px; font-size:15px; }
+
+/* de lijst zelf: verticaal ruimer. Twee wegen, met opzet allebei:
+   · de kaarten staan direct na elkaar (in welke wikkel dan ook): 20px
+     tussenruimte via de zusjesselector, werkt zonder dat een scherm iets
+     hoeft te weten;
+   · .k-productlijst als HAAK voor een scherm dat de lijst zelf wikkelt:
+     dan regelt het raster de afstand en telt de zusjesmarge niet dubbel. */
+.u-projectcard + .u-projectcard{ margin-top:20px; }
+.k-productlijst{ display:grid; grid-template-columns:minmax(0,1fr); gap:20px; }
+.k-productlijst .u-projectcard + .u-projectcard{ margin-top:0; }
+
+
+/* ============================================================
+   5. BETEKENISKLEUR: ROOD ALLEEN IN BETALINGEN
+   ============================================================
+
+   De toon van de statuskleuren is dezelfde als in het beheer — groen is
+   gereed, oranje vraagt aandacht, blauw is onderweg. Maar --crit ("te laat,
+   mislukt") is in het portaal bijna altijd één ding: een vervallen factuur.
+   Een klant hoort dat niet als eerste te zien wanneer hij zijn product
+   opent; hij hoort het te zien waar hij naar zijn betalingen kijkt. Daarom:
+   overal in het portaal is een kritiek item ORANJE (aandacht), en alleen in
+   een Betalingen-context is het ROOD.
+
+   WAAROM DIT GEEN VERZINSEL IS. De kleur verandert, het woord niet. Elke
+   stip staat naast een woord, elke chip draagt zijn eigen tekst ("Vervallen
+   op 12 mei"), en de taakkaart zegt in zijn regel waarom hij dringend is.
+   Wat hier wisselt is de TOON van een aandachtssignaal, niet het feit. En
+   de oranje paren zijn dezelfde doorgerekende paren als in admin-ui.css 1b
+   (--warn-ink op --warn-soft 5,36:1, op --card 6,11:1).
+
+   WAAROM PER COMPONENT EN NIET ÉÉN TOKEN-REMAP OP .u-shell. Een remap van
+   --crit naar --warn zou óók een foutmelding onder een formulierveld en de
+   gevaarknop (.u-btn.gevaar) oranje maken, en een fout hoort rood te
+   blijven. Hieronder staan daarom precies de vier dragers van een
+   STATUS: de taakkaart, de stip, de stattegel en de chip, plus de
+   tintklasse waar CP_UI icoontegels en tijdlijnstippen mee kleurt.
+
+   DE BETALINGEN-CONTEXT, DRIE HAKEN
+   1. .k-betalingen op een willekeurige wikkel (het tabpaneel Betalingen in
+      het productdetail, of de werkkolom van het werkgebied). De eenvoudigste
+      en meest draagbare weg; werkt in elke browser.
+   2. [data-area="betalingen"] op een voorouder, voor een shell die de
+      route in de DOM markeert.
+   3. :has(.navbtn.active[data-area="betalingen"]) op .u-shell — de shell
+      zet data-area op elk navigatie-item (admin-shell.js, "'data-area':
+      a.key") en .active op het huidige. Werkt dus zonder dat een scherm
+      iets hoeft te doen, in browsers met :has(); in een eigen regel, want
+      een onbekende selector in een lijst maakt de hele regel ongeldig.
+   De sleutel 'financien' staat ernaast voor een portaalshell die de
+   beheernaam van het werkgebied hergebruikt. */
+
+/* gedempt: de vier statusdragers plus de tintklasse. Bronnen: admin-ui.css
+   8b (.u-task.crit), 7c (.u-dot.crit), 8a (.u-stat.crit .u-stat-num),
+   2b (.u-shell .chip.crit) en 1b (.u-tint-crit). Elk op gelijke
+   specificiteit, later in de cascade. */
+.u-task.crit{ box-shadow:inset 3px 0 0 var(--warn); }
+.u-dot.crit{ background:var(--warn); box-shadow:inset 0 0 0 1px var(--warn-ink); }
+.u-stat.crit .u-stat-num{ color:var(--warn-ink); }
+.u-shell .chip.crit{ background:var(--warn-soft); color:var(--warn-ink); border-color:transparent; }
+.u-tint-crit{ --vlak:var(--warn-soft); --volle:var(--warn); --inkt:var(--warn-ink); }
+
+/* hersteld in een Betalingen-context: exact de waarden uit admin-ui.css,
+   zodat Betalingen er precies zo uitziet als Financiën in het beheer */
+.k-betalingen .u-task.crit,
+[data-area="betalingen"] .u-task.crit,
+[data-area="financien"] .u-task.crit{ box-shadow:inset 3px 0 0 var(--crit); }
+.k-betalingen .u-dot.crit,
+[data-area="betalingen"] .u-dot.crit,
+[data-area="financien"] .u-dot.crit{ background:var(--crit); box-shadow:inset 0 0 0 1px var(--crit-ink); }
+.k-betalingen .u-stat.crit .u-stat-num,
+[data-area="betalingen"] .u-stat.crit .u-stat-num,
+[data-area="financien"] .u-stat.crit .u-stat-num{ color:var(--crit-ink); }
+.k-betalingen .chip.crit,
+[data-area="betalingen"] .chip.crit,
+[data-area="financien"] .chip.crit{ background:var(--card); color:var(--crit-ink); border-color:var(--crit); }
+.k-betalingen .u-tint-crit,
+[data-area="betalingen"] .u-tint-crit,
+[data-area="financien"] .u-tint-crit{ --vlak:var(--crit-soft); --volle:var(--crit); --inkt:var(--crit-ink); }
+
+/* dezelfde vijf, via de actieve navigatieknop. Eigen regels (zie boven):
+   een browser zonder :has() slaat ze stil over en houdt dan haak 1 en 2. */
+.u-shell:has(.navbtn.active[data-area="betalingen"]) .u-task.crit,
+.u-shell:has(.navbtn.active[data-area="financien"]) .u-task.crit{ box-shadow:inset 3px 0 0 var(--crit); }
+.u-shell:has(.navbtn.active[data-area="betalingen"]) .u-dot.crit,
+.u-shell:has(.navbtn.active[data-area="financien"]) .u-dot.crit{ background:var(--crit); box-shadow:inset 0 0 0 1px var(--crit-ink); }
+.u-shell:has(.navbtn.active[data-area="betalingen"]) .u-stat.crit .u-stat-num,
+.u-shell:has(.navbtn.active[data-area="financien"]) .u-stat.crit .u-stat-num{ color:var(--crit-ink); }
+.u-shell:has(.navbtn.active[data-area="betalingen"]) .chip.crit,
+.u-shell:has(.navbtn.active[data-area="financien"]) .chip.crit{ background:var(--card); color:var(--crit-ink); border-color:var(--crit); }
+.u-shell:has(.navbtn.active[data-area="betalingen"]) .u-tint-crit,
+.u-shell:has(.navbtn.active[data-area="financien"]) .u-tint-crit{ --vlak:var(--crit-soft); --volle:var(--crit); --inkt:var(--crit-ink); }
+
+
+/* ============================================================
+   6. DE TAALKEUZE IN DE TOPBALK
+   ============================================================
+
+   Vijf vlagloze tekstknoppen — NL EN DE FR ES — als één compacte groep.
+   Geen vlaggen: een vlag is een land en geen taal (Vlaanderen spreekt
+   Nederlands, Québec Frans, Mexico Spaans).
+
+   DE KLASSENAMEN ZIJN DIE VAN HET BESTAANDE PORTAAL, MET OPZET. setLang()
+   in portal.html zoekt .lang-btn[data-lang] en zet aria-pressed; de groep
+   heet #lang-switch met role="group" en aria-label. Die bediening werkt al
+   en is vertaald; alleen de vorm verhuist naar de topbalk. Deze regels
+   winnen van de oude (button.lang-btn, 0,1,1) op 0,2,1 en hoger.
+
+   VORM: een pil met hairline, knoppen van 36×30 (44×44 onder 1100px, de
+   duimrange van 8c), taalcodes in mono — het zijn codes — 11,5px weight 500 in
+   --ink-2 (8,99:1 op het papier; ruim boven de 4,5:1 die 11,5px vraagt).
+   De actieve taal is inkt met wit erop (18,70:1), en dat is ook zonder
+   kleur te zien: het is het enige gevulde vakje. aria-pressed draagt het
+   voor wie niet kijkt.
+   De rand van de groep is --line (1,24:1) en dat mag: de groep is aan zijn
+   labels te herkennen, net als een ghostknop (admin-ui.css hoofdstuk 6). */
+.u-topbar .lang-switch{
+  display:inline-flex; align-items:center; gap:2px; flex:none;
+  padding:3px; border:1px solid var(--line); border-radius:var(--r-pill);
+  background:var(--card);
+}
+.u-topbar .lang-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:36px; min-height:30px; padding:0 9px;
+  border:0; border-radius:var(--r-pill); background:transparent;
+  font-family:var(--mono); font-size:11.5px; font-weight:500; letter-spacing:.08em;
+  line-height:1; text-transform:uppercase; color:var(--ink-2);
+  transition:background .2s ease, color .2s ease;
+}
+.u-topbar .lang-btn:hover{ background:var(--tint-ink); color:var(--ink); }
+.u-topbar .lang-btn[aria-pressed="true"]{ background:var(--ink); color:var(--card); }
+/* de focusring van de shell is zwart (admin-ui.css hoofdstuk 3) en zou op
+   de zwarte actieve knop wegvallen; de offset van 2px legt er een strook
+   wit tussen, precies zoals bij de primaire knop */
+.u-topbar .lang-btn:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+/* DE TAALKNOP — .k-lang-menu is sinds voorstel 7 (2026-09) op ELKE breedte
+   de enige taalkeuze in de topbalk: één knop met de huidige code en een
+   chevron, met de vijf talen voluit in een CP_UI.contextMenu erachter
+   (hetzelfde component als het gebruikersmenu). De vijf losse codes
+   (#lang-switch) staan niet meer in de topbalk; die groep blijft alleen in
+   het bewaarvak voor de oude indeling. Vorm: de pil van .u-iconbtn, 40px
+   hoog (44px onder 1100px, 8c), met de code in mono (dezelfde maat en
+   kleur als de lang-btn). */
+.u-topbar .k-lang-menu{
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  min-height:40px; min-width:52px; padding:0 8px 0 12px;
+  border:1px solid var(--line); border-radius:var(--r-pill); background:var(--card);
+  font-family:var(--mono); font-size:11.5px; font-weight:500; letter-spacing:.08em;
+  line-height:1; text-transform:uppercase; color:var(--ink-2);
+  transition:background .2s ease, color .2s ease;
+}
+.u-topbar .k-lang-menu:hover{ background:var(--tint-ink); color:var(--ink); }
+.u-topbar .k-lang-menu:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.u-topbar .k-lang-menu svg{ width:16px; height:16px; flex:none; fill:none; stroke:var(--ink-3); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+
+/* ============================================================
+   7. DE VOORVERTONINGSBAND — DE EIGENAAR KIJKT MEE ALS KLANT
+   ============================================================
+
+   portal.html zet in previewmodus #preview-banner op body (mountPreviewBanner)
+   en de klasse is-preview op body. De oude band hing ONDERAAN, vast, in
+   zwart met witte monotekst, en body kreeg 38px onderruimte. In de nieuwe
+   shell hoort hij BOVENAAN: de zijbalk plakt aan de bovenrand en een band
+   die daaronder hangt, verdwijnt achter de opslagbalk en de vaste
+   actiebalk van de telefoon. Dezelfde stille stijl — zwart, mono, 11px,
+   kapitalen — alleen de plek verandert.
+
+   HET ELEMENT STAAT BUITEN .u-shell (op body), dus het leest de tokens van
+   :root en niet die van de shell. In de blauwdrukstand is --ink daar licht;
+   daarom hier letterlijke waarden (#14120f is --ink van de mockup, wit
+   erop 18,70:1), precies zoals de oude regel dat met #111 deed.
+
+   DE HOOGTE IS ÉÉN TOKEN, --k-preview-h, en alles wat aan de bovenrand
+   hangt schuift er precies zoveel mee op: de plakkende zijbalk, het
+   uitschuifpaneel op de telefoon, het detailpaneel dat onder 900px over de
+   lijst schuift, de plakkende rail (via --u-rail-top) en de skiplink.
+   Zo staat de band nooit óver het logo of over een terugknop. */
+body.is-preview{
+  --k-preview-h:38px;
+  padding-top:var(--k-preview-h); padding-bottom:0;
+}
+#preview-banner{
+  position:fixed; top:0; bottom:auto; left:0; right:0; z-index:46;
+  box-sizing:border-box; min-height:38px;
+  display:flex; align-items:center; justify-content:center;
+  background:#14120f; color:#fff; text-align:center; padding:9px 16px;
+  font-family:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; font-size:11px;
+  line-height:1.4; letter-spacing:.14em; text-transform:uppercase;
+}
+/* de shell is 100vh hoog; met 38px erboven zou de pagina anders altijd
+   38px scrollen zonder dat er iets te zien is */
+body.is-preview .u-shell{ min-height:calc(100vh - var(--k-preview-h)); }
+/* de plakkende zijbalk (admin-ui.css 5c: sticky, top:0, height:100vh) en
+   het uitschuifpaneel (9e: fixed, top:0) — één regel dekt beide, want
+   allebei rekenen ze vanaf de bovenrand. 0,2,0 wint van 0,1,0 in de
+   mediaquery: specificiteit gaat vóór volgorde. */
+body.is-preview .u-side{ top:var(--k-preview-h); height:calc(100vh - var(--k-preview-h)); }
+/* de plakkende rail en het plakkende paneel rekenen met --u-rail-top
+   (admin-ui.css 5f en 5h); de band komt daar bovenop */
+body.is-preview .u-shell{ --u-rail-top:calc(24px + var(--k-preview-h)); }
+/* de skiplink (5a) staat vast op top:10px en zou onder de band vallen */
+body.is-preview .u-skip:focus{ top:calc(10px + var(--k-preview-h)); }
+/* de zoekresultaten en menu's hangen aan hun knop en schuiven vanzelf mee;
+   de waas onder het zijpaneel (inset:0) ligt met z-index 44 onder de band
+   (46) en dat is goed: de band draagt geen bediening. */
+@media (max-width:899.98px){
+  /* het detailpaneel dat over de lijst schuift (admin-ui.css 9c-2: fixed,
+     top:0). Alleen hier, want boven 900px plakt het via --u-rail-top en
+     die is hierboven al opgeschoven. */
+  body.is-preview .u-md-detail{ top:var(--k-preview-h); }
+}
+/* de oude regel verborg #btn-ask-steffan in de voorvertoning omdat de
+   voorvertoning alleen-lezen is. De nieuwe schermen hebben geen vaste id
+   voor hun schrijfacties; wat wél vaststaat, is dat de datalaag ze in de
+   voorvertoning weigert (DS.addLog is daar een stub). Een scherm dat een
+   schrijfknop in de voorvertoning liever niet toont dan uitgeschakeld, mag
+   hem .k-alleen-klant geven. Aangeboden haak, niet verplicht. */
+body.is-preview .k-alleen-klant{ display:none; }
+
+
+/* ============================================================
+   8. RESPONSIEF: DE TELEFOON ALS EERSTE SCHERM
+   ============================================================
+
+   De vijf niveaus uit admin-ui.css hoofdstuk 9 gelden onverkort; hier
+   staat alleen wat het portaal ánders doet. Grenzen op .98, om dezelfde
+   reden als daar. */
+
+/* --- 8a/8b. 1100–1400px en 700–900px: de projectkaart ------------------
+   Stonden hier op 260×180 en 200×140 naast de tekst; sinds de responsieve
+   ronde 2026-09 is de kaart op die maten een stapel (hoofdstuk 4, de
+   containerquery en zijn twee terugvalblokken). Hier hoeft niets meer. */
+
+/* --- 8c. onder 1100px: met de duim te raken ---------------------------
+   ÉÉN GRENS VOOR ALLE TIKDOELEN: 1100px, niet 700px. De mockupspec eist 44px
+   voor alles wat met de duim bediend wordt, en een tablet (768px, iPad
+   staand) is een duimapparaat — nagemeten op 768px stonden de taalknoppen op
+   36×30, de zoek- en belknop op 40×40 en de Download-knoppen in Bestanden op
+   118×36. Boven 1100px, waar muis en trackpad de regel zijn, is het beeld
+   bewust compacter en met de mockups vergeleken; dat blok raakt deze
+   mediaquery niet. Alles hieronder is een MAAT, geen kleur en geen vorm; de
+   iconen, de radius en de tinten blijven die van admin-ui.css.
+
+   DE KNOPPEN VAN "WAT WE VAN JOU NODIG HEBBEN". CP_UI.taskCard zet zijn
+   primaire actie als .u-btn.klein (36px, admin-ui.css hoofdstuk 6). Op een
+   telefoon is 36px een doel dat je mist; 44px is de ondergrens die de
+   opdracht noemt en die de aanraakrichtlijnen al jaren noemen. De regel
+   dekt drie plekken tegelijk:
+   · .u-task-acts — de knop in de taakkaart;
+   · .k-nodig — de HAAK voor de sectie "Wat we van jou nodig hebben", voor
+     een scherm dat de knoppen buiten een taakkaart zet;
+   · .content .u-btn.klein — élke kleine knop in de werkkolom, want er is
+     geen enkele kleine knop die een klant op de telefoon niet met zijn
+     duim hoeft te raken (Bestanden: de Download-knop in elke documentrij).
+   :not(.rond) is geen detail: .u-btn.rond.klein is de ‹ en › van de
+   kalenderkop (32×32) en zou met een min-height van 44px een ovaal worden. */
+@media (max-width:1099.98px){
+  /* De maten die het beheer ook nodig heeft, wonen sinds de responsieve
+     ronde 2026-09 in admin-ui.css 9c-1 en 9c-2: de icoonknoppen en de
+     inklapknop op 44px, elke .u-btn.klein op 44px, de kalender, de
+     tikvlakken van tekstlinks en kruimels (13px vulling, −13px marge), de
+     wikkelende topbalk. Hier staat alleen wat het portaal extra heeft. */
+  .u-task-acts .u-btn,
+  .k-nodig .u-btn{ min-height:44px; }
+
+  /* DE TAALKNOPPEN (hoofdstuk 6: 36×30 in een pil van 3px). Vijf codes van
+     44×44 met 2px ertussen en 2px rand zijn 234px breed. De compacte
+     menuknop (.k-lang-menu, 40px) groeit mee. De taalpil is met order:1 het
+     laatste item van de wikkelende actierij en dus het enige dat valt. */
+  .u-topbar .lang-switch{ padding:2px; order:1; }
+  .u-topbar .lang-btn{ min-width:44px; min-height:44px; padding:0 8px; }
+  .u-topbar .k-lang-menu{ min-height:44px; }
+
+  /* DE LINK IN EEN WIKKELENDE KOPREGEL. Het tikvlak van een tekstlink
+     (admin-ui.css 9c-1: 13px vulling, −13px marge) steekt 13px boven zijn
+     regel uit. In de banner "Wacht op jou" staat "en nog 3" naast de
+     statusregel met flex-wrap; op 320px valt hij eronder en snijdt zijn vlak
+     dan de regel erboven (rij-afstand 8px). Met −6px in plaats van −13px
+     wordt de regel 14px hoger en blijft het vlak 2px onder de vorige regel:
+     tikvlak 46px, geen overlap, en op één regel verandert er niets aan de
+     uitlijning (align-items:baseline). Zelfde regel voor de verwijzingen
+     onder een tijdlijnitem, die in admin-ui.css al hun 26px rij-afstand
+     hebben. */
+  .k-nodig-banner-kop .u-link,
+  .u-tlrail-refs .u-link{ margin-top:-6px; margin-bottom:-6px; }
+  .u-tlrail-refs{ row-gap:14px; }
+
+  /* de drie meldingsstanden (hoofdstuk 9-bis): vol raakvlak. Stond op
+     760px en miste daarmee precies de iPad staand (768px). */
+  .k-mailstand .u-chip{ min-height:44px; padding-top:11px; padding-bottom:11px; }
+}
+
+/* --- 8d. onder 700px: de topbalk in twee lagen, de kaarten als stapel ---- */
+@media (max-width:699.98px){
+  /* DE TAALKEUZE OP DE TELEFOON, IN TWEE LAGEN.
+     Nagemeten op 390px: hamburger (40) + zoekknop (40) + bel (40) + derde
+     slot (40) + avatarknop (70) + vijf codes (172) + tussenruimtes is 458px
+     op een scherm van 390. admin-ui.css 5d zet .u-topbar-acts op flex:none,
+     dus de rij krimpt niet maar steekt uit — en dan scrollt de hele pagina
+     opzij, wat de mockupspec (hoofdstuk 6) uitdrukkelijk verbiedt.
+
+     LAAG 1 — de rij mag wikkelen. De actierij krimpt en wikkelt, de
+     taalkeuze is met order:1 het LAATSTE item en dus het enige dat valt:
+     regel één houdt zoeken, bel, derde slot en avatar; regel twee is de
+     taalkeuze, rechts uitgelijnd. Nooit een afgeknipte avatar, nooit een
+     scrollbalk. Die regels (.u-topbar-acts, .u-topbar-grow, order:1) staan
+     sinds de tikdoelronde in 8c, want op 768px was hetzelfde nodig; hier
+     blijft alleen wat de telefoon extra heeft.
+
+     LAAG 2 — de compacte menuknop wint als hij er is. Bouwt de shell
+     .k-lang-menu (hoofdstuk 6), dan verdwijnen de vijf knoppen hier en
+     staat er één knop van 44px in regel één. :has() in een eigen regel,
+     zodat een browser zonder :has() alleen laag 1 houdt.
+
+     De knoppen zelf staan sinds de tikdoelronde op 44×44 (8c). */
+  /* (de menuknop op de eerste regel — .u-topbar{align-items:flex-start} —
+     staat sinds de responsieve ronde 2026-09 in admin-ui.css 9e; de
+     taalknop staat sinds voorstel 7 op elke breedte aan, zie hoofdstuk 6) */
+
+  /* de projectkaart als stapel (admin-ui.css 9e zet flex-direction:column
+     en het beeld op volle breedte, aspect 3/2); hier alleen de binnenruimte
+     terug naar die van de kaart daar */
+  .u-projectcard{ padding:16px; gap:16px; }
+  .u-projectcard-titel{ font-size:22px; }
+  .u-projectcard + .u-projectcard{ margin-top:14px; }
+  .k-productlijst{ gap:14px; }
+
+  /* DE KAART "WAT WE VAN JOU NODIG HEBBEN" OP BESTANDEN. Die is geen
+     taakkaart maar een eigen opbouw in portaal-schermen-berichten.js
+     (kaart: tegel · tekst (inline flex:1, min-width:0) · chip "Wacht op
+     jou", nowrap): op 320px kreeg de tekst 58px. De chip gaat hier naar
+     een eigen, eerste regel (de wikkel is een flexrij; wrap staat niet
+     inline en mag dus van hier): chip / tegel + tekst — dezelfde
+     leesvolgorde als de taakkaart. */
+  .k-nodig > .u-card > div:first-child{ flex-wrap:wrap; }
+  .k-nodig > .u-card > div:first-child > .chip{ order:-1; flex-basis:100%; align-self:flex-start; }
+
+  /* de opslagbalk plakt onderaan over de volle breedte — dat regelt
+     admin-ui.css 9e al (.u-savebar{left:0;right:0;bottom:0}); de duimmaat
+     van de knoppen erin staat in 8c */
+
+  /* de klantnaam onder het logo: in het uitschuifpaneel is er ruimte voor
+     twee regels en een afgekapte naam is daar onnodig */
+  .u-side .u-side-brand .kicker,
+  .u-side .u-side-brand .k-side-klant{ white-space:normal; overflow:visible; text-overflow:clip; }
+}
+
+/* --- 8e. onder 700px: lijstrijen — de staart valt onder de titel --------
+   NAGEMETEN OP 390PX. Een rij is 356px breed; na de vulling (2×16), de tegel
+   (40 of 44) en de tussenruimte (12) blijft er 268 tot 272px over voor titel
+   én staart samen. In Berichten is de staart een statusstip met woord
+   ("Ligt bij Steffan", 103px; "Steffan wacht op je", 135px) en die staat in
+   admin-ui.css op flex:none: hij houdt zijn bureaubladbreedte en de titel
+   krijgt wat overblijft, 125 tot 157px — en breekt op vijf tot acht regels
+   ("Voor de nieuwe / batch: kunnen we / naast de 100 ml ook / …"). In
+   Bestanden hetzelfde met de chip "Van jou" plus de Download-knop (118px):
+   titels op twee tot drie regels. In Betalingen wikkelt de factuurrij al
+   (admin-ui.css 9e), maar in de verkeerde volgorde: bedrag op regel twee
+   links, status op regel drie, het ••• zwevend ertussen.
+
+   DE VORM DIE HIER GEKOZEN IS: de titel krijgt de hele regel; alles wat de
+   rij verder te zeggen heeft (stip + woord, chip, meta, bedrag + datum) valt
+   ERONDER, links uitgelijnd op de tekst van de titel, met de stip vooraan.
+   Alleen wat een ROUTE is en geen informatie — het chevronnetje, een los
+   ••• — blijft rechts naast de titel: een chevron op een eigen regel is geen
+   chevron meer (admin-ui.css 9e zegt dat al over de taakrij).
+
+   TWEE LAGEN, om dezelfde reden als in 8d. */
+@media (max-width:699.98px){
+  /* LAAG 1 — elke browser: de staart mag naar een tweede regel.
+     .u-row wikkelt (bron: admin-ui.css 8c, .u-row{display:flex} zonder
+     wrap); de hoofdtekst (.u-row-main, of de klikbare helft .u-row-klik als
+     er een ••• in de rij zit) krijgt een basis van 200px. Wat er dan naast
+     past — een chevron (18px), een ••• (44px) — blijft op regel één; wat
+     niet past — elke stip, chip, meta of knop — valt naar regel twee.
+     Bij 390px is de proef: 272 − 200 − 12 = 60px naast de titel.
+     De groeiverhouding 20:1 is bewust: op regel één moet de vrije ruimte
+     naar de TITEL gaan en niet half naar de staart, anders schuift een
+     chevron naar het midden; op regel twee is de staart alleen en pakt hij
+     met flex-grow 1 de volle breedte, zodat margin-left:auto het ••• naar
+     rechts kan zetten. Bron: 8c (.u-row-main{flex:1}, .u-row-end{flex:none}),
+     gelijke specificiteit met een kind-combinator erbij (0,3,0 tegen 0,1,0). */
+  .u-main .u-row{ flex-wrap:wrap; row-gap:8px; }
+  .u-main .u-row > .u-row-main,
+  .u-main .u-row > .u-row-klik{ flex:20 1 200px; min-width:0; }
+  .u-main .u-row > .u-row-end{
+    flex:1 1 auto; min-width:0; flex-wrap:wrap; justify-content:flex-start; row-gap:8px;
+  }
+  .u-main .u-row > .u-row-end > .u-menuwrap:last-child{ margin-left:auto; }
+
+  /* LAAG 2 — met :has(): de staart met INHOUD gaat altijd onder de titel en
+     lijnt uit op de tekst. Zonder :has() blijft laag 1 staan (de staart valt
+     dan op regel twee tegen de linkerrand, onder de tegel) — bruikbaar, maar
+     minder netjes. Elke regel apart, want een onbekende selector in een
+     lijst maakt de hele regel ongeldig.
+     De inspringing is de tegel plus de tussenruimte, en die staan allebei
+     in admin-ui.css: .u-thumb en .u-tile zijn 44px (9e maakt .u-thumb 44),
+     .u-tile.m40 is 40px; de tussenruimte is 12px in .u-row (9e) en 14px in
+     .u-row-klik (8c). Een rij zonder tegel (thumb:false) springt niet in.
+     De eigenschap --k-inspring is alleen een rekenhulp; niets buiten dit
+     blok leest hem. */
+  .u-main .u-row{ --k-inspring:56px; }
+  .u-main .u-row:has(> .u-tile.m40){ --k-inspring:52px; }
+  .u-main .u-row:has(> .u-row-klik){ --k-inspring:58px; }
+  .u-main .u-row:has(> .u-row-klik > .u-tile.m40){ --k-inspring:54px; }
+  .u-main .u-row:has(> .u-row-main:first-child){ --k-inspring:0px; }
+  .u-main .u-row:has(> .u-row-end > :is(.u-status, .chip, .u-row-meta, .u-btn)) > .u-row-end{
+    flex-basis:100%; padding-left:var(--k-inspring);
+  }
+
+  /* DE FACTUURRIJ (.u-invoicerow, admin-ui.css 8o) heeft vier vaste sloten
+     naast elkaar — klikknop, bedrag + datum, status, ••• — en wikkelt onder
+     700px al (9e: flex-wrap, status op 100%). Een raster zet de sloten op
+     hun plek: regel één is de klikknop met het ••• rechts, regel twee is
+     stip + woord en daarnaast bedrag + datum, ingesprongen op de titel.
+       kolom 1  46px   de inspringing (tegel 44 + 14 tussenruimte, min de
+                       kolomafstand van 12 die het raster zelf toevoegt)
+       kolom 2  status fit-content(140px): korte woorden ("Open", "Betaald")
+                       nemen hun eigen breedte, een lange zin ("Betaling
+                       gemeld, Steffan controleert") breekt op 140px in
+                       plaats van het bedrag uit de kaart te duwen
+       kolom 3  1fr    bedrag + datum, links uitgelijnd; op één regel als het
+                       past, anders de datum onder het bedrag. Op regel twee
+                       loopt dit slot door tot de rechterrand (kolom 3 én 4):
+                       het ••• staat alleen op regel één, en zonder die
+                       doorloop hield het bedrag naast een lange status en
+                       een ••• nog 58px over — te smal voor "€ 1.875,00"
+                       (nagemeten)
+       kolom 4  auto   het ••• (44px, 8c) of niets
+     Het inline-attribuut flex-wrap op de rij en flex:1 1 240px op de
+     klikknop (portaal-schermen-berichten.js) doen in een raster niets meer,
+     precies zoals bedoeld. De staart heeft geen klasse: hij is het laatste
+     kind ná de klikknop en draagt zijn display:flex en margin-left:auto
+     inline; margin-left:auto zet hem in zijn cel netjes rechts. */
+  .u-main .u-invoicerow{
+    display:grid; grid-template-columns:46px fit-content(140px) minmax(0,1fr) auto;
+    column-gap:12px; row-gap:8px; align-items:center;
+  }
+  .u-main .u-invoicerow > .u-invoicerow-main{ grid-column:1 / 4; grid-row:1; }
+  .u-main .u-invoicerow > .u-invoicerow-main ~ span:last-child{ grid-column:4; grid-row:1; }
+  .u-main .u-invoicerow > .u-invoicerow-status{ grid-column:2; grid-row:2; min-width:0; }
+  .u-main .u-invoicerow > .u-invoicerow-geld{
+    grid-column:3 / 5; grid-row:2; min-width:0; text-align:left;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px;
+  }
+  /* bedrag en datum stonden onder elkaar (display:block, 8o); naast elkaar
+     is de datum geen tweede regel maar een toelichting bij het bedrag. Het
+     bedrag breekt nooit: "€ 1.875,00" hoort bij elkaar. */
+  .u-main .u-invoicerow-bedrag{ display:inline; white-space:nowrap; }
+  .u-main .u-invoicerow-datum{ display:inline; margin-top:0; }
+
+  /* DE DAGKOLOM VAN DE TIJDLIJN (Activiteit). admin-ui.css 9e maakt de
+     eerste kolom van .u-tlrail-row 64px, en "Donderdag" op 16px weight 500
+     is 80px: het woord liep over de stip heen (nagemeten: scrollWidth 79 in
+     een cel van 64). Een auto-kolom is hier geen oplossing: elke
+     .u-tlrail-row is een eigen raster (nagemeten), dus elke rij zou zijn
+     eigen breedte kiezen en de stippen zouden niet meer onder elkaar staan.
+     Dus een vaste maat, gekozen op het langste dagwoord van de vijf talen
+     van het portaal, in dit lettertype nagemeten op 13px weight 500:
+     Wednesday 69, Donnerstag 68, Donderdag 65, Woensdag 62, Miércoles 58,
+     Dimanche 59 — 70px past ze allemaal. De dag gaat daarvoor van 16 naar
+     13px: op een telefoon is de dag geen kop maar een label naast de datum
+     (die al 13px is), en weight 500 in --ink (17,47:1 op --card) houdt hem
+     zichtbaar het zwaarste van de twee. De tekstkolom wordt zo zelfs iets
+     breder dan hij was (144 tegen 139px op 390px).
+     overflow-wrap:anywhere is het vangnet voor wat langer is dan zijn cel —
+     een datumnotatie in een andere taal, "Productiebestanden" (144px) in
+     een titel — en breekt zo'n woord in plaats van het uit de kaart te laten
+     lopen; bij tekst die past doet het niets. */
+  .u-tlrail-dag, .u-tlrail-datum,
+  .u-tlrail-title, .u-tlrail-text{ overflow-wrap:anywhere; }
+}
+/* de 70px-datumkolom geldt van 480 tot 700px; daaronder staat de datum
+   BOVEN het item (admin-ui.css 9f) en zou een kolomregel hier, later in de
+   cascade, die stapel weer terugdraaien */
+@media (min-width:480px) and (max-width:699.98px){
+  .u-tlrail-row{ grid-template-columns:70px 20px minmax(0,1fr); }
+  .u-tlrail-dag{ font-size:13px; }
+}
+
+/* --- 8e-2. onder 480px: de factuurrij in drie regels --------------------
+   Het raster van 8e (inspringing 46px · status fit-content(140px) · bedrag
+   1fr · •••) hield op 320px voor het bedrag 56px over: "€ 1.875" brak en
+   "Aangemaakt op 27 aug" liep uit de cel. Drie regels: de klikknop met het
+   •••, dan de status, dan bedrag en datum — beide ingesprongen op de
+   titel en over de volle restbreedte. */
+@media (max-width:479.98px){
+  .u-main .u-invoicerow{ grid-template-columns:46px minmax(0,1fr) auto; }
+  .u-main .u-invoicerow > .u-invoicerow-main{ grid-column:1 / 3; }
+  .u-main .u-invoicerow > .u-invoicerow-main ~ span:last-child{ grid-column:3; }
+  .u-main .u-invoicerow > .u-invoicerow-status{ grid-column:2 / 4; grid-row:2; }
+  .u-main .u-invoicerow > .u-invoicerow-geld{ grid-column:2 / 4; grid-row:3; }
+  .k-betalingen .u-invoicerow-status{ max-width:none; min-width:0; }
+}
+
+/* --- 8f. de voorvertoningsband op de telefoon ------------------------
+   Op 390px past "Voorvertoning — beheerder · Fjell Outdoor · alleen-lezen"
+   niet op één regel van 11px met .14em; de band mag dan twee regels hoog
+   worden en het token groeit mee, zodat de verschuivingen uit hoofdstuk 7
+   blijven kloppen. */
+@media (max-width:699.98px){
+  body.is-preview{ --k-preview-h:52px; }
+  #preview-banner{ min-height:52px; padding:8px 12px; letter-spacing:.1em; }
+}
+
+
+/* ============================================================
+   9. VERMINDERDE BEWEGING EN PRINT
+   ============================================================ */
+
+/* dit bestand voegt alleen kleurovergangen toe (taalknoppen). Die zijn
+   onder prefers-reduced-motion onschuldig — admin-ui.css hoofdstuk 10 laat
+   kleurovergangen om dezelfde reden staan — maar consequent is beter dan
+   bijna consequent. */
+@media (prefers-reduced-motion: reduce){
+  .u-topbar .lang-btn{ transition:none; }
+}
+
+/* UX-RONDE 2026-09 (voorstellen 2, 4 en 8 van het klantportaal). ------
+   Het statusslot van de factuurrij draagt nu twee regels: het woord (Open ·
+   Gemeld · Betaald · Bezwaar) met de toelichting eronder. admin-ui.css 8o
+   zet .u-invoicerow-status op 140px vast; de langste toelichting breekt
+   daar over drie regels, dus het slot mag hier meegroeien. */
+.k-betalingen .u-invoicerow-status{ flex:0 1 auto; min-width:150px; max-width:220px; }
+.k-betalingen .u-invoicerow-status > span{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+/* de toelichting springt in tot onder het woord (stip 8px + 9px gap in
+   .u-status), zodat hij optisch bij het woord hoort en niet bij de stip */
+.k-betalingen .u-invoicerow-status .u-sub{ padding-left:17px; }
+/* dezelfde twee regels voor de producttab Betalingen, die een entityRow
+   (.u-row-end) gebruikt in plaats van de factuurrij */
+.k-betalingen .u-row-end > span:first-child{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.k-betalingen .u-row-end .u-sub{ padding-left:17px; }
+/* de documentrij is zelf de download (<button.u-row>); de pijl kleurt mee
+   bij hover en focus, zoals een link antwoordt */
+.u-row:hover > .u-row-end > .u-row-chevron,
+.u-row:focus-visible > .u-row-end > .u-row-chevron{ stroke:var(--ink); }
+/* een <button.u-row> in een kaart: de focusring blijft binnen de kaartrand */
+.u-rows > button.u-row:focus-visible{ outline-offset:-3px; border-radius:12px; }
+
+/* Meldingen in drie standen (voorstel 6) en de compacte tijdlijn (voorstel 5).
+   De segmentrij staat vlak boven een zin van één regel; de 18px van .u-chips
+   (admin-ui.css 7d) laat die zin zweven. */
+.k-mailstand .u-chips{ margin-bottom:12px; }
+/* de drie standen zijn een echte keuze, geen filter: vol raakvlak op mobiel */
+@media (max-width:760px){
+  .k-mailstand .u-chip{ min-height:44px; padding-top:11px; padding-bottom:11px; }
+}
+/* in de compacte stand (tab Tijdlijn van het product) staat de lijst in een
+   kaart van de aanroeper; de 96px-datumkolom is daar te breed. Alleen boven
+   700px: daaronder gelden de smallere kolom van 8e en de stapel van
+   admin-ui.css 9f, en deze regel (0,2,0, later in de cascade) zou die anders
+   overschrijven — nagemeten op 320px: tekstkolom 52px, negen regels per
+   zin. minmax(0,1fr) en niet 1fr, zodat een lange zin de kolom niet oprekt. */
+@media (min-width:700px){
+  .k-activiteit-compact .u-tlrail-row{ grid-template-columns:84px 24px minmax(0,1fr); }
+}
+
+/* ============================================================
+   10. RONDE 3 — DE NIEUWE KLANTKLASSEN (contract API-RONDE3.md)
+   ============================================================
+
+   De schermen zetten deze k-klassen sinds ronde 3 en droegen tot nu een
+   minimale inline-stijl "tot de skin het overneemt". Hieronder staat de
+   volledige vorm, in de bestaande tokens en met zwart als accent; de
+   inline-stijlen in de schermbestanden zijn daarmee overbodig (lijst in het
+   rapport van de responsieve ronde 2026-09). Waar een inline-stijl nu nog
+   wint (inline gaat vóór het stijlblad), staat dat bij de regel. */
+
+/* --- 10a. de held: de nieuwste productfoto als brede kaart -------------- */
+.k-held{ position:relative; overflow:hidden; padding:0; }
+img.k-held-foto{ display:block; width:100%; aspect-ratio:16/9; object-fit:cover; background:var(--tint-ink); }
+span.k-held-foto{ display:block; width:100%; height:auto; aspect-ratio:16/9; border-radius:0; border:0; }
+.k-held-status{
+  position:absolute; left:16px; bottom:16px; max-width:calc(100% - 32px);
+  padding:10px 14px; border-radius:14px; background:var(--card); box-shadow:var(--shadow);
+}
+.k-held-fase, .k-held-tel{ display:block; }
+.k-held-fase{ overflow-wrap:anywhere; }
+@media (max-width:479.98px){
+  .k-held-status{ left:10px; bottom:10px; max-width:calc(100% - 20px); padding:8px 12px; }
+  .k-held-fase{ font-size:15px; }
+}
+
+/* --- 10b. de fasebalk: zes stippen, één label, één zin ------------------ */
+.k-fasebalk-vak{ min-width:0; }
+.k-fasebalk{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.k-fasebalk-stip{ position:relative; display:block; width:10px; height:10px; border-radius:var(--r-pill); background:var(--ink-4); flex:none; }
+.k-fasebalk-stip[data-stand="klaar"]{ background:var(--ink); }
+.k-fasebalk-stip[data-stand="nu"]{ width:12px; height:12px; background:var(--ink); box-shadow:0 0 0 3px var(--tint-ink); }
+.k-fasebalk-stip[data-stand="komt"]{ background:var(--ink-4); }
+.k-fasebalk-label{ display:block; margin:10px 0 0; overflow-wrap:anywhere; }
+.k-fasebalk-uitleg{ margin:4px 0 0; max-width:60ch; }
+
+/* --- 10c. de banner "Wacht op jou" en de begroeting --------------------- */
+.k-begroeting{ margin:0 0 16px; max-width:60ch; }
+.k-nodig-banner{ padding:20px 22px; }
+.k-nodig-banner-kop{ display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline; justify-content:space-between; }
+.k-nodig-banner > .u-row-title{ display:block; font-size:18px; margin-top:8px; overflow-wrap:anywhere; }
+.k-nodig-banner > .u-row-sub{ display:block; }
+.k-nodig-banner .k-paneel{ padding:14px 0 0; }
+.k-nodig-leeg{ margin:0; }
+.k-nodig-meer{ white-space:nowrap; }
+/* de actiepanelen (paneelVak) en hun voet */
+.k-paneel{ padding:6px 20px 20px; }
+.k-verwacht{ display:block; }
+/* "Nog geen leverdatum" staat inline op --ink-3; dat is 3,58:1 bij 13,5px
+   en onder de norm van hoofdstuk 1b. --ink-2 en schuin: even stil, wel
+   leesbaar. De inline-kleur wint nu nog; zodra die weg is, geldt dit. */
+.k-verwacht-leeg{ color:var(--ink-2); font-style:italic; }
+.k-tekent{ display:inline-flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.k-dossier{ margin-top:14px; }
+.k-help-tekst{ margin:8px 0 0; }
+
+/* --- 10d. de zwevende vraagknop ----------------------------------------
+   Rechtsonder op elke tab van een product. Vast, onder de menu's (70) en
+   het detailpaneel (41) maar boven de opslagbalk (20) en de plakkende rail.
+   Op de telefoon boven de vaste actiebalk (.u-has-bar, 78px) en boven de
+   veilige zone; de werkkolom heeft 100px onderruimte (admin-ui.css 5b),
+   zodat de laatste rij nooit onder de knop verdwijnt. */
+.k-vraag-zwevend{
+  position:fixed; right:20px; bottom:20px; z-index:25;
+  min-height:52px; padding:14px 22px; border-radius:var(--r-pill);
+  box-shadow:var(--shadow-2);
+}
+.k-vraag-zwevend svg{ width:18px; height:18px; }
+@media (max-width:699.98px){
+  .k-vraag-zwevend{ right:16px; bottom:calc(16px + env(safe-area-inset-bottom)); }
+  .u-main.u-has-bar .k-vraag-zwevend{ bottom:calc(88px + env(safe-area-inset-bottom)); }
+}
+@media print{ .k-vraag-zwevend{ display:none !important; } }
+
+/* --- 10e. het fotoraster en de fototegel ---------------------------------
+   !important, en dat is hier onvermijdelijk: het scherm zet
+   grid-template-columns:repeat(auto-fill,minmax(140px,1fr)) INLINE en een
+   inline-stijl wint van elke selector. 140px gaf een bijschrift van vier
+   regels met tien tekens per regel ("26 aug · IPQC-checkpoint halverwege
+   de ronde"); 184px geeft twee regels van ±26 tekens. Zodra de inline-stijl
+   uit portaal-schermen-werk.js (fotosBlok) weg is, mag het !important weg. */
+.k-fotoraster{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,184px),1fr)); gap:12px; }
+.k-fotogroep + .k-fotogroep{ margin-top:18px; }
+.k-fotogroep > .u-kicker{ margin:0 0 10px; }
+.k-fototegel{ display:block; width:100%; padding:0; overflow:hidden; text-align:left; transition:border-color .2s ease; }
+.k-fototegel:hover{ border-color:var(--ink-4); }
+.k-fototegel:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+img.k-fotobeeld{ display:block; width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--tint-ink); }
+span.k-fotobeeld{ display:block; width:100%; height:auto; aspect-ratio:1/1; border-radius:0; border:0; }
+.k-fototegel-bijschrift{ display:block; padding:8px 10px; overflow-wrap:anywhere; }
+
+/* --- 10f. het grote getal met twee kleine ------------------------------- */
+.k-groot-getal{ padding:20px 22px; }
+.k-groot-getal > .u-kicker{ display:block; }
+.k-groot-getal > .u-groot{ display:block; margin-top:6px; overflow-wrap:anywhere; }
+.k-klein-getallen{ display:flex; flex-wrap:wrap; gap:16px; margin-top:18px; }
+.k-klein-getal{ flex:1 1 140px; min-width:0; }
+.k-klein-getal > .u-kicker{ display:block; }
+.k-klein-getal > .u-bedrag{ display:block; margin-top:4px; font-size:18px; font-weight:500; overflow-wrap:anywhere; }
+.k-klein-getal > .u-sub{ display:block; margin-top:2px; }
+.k-feit{ margin-bottom:16px; }
+/* als h2 in de shell: admin-ui.css zet .u-shell h2 op 20px (0,1,1), dus de
+   feitkop krijgt hier dezelfde specificiteit, anders won de shell */
+.k-feit-getal, .u-shell h2.k-feit-getal{ font-size:28px; font-weight:500; letter-spacing:-.012em; line-height:1.2; margin:0; overflow-wrap:anywhere; }
+.k-feit-beeld{ display:block; width:72px; height:72px; object-fit:cover; border-radius:14px; flex:none; background:var(--tint-ink); }
+@media (max-width:479.98px){
+  .k-feit-getal, .u-shell h2.k-feit-getal{ font-size:24px; }
+  .k-groot-getal > .u-groot{ font-size:30px; }
+}
+
+/* --- 10g. de keuzetegels (Goedkeuren · Aanpassing nodig) --------------- */
+.k-keuzetegels{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 14px; }
+.k-keuzetegel{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  min-height:44px; padding:16px 12px; text-align:center;
+  background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:var(--r-tile);
+  font-size:15px; font-weight:500; line-height:1.3;
+  transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.k-keuzetegel svg{ width:22px; height:22px; flex:none; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.k-keuzetegel:hover{ border-color:var(--ink-4); background:var(--card-2); }
+.k-keuzetegel[aria-checked="true"],
+.k-keuzetegel.is-gekozen{ border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); background:var(--tint-ink); }
+.k-keuzetegel:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.k-keuzetegel-woord{ display:block; overflow-wrap:anywhere; }
+
+/* --- 10h. de voorbeeldstip op de foto en de aanwijzingen ---------------- */
+.k-aanwijsfoto{ position:relative; display:block; max-width:560px; }
+.k-fotoklik{ position:absolute; inset:0; width:100%; height:100%; background:transparent; border:0; cursor:crosshair; border-radius:14px; }
+.k-fotoklik:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+.k-mark{
+  position:absolute; transform:translate(-50%,-50%);
+  width:24px; height:24px; border-radius:var(--r-pill);
+  background:var(--ink); color:var(--card); font-size:12px; font-weight:600;
+  display:inline-flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 2px var(--card);
+}
+.k-voorbeeldstip{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  pointer-events:none; display:inline-flex; flex-direction:column; align-items:center; gap:6px;
+}
+/* de puls: een ring in de inktkleur die uitdijt en vervaagt. rgba(20,18,15)
+   is --ink met een dekking, dezelfde vorm als de schaduwtokens; geen nieuwe
+   kleur. Onder prefers-reduced-motion staat de stip stil. */
+.k-voorbeeldstip-punt{
+  display:block; width:24px; height:24px; border-radius:var(--r-pill);
+  background:var(--ink); box-shadow:0 0 0 2px var(--card);
+  animation:k-puls 1.8s ease-out infinite;
+}
+@keyframes k-puls{
+  0%{ box-shadow:0 0 0 2px var(--card), 0 0 0 4px rgba(20,18,15,.28); }
+  100%{ box-shadow:0 0 0 2px var(--card), 0 0 0 16px rgba(20,18,15,0); }
+}
+.k-voorbeeldstip-label{
+  font-size:12px; padding:4px 10px; border-radius:var(--r-pill);
+  background:var(--card); color:var(--ink); white-space:nowrap; box-shadow:var(--shadow);
+}
+@media (max-width:479.98px){
+  .k-voorbeeldstip-label{ white-space:normal; max-width:180px; text-align:center; }
+}
+@media (prefers-reduced-motion: reduce){
+  .k-voorbeeldstip-punt{ animation:none; }
+}
+
+/* --- 10i. het sleepvak voor een bestand --------------------------------- */
+.k-sleepvak{
+  border:1px dashed var(--line-ctrl); border-radius:var(--r-input);
+  padding:14px; background:var(--card-2);
+  transition:border-color .2s ease, background .2s ease;
+}
+.k-sleepvak.is-over{ border-color:var(--ink); background:var(--tint-ink); }
+.k-sleepvak .field{ margin:0; }
+.k-sleepvak-invoer{ min-height:44px; cursor:pointer; }
+.k-sleepvak-max{ margin:6px 0 0; }
+.k-sleepvak-bestand{ margin:10px 0 0; overflow-wrap:anywhere; }
+
+/* --- 10j. de inklapbare kerngegevens (details/summary) ----------------- */
+.k-inklap{ padding:20px 22px; }
+.k-inklap-kop{ position:relative; cursor:pointer; list-style:none; padding-right:32px; min-height:44px; }
+.k-inklap-kop::-webkit-details-marker{ display:none; }
+.k-inklap-kop::marker{ content:''; }
+/* het chevronnetje, in CSS getekend zodat het scherm geen icoon hoeft te
+   zetten; draait om als het paneel open staat */
+.k-inklap-kop::after{
+  content:''; position:absolute; right:6px; top:10px; width:9px; height:9px;
+  border-right:1.7px solid var(--ink-3); border-bottom:1.7px solid var(--ink-3);
+  transform:rotate(45deg); transition:transform .2s ease;
+}
+.k-inklap[open] > .k-inklap-kop::after{ transform:rotate(225deg); top:15px; }
+.k-inklap-kop:focus-visible{ outline:2px solid var(--ink); outline-offset:4px; border-radius:6px; }
+.k-inklap-regel{ display:block; margin-top:4px; overflow-wrap:anywhere; }
+.k-inklap-inhoud{ margin-top:14px; display:flex; flex-direction:column; gap:12px; }
+.k-inklap-inhoud > div{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:4px 16px; }
+.k-inklap-inhoud .u-meta-waarde{ margin-top:0; text-align:right; min-width:0; overflow-wrap:anywhere; }
+@media (prefers-reduced-motion: reduce){ .k-inklap-kop::after{ transition:none; } }
+
+/* --- 10k. de taalbalk bij een eerste bezoek ------------------------------
+   .u-main ervoor (0,2,0): portal.html draagt een overbruggingsregel
+   body.k-nieuw .k-taalbalk met dezelfde specificiteit, en dit blad staat
+   later in de cascade. */
+.u-main .k-taalbalk{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  margin:0 0 18px; padding:10px 12px 10px 16px;
+  background:var(--card-2); border:1px solid var(--line); border-radius:14px;
+}
+.u-main .k-taalbalk-tekst{ flex:1 1 240px; min-width:0; margin:0; color:var(--ink-2); font-size:14.5px; line-height:1.5; }
+.u-main .k-taalbalk .btn.small{ min-height:40px; }
+@media (max-width:1099.98px){ .u-main .k-taalbalk .btn.small{ min-height:44px; } }
+
+/* --- 10l. de uitleg: één zin met een "i"-knop -----------------------------
+   Twee opbouwen in de schermen: <p>zin<button></p> (portaal-schermen-
+   beheer.js) en <div.k-uitleg-kop><p>zin</p><button></div> (berichten.js).
+   In de eerste stond de knop van 44px INLINE in een regel van 24px en sneed
+   zijn vlak de regels erboven en eronder (nagemeten op elke breedte). De
+   alinea wordt een flexrij: de zin links, de knop rechts, verticaal
+   gecentreerd; de alinea is dan minstens zo hoog als de knop. */
+.k-uitleg > p{ display:flex; align-items:center; gap:8px; margin:0; }
+.k-uitleg > p > span{ flex:1 1 auto; min-width:0; }
+.k-uitleg > p > .k-uitleg-knop,
+.k-uitleg-kop > .k-uitleg-knop{ flex:none; }
+.k-uitleg-kop{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.k-uitleg-kop > p{ flex:1 1 240px; min-width:0; margin:0; }
+.k-uitleg-meer{ margin-top:10px; }
+.k-uitleg-meer > p{ margin:0; max-width:62ch; }
+.k-uitleg-meer > p + p{ margin-top:8px; }
+.k-uitleg-tekst{ margin:8px 0 0; max-width:62ch; }
+
+/* --- 10m. rail en ongedaan ---------------------------------------------- */
+.k-rail-nodig{ padding:20px 22px; }
+.k-rail-item + .k-rail-item{ margin-top:12px; }
+.k-ongedaan{ white-space:nowrap; }
+
+
+/* Op een telefoon zet admin-ui.css de rail BOVEN de hoofdkolom (beheer:
+   "volgende actie eerst"). In het portaal staat die eerste actie al in de
+   banner "Wacht op jou" direct onder de kop; de rail erboven liet de klant
+   vier knoppen zien vóór hij zelfs de productnaam zag, en daarna dezelfde
+   actie nog eens. Daarom hier: hoofdkolom eerst, rail eronder. */
+@media (max-width:899.98px){
+  body.k-nieuw .u-cols-side{ order:0; }
+}
+
+/* PRINT. admin-ui.css hoofdstuk 11 verbergt de hele omlijsting; wat het
+   portaal erbij zet, gaat hier op dezelfde manier weg. Het !important volgt
+   de conventie van dat blok, om dezelfde reden: de band en de taalkeuze
+   krijgen hun display uit een mediaquery of een id-regel, en een afdruk
+   erft de laatst geldende schermbreedte. */
+@media print{
+  #preview-banner,
+  .u-topbar .lang-switch{ display:none !important; }
+  body.is-preview{ padding-top:0; }
+  body.is-preview .u-shell{ min-height:0; }
+  .u-projectcard-beeld{ width:200px; height:140px; flex-basis:200px; }
+}

@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Deze pagina is voor één klant en één factuur. Zoekmachines hebben er
+     niets te zoeken, en de verwijzende pagina mag nooit meereizen: het
+     token staat weliswaar in het hash-deel (dat wordt nooit als Referer
+     verstuurd), maar no-referrer maakt dat expliciet in plaats van
+     impliciet. -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Je factuur — CUSTOM+</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --white:#fff; --ink:#111;
+  --gray-9:#999; --gray-33:#333; --gray-69:#696969; --gray-a7:#a7a7a7;
+  --gray-f9:#f9f9f9; --gray-f2:#f2f2f2;
+  --line:rgba(228,224,219,.6);
+  --green:#1B6E45; --green-soft:rgba(27,110,69,.09);
+  --critical:#d97654;
+  --paper:#faf8f5;
+  --card-shadow:0 1px 2px rgba(20,16,8,.04), 0 10px 28px rgba(20,16,8,.05);
+  --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Hanken Grotesk', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap{ max-width:720px; margin:0 auto; padding:28px 20px 64px; }
+
+/* ---------- kop ---------- */
+.top{ display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+.logo{ font-weight:800; font-size:19px; letter-spacing:.02em; }
+.logo span{ color:var(--green); }
+.top .spacer{ margin-left:auto; }
+.langs{ display:flex; gap:2px; }
+.lang-btn{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  background:transparent; border:0; color:var(--gray-9); padding:5px 7px; border-radius:100px; cursor:pointer;
+}
+.lang-btn[aria-pressed="true"]{ background:var(--ink); color:var(--white); }
+
+/* ---------- kaarten ---------- */
+.card{
+  background:var(--white); border:1px solid var(--line); border-radius:20px;
+  box-shadow:var(--card-shadow); padding:24px 26px; margin-bottom:18px;
+}
+.kicker{
+  display:block; font-family:var(--mono); font-size:10.5px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--gray-69); margin-bottom:8px;
+}
+h1{ font-size:26px; line-height:1.2; letter-spacing:-.02em; margin:0 0 4px; font-weight:700; }
+h2{ font-size:15px; font-weight:600; margin:0 0 10px; }
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.badge{
+  display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; padding:4px 11px; border-radius:100px;
+  border:1px solid transparent; color:var(--gray-69); background:var(--gray-f2);
+}
+.badge.paid{ background:var(--green-soft); color:var(--green); }
+.badge.late{ background:var(--white); color:var(--critical); border-color:var(--critical); }
+
+/* het grote getal */
+.amount{ margin:18px 0 6px; }
+.amount .lbl{ display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--gray-69); margin-bottom:4px; }
+.amount .val{ font-size:34px; font-weight:700; letter-spacing:-.02em; font-family:var(--mono);
+  font-variant-numeric:tabular-nums; }
+.amount .sub{ font-size:13px; color:var(--gray-69); }
+
+.meta{ display:grid; grid-template-columns:1fr 1fr; gap:2px 22px; margin-top:18px; }
+.meta .r{ display:flex; justify-content:space-between; gap:12px; padding:6px 0;
+  border-bottom:1px solid var(--line); font-size:13.5px; }
+.meta .r span:last-child{ font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; }
+.meta .r .lbl{ color:var(--gray-69); font-family:inherit; }
+
+/* regels */
+.lines{ width:100%; border-collapse:collapse; margin-top:8px; font-size:13.5px; }
+.lines th{ text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--gray-69); border-bottom:1px solid var(--line);
+  padding:0 8px 7px 0; font-weight:500; }
+.lines td{ padding:9px 8px 9px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+/* de getalkolommen krijgen lucht aan hun LINKERkant: zonder die marge
+   plakken aantal, prijs en bedrag op een smal scherm aan elkaar vast tot
+   één onleesbare reeks cijfers */
+.lines td.num, .lines th.num{ text-align:right; font-family:var(--mono);
+  font-variant-numeric:tabular-nums; white-space:nowrap; padding-right:0; padding-left:16px; }
+.lines td:first-child, .lines th:first-child{ min-width:130px; }
+.lines tr.txt td{ color:var(--gray-69); }
+.lines tr.head td{ font-weight:700; padding-top:14px; }
+.lines small{ display:block; color:var(--gray-69); font-size:12px; margin-top:2px; }
+.tablewrap{ overflow-x:auto; }
+
+.totals{ margin-top:14px; }
+.totals .r{ display:flex; justify-content:space-between; gap:12px; padding:5px 0; font-size:13.5px; }
+.totals .r span:last-child{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.totals .r.sub{ color:var(--gray-69); }
+.totals .r.grand{ border-top:1px solid var(--ink); margin-top:6px; padding-top:9px;
+  font-weight:700; font-size:16px; }
+.totals .r.open{ color:var(--green); font-weight:600; }
+
+/* betaalvak — exact het patroon van het portaal */
+.pay{ display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap; }
+.pay-main{ flex:1 1 260px; min-width:0; }
+.pay-ref{ font-family:var(--mono); font-size:22px; font-weight:600; letter-spacing:.02em;
+  word-break:break-all; margin-bottom:12px; }
+.pay-lines > div{ display:flex; justify-content:space-between; gap:14px; padding:5px 0;
+  border-bottom:1px solid var(--line); font-size:13.5px; }
+.pay-lines .lbl{ color:var(--gray-69); }
+.pay-lines .mono{ word-break:break-all; text-align:right; }
+.pay-note{ font-size:12.5px; color:var(--gray-69); margin:12px 0 0; line-height:1.55; }
+.pay-qr{ flex:0 0 auto; text-align:center; }
+.pay-qr small{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--gray-9); margin-top:6px; }
+
+/* knoppen */
+.btn{
+  display:inline-block; background:var(--ink); color:var(--white); border:1px solid var(--ink);
+  border-radius:100px; padding:11px 22px; font-size:12px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; font-family:var(--mono); cursor:pointer; text-decoration:none;
+  transition:opacity .2s ease;
+}
+.btn:hover{ opacity:.86; }
+.btn.ghost{ background:transparent; color:var(--ink); border-color:var(--line); }
+.btn:disabled{ opacity:.45; cursor:default; }
+.btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+
+/* formulier */
+.input, textarea.input{
+  width:100%; background:var(--white); border:1px solid var(--line); border-radius:12px;
+  padding:11px 13px; font-size:14.5px; font-family:inherit; color:var(--ink);
+}
+textarea.input{ resize:vertical; min-height:110px; }
+.input:focus{ outline:none; border-color:var(--ink); }
+.note{ font-size:13px; color:var(--gray-69); line-height:1.6; margin:0 0 14px; }
+.msg{ font-size:13.5px; margin-top:12px; display:none; }
+.msg.show{ display:block; }
+.msg.ok{ color:var(--green); }
+.msg.bad{ color:var(--critical); }
+.foot{ font-size:12.5px; color:var(--gray-9); line-height:1.7; margin-top:26px; }
+.foot .mono{ color:var(--gray-69); }
+.demo{
+  background:var(--gray-f2); border:1px solid var(--line); border-radius:14px;
+  padding:11px 15px; font-size:12.5px; color:var(--gray-69); margin-bottom:18px;
+}
+.center{ text-align:center; padding:40px 20px; }
+.center h1{ font-size:22px; }
+.center p{ color:var(--gray-69); max-width:46ch; margin:10px auto 0; }
+
+@media (max-width:560px){
+  .wrap{ padding:20px 14px 48px; }
+  .card{ padding:20px 16px; border-radius:16px; }
+  .meta{ grid-template-columns:1fr; }
+  .amount .val{ font-size:28px; }
+  .pay-qr{ width:100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <div class="logo">CUSTOM<span>+</span></div>
+    <div class="spacer"></div>
+    <div class="langs" id="langs" role="group" aria-label="Taal"></div>
+  </div>
+  <div id="root">
+    <div class="center"><p>Even geduld…</p></div>
+  </div>
+</div>
+
+<script src="portal/config.js"></script>
+<script src="portal/demo-files.js"></script>
+<script src="portal/i18n.js"></script>
+<!-- de EPC-betaal-QR: exact dezelfde encoder als het portaal en de PDF -->
+<script src="portal/qr.js"></script>
+<!-- tokens, geldigheid en de filter op wat de klant mag zien -->
+<script src="portal/invoice-mail.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   CUSTOM+ — DE BEVEILIGDE KLANTPAGINA (factuurmodule, fase 4)
+   ============================================================
+
+   WAAROM EEN EIGEN PAGINA EN GEEN ROUTE IN portal.html
+
+   Het portaal is een ingelogde omgeving. Alles erin gaat ervan uit dat er
+   een sessie is: het laadt de hele projectbundel, het bouwt een navigatie
+   met negen secties, het houdt een ongelezen-teller bij. Deze pagina is
+   het tegenovergestelde: één factuur, geen login, en een bezoeker die
+   waarschijnlijk op zijn telefoon in een mailtje klikt.
+
+   Drie redenen om dat te scheiden:
+
+   1. VEILIGHEID. Een route in portal.html zou betekenen dat de
+      loginpoort een uitzondering krijgt. Uitzonderingen op een
+      toegangspoort zijn precies waar lekken ontstaan. Hier is er geen
+      poort om een uitzondering op te maken: de pagina kan letterlijk
+      niets anders dan één factuur tonen waarvan het token klopt.
+   2. GEWICHT. portal.html is ruim 300 kB. Dit is een paar tiende
+      daarvan, en het laadt over een mobiele verbinding in een mailtje.
+   3. DUIDELIJKHEID. Een klant die op "bekijk je factuur" klikt, wil zijn
+      factuur — niet een portaal waar zijn factuur ergens in staat.
+
+   De prijs die we daarvoor betalen, en die we niet wegpoetsen: dit is een
+   tweede pagina die de huisstijl moet blijven volgen. Daarom leent hij
+   dezelfde tokens, dezelfde vertaalwoordenboeken (portal/i18n.js),
+   dezelfde QR-encoder (portal/qr.js) en hetzelfde betaalvak-patroon als
+   het portaal. Alleen de opmaak staat hier apart; geen enkele regel
+   logica is gedupliceerd.
+
+   ------------------------------------------------------------
+   HET TOKEN
+
+   Het staat in het HASH-deel van de URL (factuur.html#t=…). Een hash gaat
+   nooit naar een server: hij staat niet in een toegangslog, niet in een
+   Referer-header en niet in een CDN-cache. Het token zelf is 256 bits uit
+   crypto.getRandomValues; er wordt nergens iets anders in de URL gezet.
+
+   Verzilveren gebeurt NOOIT in deze browser met databaserechten:
+   · Supabase-modus — POST naar /.netlify/functions/invoice-link, die met
+     de service role het token controleert en alleen een uitgeklede
+     payload teruggeeft. De anon-sleutel raakt de factuurtabellen niet
+     eens aan.
+   · Demomodus — er is geen server en geen echte klant; daar wordt de
+     hash lokaal opgezocht in dezelfde localStorage-opslag die het beheer
+     gebruikt. Dat is dezelfde beweging (hashen, opzoeken, geldigheid
+     toetsen, aftekenen), zodat je in demo test wat er live gebeurt.
+   ============================================================ */
+
+var CFG = window.CP_PORTAL_CONFIG || {};
+var IS_DEMO = !(CFG.supabaseUrl && CFG.supabaseAnonKey);
+var DEMO_KEY = 'cp_portal_demo_v1';
+var MAIL = window.CP_INVOICE_MAIL;
+
+/* ---------- i18n: exact het patroon van portal.html ---------- */
+var LANGS = [
+  { code:'nl', name:'NL' }, { code:'en', name:'EN' }, { code:'de', name:'DE' },
+  { code:'fr', name:'FR' }, { code:'es', name:'ES' }
+];
+var LOCALES = { nl:'nl-NL', en:'en-GB', de:'de-DE', fr:'fr-FR', es:'es-ES' };
+var I18N = window.CP_PORTAL_I18N || {};
+var currentLang = 'nl';
+try{
+  var saved = localStorage.getItem('cp_lang');
+  if(saved && LANGS.some(function(l){ return l.code===saved; })) currentLang = saved;
+}catch(e){ /* privémodus */ }
+
+function i18nLocale(){ return LOCALES[currentLang] || 'nl-NL'; }
+function i18nT(str){
+  if(!str || currentLang==='nl') return str;
+  var dict = I18N[currentLang];
+  var hit = dict && dict[str];
+  return (typeof hit==='string' && hit) ? hit : str;
+}
+function i18nTpl(str, vars){
+  return String(i18nT(str)).replace(/\{(\w+)\}/g, function(m, k){
+    return (vars && vars[k]!==undefined && vars[k]!==null) ? String(vars[k]) : m;
+  });
+}
+
+/* ---------- DOM zonder innerHTML ---------- */
+function el(tag, cls, text){
+  var n = document.createElement(tag);
+  if(cls) n.className = cls;
+  if(text!=null) n.textContent = text;
+  return n;
+}
+function clear(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+
+/* ---------- opmaak ----------
+   GELD BLIJFT GEHELE CENTEN. De enige deling staat hier, in de laatste
+   formatteerstap, precies zoals in portal.html: er wordt nooit met een
+   kommagetal gerekend, alleen mee getoond. */
+var moneyFmts = {};
+function fmtMoney(cents, cur){
+  cur = cur || 'EUR';
+  var key = cur + '|' + currentLang;
+  if(!moneyFmts[key]){
+    try{ moneyFmts[key] = new Intl.NumberFormat(i18nLocale(), { style:'currency', currency:cur }); }
+    catch(e){ moneyFmts[key] = new Intl.NumberFormat(i18nLocale(), { style:'currency', currency:'EUR' }); }
+  }
+  return moneyFmts[key].format((cents||0)/100);
+}
+function fmtDate(iso){
+  if(!iso) return '';
+  var p = String(iso).slice(0,10).split('-');
+  if(p.length!==3) return String(iso);
+  var d = new Date(+p[0], +p[1]-1, +p[2]);
+  if(isNaN(d.getTime())) return String(iso);
+  return d.toLocaleDateString(i18nLocale(), { day:'numeric', month:'long', year:'numeric' });
+}
+/* aantal uit quantityMicro (aantal × 1.000.000) — uitsluitend met gehele
+   getallen, zodat 2,5 uur nooit 2.4999999 wordt */
+function fmtQty(micro){
+  micro = Math.round(Number(micro) || 0);
+  var neg = micro < 0;
+  if(neg) micro = -micro;
+  var whole = Math.floor(micro / 1000000);
+  var frac = String(micro % 1000000 + 1000000).slice(1).replace(/0+$/, '');
+  var sep = (currentLang==='en') ? '.' : ',';
+  return (neg ? '-' : '') + String(whole) + (frac ? sep + frac : '');
+}
+function fmtRate(milli){
+  var v = Math.round(Number(milli) || 0);
+  var whole = Math.floor(v / 1000);
+  var frac = String(v % 1000 + 1000).slice(1).replace(/0+$/, '');
+  var sep = (currentLang==='en') ? '.' : ',';
+  return String(whole) + (frac ? sep + frac : '') + '%';
+}
+var UNIT_KEYS = { hour:'uur', uur:'uur', piece:'stuk', stuk:'stuk', day:'dag', dag:'dag',
+                  subscription:'abonnement', abonnement:'abonnement' };
+function unitLabel(u){
+  var key = UNIT_KEYS[String(u || '').toLowerCase()];
+  return key ? i18nT(key) : String(u || '');
+}
+
+/* ============================================================
+   DE GEGEVENSBRON
+   ============================================================ */
+
+function demoState(){
+  try{ return JSON.parse(localStorage.getItem(DEMO_KEY)) || null; }catch(e){ return null; }
+}
+function demoSave(state){
+  try{ localStorage.setItem(DEMO_KEY, JSON.stringify(state)); }catch(e){ /* vol of privémodus */ }
+}
+function demoUid(p){ return p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/* Demomodus: dezelfde beweging als de Netlify Function — hashen, opzoeken,
+   geldigheid toetsen, aftekenen — maar lokaal. */
+function demoRedeem(token){
+  return MAIL.sha256Hex(token).then(function(hash){
+    var state = demoState();
+    if(!state) return { ok:false, reason:'ongeldig' };
+    var row = (state.invoiceTokens || []).find(function(r){ return r.tokenHash===hash; });
+    var st = MAIL.tokenState(row);
+    if(!st.usable) return { ok:false, reason: st.code };
+    var inv = (state.invoices || []).find(function(i){ return i.id===row.invoiceId; });
+    if(!inv) return { ok:false, reason:'ongeldig' };
+    if(!inv.snapshot) return { ok:false, reason:'niet_definitief' };
+    var project = (state.projects || []).find(function(p){ return p.id===inv.projectId; }) || null;
+
+    row.useCount = (row.useCount || 0) + 1;
+    row.firstUsedAt = row.firstUsedAt || new Date().toISOString();
+    row.lastUsedAt = new Date().toISOString();
+    state.invoiceEmailEvents = state.invoiceEmailEvents || [];
+    state.invoiceEmailEvents.push({
+      id: demoUid('iev'), invoiceId: inv.id, event:'portal_viewed',
+      recipient:'', templateKey:'', mailMessageId:'', providerEventId:'',
+      subject:'', ccCount:0, bccCount:0, scheduledFor:null,
+      detail:'klantpagina geopend (demomodus)', occurredAt: new Date().toISOString()
+    });
+    demoSave(state);
+
+    return {
+      ok: true,
+      invoice: MAIL.clientView(inv.snapshot, {
+        statusCode: inv.statusCode,
+        paidCents: typeof inv.paidCents==='number' ? inv.paidCents : undefined,
+        outstandingCents: typeof inv.outstandingCents==='number' ? inv.outstandingCents : undefined,
+        payUrl: inv.payUrl || '',
+        projectName: project ? project.name : '',
+        pdfAvailable: !!inv.pdfFileRef
+      }),
+      demoInvoiceId: inv.id
+    };
+  });
+}
+
+function apiPost(action, extra){
+  var body = { token: TOKEN, action: action };
+  Object.keys(extra || {}).forEach(function(k){ body[k] = extra[k]; });
+  return fetch('/.netlify/functions/invoice-link', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r){
+    return r.json().then(function(j){ return j; }, function(){ return { ok:false, reason:'netwerk' }; });
+  });
+}
+
+/* ============================================================
+   DE PAGINA
+   ============================================================ */
+
+var TOKEN = MAIL ? MAIL.parseTokenFromHash(location.hash) : '';
+var DATA = null;          /* de clientView van de factuur */
+var DEMO_INVOICE_ID = ''; /* alleen in demomodus, voor de PDF en de vraag */
+var root = document.getElementById('root');
+
+function paintLangs(){
+  var host = document.getElementById('langs');
+  clear(host);
+  LANGS.forEach(function(l){
+    var b = el('button', 'lang-btn', l.name);
+    b.type = 'button';
+    b.setAttribute('data-lang', l.code);
+    b.setAttribute('aria-pressed', String(l.code===currentLang));
+    b.addEventListener('click', function(){
+      currentLang = l.code;
+      try{ localStorage.setItem('cp_lang', l.code); }catch(e){}
+      document.documentElement.setAttribute('lang', l.code);
+      moneyFmts = {};
+      paintLangs();
+      render();
+    });
+    host.appendChild(b);
+  });
+}
+
+function showCenter(titel, tekst){
+  clear(root);
+  var box = el('div', 'center');
+  box.appendChild(el('h1', null, i18nT(titel)));
+  if(tekst) box.appendChild(el('p', null, i18nT(tekst)));
+  var mail = el('p');
+  var a = el('a', null, 'steffan@customplus.nl');
+  a.href = 'mailto:steffan@customplus.nl';
+  mail.appendChild(document.createTextNode(i18nT('Vragen? Mail') + ' '));
+  mail.appendChild(a);
+  box.appendChild(mail);
+  root.appendChild(box);
+}
+
+var REASON_TEXT = {
+  ingetrokken: 'Deze link is ingetrokken. Vraag om een nieuwe link.',
+  verlopen: 'Deze link is verlopen. Vraag om een nieuwe link.',
+  ongeldig: 'Deze link is niet bekend. Controleer of je hem volledig hebt gekopieerd — hij is lang en breekt makkelijk af in een e-mail.',
+  onbekend: 'Deze link is niet bekend. Controleer of je hem volledig hebt gekopieerd — hij is lang en breekt makkelijk af in een e-mail.',
+  niet_definitief: 'Deze factuur is nog niet definitief. Er valt hier nog niets te tonen.',
+  netwerk: 'De factuur kon niet worden geladen. Controleer je verbinding en probeer het zo nog eens.'
+};
+
+function statusBadge(code){
+  var map = {
+    betaald: { text:'Betaald', cls:'badge paid' },
+    open: { text:'Open', cls:'badge' },
+    deels_betaald: { text:'Deels betaald', cls:'badge' },
+    verlopen: { text:'Verlopen', cls:'badge late' },
+    geannuleerd: { text:'Geannuleerd', cls:'badge' },
+    gecrediteerd: { text:'Gecrediteerd', cls:'badge' }
+  };
+  var m = map[code] || map.open;
+  var b = el('span', m.cls, i18nT(m.text));
+  return b;
+}
+
+/* het betaalvak — hetzelfde patroon en dezelfde eerlijkheidsregels als het
+   portaal: geen nummer, geen IBAN of geen bedrag betekent geen vak; wel
+   gegevens maar geen euro betekent hetzelfde vak zonder QR (de EPC-
+   standaard kent alleen euro); een IBAN die niet door de mod-97-controle
+   komt betekent geen QR maar wel de tekstuele instructie. Nooit een QR die
+   naar niets leidt. */
+function buildPayBox(){
+  var Q = window.CP_QR;
+  var ref = DATA.invoiceNumber || '';
+  var due = DATA.totals.outstandingCents || 0;
+  var cur = DATA.currency || 'EUR';
+  var s = DATA.seller || {};
+  if(DATA.docKind === 'credit_note') return null;   /* een creditnota betaal je niet */
+  if(!ref || due <= 0 || !s.iban) return null;
+
+  var box = el('div', 'pay');
+  var main = el('div', 'pay-main');
+  main.appendChild(el('span', 'kicker', i18nT('Betalingskenmerk')));
+  main.appendChild(el('div', 'pay-ref', ref));
+
+  var lines = el('div', 'pay-lines');
+  function payLine(label, value){
+    var d = el('div');
+    d.appendChild(el('span', 'lbl', i18nT(label)));
+    d.appendChild(el('span', 'mono', value));
+    lines.appendChild(d);
+  }
+  payLine('IBAN', Q ? Q.ibanPretty(s.iban) : s.iban);
+  if(s.bic) payLine('BIC of SWIFT', s.bic);
+  if(s.name) payLine('Op naam van', s.name);
+  payLine('Bedrag', fmtMoney(due, cur));
+  main.appendChild(lines);
+
+  var qrSvg = null;
+  if(Q && cur === 'EUR'){
+    qrSvg = Q.epcSvgElement({
+      name: s.name || '', iban: s.iban, bic: s.bic,
+      amountCents: due, currency: cur, reference: ref,
+      svg: { size:128, margin:2, color:'#111', title: i18nTpl('Betaal-QR voor factuur {n}', { n: ref }) }
+    });
+  }
+  main.appendChild(el('p', 'pay-note', qrSvg
+    ? i18nT('Scan de code met je bank-app: bedrag en kenmerk staan er al in. Liever handmatig? Neem dan bovenstaande gegevens over en vermeld het kenmerk.')
+    : (cur === 'EUR'
+      ? i18nT('Vermeld het kenmerk bij je overboeking — daarmee wordt je betaling meteen aan deze factuur gekoppeld.')
+      : i18nT('Deze factuur staat niet in euro. Maak over via SWIFT met bovenstaande gegevens en vermeld het kenmerk.'))));
+  box.appendChild(main);
+  if(qrSvg){
+    var wrap = el('div', 'pay-qr');
+    wrap.appendChild(qrSvg);
+    wrap.appendChild(el('small', null, i18nT('Scan met je bank-app')));
+    box.appendChild(wrap);
+  }
+  return box;
+}
+
+function downloadPdf(btn, msg){
+  btn.disabled = true;
+  var origineel = btn.textContent;
+  btn.textContent = i18nT('De PDF wordt opgehaald…');
+  function klaar(){ btn.disabled = false; btn.textContent = origineel; }
+  function mislukt(){
+    klaar();
+    msg.textContent = i18nT('De PDF is niet beschikbaar.');
+    msg.className = 'msg bad show';
+  }
+
+  if(IS_DEMO){
+    if(!window.CP_FILES || !DEMO_INVOICE_ID) return mislukt();
+    var state = demoState();
+    var inv = state ? (state.invoices || []).find(function(i){ return i.id===DEMO_INVOICE_ID; }) : null;
+    if(!inv || !inv.pdfFileRef) return mislukt();
+    window.CP_FILES.getFile(inv.pdfFileRef).then(function(rec){
+      if(!rec || !rec.blob) return mislukt();
+      var url = URL.createObjectURL(rec.blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = inv.pdfFilename || ((DATA.invoiceNumber || 'factuur') + '.pdf');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      /* de download registreren, net als live */
+      var st2 = demoState();
+      if(st2){
+        st2.invoiceEmailEvents = st2.invoiceEmailEvents || [];
+        st2.invoiceEmailEvents.push({
+          id: demoUid('iev'), invoiceId: DEMO_INVOICE_ID, event:'pdf_downloaded',
+          recipient:'', templateKey:'', mailMessageId:'', providerEventId:'',
+          subject:'', ccCount:0, bccCount:0, scheduledFor:null,
+          detail: inv.pdfFilename || '', occurredAt: new Date().toISOString()
+        });
+        demoSave(st2);
+      }
+      klaar();
+    }, mislukt);
+    return;
+  }
+
+  apiPost('pdf').then(function(res){
+    if(!res || !res.ok || !res.url) return mislukt();
+    var a = document.createElement('a');
+    a.href = res.url;
+    a.download = res.filename || ((DATA.invoiceNumber || 'factuur') + '.pdf');
+    a.rel = 'noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    klaar();
+  }, mislukt);
+}
+
+function buildQuestionCard(){
+  var card = el('div', 'card');
+  card.appendChild(el('span', 'kicker', i18nT('Iets niet duidelijk?')));
+  card.appendChild(el('h2', null, i18nT('Vraag of betaalprobleem melden')));
+  card.appendChild(el('p', 'note', i18nT('Stel je vraag, of laat weten waar de betaling vastloopt. Je bericht komt binnen bij Steffan zelf, op dezelfde plek als je andere projectvragen. Je hoort meestal binnen 1 werkdag iets.')));
+
+  var ta = document.createElement('textarea');
+  ta.className = 'input';
+  ta.setAttribute('aria-label', i18nT('Je bericht'));
+  ta.setAttribute('placeholder', i18nT('Je bericht'));
+  card.appendChild(ta);
+
+  var msg = el('p', 'msg');
+  var btn = el('button', 'btn', i18nT('Versturen'));
+  btn.type = 'button';
+  var row = el('div', 'btnrow');
+  row.appendChild(btn);
+  card.appendChild(row);
+  card.appendChild(msg);
+
+  /* Dubbelklikslot: één vlag die als eerste regel wordt gelezen. Twee keer
+     dezelfde vraag versturen is voor de ontvanger niet te onderscheiden van
+     twee verschillende vragen. */
+  var busy = false;
+  btn.addEventListener('click', function(){
+    if(busy) return;
+    var tekst = ta.value.trim();
+    if(!tekst){
+      msg.textContent = i18nT('Vul eerst een bericht in.');
+      msg.className = 'msg bad show';
+      return;
+    }
+    busy = true;
+    btn.disabled = true;
+    msg.className = 'msg';
+
+    function gelukt(){
+      busy = false;
+      ta.value = '';
+      btn.disabled = false;
+      msg.textContent = i18nT('Bedankt — je bericht is binnengekomen. Je hoort meestal binnen 1 werkdag iets.');
+      msg.className = 'msg ok show';
+    }
+    function faalde(){
+      busy = false;
+      btn.disabled = false;
+      msg.textContent = i18nT('Je bericht kon niet worden verstuurd. Probeer het zo nog eens, of mail steffan@customplus.nl.');
+      msg.className = 'msg bad show';
+    }
+
+    if(IS_DEMO){
+      var state = demoState();
+      if(!state) return faalde();
+      var inv = (state.invoices || []).find(function(i){ return i.id===DEMO_INVOICE_ID; });
+      if(!inv) return faalde();
+      state.questions = state.questions || [];
+      state.questions.push({
+        id: demoUid('q'), projectId: inv.projectId, mediaId: null, stageKey: '',
+        question: 'Factuur ' + (DATA.invoiceNumber || '') + ' — ' + tekst,
+        answer: '', askedAt: new Date().toISOString(), answeredAt: null
+      });
+      demoSave(state);
+      gelukt();
+      return;
+    }
+    apiPost('question', { text: tekst }).then(function(res){
+      if(res && res.ok) gelukt(); else faalde();
+    }, faalde);
+  });
+  return card;
+}
+
+function render(){
+  document.documentElement.setAttribute('lang', currentLang);
+  if(!DATA) return;
+  clear(root);
+
+  if(IS_DEMO){
+    root.appendChild(el('div', 'demo', i18nT('Demo-omgeving: dit is voorbeelddata en er wordt niets echt betaald of verstuurd.')));
+  }
+
+  var st = MAIL.clientStatus(DATA.statusCode, DATA.totals.outstandingCents, DATA.dueDate);
+  var isCredit = DATA.docKind === 'credit_note';
+
+  /* --- kaart 1: het bedrag en de kerngegevens --- */
+  var head = el('div', 'card');
+  head.appendChild(el('span', 'kicker', i18nT(isCredit ? 'Creditnota' : 'Factuur')));
+  var titel = el('h1', null, DATA.invoiceNumber || '');
+  head.appendChild(titel);
+  var badgeRow = el('div');
+  badgeRow.appendChild(statusBadge(st));
+  head.appendChild(badgeRow);
+
+  var amt = el('div', 'amount');
+  if(st === 'betaald'){
+    amt.appendChild(el('span', 'lbl', i18nT('Totaal incl. btw')));
+    amt.appendChild(el('div', 'val', fmtMoney(DATA.totals.totalInclCents, DATA.currency)));
+    amt.appendChild(el('div', 'sub', i18nT('Deze factuur is volledig betaald. Bedankt.')));
+  } else if(st === 'geannuleerd'){
+    amt.appendChild(el('span', 'lbl', i18nT('Totaal incl. btw')));
+    amt.appendChild(el('div', 'val', fmtMoney(DATA.totals.totalInclCents, DATA.currency)));
+    amt.appendChild(el('div', 'sub', i18nT('Deze factuur is geannuleerd. Je hoeft niets te doen.')));
+  } else if(st === 'gecrediteerd'){
+    amt.appendChild(el('span', 'lbl', i18nT('Totaal incl. btw')));
+    amt.appendChild(el('div', 'val', fmtMoney(DATA.totals.totalInclCents, DATA.currency)));
+    amt.appendChild(el('div', 'sub', i18nT('Deze factuur is gecrediteerd.')));
+  } else {
+    amt.appendChild(el('span', 'lbl', i18nT('Openstaand')));
+    amt.appendChild(el('div', 'val', fmtMoney(DATA.totals.outstandingCents, DATA.currency)));
+    amt.appendChild(el('div', 'sub', DATA.dueDate
+      ? (st === 'verlopen'
+          ? i18nTpl('De vervaldatum van {datum} is verstreken.', { datum: fmtDate(DATA.dueDate) })
+          : i18nTpl('Te betalen vóór {datum}.', { datum: fmtDate(DATA.dueDate) }))
+      : ''));
+  }
+  head.appendChild(amt);
+
+  var meta = el('div', 'meta');
+  function metaRow(label, value){
+    if(!value) return;
+    var r = el('div', 'r');
+    r.appendChild(el('span', 'lbl', i18nT(label)));
+    r.appendChild(el('span', null, value));
+    meta.appendChild(r);
+  }
+  metaRow('Factuurdatum', fmtDate(DATA.invoiceDate));
+  metaRow('Vervaldatum', fmtDate(DATA.dueDate));
+  metaRow('Project', DATA.projectName);
+  metaRow('Jouw referentie', DATA.clientReference);
+  metaRow('Inkoopordernummer', DATA.purchaseOrder);
+  if(DATA.totals.paidCents) metaRow('Reeds betaald', fmtMoney(DATA.totals.paidCents, DATA.currency));
+  if(meta.childNodes.length) head.appendChild(meta);
+
+  var acties = el('div', 'btnrow');
+  var pdfMsg = el('p', 'msg');
+  if(DATA.pdfAvailable){
+    var pdfBtn = el('button', 'btn', i18nT('Download de PDF'));
+    pdfBtn.type = 'button';
+    pdfBtn.addEventListener('click', function(){ downloadPdf(pdfBtn, pdfMsg); });
+    acties.appendChild(pdfBtn);
+  }
+  if(DATA.payUrl && st !== 'betaald' && st !== 'geannuleerd' && st !== 'gecrediteerd'){
+    var payA = document.createElement('a');
+    payA.className = 'btn';
+    payA.href = DATA.payUrl;
+    payA.target = '_blank';
+    payA.rel = 'noopener noreferrer';
+    payA.textContent = i18nT('Betaal online');
+    acties.appendChild(payA);
+  }
+  if(acties.childNodes.length){ head.appendChild(acties); head.appendChild(pdfMsg); }
+  root.appendChild(head);
+
+  /* --- kaart 2: de regels --- */
+  if(DATA.lines.length){
+    var lc = el('div', 'card');
+    lc.appendChild(el('span', 'kicker', i18nT('Wat er is geleverd')));
+    lc.appendChild(el('h2', null, i18nT('Specificatie')));
+    var wrap = el('div', 'tablewrap');
+    var tbl = document.createElement('table');
+    tbl.className = 'lines';
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    [['Omschrijving',''], ['Aantal','num'], ['Prijs','num'], ['Bedrag','num']].forEach(function(h){
+      var th = document.createElement('th');
+      th.className = h[1];
+      th.textContent = i18nT(h[0]);
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    tbl.appendChild(thead);
+    var tbody = document.createElement('tbody');
+    DATA.lines.forEach(function(L){
+      var tr = document.createElement('tr');
+      if(L.type === 'text') tr.className = 'txt';
+      if(L.type === 'heading') tr.className = 'head';
+      var td1 = document.createElement('td');
+      td1.textContent = L.description || '';
+      if(L.detail) td1.appendChild(el('small', null, L.detail));
+      tr.appendChild(td1);
+      if(L.type === 'item'){
+        var td2 = document.createElement('td'); td2.className = 'num';
+        td2.textContent = fmtQty(L.quantityMicro) + (L.unit ? ' ' + unitLabel(L.unit) : '');
+        var td3 = document.createElement('td'); td3.className = 'num';
+        td3.textContent = fmtMoney(L.unitPriceCents, DATA.currency);
+        var td4 = document.createElement('td'); td4.className = 'num';
+        td4.textContent = fmtMoney(L.netExclCents, DATA.currency);
+        tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+      } else {
+        var tdSpan = document.createElement('td');
+        tdSpan.colSpan = 3;
+        tr.appendChild(tdSpan);
+      }
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    lc.appendChild(wrap);
+
+    var tot = el('div', 'totals');
+    function totRow(label, value, cls){
+      var r = el('div', 'r' + (cls ? ' ' + cls : ''));
+      r.appendChild(el('span', null, i18nT(label)));
+      r.appendChild(el('span', null, value));
+      tot.appendChild(r);
+    }
+    totRow('Totaal excl. btw', fmtMoney(DATA.totals.totalExclCents, DATA.currency), 'sub');
+    DATA.taxGroups.forEach(function(g){
+      if(g.treatment === 'reverse_charge' || g.treatment === 'intra_community'){
+        totRow('Btw verlegd', fmtMoney(0, DATA.currency), 'sub');
+      } else {
+        totRow(i18nT('Btw') + ' ' + fmtRate(g.rateMilli), fmtMoney(g.vatCents, DATA.currency), 'sub');
+      }
+    });
+    totRow('Totaal incl. btw', fmtMoney(DATA.totals.totalInclCents, DATA.currency), 'grand');
+    if(DATA.totals.paidCents) totRow('Reeds betaald', fmtMoney(DATA.totals.paidCents, DATA.currency), 'sub');
+    if(DATA.totals.outstandingCents > 0) totRow('Openstaand', fmtMoney(DATA.totals.outstandingCents, DATA.currency), 'open');
+    lc.appendChild(tot);
+
+    if(DATA.introText) lc.appendChild(el('p', 'note', DATA.introText));
+    if(DATA.outroText) lc.appendChild(el('p', 'note', DATA.outroText));
+    root.appendChild(lc);
+  }
+
+  /* --- kaart 3: betalen --- */
+  var pay = buildPayBox();
+  if(pay){
+    var pc = el('div', 'card');
+    pc.appendChild(el('span', 'kicker', i18nT('Betalen')));
+    pc.appendChild(pay);
+    if(DATA.paymentInstructions) pc.appendChild(el('p', 'note', DATA.paymentInstructions));
+    root.appendChild(pc);
+  }
+
+  /* --- kaart 4: vraag of betaalprobleem --- */
+  root.appendChild(buildQuestionCard());
+
+  /* --- voettekst: wie stuurt deze factuur --- */
+  var s = DATA.seller || {};
+  var foot = el('div', 'foot');
+  if(s.name) foot.appendChild(el('div', null, s.name));
+  if(s.address) foot.appendChild(el('div', null, s.address));
+  var codes = [];
+  if(s.vatNumber) codes.push(i18nT('Btw-nummer') + ' ' + s.vatNumber);
+  if(s.registrationNumber) codes.push(i18nT('Registratienummer') + ' ' + s.registrationNumber);
+  if(codes.length) foot.appendChild(el('div', 'mono', codes.join(' · ')));
+  if(s.email){
+    var line = el('div');
+    var a = el('a', null, s.email);
+    a.href = 'mailto:' + s.email;
+    line.appendChild(a);
+    foot.appendChild(line);
+  }
+  foot.appendChild(el('p', null, i18nT('Deze pagina hoort bij één factuur en is alleen voor jou bedoeld. Deel de link niet — wie hem heeft, kan deze factuur bekijken.')));
+  root.appendChild(foot);
+}
+
+/* ---------- opstarten ---------- */
+paintLangs();
+
+if(!MAIL){
+  showCenter('Deze pagina kon niet worden geladen', 'Probeer het zo nog eens.');
+} else if(!MAIL.tokenLooksValid(TOKEN)){
+  showCenter('Deze link werkt niet meer', REASON_TEXT.ongeldig);
+} else {
+  var laden = IS_DEMO ? demoRedeem(TOKEN) : apiPost('view');
+  laden.then(function(res){
+    if(!res || !res.ok){
+      var reason = (res && res.reason) || 'ongeldig';
+      showCenter('Deze link werkt niet meer', REASON_TEXT[reason] || REASON_TEXT.ongeldig);
+      return;
+    }
+    DATA = res.invoice;
+    DEMO_INVOICE_ID = res.demoInvoiceId || '';
+    /* de taal van de factuur wint bij het eerste bezoek, tenzij deze
+       browser al een eigen taalkeuze heeft onthouden */
+    var eigenKeuze = false;
+    try{ eigenKeuze = !!localStorage.getItem('cp_lang'); }catch(e){}
+    if(!eigenKeuze && DATA.language && LANGS.some(function(l){ return l.code===DATA.language; })){
+      currentLang = DATA.language;
+      paintLangs();
+    }
+    document.title = (DATA.invoiceNumber ? DATA.invoiceNumber + ' — ' : '') + 'CUSTOM+';
+    render();
+  }, function(){
+    showCenter('Deze link werkt niet meer', REASON_TEXT.netwerk);
+  });
+}
+})();
+</script>
+</body>
+</html>

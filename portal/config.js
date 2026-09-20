@@ -1,20 +1,42 @@
 /* CUSTOM+ portal-configuratie.
-   Leeg laten = demomodus: de portal en het beheer draaien dan volledig op
-   voorbeelddata (portal/demo-data.js) met wijzigingen in localStorage, zodat
-   alles lokaal en op de live site te proberen is zonder Supabase-project.
-   Zodra het Supabase-project bestaat: vul beide velden en de apps schakelen
-   automatisch over op echte auth, echte data en signed URLs.
 
-   notifySharedSecret: alleen nodig als je klantmeldingen per e-mail aan wilt
-   zetten (zie netlify/functions/notify-client.mjs). Moet EXACT gelijk zijn
-   aan de NOTIFY_SHARED_SECRET env var op Netlify. Dit bestand staat in de
-   publieke site — dit is dus geen echt geheim, alleen een drempel tegen
-   toevallig misbruik van de mailfunctie. Laat leeg om klantmeldingen uit te
-   zetten (werkt ook los van de Supabase-velden hierboven). */
+   ==================================================================
+   LET OP — ALLES IN DIT BESTAND IS PUBLIEK
+   ==================================================================
+   netlify.toml publiceert de hele map (publish = "."), en beheer.html,
+   portal.html én factuur.html laden dit bestand met een gewone
+   <script src="portal/config.js">. Iedereen op internet kan het dus
+   opvragen op https://<site>/portal/config.js en de inhoud gewoon lezen.
+
+   HIER HOORT NOOIT EEN SLEUTEL OF EEN GEHEIM IN. Geen wachtwoord, geen
+   API-sleutel, geen gedeeld geheim, geen service-role-sleutel, geen token.
+   Iets dat de browser moet meesturen kan per definitie geen geheim zijn.
+
+   Wat hier WEL mag staan is publieke configuratie: de Supabase-URL en de
+   ANON-sleutel. Die twee zijn bedoeld om in een browser te staan; ze geven
+   uit zichzelf geen enkele toegang, want alles achter Supabase zit achter
+   row level security en een login.
+
+   VERWIJDERD: notifySharedSecret. Dat veld moest exact gelijk zijn aan de
+   NOTIFY_SHARED_SECRET op Netlify en was tegelijk de ENIGE poort voor
+   netlify/functions/invoice-validate.mjs, invoice-ai.mjs en
+   notify-client.mjs. Wie dit bestand opende, kon dus namens CUSTOM+ mail
+   versturen. Die drie functies verifiëren nu server-side wie de aanroeper
+   is: de browser stuurt zijn Supabase-sessietoken mee als
+   'Authorization: Bearer …' en de functie controleert dat token én het
+   staflidmaatschap bij Supabase met de service-role-sleutel uit de
+   Netlify-omgeving. Het gedeelde geheim bestaat alleen nog op de server,
+   voor aanroepen zonder sessie (cron, webhook).
+
+   Leeg laten van de twee velden hieronder = demomodus: de portal en het
+   beheer draaien dan volledig op voorbeelddata (portal/demo-data.js) met
+   wijzigingen in localStorage, zodat alles lokaal en op de live site te
+   proberen is zonder Supabase-project. Zodra het Supabase-project bestaat:
+   vul beide velden en de apps schakelen automatisch over op echte auth,
+   echte data en signed URLs. */
 window.CP_PORTAL_CONFIG = {
   supabaseUrl: '',
-  supabaseAnonKey: '',
-  notifySharedSecret: ''
+  supabaseAnonKey: ''
 };
 
 /* Indicatieve planning per fase, in weken vanaf projectstart (De Weeklijn).

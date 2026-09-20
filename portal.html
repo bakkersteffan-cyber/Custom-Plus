@@ -649,7 +649,24 @@ details.stage-acc summary.acc-pulse{
 }
 .badge-paid{color:var(--green);background:var(--green-soft)}
 .badge-open{color:var(--gray-69);background:var(--gray-f2)}
+/* FASE 5 (factuurmodule): een geannuleerde of gecrediteerde factuur. Hij
+   blijft in de historie staan, maar hij vraagt niets meer — dus geen groen
+   (dat zou 'betaald' suggereren) en geen open-grijs (dat zou 'nog te doen'
+   suggereren), maar doorgestreept en lichter dan de rest. */
+.badge-void{color:var(--gray-a7);background:var(--gray-f2);text-decoration:line-through}
 @media (max-width:700px){ .inv-row{flex-wrap:wrap} }
+/* FASE 5 (factuurmodule): de afboekingsregel onder een deels betaalde
+   factuur — reeds betaald, gecrediteerd en wat er nog openstaat. Bewust
+   klein en grijs: het is toelichting bij het bedrag erboven, geen tweede
+   bedrag. Mono, want het zijn getallen. */
+.i-sub{
+  font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:12px;
+  color:var(--gray-69);margin:-6px 0 10px;line-height:1.7;
+}
+/* FASE 5: dezelfde plek en dezelfde grijstint, maar dan de uitleg onder een
+   geannuleerde of gecrediteerde factuur. Dat is een zin en geen bedrag, dus
+   gewoon de leestekst van het portaal en niet de mono van de getallen. */
+.i-sub.i-note{font-family:inherit;font-size:12.5px}
 /* golf 1 (functies 1/5): het betaalvak onder een OPEN factuur — kenmerk,
    rekeninggegevens en (bij euro) de scanbare SEPA-QR. Zelfde witte kaart,
    zelfde radius en lijn als de rest van het portaal; geen nieuwe kleuren. */
@@ -1381,7 +1398,63 @@ body.is-preview #btn-ask-steffan{ display:none; }
   font-family:ui-monospace,Menlo,Consolas,monospace; font-size:9.5px;
   font-weight:600; letter-spacing:.12em;
 }
+
+/* ---------- de nieuwe indeling: het portaal op de gedeelde omlijsting (CP_SHELL) ----------
+   Alles hieronder geldt ALLEEN zolang body.k-nieuw staat — dat zet kMonteer() zodra de
+   shell echt gemonteerd is. Zonder die klasse is dit blok dood en staat de oude indeling
+   er letterlijk zoals hij was. De vorm van de shell zelf komt uit portal/admin-ui.css en
+   portal/portaal-skin.css (de twee links onder deze style-tag); hier staat uitsluitend
+   wat portal.html ZELF in de weg legt en dus ook zelf moet opruimen. */
+
+/* #view-app is in de oude indeling een raster van 236px + rest (regel 132) en op smal
+   scherm een blok (regel 196). De shell wil een flexrij (.u-shell in admin-ui.css,
+   0,1,0) en verliest dat van body.app-on #view-app (0,1,1). Op 0,2,1 wint hij weer,
+   in beide mediaqueries. */
+body.app-on.k-nieuw #view-app{display:flex}
+
+/* de oude zijbalk, kopbalk en subnav verhuizen naar één bewaarvak. Verborgen en NIET
+   verwijderd: byId('hdr-project-name'), #lang-switch, #notif-panel, #btn-logout en nog
+   een dozijn id's worden door de bestaande renderfuncties rechtstreeks opgezocht.
+   !important, want .sidebar{display:flex} in de 1080px-query is 0,1,0 en zou een gewoon
+   hidden-attribuut (0,1,0, eerder in de cascade) verslaan. */
+body.k-nieuw #k-oud-omlijsting{display:none !important}
+
+/* zolang een NIEUW scherm (CP_PORTAAL_SCHERMEN) in het contentvak staat, zijn de oude
+   banden eromheen (hostkaart, statusband, vertrouwensbalk, voettekst) niet van dat
+   scherm; ze horen alleen bij de oude secties die als terugval tekenen */
+body.k-nieuw.k-scherm-nieuw main > .hostcard-wrap,
+body.k-nieuw.k-scherm-nieuw main > footer.darkband{display:none}
+
+/* de oude secties tekenen als terugval BINNEN de werkkolom van de shell. Die kolom
+   (.u-main .content) heeft al zijn eigen zijruimte en maximale breedte; de .wrap in elke
+   sectie zou daar nog eens 16-56px bovenop leggen. Ook de sectie-scheidingslijn vervalt:
+   er is maar één sectie tegelijk zichtbaar, dus die lijn scheidt niets. */
+body.k-nieuw main > section > .wrap,
+body.k-nieuw main > .hostcard-wrap > .wrap,
+body.k-nieuw main > footer > .wrap{padding-left:0;padding-right:0}
+body.k-nieuw main > section{border-top:0;padding-block:clamp(20px,3vw,44px)}
+/* de hostkaartband is een <section> en valt nu onder "main section"; hij houdt zijn
+   eigen, kleinere maat van regel 325 */
+body.k-nieuw main > section.hostcard-wrap{padding:22px 0 0}
+body.k-nieuw main > footer.darkband{margin-top:32px;border-radius:22px}
+/* CP_SHELL zet na een navigatie de focus in de werkkolom; valt die op <main>
+   zelf (geen h1), dan scrolt focus() de topbalk (72px) uit beeld. De marge
+   houdt hem in beeld. */
+body.k-nieuw main.content{scroll-margin-top:72px}
+/* voorstel 19: bij precies één lopend product is er niets om in te zoeken; kZetZoekveld()
+   zet de klasse op de topbalk. !important, want de shell haalt het veld op de telefoon met
+   een inline display:block tevoorschijn (zetCompactZoeken) en zet de compacte zoekknop met
+   het hidden-attribuut aan en uit — allebei sterker dan een gewone regel. */
+body.k-nieuw .u-topbar.k-zonder-zoek .u-search,
+body.k-nieuw .u-topbar.k-zonder-zoek .k-zoekknop{display:none !important}
 </style>
+<!-- de gedeelde omlijsting van beheer en portaal. VOLGORDE IS HET MECHANISME: admin-ui.css
+     is het stijlblad van de componentbibliotheek (alles met u-), portaal-skin.css is de
+     klantvariant die daar overheen ligt en alleen wint omdat hij LATER staat. Allebei ná de
+     eigen <style> hierboven, want de skin steunt op :where(.u-shell) om de grond te leggen
+     die beheer.html gratis gaf en dit bestand niet heeft. Het beheer laadt de skin niet. -->
+<link rel="stylesheet" href="portal/admin-ui.css">
+<link rel="stylesheet" href="portal/portaal-skin.css">
 </head>
 <body>
 
@@ -1476,6 +1549,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
         </div>
         <button type="button" class="bp-toggle" id="bp-toggle" aria-pressed="false">Blauwdruk</button>
         <button type="button" class="btn-quiet" id="btn-switch" hidden>Wissel project</button>
+        <!-- de overgangsschakelaar, kant "oud → nieuw". Alleen zichtbaar in de oude
+             indeling (kZetOudeIndelingKnop); de tegenhanger zit in het gebruikersmenu
+             van de nieuwe topbalk. -->
+        <button type="button" class="btn-quiet" id="k-indeling-btn" hidden>Nieuwe indeling</button>
         <button type="button" class="btn-quiet" id="btn-logout">Uitloggen</button>
       </div>
     </div>
@@ -1702,6 +1779,57 @@ body.is-preview #btn-ask-steffan{ display:none; }
 <!-- golf 1 (functie 1): de zelfgeschreven QR-encoder voor de SEPA-betaal-QR
      op een openstaande factuur. Zelfde bestand als het beheer gebruikt. -->
 <script src="portal/qr.js"></script>
+<!-- factuurmodule: de enige plek waar factuurwiskunde leeft. Hetzelfde
+     bestand draait in beheer.html en in netlify/functions/invoice-validate.mjs,
+     zodat portaal, beheer en server nooit een andere cent uitrekenen.
+     Beschikbaar als window.CP_INVOICE. -->
+<script src="portal/invoice-core.js"></script>
+<!-- factuurmodule fase 4: de STATUSVERTALER. clientStatus() zet de interne
+     statuscode (twaalf stuks, plus de drie uit golf 1) om naar de stand die
+     de KLANT hoort te lezen. Hetzelfde bestand en dezelfde functie die
+     factuur.html gebruikt, zodat een klant die de mail volgt en een klant
+     die inlogt nooit twee verschillende woorden over één factuur leest.
+     Beschikbaar als window.CP_INVOICE_MAIL. -->
+<script src="portal/invoice-mail.js"></script>
+
+<!-- ============================================================
+     DE NIEUWE INDELING — dezelfde lagen als het beheer, in dezelfde volgorde.
+     Het portaal wordt herbouwd op de omlijsting die beheer.html gisteren kreeg
+     (.claude/portaal-spec.md, hoofdstuk 5): één componentbibliotheek voor twee
+     apps. Elk bestand zet zichzelf op window; het hoofdscript hieronder MONTEERT
+     alleen (zie "DE NIEUWE INDELING — INHANGEN" verderop) en bouwt geen scherm.
+       admin-model.js   CP_MODEL     routes, datums, mergeActivity, tabOf
+       admin-charts.js  CP_CHART     ring, sparkline, stagePath, stepper, ...
+       admin-ui.js      CP_UI        de componentbibliotheek
+       admin-shell.js   CP_SHELL     zijbalk, topbalk, router, navigatiewaarschuwing
+     Ná admin-model.js en status.js (portaal-model leest ze allebei), ná demo-data.js,
+     demo-files.js en invoice-core.js (portaal-data leest die).
+     ============================================================ -->
+<script src="portal/admin-model.js"></script>
+<script src="portal/admin-charts.js"></script>
+<script src="portal/admin-ui.js"></script>
+<script src="portal/admin-shell.js"></script>
+<!-- de klant-tegenhanger van CP_MODEL: watWeNodigHebben, belangrijkeDatums, het
+     klantzichtbare deel van de tijdlijn (window.CP_PORTAAL) -->
+<script src="portal/portaal-model.js"></script>
+<!-- de klant-datalaag met het actiecontract — akkoordGeven, sampleBeoordelen,
+     betalingMelden, ... — in demo én live (window.CP_PORTAAL_DATA) -->
+<script src="portal/portaal-data.js"></script>
+<!-- de demoseeds die de nieuwe standen aanvullen. NA demo-data.js (dat CP_DEMO maakt).
+     demo-data-ia.js is de aanvulling van het beheer; de portaalseed hieronder vraagt er
+     in zijn kopblok uitdrukkelijk om ("in BEIDE apps"): de gespreksdraden q-01 t/m q-05
+     komen daaruit, en de demo-opslag (cp_portal_demo_v1) is met het beheer gedeeld, dus
+     het portaal hoort dezelfde rijen te seeden als het beheer. -->
+<script src="portal/demo-data-ia.js"></script>
+<script src="portal/demo-data-portaal.js"></script>
+<!-- de zeven werkgebieden (CP_PORTAAL_SCHERMEN.<naam>). Deze drie bestanden BESTAAN NOG
+     NIET — ze worden in dezelfde ronde door andere bouwers gemaakt. Een 404 op een
+     script-tag is geen fout: zolang een bouwer ontbreekt, tekent de montage de oude sectie
+     (zie kKiesScherm / kToonOudeSectie). Zodra het bestand er staat, doet het mee zonder
+     dat hier iets hoeft te veranderen. -->
+<script src="portal/portaal-schermen-werk.js"></script>
+<script src="portal/portaal-schermen-berichten.js"></script>
+<script src="portal/portaal-schermen-beheer.js"></script>
 <script>
 (function () {
   'use strict';
@@ -1886,8 +2014,12 @@ body.is-preview #btn-ask-steffan{ display:none; }
     if (appActive && BUNDLE) {
       renderAllSections();
       /* passief: een taalwissel is geen navigatie — geen scrollsprong,
-         geen herhaalde anker-puls */
-      renderRoute({ passive: true });
+         geen herhaalde anker-puls. In de nieuwe indeling tekent CP_SHELL
+         de huidige route opnieuw (nieuw scherm óf oude sectie, met behoud
+         van de scrollpositie); renderRoute() zou hier de sectie 'home'
+         over een nieuw scherm heen zetten. */
+      if (kActief()) kVervers();
+      else renderRoute({ passive: true });
       var lsw = byId('lang-switch');
       if (lsw) lsw.setAttribute('aria-label', i18nT('Taal'));
       var sbar = document.querySelector('.sidebar');
@@ -1938,6 +2070,130 @@ body.is-preview #btn-ask-steffan{ display:none; }
   /* true als het getoonde bedrag btw bevat — dan hoort er 'incl. btw' bij */
   function invoiceInclVat(inv) {
     return typeof inv.totalCents === 'number' && inv.totalCents > 0 && (inv.vatCents || 0) > 0;
+  }
+  /* FASE 5 (factuurmodule) — wat er van dat bedrag NOG openstaat.
+     Tot fase 5 kende dit systeem alleen 'open' of 'betaald'; nu bestaan er
+     deelbetalingen en creditnota's, en die staan als gehele centen op de
+     factuurrij (paidCents, creditedCents). Live worden die door de database
+     berekend — zie recalc_invoice_settlement in 0012_betalingen.sql — dus
+     de portal telt ze alleen af en verzint niets.
+
+     De terugval is eerlijk: een factuur zonder die velden, dus alles van
+     vóór fase 5, gedraagt zich exact zoals hij zich altijd al gedroeg. */
+  function invoicePaidCents(inv) {
+    /* Staat het veld er, dan telt het — óók als het 0 is. Dat verschil is
+       niet theoretisch: na een teruggeboekte betaling staat paidCents
+       expliciet op 0, en zou "0 betekent geen gegevens" de oude
+       betaald-vlag laten winnen en het portaal alsnog 'betaald' laten
+       zeggen over een factuur die weer helemaal openstaat. */
+    if (inv.paidCents !== undefined && inv.paidCents !== null) {
+      var n = Number(inv.paidCents);
+      if (isFinite(n)) return Math.round(n);
+    }
+    /* de status uit golf 1: staat hij op betaald, dan is alles betaald */
+    return invoiceStatusCode(inv) === 'paid' ? invoiceDueCents(inv) : 0;
+  }
+  function invoiceCreditedCents(inv) {
+    var n = Number(inv.creditedCents);
+    return (isFinite(n) && n > 0) ? Math.round(n) : 0;
+  }
+  function invoiceOpenCents(inv) {
+    var open = invoiceDueCents(inv) - invoicePaidCents(inv) - invoiceCreditedCents(inv);
+    return open > 0 ? open : 0;
+  }
+
+  /* ------------------------------------------------------------------
+     FASE 5 (factuurmodule) — DE STAND VAN EEN FACTUUR, één keer bepaald.
+
+     Er liggen twee waarheden over elkaar heen. Golf 1 kende drie standen
+     in de kolom status ('open' | 'paid' | 'void'); de factuurmodule kent
+     er twaalf in status_code ('draft' … 'uncollectible'). Het beheer
+     schrijft ze allebei, en oude rijen hebben alleen de eerste.
+     Dat verschil mag geen enkel scherm zelf uitzoeken: wie hier op
+     inv.status gaat vergelijken, noemt een geannuleerde factuur "open"
+     en vraagt de klant om geld dat hij niet meer hoeft over te maken.
+
+     Daarom precies twee stappen, en nergens anders:
+       1. invoiceStatusCode() — de rij naar ÉÉN statuscode, met de
+          eerlijke terugval voor golf-1-rijen (dezelfde terugval als
+          invStatusOf() in beheer.html);
+       2. CP_INVOICE_MAIL.clientStatus() — die code naar de stand die de
+          klant hoort te lezen. Dat is de vertaler van de factuurmodule
+          zelf, dezelfde die factuur.html gebruikt, en hij is het enige
+          antwoord op de vraag "wat staat er voor deze klant?".
+     ------------------------------------------------------------------ */
+  function invoiceStatusCode(inv) {
+    if (!inv) return 'draft';
+    var meta = window.CP_INVOICE && CP_INVOICE.STATUS_META;
+    var code = inv.statusCode ? String(inv.statusCode) : '';
+    /* een onbekende code is geen reden om te raden: dan telt de golf-1-
+       vlag hieronder, want die is er altijd */
+    if (code && (!meta || meta[code])) return code;
+    if (inv.status === 'paid') return 'paid';
+    if (inv.status === 'void') return 'cancelled';
+    /* een concept bereikt het portaal nooit (conceptGate), dus alles wat
+       hier nog overblijft is een gepubliceerde, genummerde factuur */
+    return 'finalized';
+  }
+  /* de klantstand: 'betaald' | 'deels_betaald' | 'verlopen' | 'open' |
+     'geannuleerd' | 'gecrediteerd' */
+  function invoiceClientStatus(inv) {
+    return window.CP_INVOICE_MAIL.clientStatus(
+      invoiceStatusCode(inv), invoiceOpenCents(inv), inv && inv.dueDate);
+  }
+  /* AFGESLOTEN: geannuleerd of gecrediteerd. Zo'n factuur blijft in de
+     historie staan — hij verdwijnt niet, de klant heeft hem gekregen —
+     maar hij vraagt niets meer: hij telt niet mee in "openstaand", hij
+     krijgt geen betaalvak en hij duwt de klant nergens meer toe. */
+  function invoiceIsClosed(inv) {
+    var st = invoiceClientStatus(inv);
+    return st === 'geannuleerd' || st === 'gecrediteerd';
+  }
+  /* OPENSTAAND: er staat echt nog geld op deze factuur. Dit is het enige
+     antwoord dat de cockpit, de volgende stap, het betaalvak en de tegel
+     "Open" mogen gebruiken. */
+  function invoiceIsOpen(inv) {
+    if (invoiceIsClosed(inv)) return false;
+    if (invoiceClientStatus(inv) === 'betaald') return false;
+    return invoiceOpenCents(inv) > 0;
+  }
+  /* 'deels betaald' is alleen waar als er ECHT iets is afgeboekt én er nog
+     iets openstaat. Een betaalde, geannuleerde of gecrediteerde factuur is
+     dat dus nooit. */
+  function invoicePartlyPaid(inv) {
+    if (!invoiceIsOpen(inv)) return false;
+    var af = invoicePaidCents(inv) + invoiceCreditedCents(inv);
+    return af > 0 && invoiceOpenCents(inv) > 0;
+  }
+  /* het woord dat bij die stand hoort, met dezelfde woordenlijst als
+     factuur.html. 'Deels betaald' wint van 'Open'/'Verlopen' zolang de
+     bedragen dat zeggen: ook een rij waarvan de statuscode nog niet is
+     bijgewerkt heeft dan zichtbaar al een afboeking. */
+  function invoiceStatusLabel(inv) {
+    var st = invoiceClientStatus(inv);
+    if (st === 'betaald') return i18nT('Betaald');
+    if (st === 'geannuleerd') return i18nT('Geannuleerd');
+    if (st === 'gecrediteerd') return i18nT('Gecrediteerd');
+    if (invoicePartlyPaid(inv)) return i18nT('Deels betaald');
+    if (st === 'verlopen') return i18nT('Verlopen');
+    return i18nT('Open');
+  }
+  function invoiceBadgeClass(inv) {
+    var st = invoiceClientStatus(inv);
+    if (st === 'betaald') return 'badge-paid';
+    if (st === 'geannuleerd' || st === 'gecrediteerd') return 'badge-void';
+    return 'badge-open';
+  }
+  /* de factuur die bij een BETAALMOMENT hoort. Een geannuleerde of
+     gecrediteerde telt hier niet mee: die fase is daarmee niet betaald en
+     ook niet meer gefactureerd, dus voor het mijlpalenpad en het
+     betaalpad staat er dan (weer) geen factuur. De factuur zelf blijft
+     gewoon in de facturenlijst staan. */
+  function invoiceForStage(list, stageKey) {
+    var live = (list || []).filter(function (i) {
+      return i.stageKey === stageKey && !invoiceIsClosed(i);
+    });
+    return live[0] || null;
   }
 
   function camelRow(r) {
@@ -2048,11 +2304,97 @@ body.is-preview #btn-ask-steffan{ display:none; }
                 catch (e3) { state.documents.push(JSON.parse(JSON.stringify(sd))); }
               }
             });
+            /* de twee aanvullende seeds ook op een BESTAANDE opslag toepassen —
+               precies zoals beheer.html dat voor demo-data-ia.js doet. De lijst
+               hierboven vult alleen collecties aan die helemaal ontbreken; de
+               nieuwe standen van de klantacties (een fase op akkoord, een sample
+               dat op een beslissing wacht, questionMessages, reorderRequests,
+               clientContacts, ...) zitten ín bestaande collecties en zouden een
+               klant die de demo al eens opende nooit bereiken. Beide toepassen()
+               vullen alleen aan en zijn idempotent (zie hun kopblokken). */
+            if (window.CP_DEMO_IA && typeof window.CP_DEMO_IA.toepassen === 'function') window.CP_DEMO_IA.toepassen(state);
+            if (window.CP_DEMO_PORTAAL && typeof window.CP_DEMO_PORTAAL.toepassen === 'function') window.CP_DEMO_PORTAAL.toepassen(state);
             return;
           }
         } catch (e) { /* val terug op seed */ }
       }
       state = cloneSeed();
+    }
+    /* De schrijven-haak van de klant-datalaag (CP_PORTAAL_DATA) — BEWUST NAAST
+       save() en niet erin. save() hierboven voegt precies twee collecties samen
+       met de verse opslag (questions en accessLog: de enige die het oude portaal
+       schreef) en blijft ongewijzigd. De nieuwe klantacties muteren méér: een
+       goedgekeurde fase zit in projects[].stages, een samplebeslissing in
+       samples, een gemelde betaling in invoicePayments, een bestand in documents
+       en docSlots, en zo verder (CP_PORTAAL_DATA.DEMO_COLLECTIES noemt ze
+       allemaal). Liep zo'n actie door save(), dan won de verse opslag van het
+       beheer voor al die collecties en was het akkoord na een verversing weer
+       weg — dat is letterlijk de waarschuwing in het kopblok van portaal-data.js.
+       Dezelfde tweetabs-regel als save(), maar per rij: de verse opslag is de
+       waarheid voor alles wat deze laag NIET schrijft; voor de collecties die
+       hij wél schrijft wint de eigen rij op id. Rijen die alleen in de verse
+       opslag staan blijven staan, met één uitzondering: contactpersonen van de
+       EIGEN klant die de eigen staat niet meer kent zijn hier verwijderd en
+       gaan dus ook uit de opslag (anders kwam een verwijderde persoon terug). */
+    function saveKlantacties() {
+      var D = window.CP_PORTAAL_DATA;
+      var cols = (D && Array.isArray(D.DEMO_COLLECTIES)) ? D.DEMO_COLLECTIES
+        : ['projects', 'samples', 'invoices', 'invoicePayments', 'invoiceAudit', 'documents', 'docSlots',
+           'questions', 'questionMessages', 'reorderRequests', 'clientContacts', 'clients', 'accessLog', 'auditLog'];
+      /* de ingelogde klant: alleen ZIJN contactpersonen mogen hieronder
+         verdwijnen (de sessie van de datalaag; anders die van deze pagina) */
+      var sessie = null;
+      try { sessie = (D && typeof D.sessie === 'function') ? D.sessie() : null; } catch (e) { sessie = null; }
+      if (!sessie) { try { sessie = readSession(); } catch (e2) { sessie = null; } }
+      var eigenKlantId = (sessie && sessie.clientId !== undefined && sessie.clientId !== null) ? String(sessie.clientId) : '';
+      try {
+        var raw = localStorage.getItem(DEMO_KEY);
+        if (raw) {
+          var latest = JSON.parse(raw);
+          if (latest && Array.isArray(latest.clients)) {
+            cols.forEach(function (k) {
+              var eigen = state[k];
+              if (!Array.isArray(eigen)) return;
+              var doel = Array.isArray(latest[k]) ? latest[k] : [];
+              var idx = {};
+              doel.forEach(function (it, i) { if (it && it.id !== undefined && it.id !== null) idx[it.id] = i; });
+              eigen.forEach(function (it) {
+                if (!it) return;
+                if (it.id !== undefined && it.id !== null && idx[it.id] !== undefined) doel[idx[it.id]] = it;
+                else doel.push(it);
+              });
+              latest[k] = doel;
+            });
+            /* VERWIJDEREN. Samenvoegen op id kan alleen toevoegen en
+               vervangen: een rij die de datalaag uit de staat haalde
+               (contactpersoonVerwijderen, de enige klantactie die iets
+               weggooit) staat nog in de verse opslag en kwam daaruit terug —
+               "verwijderd: true" in de belofte, maar na de opslagronde stond
+               de persoon gewoon weer in de lijst. Daarom voor de eigen
+               mensen van de ingelogde klant de omgekeerde vergelijking: wat
+               de verse opslag voor DEZE klant kent en de eigen staat niet
+               meer, is verwijderd. Bewust beperkt tot clientContacts van de
+               eigen klant, zodat rijen van een andere klant nooit worden
+               geraakt. De prijs: voegt het beheer in een andere tab een
+               contactpersoon voor déze klant toe tussen het laden en het
+               schrijven van deze tab in, dan verliest die het — dezelfde
+               tweetabs-grens die save() hieronder al heeft. */
+            if (eigenKlantId && Array.isArray(state.clientContacts) && Array.isArray(latest.clientContacts)) {
+              var nogAanwezig = {};
+              state.clientContacts.forEach(function (c) {
+                if (c && c.id !== undefined && c.id !== null) nogAanwezig[c.id] = true;
+              });
+              latest.clientContacts = latest.clientContacts.filter(function (c) {
+                if (!c || c.id === undefined || c.id === null) return true;
+                if (String(c.clientId) !== eigenKlantId) return true;
+                return !!nogAanwezig[c.id];
+              });
+            }
+            state = latest;
+          }
+        }
+      } catch (e) { /* onleesbare opslag: schrijf gewoon de eigen staat */ }
+      try { localStorage.setItem(DEMO_KEY, JSON.stringify(state)); } catch (e) { /* privémodus */ }
     }
     function save() {
       /* tweetabs-veilig: het beheer kan in een andere tab net geschreven
@@ -2083,6 +2425,24 @@ body.is-preview #btn-ask-steffan{ display:none; }
 
     return {
       demo: true,
+
+      /* de twee haken waarmee CP_PORTAAL_DATA (portal/portaal-data.js) in
+         DEZELFDE demo-opslag leest en schrijft — hetzelfde patroon als
+         DS.demoStaat/demoSchrijf in beheer.html. Bewust haken en geen tweede
+         opslag: deze state kent de cross-tab-samenvoeging en de
+         schema-drift-aanvulling, en dat twee keer hebben is een gegarandeerd
+         verschil. De datalaag muteert het object dat demoStaat() teruggeeft en
+         roept daarna demoSchrijf() aan; saveKlantacties() zet het geheel weg. */
+      demoStaat: function () { return state; },
+      demoSchrijf: function (nieuw) {
+        if (nieuw && typeof nieuw === 'object' && !Array.isArray(nieuw) && nieuw !== state) {
+          /* de datalaag geeft altijd hetzelfde object terug dat hij las; een
+             ander object is een fout die we niet stil willen inslikken */
+          return Promise.reject(new Error('demoSchrijf kreeg een andere state dan demoStaat teruggaf.'));
+        }
+        saveKlantacties();
+        return Promise.resolve(true);
+      },
 
       init: function () {
         load();
@@ -2319,8 +2679,48 @@ body.is-preview #btn-ask-steffan{ display:none; }
         });
     }
 
+    /* Fabrieken voor het klantportaal — bewust GEEN select('*').
+       Het portaal gebruikt van een fabriek precies vier velden: de id (om
+       hem aan een foto, aan een vastlegging of aan het project zelf te
+       koppelen), de naam (de herkomstregel onder een foto, het label bij de
+       kaartpin, de regel "Bestanden gedeeld met …" in het logboek), de
+       regio (het onderschrift bij die pin en achter de fabrieksnaam) en de
+       stad (de coördinaat waarop de pin belandt). Meer niet.
+       Sinds migratie 0020 staan in dezelfde tabel ook status, specialties,
+       country en photo_url. Een sterretje-select stuurde die allemaal mee
+       naar de browser van de klant, en voor een bureau dat in China inkoopt
+       is het complete leveranciersbestand met specialisaties bedrijfs-
+       informatie, geen klantinformatie.
+       LET OP: dit beperkt de KOLOMMEN, niet de RIJEN. Welke fabrieken een
+       klant überhaupt mag zien hoort in RLS thuis — factories_partners is
+       sinds 0001 leesbaar voor elke ingelogde gebruiker. Die rijbeperking
+       is een aparte migratie en staat nog open.
+       Tolerantie: 'city' kwam pas met migratie 0003. Draait die nog niet,
+       dan leverde select('*') gewoon geen stad en bleef de kaart verborgen —
+       de zachte, oude stand. Een harde kolomlijst zou daar een laadfout van
+       maken die het hele project onbereikbaar maakt, dus valt hij in dat
+       geval terug op de drie velden uit 0001. */
+    var FABRIEK_KOLOMMEN = 'id, name, region, city';
+    var FABRIEK_KOLOMMEN_ZONDER_STAD = 'id, name, region';
+    function fetchFactories() {
+      return sb.from('factories_partners').select(FABRIEK_KOLOMMEN)
+        .then(function (res) {
+          if (res && res.error) {
+            return sb.from('factories_partners').select(FABRIEK_KOLOMMEN_ZONDER_STAD)
+              .then(function (res2) { return camelRows(need(res2)); });
+          }
+          return camelRows(need(res));
+        });
+    }
+
     return {
       demo: false,
+
+      /* de Supabase-client voor CP_PORTAAL_DATA.init({mode:'live', client}).
+         Pas gevuld nadat init()/login()/previewLogin() client() heeft
+         aangeroepen; de montage koppelt de datalaag daarom in afterLogin en
+         niet eerder. Eén client per pagina, nooit een tweede aanmaken. */
+      getClient: function () { return sb; },
 
       init: function () {
         return client().then(function () {
@@ -2450,8 +2850,9 @@ body.is-preview #btn-ask-steffan{ display:none; }
           q('inspection_reports', 'report_date'),
           q('question_threads', 'asked_at'),
           q('access_log', 'created_at', false),
-          sb.from('factories_partners').select('*')
-            .then(function (res) { return camelRows(need(res)); }),
+          /* alleen de vier velden die het portaal echt gebruikt — zie
+             fetchFactories() hierboven */
+          fetchFactories(),
           q('file_disclosures', 'disclosed_at'),
           q('shipments', 'created_at'),
           /* documentslots (golf 6, functie 52) — tolerant: zonder gedraaide
@@ -2765,14 +3166,32 @@ body.is-preview #btn-ask-steffan{ display:none; }
   function currentAnchor() {
     var h = location.hash.replace(/^#\/?/, '');
     var i = h.indexOf('@');
-    return i > -1 ? h.slice(i + 1) : '';
+    if (i > -1) return h.slice(i + 1);
+    /* nieuwe indeling: de router van CP_SHELL schrijft een oude '#/updates@media:m-1'
+       om naar '#/producten/<id>/bestanden?anker=media:m-1' (kParseRoute), zodat de
+       diepe links uit meldingen en de cockpit blijven landen. Het anker reist dan
+       als parameter mee en wordt hier weer gelezen. */
+    var q = h.indexOf('?');
+    if (q < 0) return '';
+    var delen = h.slice(q + 1).split('&');
+    for (var j = 0; j < delen.length; j++) {
+      var eq = delen[j].indexOf('=');
+      var k = eq > -1 ? delen[j].slice(0, eq) : delen[j];
+      if (k !== 'anker') continue;
+      try { return decodeURIComponent(eq > -1 ? delen[j].slice(eq + 1) : ''); }
+      catch (e) { return eq > -1 ? delen[j].slice(eq + 1) : ''; }
+    }
+    return '';
   }
   var lastRenderedHash = null;
   /* opts.passive: her-render zonder navigatie-neveneffecten (taalwissel,
      live-verversing) — geen scrollsprong, geen anker-scroll, geen spookpuls */
   function renderRoute(opts) {
     opts = opts || {};
-    var page = currentPage();
+    /* opts.page: de nieuwe indeling kiest de oude sectie uit de ROUTE
+       (kToonOudeSectie) en niet uit location.hash, want daar staat dan
+       '#/producten/<id>/voortgang' en geen oude paginanaam */
+    var page = (opts.page && PAGES.indexOf(opts.page) > -1) ? opts.page : currentPage();
     lastRenderedHash = location.hash;
     document.body.setAttribute('data-page', page);
     PAGES.forEach(function (p) {
@@ -2801,6 +3220,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
     }
   }
   window.addEventListener('hashchange', function () {
+    /* in de nieuwe indeling is CP_SHELL de router: die leest de hash zelf
+       (opHashChange) en roept kNavigeer aan. Hier nog eens renderRoute()
+       doen zou de oude sectie 'home' over elk nieuw scherm heen zetten. */
+    if (kActief()) return;
     /* enterProject rendert al synchroon ná het zetten van de hash;
        de asynchrone hashchange die daarop volgt zou alles dubbel doen */
     if (appActive && location.hash !== lastRenderedHash) renderRoute();
@@ -2827,12 +3250,17 @@ body.is-preview #btn-ask-steffan{ display:none; }
       li.appendChild(el('div', 'st-name', i18nT(stageName(s.stageKey))));
 
       if (s.paymentPct > 0) {
-        var inv = BUNDLE.invoices.find(function (i) { return i.stageKey === s.stageKey; });
+        /* FASE 5: de stand komt van de statusvertaler, niet van de oude
+           vlag. Een geannuleerde of gecrediteerde factuur levert hier geen
+           factuur meer op (invoiceForStage), zodat er nooit 'open' staat
+           bij een rekening die de klant niet hoeft te betalen. */
+        var inv = invoiceForStage(BUNDLE.invoices, s.stageKey);
         var pay = el('div', 'st-pay');
         pay.appendChild(document.createTextNode(s.paymentPct + '%'));
         if (inv) {
+          var betaald = invoiceClientStatus(inv) === 'betaald';
           pay.appendChild(document.createTextNode(' · '));
-          pay.appendChild(el('span', inv.status === 'paid' ? 'paid' : '', inv.status === 'paid' ? i18nT('betaald') : i18nT('open')));
+          pay.appendChild(el('span', betaald ? 'paid' : '', betaald ? i18nT('betaald') : i18nT('open')));
         }
         li.appendChild(pay);
       }
@@ -2915,8 +3343,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
       };
     }
 
-    /* 2: openstaande factuur */
-    var openInv = (bundle.invoices || []).filter(function (i) { return i.status === 'open'; });
+    /* 2: openstaande factuur — via de statusvertaler, niet via de oude
+       vlag: een geannuleerde of gecrediteerde factuur is geen volgende
+       stap voor de klant en mag hier dus nooit om geld vragen */
+    var openInv = (bundle.invoices || []).filter(invoiceIsOpen);
     if (openInv.length) {
       var inv = openInv[0];
       return {
@@ -2924,7 +3354,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
         title: openInv.length === 1
           ? i18nT(ST.invoiceOne)
           : i18nTpl(ST.invoiceMany, { n: openInv.length }),
-        meta: inv.label + (invoiceDueCents(inv) ? ' · ' + fmtMoney(invoiceDueCents(inv), inv.currency) + (invoiceInclVat(inv) ? ' ' + i18nT('incl. btw') : '') : ''),
+        /* FASE 5: bij een openstaande factuur toont de volgende stap wat er
+           NOG openstaat, niet het factuurtotaal. Anders vraagt het portaal
+           om een bedrag dat de klant deels al heeft overgemaakt. */
+        meta: inv.label + (invoiceOpenCents(inv) ? ' · ' + fmtMoney(invoiceOpenCents(inv), inv.currency) + (invoiceInclVat(inv) ? ' ' + i18nT('incl. btw') : '') : ''),
         actionLabel: i18nT('Bekijk de factuur'),
         actionHref: '#/kosten'
       };
@@ -3147,12 +3580,16 @@ body.is-preview #btn-ask-steffan{ display:none; }
     aI.href = '#/kosten';
     var padI = el('div', 'ccard-pad');
     padI.appendChild(el('div', 'ccard-l', i18nT('Facturen')));
-    var openList = (BUNDLE.invoices || []).filter(function (i) { return i.status === 'open'; });
+    /* FASE 5: "openstaand" is wat de statusvertaler openstaand noemt —
+       een geannuleerde of gecrediteerde factuur hoort niet op deze kaart */
+    var openList = (BUNDLE.invoices || []).filter(invoiceIsOpen);
     if (openList.length) {
       var lblI = el('div', 'ccard-t', openList[0].label);
       lblI.setAttribute('data-no-i18n', ''); /* factuurlabel = klantdata */
       padI.appendChild(lblI);
-      var amtI = el('div', 'ccard-amount mono', fmtMoney(invoiceDueCents(openList[0]), openList[0].currency)
+      /* FASE 5: het OPENSTAANDE bedrag, niet het factuurtotaal — deze kaart
+         heet "Facturen" en toont wat er nog te betalen is */
+      var amtI = el('div', 'ccard-amount mono', fmtMoney(invoiceOpenCents(openList[0]), openList[0].currency)
         + (invoiceInclVat(openList[0]) ? ' ' + i18nT('incl. btw') : ''));
       amtI.setAttribute('data-no-i18n', '');
       padI.appendChild(amtI);
@@ -3444,6 +3881,9 @@ body.is-preview #btn-ask-steffan{ display:none; }
     }
     open.appendChild(pad);
     open.addEventListener('click', function () {
+      /* nieuwe indeling: elk product heeft een eigen route; de montage laadt
+         de bundel van dat project zelf (kZorgData) vóór het tekenen */
+      if (kActief()) { window.CP_SHELL.ga({ area: 'producten', id: project.id }); return; }
       if (isOpenNow) { location.hash = '#/home'; return; }
       enterProject(project, 'home');
     });
@@ -3682,6 +4122,15 @@ body.is-preview #btn-ask-steffan{ display:none; }
     root.textContent = '';
     var coords = window.CP_CITY_COORDS || {};
     var linked = {};
+    /* Drie bronnen, geen twee. Migratie 0020 gaf het project een echt
+       fabrieksveld (projects.factory_id); dat is de bron die telt zodra
+       hij gevuld is. Juist in de sourcingfase — de fase waarvoor het veld
+       bedoeld is — bestaat er nog geen foto en geen NNN-vastlegging, dus
+       een fabriek die alleen zó gekoppeld is kreeg tot nu toe geen pin. */
+    if (BUNDLE.project && BUNDLE.project.factoryId) linked[BUNDLE.project.factoryId] = true;
+    /* De oude afleiding blijft er NAAST staan, niet in plaats van: rijen
+       van vóór 0020 dragen het nieuwe veld nog niet, en een project kan
+       bovendien meer dan één fabriek raken (bv. een aparte toolmaker). */
     (BUNDLE.media || []).forEach(function (m) { if (m.factoryId) linked[m.factoryId] = true; });
     (BUNDLE.disclosures || []).forEach(function (d) { if (d.factoryId) linked[d.factoryId] = true; });
     var pins = (BUNDLE.factories || []).filter(function (f) {
@@ -4853,15 +5302,17 @@ body.is-preview #btn-ask-steffan{ display:none; }
       lbl.setAttribute('data-no-i18n', ''); /* factuurlabel = data */
       main.appendChild(lbl);
       /* golf 3 (functie 65): factuurnummer tonen waar het bestaat.
-         Golf 1 (functie 5): bij een BETAALDE factuur is dat gewoon het
-         nummer; bij een openstaande krijgt het zijn eigen betaalvak
-         hieronder, want daar is het het betalingskenmerk. */
-      if (inv.invoiceNumber && inv.status !== 'open') {
+         Golf 1 (functie 5): bij een factuur die niets meer vraagt is dat
+         gewoon het nummer; bij een openstaande krijgt het zijn eigen
+         betaalvak hieronder, want daar is het het betalingskenmerk.
+         FASE 5: een geannuleerde factuur houdt zijn nummer — hij hoort het
+         hier dus gewoon te tonen, want het betaalvak krijgt hij niet. */
+      if (inv.invoiceNumber && !invoiceIsOpen(inv)) {
         var nr = el('div', 'i-paidat mono', i18nTpl('Factuurnummer {n}', { n: inv.invoiceNumber }));
         nr.setAttribute('data-no-i18n', ''); /* op renderpunt vertaald; nummer = data */
         main.appendChild(nr);
       }
-      if (inv.status === 'paid' && inv.paidAt) {
+      if (invoiceClientStatus(inv) === 'betaald' && inv.paidAt) {
         main.appendChild(el('div', 'i-paidat', i18nTpl('Betaald op {d}', { d: fmtDate(inv.paidAt) })));
       }
       if (stage && stage.approvedAt) {
@@ -4895,11 +5346,52 @@ body.is-preview #btn-ask-steffan{ display:none; }
         + (invoiceInclVat(inv) ? ' ' + i18nT('incl. btw') : ''));
       amt.setAttribute('data-no-i18n', ''); /* bedrag */
       row.appendChild(amt);
-      row.appendChild(el('span', 'badge ' + (inv.status === 'paid' ? 'badge-paid' : 'badge-open'),
-        inv.status === 'paid' ? i18nT('Betaald') : i18nT('Open')));
+      /* FASE 5: het label komt van de statusvertaler. 'Deels betaald'
+         krijgt bewust het open-uiterlijk en niet het betaalde: er staat nog
+         iets open, en dat is het enige wat de klant hier moet zien. Een
+         geannuleerde of gecrediteerde factuur krijgt zijn eigen, lichtere
+         badge — hij blijft staan, maar hij vraagt niets meer. */
+      row.appendChild(el('span', 'badge ' + invoiceBadgeClass(inv), invoiceStatusLabel(inv)));
       root.appendChild(row);
-      /* golf 1 (functies 1/5): het betaalvak onder een openstaande factuur */
-      if (inv.status === 'open') {
+      /* FASE 5: één zin uitleg onder een factuur die niets meer vraagt.
+         Zonder die zin is 'Geannuleerd' een woord waar de klant zelf een
+         betekenis bij moet zoeken; dit is dezelfde zin die hij op de
+         factuurpagina uit zijn mail (factuur.html) leest. */
+      if (invoiceIsClosed(inv)) {
+        root.appendChild(el('div', 'i-sub i-note', invoiceClientStatus(inv) === 'geannuleerd'
+          ? i18nT('Deze factuur is geannuleerd. Je hoeft niets te doen.')
+          : i18nT('Deze factuur is gecrediteerd.')));
+      }
+      /* wat er al is afgeboekt, met het restant erachter. Alleen tonen als
+         er iets te tonen is — anders staat er bij elke factuur een regel
+         die niets toevoegt.
+         FASE 5: ook onder een geannuleerde of gecrediteerde factuur, zolang
+         daar echt geld op staat. Dat geld is overgemaakt; het mag niet uit
+         beeld verdwijnen doordat de factuur daarna is ingetrokken. Het
+         restant staat er dan niet bij: op zo'n factuur staat niets meer
+         open. */
+      var toonAfboeking = invoicePartlyPaid(inv) || invoiceIsClosed(inv);
+      if (toonAfboeking) {
+        var afRegels = [];
+        if (invoicePaidCents(inv) > 0) {
+          afRegels.push(i18nT('Reeds betaald') + ': ' + fmtMoney(invoicePaidCents(inv), inv.currency));
+        }
+        if (invoiceCreditedCents(inv) > 0) {
+          afRegels.push(i18nT('Gecrediteerd') + ': ' + fmtMoney(invoiceCreditedCents(inv), inv.currency));
+        }
+        if (invoicePartlyPaid(inv)) {
+          afRegels.push(i18nT('Openstaand bedrag') + ': ' + fmtMoney(invoiceOpenCents(inv), inv.currency));
+        }
+        if (afRegels.length) {
+          var afEl = el('div', 'i-sub', afRegels.join(' · '));
+          afEl.setAttribute('data-no-i18n', ''); /* bedragen zijn data */
+          root.appendChild(afEl);
+        }
+      }
+      /* golf 1 (functies 1/5): het betaalvak onder een openstaande factuur.
+         FASE 5: "openstaand" is wat de statusvertaler zegt — nooit meer een
+         betaal-QR onder een factuur die is geannuleerd of gecrediteerd. */
+      if (invoiceIsOpen(inv)) {
         var box = buildPayBox(inv);
         if (box) root.appendChild(box);
       }
@@ -4924,7 +5416,12 @@ body.is-preview #btn-ask-steffan{ display:none; }
   function buildPayBox(inv) {
     var Q = window.CP_QR;
     var ref = inv.invoiceNumber || '';
-    var due = invoiceDueCents(inv);
+    /* FASE 5: het RESTBEDRAG, niet het factuurtotaal. Zodra er een
+       deelbetaling of een creditnota op deze factuur staat, is dát het
+       bedrag dat de klant nog moet overmaken — en het is ook het bedrag dat
+       in de betaal-QR hoort te staan. De opmerking hieronder stond hier al
+       sinds golf 1 als belofte; fase 5 maakt hem waar. */
+    var due = invoiceOpenCents(inv);
     var cur = inv.currency || 'EUR';
     var b = BILLING || {};
     if (!ref || !due) return null;
@@ -4956,8 +5453,8 @@ body.is-preview #btn-ask-steffan{ display:none; }
     if (Q && cur === 'EUR') {
       qrSvg = Q.epcSvgElement({
         name: b.naam || '', iban: b.iban, bic: b.bic,
-        /* het bedrag komt als argument binnen: zodra deelbetalingen bestaan
-           geeft de aanroeper hier het restbedrag mee */
+        /* het bedrag komt als argument binnen; sinds fase 5 is dat het
+           RESTBEDRAG na deelbetalingen en creditnota's */
         amountCents: due, currency: cur, reference: ref,
         svg: { size: 128, margin: 2, color: '#111', title: i18nTpl('Betaal-QR voor factuur {n}', { n: ref }) }
       });
@@ -5007,20 +5504,39 @@ body.is-preview #btn-ask-steffan{ display:none; }
     var stages = (BUNDLE.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
     var payStages = stages.filter(function (s) { return s.paymentPct > 0; });
 
-    /* te betalen bedragen (totalCents incl. btw waar dat bestaat), per valuta */
+    /* te betalen bedragen (totalCents incl. btw waar dat bestaat), per valuta.
+       FASE 5: een deels betaalde factuur telt nu in BEIDE tegels mee — het
+       afgeboekte deel bij 'betaald' en de rest bij 'open'. Hem in zijn
+       geheel bij 'open' laten staan was tot fase 5 het eerlijkste dat kon;
+       nu er echte deelbetalingen zijn, is het gewoon onjuist. */
     var paidBy = {}, openBy = {};
     invoices.forEach(function (i) {
       var c = i.currency || 'EUR';
-      if (i.status === 'paid') paidBy[c] = (paidBy[c] || 0) + invoiceDueCents(i);
-      else if (i.status === 'open') openBy[c] = (openBy[c] || 0) + invoiceDueCents(i);
+      /* FASE 5 — twee verschillende vragen, elk met hun eigen bron.
+         BETAALD is wat er echt is overgemaakt. Dat telt ook mee als de
+         factuur daarna is geannuleerd of gecrediteerd: dat geld is betaald
+         geweest en hoort niet uit het overzicht te verdwijnen. Normaal
+         staat er op zo'n factuur 0, want annuleren mag niet zodra er geld
+         op staat.
+         OPENSTAAND is uitsluitend wat de statusvertaler openstaand noemt.
+         Dit ging tot nu toe op de oude vlag status === 'void', en die hoeft
+         op een rij uit de factuurmodule niet meer gezet te zijn — vandaar
+         dat een geannuleerde factuur hier als "open" kon blijven staan. */
+      var af = invoicePaidCents(i);
+      if (af > 0) paidBy[c] = (paidBy[c] || 0) + af;
+      if (invoiceIsOpen(i)) openBy[c] = (openBy[c] || 0) + invoiceOpenCents(i);
     });
     var openTotal = curOrder.reduce(function (a, c) { return a + (openBy[c] || 0); }, 0);
     function moneyLines(byCur) {
       return curOrder.map(function (c) { return fmtMoney(byCur[c] || 0, c); });
     }
 
+    /* FASE 5: een geannuleerde of gecrediteerde factuur telt hier niet als
+       "deze fase is gefactureerd". De fase valt dan terug op "nog te
+       verwachten", en zijn bedrag telt niet mee in de afleiding van de
+       projectsom — een ingetrokken factuur is geen bewijs van een bedrag. */
     function invFor(key) {
-      return invoices.find(function (i) { return i.stageKey === key; }) || null;
+      return invoiceForStage(invoices, key);
     }
 
     /* projectsom alleen afleiden als alle facturen dezelfde valuta hebben
@@ -5090,11 +5606,16 @@ body.is-preview #btn-ask-steffan{ display:none; }
         check.appendChild(svgC);
       }
       col.appendChild(check);
+      /* FASE 5: de stand van het segment komt van de statusvertaler.
+         invFor() levert al geen geannuleerde of gecrediteerde factuur meer
+         op, dus zo'n betaalmoment staat hier weer op 'volgt nog' — en
+         nooit meer gearceerd als 'gefactureerd, staat open'. */
       var inv = invFor(s.stageKey);
+      var invSt = inv ? invoiceClientStatus(inv) : '';
       var segCls = 'payseg';
       var stateWord = i18nT('volgt nog');
-      if (inv && inv.status === 'paid') { segCls += ' paid'; stateWord = i18nT('betaald'); }
-      else if (inv && inv.status === 'open') { segCls += ' openinv'; stateWord = i18nT('open'); }
+      if (invSt === 'betaald') { segCls += ' paid'; stateWord = i18nT('betaald'); }
+      else if (inv && invoiceIsOpen(inv)) { segCls += ' openinv'; stateWord = i18nT('open'); }
       col.appendChild(el('div', segCls));
       col.appendChild(el('div', 'payseg-lab', s.paymentPct + '% · ' + stateWord));
       if (s.approvedAt) {
@@ -5861,12 +6382,19 @@ body.is-preview #btn-ask-steffan{ display:none; }
     applyTrustbarTerms();
   }
 
-  function enterProject(project, landing) {
+  /* Het DATA-deel van het openen van een project: bundel laden, koppen
+     vullen, alle dertien secties opbouwen, live meeluisteren. Losgetrokken
+     uit enterProject() omdat de nieuwe indeling het ook nodig heeft zonder
+     de navigatie eronder: een route #/producten/<id> van een ánder project
+     laadt via kZorgData() precies dit, en laat het navigeren aan CP_SHELL.
+     Geeft een Promise met de bundel; verwerpt als het laden mislukt. */
+  function openProject(project) {
     /* golf 1: de betaalgegevens komen in dezelfde ronde mee, zodat het
        betaalvak meteen compleet staat in plaats van na te springen */
-    Promise.all([ DS.loadBundle(project.id), fetchBilling() ]).then(function (res) {
+    return Promise.all([ DS.loadBundle(project.id), fetchBilling() ]).then(function (res) {
       var bundle = res[0];
       BUNDLE = bundle;
+      kBundelVerouderd = false;
       if (!PREVIEW) {
         try { localStorage.setItem(lastProjKey(), project.id); } catch (e) { /* privémodus */ }
       } else if (DS.addPreviewNote && !previewNoted[project.id]) {
@@ -5883,6 +6411,15 @@ body.is-preview #btn-ask-steffan{ display:none; }
       byId('side-client-name').textContent = SESSION.contactName || '';
       byId('side-client-co').textContent = SESSION.company || '';
       byId('btn-switch').hidden = ALL_PROJECTS.length < 2;
+      /* DE NIEUWE INDELING. Monteren gebeurt hier en niet eerder: pas nu staan
+         DS en SESSION vast en is er een bundel om te tonen. Lukt het monteren
+         niet (een ontbrekend bestand, of de klant koos bewust de oude
+         indeling), dan gaat alles hieronder gewoon zijn oude weg. Vóór
+         renderAllSections(), zodat de secties in hun definitieve vak staan
+         wanneer de reveal-observer ze gaat volgen. Bij een tweede login in
+         dezelfde pagina is de shell er al; dan alleen de klant opnieuw
+         tekenen (naam onder het woordmerk, gebruikersmenu). */
+      if (kMonteer()) kTekenKlant();
       renderAllSections();
       renderSheetStamps();
       closeTermPop(false);
@@ -5891,18 +6428,32 @@ body.is-preview #btn-ask-steffan{ display:none; }
       observeReveals();
       showView('app');
       appActive = true;
-      if (landing) {
-        if (location.hash !== '#/' + landing) location.hash = '#/' + landing;
-      } else if (!location.hash) {
-        location.hash = '#/' + PAGES[0];
-      }
-      renderRoute();
       maybeShowMoment();
       /* Supabase: live meeluisteren met dit project; een eerdere
          projectsubscription wordt binnen subscribeProject opgeruimd */
       if (!DS.demo && DS.subscribeProject) {
         DS.subscribeProject(project.id, scheduleLiveRefresh);
       }
+      return bundle;
+    });
+  }
+
+  function enterProject(project, landing) {
+    openProject(project).then(function () {
+      if (kActief()) {
+        /* de shell is de router: bij de eerste keer de hash lezen (een
+           gedeelde of ververste link landt zo op dezelfde pagina, ook een
+           oude '#/mijlpalen' — kParseRoute vertaalt hem), daarna een gewone
+           navigatie naar het geopende product */
+        kStart(project, landing);
+        return;
+      }
+      if (landing) {
+        if (location.hash !== '#/' + landing) location.hash = '#/' + landing;
+      } else if (!location.hash) {
+        location.hash = '#/' + PAGES[0];
+      }
+      renderRoute();
     }).catch(function () {
       showError(i18nT('Je project kon niet worden geladen. Vernieuw de pagina of mail steffan@customplus.nl.'));
     });
@@ -5931,6 +6482,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
     SESSION = session;
     if (PREVIEW) mountPreviewBanner(session.company);
     else writeSession(DS.demo ? session : null);
+    /* de klant-datalaag (CP_PORTAAL_DATA) in dezelfde opslag en dezelfde
+       sessie zetten als DS — in beide indelingen, zodat de koppeling niet
+       afhangt van de weergavekeuze */
+    kKoppelDatalaag(session);
     /* portaaltaal per klant (golf 5, functie 30): standaardtaal van de
        klantkaart, alleen zolang deze browser nooit zelf een taal koos.
        Bewust ZONDER cp_lang te schrijven: wijzigt Steffan de taal later,
@@ -5976,7 +6531,17 @@ body.is-preview #btn-ask-steffan{ display:none; }
   }
 
   function doLogout() {
+    /* R1-5 blijft gelden: in de voorvertoning is er geen klantsessie om te
+       beëindigen, en signOut() zou de STAF-sessie van het beheer intrekken.
+       De oude knop staat daar verborgen; het gebruikersmenu van de nieuwe
+       shell heeft geen uitlogrij (kZetMenuRijen) — en mocht er toch een weg
+       hierheen zijn, dan doet deze regel niets. */
+    if (PREVIEW) return;
     if (DS.unsubscribeProject) DS.unsubscribeProject();
+    /* met routes, een selectie en een navigatiewaarschuwing zet het
+       uitloggen anders niets terug: de volgende klant zou op het product
+       van de vorige landen. reset() zet route, guards en badge terug. */
+    if (kActief()) { window.CP_SHELL.reset(); kGestart = false; }
     DS.logout().then(function () {
       closeTermPop(false);
       closeNotifPanel(false);
@@ -6158,10 +6723,15 @@ body.is-preview #btn-ask-steffan{ display:none; }
     });
 
     (BUNDLE.invoices || []).forEach(function (inv) {
-      if (inv.status === 'paid' && inv.paidAt) {
+      if (invoiceClientStatus(inv) === 'betaald' && inv.paidAt) {
         pushItem(inv.paidAt, i18nTpl('Factuur betaald: {x}', { x: inv.label }), [i18nT('FACTUUR'), relDayLabel(inv.paidAt)], '#/kosten@' + inv.id);
         return;
       }
+      /* FASE 5: geen melding meer over een factuur die is geannuleerd of
+         gecrediteerd. "Er staat een factuur voor je klaar" is een duwtje
+         richting betalen, en dat duwtje hoort te stoppen zodra de rekening
+         is ingetrokken. Hij blijft wél gewoon op het betaalpad staan. */
+      if (invoiceIsClosed(inv)) return;
       var doc = inv.documentId
         ? (BUNDLE.documents || []).find(function (dd) { return dd.id === inv.documentId; })
         : null;
@@ -6198,6 +6768,9 @@ body.is-preview #btn-ask-steffan{ display:none; }
     if (!BUNDLE) { dot.hidden = true; return; }
     var seen = notifSeenTime();
     dot.hidden = !buildNotifItems().some(function (n) { return n.time > seen; });
+    /* nieuwe indeling: de bel in de topbalk van de shell leest dezelfde
+       lijst (kMeldingen) en wordt hier bijgetrokken */
+    if (kActief()) window.CP_SHELL.verversMeldingen();
   }
 
   function closeNotifPanel(refocus) {
@@ -6378,7 +6951,11 @@ body.is-preview #btn-ask-steffan{ display:none; }
     (BUNDLE.invoices || []).forEach(function (inv) {
       ix.push({
         sec: 'FACTUREN', label: inv.label,
-        sub: fmtMoney(invoiceDueCents(inv), inv.currency) + ' · ' + (inv.status === 'paid' ? i18nT('betaald') : i18nT('open')),
+        /* het factuurtotaal blijft hier staan (je zoekt op "de factuur van
+           € 2.268,75"), maar de stand ernaast is wel de echte stand —
+           FASE 5: hetzelfde woord als de badge op het betaalpad, uit de
+           statusvertaler, dus ook hier 'Geannuleerd' waar dat zo is */
+        sub: fmtMoney(invoiceDueCents(inv), inv.currency) + ' · ' + invoiceStatusLabel(inv),
         alt: 'factuur',
         run: function () { location.hash = '#/kosten'; }
       });
@@ -6657,6 +7234,11 @@ body.is-preview #btn-ask-steffan{ display:none; }
     hint.classList.add('show');
     if (updHintTimer) clearTimeout(updHintTimer);
     updHintTimer = setTimeout(function () { hint.classList.remove('show'); }, 2200);
+    /* nieuwe indeling: de oude bel staat in het bewaarvak en is onzichtbaar;
+       dezelfde stille melding dan als pil van de componentbibliotheek */
+    if (kActief() && window.CP_UI && typeof window.CP_UI.toast === 'function') {
+      window.CP_UI.toast(i18nT('Bijgewerkt'), { duur: 2200 });
+    }
   }
 
   var liveRefreshBusy = false;
@@ -6715,6 +7297,10 @@ body.is-preview #btn-ask-steffan{ display:none; }
       if (panel && !panel.hidden) openNotifPanel();
       else updateNotifDot();
       flashUpdatedHint();
+      /* nieuwe indeling: de bundel is zojuist vers geladen (kBundelVerouderd
+         hoeft dus niet), de huidige route opnieuw tekenen met behoud van de
+         scrollpositie — een nieuw scherm ziet zo de stand van het beheer */
+      if (kActief()) { kBundelVerouderd = false; window.CP_SHELL.ververs(); }
       if (liveRefreshAgain) { liveRefreshAgain = false; scheduleLiveRefresh(); }
     }).catch(function () {
       liveRefreshBusy = false;
@@ -6744,8 +7330,1591 @@ body.is-preview #btn-ask-steffan{ display:none; }
   });
 
   /* ============================================================
+     DE NIEUWE INDELING — INHANGEN (CP_SHELL)
+     ============================================================
+     Zeven werkgebieden (Overzicht, Producten, Berichten, Bestanden,
+     Betalingen — Activiteit, Instellingen) in plaats van de tien tabbladen
+     hierboven, op exact de omlijsting die beheer.html gisteren kreeg. De
+     omlijsting, de componentbibliotheek, de tekenlaag, de rekenlaag en de
+     klant-datalaag leven in portal/admin-*.js en portal/portaal-*.js; dit
+     blok is de MONTAGE en niets meer. Het bouwt geen enkel scherm: de zeven
+     schermen komen uit portal/portaal-schermen-*.js (CP_PORTAAL_SCHERMEN),
+     en zolang een bouwer daar ontbreekt tekent dit blok de OUDE sectie.
+
+     DE ZEVEN AFSPRAKEN
+     1. NIETS WORDT VERWIJDERD. Alle dertien renderfuncties, de tien secties,
+        het moment, de detailsheet, de glossarypopovers en de demo- en
+        live-datalaag blijven staan en blijven werken.
+     2. <main> BLIJFT HETZELFDE ELEMENT. CP_SHELL.monteer() VERPLAATST het
+        binnen de nieuwe structuur en maakt het nooit opnieuw aan; alle
+        renderfuncties schrijven via byId() in de secties erin en merken er
+        niets van. Nieuwe schermen komen in #k-scherm, het eerste kind van
+        <main>; de oude secties staan erachter en zijn dan verborgen.
+     3. DE OUDE OMLIJSTING GAAT IN EEN BEWAARVAK, NIET WEG. De oude zijbalk,
+        kopbalk en subnav dragen een dozijn id's (hdr-project-name,
+        lang-switch, notif-panel, btn-logout, ...) die de renderfuncties
+        rechtstreeks opzoeken. Ze verhuizen verborgen mee (#k-oud-omlijsting),
+        precies zoals beheer.html zijn vier id's meeverhuisde.
+     4. HET ACTIECONTRACT LIGT VAST. ctx.acties draagt exact de veertien
+        namen uit de basis, elk gekoppeld aan CP_PORTAAL_DATA; een scherm dat
+        een andere naam gebruikt, breekt de keten (zie kActies).
+     5. ES5, nooit innerHTML, commentaar in het Nederlands.
+     6. ELKE KLANTZICHTBARE TEKST IS EEN NEDERLANDSE BRONSTRING door i18nT.
+        Wat de shell zelf tekent (zijbalklabels, 'Uitloggen', 'Meldingen')
+        loopt door de DOM-pass van translateNode(); de nieuwe bronstrings
+        staan in het rapport van deze ronde.
+     7. DE KLANT KAN TERUG. Zie kWissel(): één rij in het gebruikersmenu (of
+        ?indeling=oud in het adres) en de oude indeling staat er weer. Dit
+        zijn echte klanten; de noodklep is geen luxe.
+
+     TWEE BEVINDINGEN OVER CP_SHELL, EN HOE DIT BLOK ERMEE OMGAAT
+     A. CP_SHELL kent geen areas-optie: de zijbalk, het 'Ga naar'-menu en
+        de werkgebiednamen komen uit window.CP_MODEL.AREAS, en de router
+        (parseRoute/buildRoute) laat alleen de beheergebieden door — een
+        hash #/producten zou stil op Overzicht landen. Daarom zet
+        kZetRouteModel() vóór het monteren een ROUTEMODEL VOOR DE KLANT op
+        window.CP_MODEL: hetzelfde object als CP_MODEL (alle reken- en
+        datumfuncties blijven de originele), maar met de zeven klantgebieden
+        en een router die de oude tien pagina's naar de nieuwe routes
+        vertaalt. Het origineel blijft bereikbaar als window.CP_MODEL_BEHEER.
+        Het beheer laadt dit bestand niet en merkt er niets van.
+     B. De zijbalkbadge bestaat in CP_SHELL alleen voor het gebied 'inbox'.
+        Het portaal heeft dat gebied niet; de badge op Berichten wordt hier
+        zelf gebouwd (kMaakBadge) met dezelfde klasse (.navbadge), zodat het
+        stijlblad hem hetzelfde behandelt — ook ingeklapt als stip.
+     ============================================================ */
+
+  /* de voorkeur leeft in de browser van de klant, niet in de database: het
+     is een weergavekeuze van dit apparaat en geen klantgegeven */
+  var K_INDELING_KEY = 'cp_portaal_indeling';
+  var kGemonteerd = false;     /* draait CP_SHELL echt, of staat de oude indeling? */
+  var kHandvat = null;         /* het handvat van CP_SHELL.monteer() */
+  var kGestart = false;        /* is de eerste route al gelezen (kStart)? */
+  var kBundelVerouderd = false;/* een klantactie schreef; de bundel moet vers vóór de volgende tekening */
+  var kOpruimers = [];         /* stop()-haken van schermen die buiten hun boom leven */
+  var kBadgeEl = null;         /* de badge op Berichten (zie bevinding B) */
+  var kBadgeSr = null;         /* de schermlezerstekst bij die badge */
+  var kLaatsteRaw = null;      /* de laatst getekende route, om een verversing te herkennen */
+  var kRouteModel = null;      /* het routemodel voor de klant (zie bevinding A) */
+  /* het gebruikersobject dat de shell leest — één object, bijgewerkt bij elke
+     login (kTekenKlant), zodat de topbalk nooit een vorige klant toont */
+  var kGebruiker = { naam: '', mail: '' };
+
+  /* De ENIGE waarheid over "loopt de navigatie via de nieuwe shell". Bewust de
+     gemonteerde stand en niet de voorkeur: mislukt het monteren (een ontbrekend
+     bestand, een oude browser), dan moet alles gewoon de oude weg gaan. */
+  function kActief() { return kGemonteerd; }
+
+  function kVoorkeur() {
+    var uit = 'nieuw';   /* de nieuwe indeling is de standaard */
+    try {
+      var v = localStorage.getItem(K_INDELING_KEY);
+      if (v === 'oud' || v === 'nieuw') uit = v;
+    } catch (e) { /* privémodus */ }
+    /* DE NOODKLEP. Werkt het gebruikersmenu niet meer, dan is ?indeling=oud in
+       de adresbalk de weg terug. Hij wordt meteen bewaard, zodat de volgende
+       keer zonder parameter ook de oude indeling geeft. */
+    var m = /[?&]indeling=(oud|nieuw)(&|$)/.exec(String(location.search || ''));
+    if (m) {
+      uit = m[1];
+      try { localStorage.setItem(K_INDELING_KEY, uit); } catch (e) { /* privémodus */ }
+    }
+    return uit;
+  }
+
+  /* Wisselen doet een verversing en geen omschakeling ter plekke: CP_SHELL
+     heeft de oude omlijsting in een bewaarvak gezet en die komt alleen terug
+     met de opmaak uit dit bestand. Een verversing is dezelfde weg als F5; in
+     demomodus overleeft de sessie dat (sessionStorage), live ook (Supabase). */
+  function kWissel(naar) {
+    var doel = (naar === 'oud') ? 'oud' : 'nieuw';
+    try { localStorage.setItem(K_INDELING_KEY, doel); } catch (e) { /* privémodus */ }
+    /* DE NOODKLEP MOET UIT HET ADRES, de rest (?preview=…&lang=…) blijft
+       staan: de eigenaar die als klant meekijkt, mag zijn voorvertoning niet
+       kwijtraken door van indeling te wisselen. De hash blijft ook staan. */
+    var delen = String(location.search || '').replace(/^\?/, '').split('&');
+    var over = [];
+    for (var i = 0; i < delen.length; i++) {
+      if (delen[i] && delen[i].split('=')[0] !== 'indeling') over.push(delen[i]);
+    }
+    var adres = location.pathname + (over.length ? ('?' + over.join('&')) : '') + String(location.hash || '');
+    /* is het adres al schoon, dan moet het een echte verversing zijn:
+       location.replace() naar een adres dat alleen in de hash verschilt is
+       een navigatie BINNEN de pagina en herlaadt niets */
+    if (adres === (location.pathname + String(location.search || '') + String(location.hash || ''))) {
+      location.reload();
+      return;
+    }
+    location.replace(adres);
+  }
+  /* handvat voor de console, voor het geval het menu onbereikbaar is:
+     CP_PORTAAL_INDELING('oud') */
+  window.CP_PORTAAL_INDELING = kWissel;
+
+  /* de knop "Nieuwe indeling" in de OUDE kopbalk: alleen zichtbaar wanneer
+     de klant bewust de oude indeling koos, anders is er niets om naar terug
+     te gaan */
+  function kZetOudeIndelingKnop() {
+    var b = byId('k-indeling-btn');
+    if (!b) return;
+    b.hidden = kVoorkeur() !== 'oud';
+    b.addEventListener('click', function () { kWissel('nieuw'); });
+  }
+
+  /* ---------- kale hulpjes ---------- */
+  function kFout(tekst) { return new Error(tekst); }
+  function kBijOpruimen(f) { if (typeof f === 'function') kOpruimers.push(f); }
+  function kRuimOp() {
+    kOpruimers.forEach(function (f) { try { f(); } catch (e) { /* een kapotte opruimer mag de navigatie niet blokkeren */ } });
+    kOpruimers = [];
+  }
+
+  /* ============================================================
+     HET ROUTEMODEL VOOR DE KLANT  (bevinding A)
+     ============================================================
+     Dezelfde grammatica als CP_MODEL, met de zeven klantgebieden:
+       #/overzicht
+       #/producten  ·  #/producten/<id>  ·  #/producten/<id>/<tab>
+       #/berichten  ·  #/bestanden  ·  #/betalingen  ·  #/activiteit  ·  #/instellingen
+       elk met optioneel ?sleutel=waarde (tabOf leest ?tab=… voor een werkgebied)
+     Plus de COMPATIBILITEITSLAAG: de tien oude pagina's (#/home, #/mijlpalen,
+     #/updates, ... en zonder schuine streep: #producten) landen op hun nieuwe
+     plek, met het oude '@anker' als ?anker=… zodat de diepe links uit de
+     meldingen en de cockpit blijven werken. Wat in het productdetail opgaat
+     (Mijlpalen, Updates, Samples, Kwaliteit, Zendingen, Kosten) krijgt het
+     product dat nu open staat als id. */
+  var K_AREAS = [
+    { key: 'overzicht',    label: 'Overzicht',    path: '#/overzicht',    primary: true },
+    { key: 'producten',    label: 'Producten',    path: '#/producten',    primary: true },
+    { key: 'berichten',    label: 'Berichten',    path: '#/berichten',    primary: true },
+    { key: 'bestanden',    label: 'Bestanden',    path: '#/bestanden',    primary: true },
+    { key: 'betalingen',   label: 'Betalingen',   path: '#/betalingen',   primary: true },
+    /* zijbalk:false (voorstel 5): Activiteit is een werkgebied dat je via een
+       directe link bereikt (#/activiteit, en de oude #/logboek), niet via de
+       zijbalk — voor de klant met één lopend product is de tijdlijn van dat
+       product dezelfde informatie op een betere plek (kOmleiding). Het
+       gebied BLIJFT in K_AREAS: de router, kAreaLabel en de venstertitel
+       kennen het; alleen de lijst die de shell aan de zijbalk geeft
+       (kMaakRouteModel) laat het weg. */
+    { key: 'activiteit',   label: 'Activiteit',   path: '#/activiteit',   primary: false, zijbalk: false },
+    { key: 'instellingen', label: 'Instellingen', path: '#/instellingen', primary: false }
+  ];
+  /* wat de zijbalk (en het 'Ga naar'-menu van de shell) te zien krijgt */
+  function kZijbalkAreas() {
+    return K_AREAS.filter(function (a) { return a.zijbalk !== false; });
+  }
+  /* werkgebieden waar het tweede segment een id is in plaats van een tab */
+  var K_AREA_MET_ID = { producten: true };
+  /* de sneltoetsen g+i / g+p / g+f van CP_SHELL en een enkele gedeelde
+     zoekbron spreken de beheernamen; die landen op hun klant-tegenhanger in
+     plaats van stil op Overzicht */
+  var K_BEHEER_ALIAS = { inbox: 'berichten', projecten: 'producten', financien: 'betalingen', vandaag: 'overzicht' };
+  /* oude pagina → tab van het productdetail (hoofdstuk 4 van de spec) */
+  var K_OUD_NAAR_TAB = { mijlpalen: 'voortgang', updates: 'bestanden', samples: 'voortgang', kwaliteit: 'voortgang', zendingen: 'voortgang', kosten: 'betalingen' };
+  /* en terug: welke oude sectie is de eerlijkste terugval voor een tab */
+  var K_TAB_NAAR_OUD = { voortgang: 'mijlpalen', bestanden: 'updates', betalingen: 'kosten', gesprek: 'updates', details: 'mijlpalen', tijdlijn: 'logboek' };
+
+  function kIsArea(key) {
+    for (var i = 0; i < K_AREAS.length; i++) { if (K_AREAS[i].key === key) return true; }
+    return false;
+  }
+  function kAreaLabel(key) {
+    for (var i = 0; i < K_AREAS.length; i++) { if (K_AREAS[i].key === key) return K_AREAS[i].label; }
+    return 'Mijn project';
+  }
+  function kDecode(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+  function kEncode(s) { return encodeURIComponent(String(s == null ? '' : s)); }
+
+  function kParseQuery(query) {
+    var out = {};
+    var q = String(query == null ? '' : query);
+    if (!q) return out;
+    var parts = q.split('&');
+    for (var i = 0; i < parts.length; i++) {
+      var raw = parts[i];
+      if (!raw) continue;
+      var eq = raw.indexOf('=');
+      var k = kDecode((eq > -1 ? raw.slice(0, eq) : raw).replace(/\+/g, ' '));
+      if (!k) continue;
+      out[k] = kDecode((eq > -1 ? raw.slice(eq + 1) : '').replace(/\+/g, ' '));
+    }
+    return out;
+  }
+  /* alfabetisch, zodat dezelfde route altijd exact dezelfde tekst geeft
+     (zelfde regel als CP_MODEL.buildRoute) */
+  function kBuildQuery(params) {
+    if (!params || typeof params !== 'object') return '';
+    var keys = [];
+    for (var k in params) {
+      if (!Object.prototype.hasOwnProperty.call(params, k)) continue;
+      if (params[k] === null || params[k] === undefined) continue;
+      keys.push(k);
+    }
+    keys.sort();
+    var out = [];
+    for (var i = 0; i < keys.length; i++) {
+      var v = String(params[keys[i]]);
+      out.push(v === '' ? kEncode(keys[i]) : kEncode(keys[i]) + '=' + kEncode(v));
+    }
+    return out.join('&');
+  }
+
+  function kHuidigProjectId() {
+    return (BUNDLE && BUNDLE.project && BUNDLE.project.id) ? String(BUNDLE.project.id) : null;
+  }
+
+  /* de compatibiliteitslaag: oude paginanaam (+ anker) → nieuwe route, of
+     null als het geen oude pagina is */
+  function kRouteVanOudePagina(page, anker) {
+    var p = String(page || '').toLowerCase();
+    if (p === 'facturen') p = 'kosten'; /* de alleroudste links, zie currentPage() */
+    if (PAGES.indexOf(p) < 0) return null;
+    var params = {};
+    if (anker) params.anker = anker;
+    if (p === 'home') return { area: 'overzicht', params: params };
+    if (p === 'producten') return { area: 'producten', params: params };
+    if (p === 'documenten') return { area: 'bestanden', params: params };
+    if (p === 'logboek') return { area: 'activiteit', params: params };
+    var id = kHuidigProjectId();
+    if (K_OUD_NAAR_TAB[p]) {
+      if (id) return { area: 'producten', id: id, tab: K_OUD_NAAR_TAB[p], params: params };
+      /* zonder open product is er geen productdetail om in te landen: dan
+         het werkgebied dat het dichtst in de buurt komt */
+      return { area: (p === 'kosten') ? 'betalingen' : 'producten', params: params };
+    }
+    return { area: 'overzicht', params: params };
+  }
+
+  function kBlankRoute(ingevoerd) {
+    return { area: 'overzicht', sub: null, id: null, tab: null, params: {}, raw: '', ingevoerd: String(ingevoerd == null ? '' : ingevoerd) };
+  }
+
+  function kBuildRoute(route) {
+    if (typeof route === 'string') return kBuildRoute(kParseRoute(route));
+    var r = (route && typeof route === 'object') ? route : {};
+    var area = String(r.area == null ? '' : r.area).toLowerCase();
+    if (K_BEHEER_ALIAS[area]) area = K_BEHEER_ALIAS[area];
+    if (!kIsArea(area)) area = 'overzicht';
+    var out = '#/' + area;
+    if (K_AREA_MET_ID[area]) {
+      if (r.id) {
+        out += '/' + kEncode(r.id);
+        if (r.tab) out += '/' + kEncode(r.tab);
+      }
+    } else if (r.tab) {
+      out += '/' + kEncode(r.tab);
+    }
+    var q = kBuildQuery(r.params);
+    if (q) out += '?' + q;
+    return out;
+  }
+
+  function kParseRoute(hash) {
+    var raw = String(hash == null ? '' : hash);
+    var route = kBlankRoute(raw);
+    var s = raw;
+    var h = s.indexOf('#');
+    if (h > -1) s = s.slice(h + 1);
+    var query = '';
+    var qi = s.indexOf('?');
+    if (qi > -1) { query = s.slice(qi + 1); s = s.slice(0, qi); }
+    var segs = [];
+    var rawSegs = s.split('/');
+    for (var i = 0; i < rawSegs.length; i++) { if (rawSegs[i]) segs.push(rawSegs[i]); }
+
+    var eerste = segs.length ? kDecode(segs[0]).toLowerCase() : '';
+    /* het oude '#/pagina@anker' — het anker reist mee als parameter */
+    var anker = '';
+    var at = eerste.indexOf('@');
+    if (at > -1) { anker = eerste.slice(at + 1); eerste = eerste.slice(0, at); }
+    if (K_BEHEER_ALIAS[eerste]) eerste = K_BEHEER_ALIAS[eerste];
+
+    if (!kIsArea(eerste)) {
+      var oud = kRouteVanOudePagina(eerste, anker);
+      if (oud) {
+        route.area = oud.area;
+        route.id = oud.id || null;
+        route.tab = oud.tab || null;
+        route.params = oud.params || {};
+      }
+      /* onbekend: naar Overzicht, en de rest van het pad gaat mee de
+         prullenbak in — parameters van een route die niet bestaat zijn geen
+         state van het scherm waar je landt */
+      route.raw = kBuildRoute(route);
+      return route;
+    }
+    route.area = eerste;
+    route.params = kParseQuery(query);
+    if (K_AREA_MET_ID[eerste]) {
+      if (segs[1]) route.id = kDecode(segs[1]);
+      if (segs[2]) route.tab = kDecode(segs[2]).toLowerCase();
+    } else if (segs[1]) {
+      route.tab = kDecode(segs[1]).toLowerCase();
+    }
+    route.raw = kBuildRoute(route);
+    return route;
+  }
+
+  function kRouteEquals(a, b) { return kBuildRoute(a) === kBuildRoute(b); }
+
+  /* DE ENIGE MANIER OM EEN TAB TE LEZEN — zelfde regel als CP_MODEL.tabOf:
+     een entiteitstab staat in het pad, een werkgebiedtab in ?tab=… */
+  function kTabOf(route, terugval) {
+    var r = (typeof route === 'string') ? kParseRoute(route) : ((route && typeof route === 'object') ? route : {});
+    var params = (r.params && typeof r.params === 'object') ? r.params : {};
+    var t = String(r.tab == null ? '' : r.tab).toLowerCase() || String(params.tab == null ? '' : params.tab).toLowerCase();
+    if (t) return t;
+    return terugval === undefined ? null : terugval;
+  }
+
+  /* welke OUDE sectie de eerlijkste terugval is voor een route; null als er
+     geen oud scherm voor bestaat (Berichten, Instellingen) */
+  function kOudePaginaVanRoute(route) {
+    var a = String(route && route.area || '');
+    if (a === 'overzicht') return 'home';
+    if (a === 'producten') {
+      if (!route.id) return 'producten';
+      return K_TAB_NAAR_OUD[kTabOf(route, '')] || 'mijlpalen';
+    }
+    if (a === 'bestanden') return 'documenten';
+    if (a === 'betalingen') return 'kosten';
+    if (a === 'activiteit') return 'logboek';
+    return null;
+  }
+
+  function kFinishRoute(r) {
+    var out = { area: r.area || 'overzicht', sub: null, id: r.id || null, tab: r.tab || null, params: (r.params && typeof r.params === 'object') ? r.params : {} };
+    out.raw = kBuildRoute(out);
+    out.ingevoerd = null;
+    return out;
+  }
+  /* de tegenhangers van CP_MODEL.legacyViewToRoute / routeToLegacyView: de
+     "oude views" van het portaal zijn zijn tien paginanamen */
+  function kLegacyViewToRoute(view) {
+    var v = (view && typeof view === 'object') ? view : { name: String(view == null ? '' : view) };
+    var r = kRouteVanOudePagina(v.name, v.anker || '');
+    return kFinishRoute(r || { area: 'overzicht' });
+  }
+  function kRouteToLegacyView(route) {
+    var r = (typeof route === 'string') ? kParseRoute(route) : ((route && typeof route === 'object') ? route : {});
+    return { name: kOudePaginaVanRoute(r) || 'home', projectId: r.id || null };
+  }
+
+  /* DE COMPATIBILITEITSLAAG ANDERSOM: een NIEUWE hash in de OUDE indeling.
+     currentPage() kent alleen de tien oude paginanamen; '#/producten/<id>/
+     tijdlijn' is daar geen pagina en landde stil op Overzicht — terwijl
+     K_TAB_NAAR_OUD precies weet dat die tab het logboek is. Wie via
+     ?indeling=oud (of het gebruikersmenu) teruggaat, houdt zijn hash
+     (kWissel) en hoort op de bijpassende oude pagina uit te komen. Dit
+     herschrijft de hash vóórdat de oude router hem leest, met het anker
+     terug in de oude '@'-notatie; het adres blijft verder gelijk (de
+     noodklep ?indeling=oud en een ?preview=… blijven staan). Alleen
+     echte klantroutes (en de beheeraliassen) worden vertaald; een hash die
+     al een oude pagina is, of die geen enkele route is, blijft met rust. */
+  function kHashNaarOudeIndeling() {
+    var hash = String(location.hash || '');
+    var eerste = hash.replace(/^#\/?/, '').split(/[\/?@]/)[0].toLowerCase();
+    if (!eerste || !(kIsArea(eerste) || K_BEHEER_ALIAS[eerste])) return;
+    var r = kParseRoute(hash);
+    var page = kOudePaginaVanRoute(r);
+    if (!page) return; /* Berichten, Instellingen: geen oud scherm; de oude router kiest zelf */
+    var anker = (r.params && r.params.anker) ? String(r.params.anker) : '';
+    var nieuw = '#/' + page + (anker ? '@' + anker : '');
+    if (nieuw === hash) return;
+    /* replace en geen toewijzing: de nieuwe hash was nooit een pagina in de
+       oude indeling, dus hij hoort ook niet in de geschiedenis te blijven */
+    location.replace(location.pathname + String(location.search || '') + nieuw);
+  }
+
+  /* het routemodel: een kopie van CP_MODEL met de klantgrammatica erover.
+     Kopie en geen prototype: de shell en de componenten lezen het als een
+     platte tabel, en een for-in over een prototypeketen is precies het soort
+     verschil dat pas later opvalt. */
+  function kMaakRouteModel() {
+    var bron = window.CP_MODEL_BEHEER || window.CP_MODEL || {};
+    var uit = {};
+    for (var k in bron) { if (Object.prototype.hasOwnProperty.call(bron, k)) uit[k] = bron[k]; }
+    /* de shell bouwt de zijbalk uit AREAS; Activiteit hoort daar niet meer
+       in (voorstel 5). De shell zoekt in AREAS ook de werkgebiednaam voor
+       de kop, en valt voor 'activiteit' dus terug op 'Beheer' — kNavigeer
+       zet daar meteen na de shell de vertaalde naam uit K_AREAS overheen. */
+    uit.AREAS = kZijbalkAreas();
+    uit.parseRoute = kParseRoute;
+    uit.buildRoute = kBuildRoute;
+    uit.routeEquals = kRouteEquals;
+    uit.tabOf = kTabOf;
+    uit.legacyViewToRoute = kLegacyViewToRoute;
+    uit.routeToLegacyView = kRouteToLegacyView;
+    uit.LEGACY_VIEW_NAMES = PAGES.slice();
+    uit.KLANT = true; /* herkenbaar in de console: dit is het portaalmodel */
+    return uit;
+  }
+  function kZetRouteModel() {
+    if (kRouteModel) return;
+    if (!window.CP_MODEL_BEHEER) window.CP_MODEL_BEHEER = window.CP_MODEL;
+    kRouteModel = kMaakRouteModel();
+    window.CP_MODEL = kRouteModel;
+  }
+
+  /* ============================================================
+     TWEE WIKKELS OM CP_UI — zonder admin-ui.js te wijzigen
+     ============================================================ */
+
+  /* CP_SHELL tekent het icoon van een werkgebied met CP_UI.icon(a.key). De
+     icoontabel kent de beheernamen (projecten, inbox, financien), niet de
+     klantnamen; zonder deze wikkel stond er een vierkantje met een kruis in
+     de zijbalk en een waarschuwing in de console. Kent een latere admin-ui.js
+     de klantnaam wél, dan wint die vanzelf (iconBestaat). */
+  var K_ICOON_ALIAS = { producten: 'projecten', berichten: 'inbox', bestanden: 'bestand', betalingen: 'financien' };
+  function kZetIcoonAliassen() {
+    var UI = window.CP_UI;
+    if (!UI || typeof UI.icon !== 'function' || UI.icon.kGewikkeld) return;
+    var oud = UI.icon;
+    var nieuw = function (naam, maat) {
+      var n = String(naam == null ? '' : naam);
+      var bestaat = (typeof UI.iconBestaat === 'function') ? UI.iconBestaat(n) : false;
+      return oud((!bestaat && K_ICOON_ALIAS[n]) ? K_ICOON_ALIAS[n] : n, maat);
+    };
+    nieuw.kGewikkeld = true;
+    UI.icon = nieuw;
+  }
+
+  /* HET GEBRUIKERSMENU: taalkeuze, Download alles, de overgangsschakelaar en
+     uitloggen. CP_SHELL bouwt dat menu zelf en heeft geen haak voor extra
+     rijen; net als in beheer.html wordt CP_UI.contextMenu daarom één keer
+     omwikkeld. Alleen het menu dat een rij 'Uitloggen' draagt is het
+     gebruikersmenu; elk ander menu gaat ONGEWIJZIGD door.
+     Wat eruit gaat: de rij 'Sneltoetsen' (het portaal heeft geen
+     sneltoetsvenster; een rij die niets doet is erger dan geen rij) en, in de
+     voorvertoning, 'Uitloggen' (R1-5: signOut() zou de stafsessie intrekken).
+     De belknop van de shell komt hier niet meer langs: het portaal haalt hem
+     bij het monteren uit de topbalk (voorstel 20, kVerwijderBel). */
+  function kSchoonMenu(rijen) {
+    var uit = [];
+    for (var i = 0; i < rijen.length; i++) {
+      var it = rijen[i];
+      if (!it) continue;
+      if (it.scheiding) {
+        /* geen twee scheidingen achter elkaar, en geen scheiding vooraan */
+        if (!uit.length || uit[uit.length - 1].scheiding) continue;
+      }
+      uit.push(it);
+    }
+    while (uit.length && uit[uit.length - 1].scheiding) uit.pop();
+    return uit;
+  }
+  function kZetMenuRijen() {
+    var UI = window.CP_UI;
+    if (!UI || typeof UI.contextMenu !== 'function' || UI.contextMenu.kGewikkeld) return;
+    var oud = UI.contextMenu;
+    var nieuw = function (opts) {
+      var o = (opts && typeof opts === 'object' && !Array.isArray(opts)) ? opts : {};
+      var items = Array.isArray(o.items) ? o.items : [];
+      var uitlog = null;
+      items.forEach(function (it) { if (it && it.label === 'Uitloggen') uitlog = it; });
+      if (!uitlog) return oud(opts);
+      /* wel een kopie, want de aanroeper hergebruikt zijn itemlijst en mag er
+         niet stilletjes rijen bij krijgen */
+      var kopie = {}, k;
+      for (k in o) { if (Object.prototype.hasOwnProperty.call(o, k)) kopie[k] = o[k]; }
+      var rijen = [];
+      items.forEach(function (it) {
+        if (!it || it.label === 'Sneltoetsen' || it.label === 'Uitloggen') return;
+        rijen.push(it);
+      });
+      rijen.push({ scheiding: true }, { kop: 'Taal' });
+      LANGS.forEach(function (l) {
+        rijen.push({
+          label: l.name,
+          hint: l.label,
+          ico: (l.code === currentLang) ? 'vinkje' : null,
+          onKies: function () {
+            kTaalKiezen(l.code).then(null, function (err) { kToast(i18nT((err && err.message) || 'De taal kon niet worden bewaard.')); });
+          }
+        });
+      });
+      rijen.push({ scheiding: true });
+      rijen.push({ label: 'Download alles', ico: 'bestand', onKies: function () {
+        kDownloadAlles().then(null, function (err) { kToast(i18nT((err && err.message) || 'Het dossier kon niet worden samengesteld.')); });
+      } });
+      rijen.push({ scheiding: true });
+      rijen.push({ label: 'Terug naar de oude indeling', onKies: function () { kWissel('oud'); } });
+      if (!PREVIEW) rijen.push({ scheiding: true }, uitlog);
+      kopie.items = kSchoonMenu(rijen);
+      return oud(kopie);
+    };
+    nieuw.kGewikkeld = true;
+    UI.contextMenu = nieuw;
+  }
+
+  function kToast(tekst) {
+    if (window.CP_UI && typeof window.CP_UI.toast === 'function') { window.CP_UI.toast(tekst); return; }
+    if (window.alert) window.alert(tekst);
+  }
+
+  /* ============================================================
+     DE KLANT-DATALAAG KOPPELEN
+     ============================================================ */
+  /* CP_PORTAAL_DATA in DEZELFDE opslag en sessie zetten als DS. Demo: de
+     twee haken naar de bestaande demo-state (zie demoStaat/demoSchrijf in
+     demoService). Live: dezelfde Supabase-client, nooit een tweede. */
+  function kKoppelDatalaag(session) {
+    var D = window.CP_PORTAAL_DATA;
+    if (!D || typeof D.init !== 'function') return;
+    if (DS.demo) {
+      D.init({ mode: 'demo', lezen: DS.demoStaat, schrijven: DS.demoSchrijf, sessie: session });
+    } else {
+      D.init({ mode: 'live', client: (typeof DS.getClient === 'function') ? DS.getClient() : null, sessie: session });
+    }
+  }
+
+  /* ============================================================
+     HET ACTIECONTRACT — ctx.acties, exact de veertien namen
+     ============================================================
+     Elke schrijfactie loopt door kSchrijf(): eerst de voorvertoning
+     weigeren (de eigenaar kijkt mee als klant en mag namens hem niets
+     doen), dan de datalaag aanroepen, en bij succes de bundel als verouderd
+     markeren zodat de eerstvolgende tekening (ctx.ververs of een navigatie)
+     de nieuwe stand ophaalt. De uitkomst is de bijgewerkte rij van de
+     datalaag; een fout is een Error met een Nederlandse zin die door i18nT
+     kan. Er wordt hier bewust NIET getekend: het scherm dat de actie
+     aanriep beslist zelf of het ververst of eerst een bevestiging toont. */
+  function kSchrijf(naam, args) {
+    if (PREVIEW) return Promise.reject(kFout('In de voorvertoning kun je niets wijzigen. Sluit dit tabblad om terug te gaan naar het beheer.'));
+    var D = window.CP_PORTAAL_DATA;
+    if (!D || typeof D[naam] !== 'function') return Promise.reject(kFout('Deze actie is nog niet beschikbaar.'));
+    if (typeof D.gekoppeld === 'function' && !D.gekoppeld()) return Promise.reject(kFout('De verbinding met je gegevens is niet gemaakt. Vernieuw de pagina en probeer het opnieuw.'));
+    var uit;
+    try { uit = D[naam].apply(D, args); } catch (e) { return Promise.reject(e); }
+    return Promise.resolve(uit).then(kNaSchrijf);
+  }
+  function kNaSchrijf(rij) {
+    kBundelVerouderd = true;
+    PORTFOLIO = null; /* de productenplank is na een wijziging ook verouderd */
+    return rij;
+  }
+
+  /* de taal wisselt METEEN op het scherm (setLang, met de bestaande
+     bewaking: geen cp_lang in de voorvertoning) en wordt daarna als
+     portaaltaal van de klant bewaard, zodat de mails van het beheer in
+     dezelfde taal vertrekken. In de voorvertoning alleen het scherm. */
+  function kTaalKiezen(lang) {
+    var code = String(lang == null ? '' : lang).toLowerCase();
+    if (!LANGS.some(function (l) { return l.code === code; })) return Promise.reject(kFout('Deze taal is niet beschikbaar.'));
+    setLang(code);
+    if (PREVIEW) return Promise.resolve(null);
+    var D = window.CP_PORTAAL_DATA;
+    if (!D || typeof D.taalKiezen !== 'function' || (typeof D.gekoppeld === 'function' && !D.gekoppeld())) return Promise.resolve(null);
+    return D.taalKiezen(code).then(function (rij) {
+      if (SESSION) SESSION.portalLang = code;
+      return rij;
+    });
+  }
+
+  /* ============================================================
+     DE TAALKNOP IN DE TOPBALK  (voorstel 7)
+     ============================================================
+     Eén knop in plaats van vijf chips: de huidige taalcode plus een chevron,
+     en daarachter de vijf talen voluit in hun eigen taal. Het menu is
+     CP_UI.contextMenu — hetzelfde component als het gebruikersmenu en het
+     belmenu van de shell, met rol menu, pijltjestoetsen, Escape, focus terug
+     naar de knop en sluiten bij een klik erbuiten — dus geen tweede
+     menusysteem. Kiezen loopt door kTaalKiezen, dezelfde functie als de
+     rij in het gebruikersmenu en de categorie Taal in Instellingen.
+
+     WAAROM DE KNOP NIET OPNIEUW GEBOUWD WORDT BIJ EEN TAALWISSEL. Het
+     menu bouwt zijn rijen bij elk OPENEN uit de itemobjecten die het bij het
+     aanmaken kreeg; wie het vinkje wil verplaatsen hoeft dus alleen ico op
+     die objecten te wisselen (kTekenTaalKnop). De knop zelf is een vast
+     element waarvan de code en het aria-label worden herschreven. Zou het
+     hele menu worden vervangen (zoals de shell met menuHouder doet), dan
+     verdween de knop die na het kiezen de focus terugkreeg — en een
+     toetsenbordgebruiker stond na elke taalwissel op <body>.
+
+     De knop draagt data-no-i18n: de code is data, en het aria-label wordt
+     hier op renderpunt vertaald (i18nTpl) — een attribuut dat de DOM-pass
+     één keer onthoudt zou bij een taalwissel op de vorige taal blijven
+     hangen. De namen in het menu (Nederlands, English, Deutsch, Français,
+     Español) zijn bewust in hun eigen taal en staan niet in het
+     woordenboek, dus de DOM-pass laat ze staan.
+
+     Vorm: .k-lang-menu uit portaal-skin.css hoofdstuk 6 (pil, mono, 44px
+     onder 1100px); de stijlregel bovenin dit bestand zet hem op elke
+     breedte aan. Geen wereldbol: CP_UI.icon kent er geen (kZetIcoonAliassen
+     zou een doorgekruist vak tekenen), dus alleen de code, met de chevron
+     van het gebruikersmenu als teken dat er een menu achter zit. */
+  var kTaalKnop = null;      /* de knop in de topbalk */
+  var kTaalKnopCode = null;  /* het tekstdeel met de taalcode erin */
+  var kTaalRijen = [];       /* de menurijen, één per taal; ico wisselt mee */
+
+  function kTaalVanCode(code) {
+    for (var i = 0; i < LANGS.length; i++) { if (LANGS[i].code === code) return LANGS[i]; }
+    return null;
+  }
+  function kMaakTaalMenu() {
+    var UI = window.CP_UI;
+    if (!UI || typeof UI.contextMenu !== 'function') return null;
+    kTaalKnopCode = el('span', 'k-lang-code');
+    kTaalKnop = el('button', 'k-lang-menu');
+    kTaalKnop.type = 'button';
+    kTaalKnop.setAttribute('data-no-i18n', '');
+    kTaalKnop.appendChild(kTaalKnopCode);
+    if (typeof UI.iconBestaat !== 'function' || UI.iconBestaat('chevronOmlaag')) {
+      kTaalKnop.appendChild(UI.icon('chevronOmlaag', 16));
+    }
+    kTaalRijen = LANGS.map(function (l) {
+      return {
+        label: l.name,
+        hint: l.label,
+        kCode: l.code,
+        ico: (l.code === currentLang) ? 'vinkje' : null,
+        onKies: function () {
+          kTaalKiezen(l.code).then(null, function (err) { kToast(i18nT((err && err.message) || 'De taal kon niet worden bewaard.')); });
+        }
+      };
+    });
+    /* kop 'Taal' is de Nederlandse bron; het menu wordt bij elk openen
+       opnieuw in de DOM gezet en de DOM-pass vertaalt hem dan, precies
+       zoals bij de koppen van de menu's van de shell */
+    var menu = UI.contextMenu({ knop: kTaalKnop, items: kTaalRijen, kop: 'Taal', uitlijning: 'rechts' });
+    kTekenTaalKnop();
+    return menu;
+  }
+  function kTekenTaalKnop() {
+    if (!kTaalKnop || !kTaalKnopCode) return;
+    var t = kTaalVanCode(currentLang);
+    if (!t) return;
+    kTaalKnopCode.textContent = t.label;
+    var label = i18nTpl('Taal: {taal}', { taal: t.name });
+    kTaalKnop.setAttribute('aria-label', label);
+    kTaalKnop.setAttribute('title', label);
+    kTaalRijen.forEach(function (r) { r.ico = (r.kCode === currentLang) ? 'vinkje' : null; });
+  }
+
+  /* ============================================================
+     TAAL UIT DE BROWSER  (voorstel 39)
+     ============================================================
+     Bij een EERSTE bezoek — geen eigen taalkeuze in deze browser (cp_lang)
+     en geen ?lang= in het adres — kiest het portaal de taal van de browser
+     als die een van de vijf is. Dat loopt door kTaalKiezen, dezelfde weg
+     als een klik in het taalmenu: het scherm wisselt meteen, cp_lang wordt
+     bewaard (daarmee is het geen eerste bezoek meer) en de klantkaart
+     krijgt dezelfde portaaltaal, zodat de mails van het beheer in de taal
+     van de klant vertrekken. Kent de browser geen van de vijf, dan
+     verandert er niets: de stand die er al is (de standaardtaal van de
+     klantkaart uit afterLogin, anders Nederlands) blijft staan en er wordt
+     niets bewaard.
+
+     WAAROM BIJ HET MONTEREN EN NIET BIJ DE EERSTE ROUTE. setLang tekent bij
+     een actieve app opnieuw via CP_SHELL.ververs(), en vóór start() zou
+     dat een Overzicht tekenen dat de eerste route meteen weer overschrijft.
+     In kMonteer is appActive nog false: de taal staat dan al goed vóórdat
+     er ook maar één scherm getekend is. In de voorvertoning gebeurt er
+     niets (Steffan kijkt mee in de taal uit het adres).
+
+     DE BALK. Staat het portaal daarna in een andere taal dan Nederlands,
+     dan zegt één balk boven de hoofdkolom welke taal dat is en hoe je hem
+     wijzigt — een status, geen venster: hij vraagt niets en houdt niets
+     tegen. Sluiten (of zelf een andere taal kiezen) onthoudt dat in deze
+     browser (cp_taalbalk_gezien). De zin gaat door i18nTpl met de taalnaam
+     in haar eigen taal als variabele, zodat een Duitse klant hem in het
+     Duits leest zodra de bronstring vertaald is. */
+  var K_TAALBALK_KEY = 'cp_taalbalk_gezien';
+  var kTaalbalkEl = null;      /* de balk, zolang hij staat */
+  var kTaalbalkTekst = null;   /* de zin erin */
+  var kTaalbalkWijzig = null;  /* de knop die het taalmenu opent */
+  var kTaalbalkSluit = null;   /* de sluitknop */
+  var kTaalbalkTaal = null;    /* de taal die de balk aankondigde */
+
+  /* de eerste taal uit navigator.languages die het portaal kent; 'de-CH'
+     telt als 'de'. null als er geen enkele bij zit. */
+  function kBrowserTaal() {
+    var nav = window.navigator || {};
+    var lijst = [];
+    if (nav.languages && nav.languages.length) {
+      for (var i = 0; i < nav.languages.length; i++) lijst.push(nav.languages[i]);
+    }
+    if (nav.language) lijst.push(nav.language);
+    for (var j = 0; j < lijst.length; j++) {
+      var code = String(lijst[j] || '').toLowerCase().split('-')[0];
+      if (kTaalVanCode(code)) return code;
+    }
+    return null;
+  }
+  /* een eerste bezoek is: niet de voorvertoning, geen cp_lang in deze
+     browser en geen ?lang= in het adres. Zonder localStorage (privémodus)
+     is het geen eerste bezoek: de keuze zou niet beklijven en de balk zou
+     bij elke lading terugkomen. */
+  function kIsEersteBezoek() {
+    if (PREVIEW) return false;
+    try { if (localStorage.getItem('cp_lang')) return false; } catch (e) { return false; }
+    if (/[?&]lang=/.test(String(location.search || ''))) return false;
+    return true;
+  }
+  function kTaalbalkGezien() {
+    try { return localStorage.getItem(K_TAALBALK_KEY) === '1'; } catch (e) { return true; }
+  }
+  function kTaalUitBrowser() {
+    if (!kIsEersteBezoek()) return;
+    var code = kBrowserTaal();
+    if (code) {
+      /* ook als de browsertaal al de huidige is: dan wordt cp_lang bewaard
+         en is het de volgende keer geen eerste bezoek meer. Een mislukte
+         opslag op de klantkaart is geen reden voor een melding — het scherm
+         staat al in de gekozen taal; alleen de console hoort het. */
+      kTaalKiezen(code).then(null, function (err) {
+        if (window.console && console.warn) console.warn('De browsertaal is gekozen, maar kon niet als portaaltaal worden bewaard: ' + ((err && err.message) || err));
+      });
+      kTekenTaalKnop();
+    }
+    if (currentLang !== 'nl' && !kTaalbalkGezien()) kMaakTaalbalk();
+  }
+  function kMaakTaalbalk() {
+    var UI = window.CP_UI;
+    var main = kHandvat ? kHandvat.inhoudEl : null;
+    var vak = byId('k-scherm');
+    if (kTaalbalkEl || !UI || !main || !vak) return;
+    kTaalbalkEl = el('div', 'k-taalbalk');
+    kTaalbalkEl.setAttribute('role', 'status');
+    kTaalbalkEl.setAttribute('data-no-i18n', ''); /* op renderpunt vertaald (kTekenTaalbalk) */
+    kTaalbalkTekst = el('p', 'k-taalbalk-tekst');
+    kTaalbalkWijzig = el('button', 'btn small');
+    kTaalbalkWijzig.type = 'button';
+    kTaalbalkWijzig.addEventListener('click', function () {
+      /* hetzelfde menu als de knop in de topbalk, geen tweede taalkiezer;
+         het menu zet de focus zelf op zijn eerste rij */
+      if (kTaalKnop && typeof kTaalKnop.click === 'function') kTaalKnop.click();
+    });
+    if (typeof UI.iconKnop === 'function') {
+      kTaalbalkSluit = UI.iconKnop('sluiten', 'Sluiten', kSluitTaalbalk);
+    } else {
+      kTaalbalkSluit = el('button', 'u-iconbtn', '\u00d7');
+      kTaalbalkSluit.type = 'button';
+      kTaalbalkSluit.addEventListener('click', kSluitTaalbalk);
+    }
+    kTaalbalkEl.appendChild(kTaalbalkTekst);
+    kTaalbalkEl.appendChild(kTaalbalkWijzig);
+    kTaalbalkEl.appendChild(kTaalbalkSluit);
+    /* vóór #k-scherm: de balk hoort boven het scherm en overleeft elke
+       navigatie, want kNavigeer leegt alleen het vak eronder */
+    main.insertBefore(kTaalbalkEl, vak);
+    kTaalbalkTaal = currentLang;
+    kTekenTaalbalk();
+  }
+  /* de tekst volgt de taal (elke taalwissel komt langs kNaTekenen). Kiest
+     de klant een andere taal dan de balk aankondigde, dan heeft de balk
+     zijn werk gedaan en gaat hij dicht — ook bij Nederlands, want dan is
+     er niets meer aan te kondigen. */
+  function kTekenTaalbalk() {
+    if (!kTaalbalkEl) return;
+    if (currentLang !== kTaalbalkTaal) { kSluitTaalbalk(); return; }
+    var t = kTaalVanCode(currentLang);
+    kTaalbalkTekst.textContent = i18nTpl('Je ziet dit portaal in {taal}.', { taal: t ? t.name : currentLang });
+    kTaalbalkWijzig.textContent = i18nT('Wijzigen?');
+    var sluit = i18nT('Sluiten');
+    kTaalbalkSluit.setAttribute('aria-label', sluit);
+    kTaalbalkSluit.setAttribute('title', sluit);
+  }
+  function kSluitTaalbalk() {
+    if (!kTaalbalkEl) return;
+    var hadFocus = document.activeElement && kTaalbalkEl.contains(document.activeElement);
+    if (kTaalbalkEl.parentNode) kTaalbalkEl.parentNode.removeChild(kTaalbalkEl);
+    kTaalbalkEl = kTaalbalkTekst = kTaalbalkWijzig = kTaalbalkSluit = null;
+    kTaalbalkTaal = null;
+    try { localStorage.setItem(K_TAALBALK_KEY, '1'); } catch (e) { /* privémodus */ }
+    /* de focus stond op een knop die er niet meer is: naar de kop van het
+       scherm, dezelfde plek waar de shell hem na een navigatie zet */
+    if (hadFocus) {
+      var vak = byId('k-scherm');
+      var kop = vak ? vak.querySelector('h1') : null;
+      var doel = kop || (kHandvat ? kHandvat.inhoudEl : null);
+      if (doel && typeof doel.focus === 'function') {
+        if (!doel.getAttribute('tabindex')) doel.setAttribute('tabindex', '-1');
+        doel.focus();
+      }
+    }
+  }
+
+  /* het dossier als JSON-bestand naar de klant — zonder interne velden, dat
+     regelt de datalaag. Lezen mag ook in de voorvertoning: er wordt niets
+     geschreven. Het bestand wordt hier aangeboden via een tijdelijke link. */
+  function kDownloadAlles() {
+    var D = window.CP_PORTAAL_DATA;
+    if (!D || typeof D.downloadAlles !== 'function') return Promise.reject(kFout('Deze actie is nog niet beschikbaar.'));
+    if (typeof D.gekoppeld === 'function' && !D.gekoppeld()) return Promise.reject(kFout('De verbinding met je gegevens is niet gemaakt. Vernieuw de pagina en probeer het opnieuw.'));
+    return D.downloadAlles().then(function (pakket) {
+      kBewaarBestand(pakket);
+      return pakket;
+    });
+  }
+  function kBewaarBestand(pakket) {
+    if (!pakket || typeof pakket.json !== 'string') return;
+    var url = null;
+    try {
+      var blob = new Blob([pakket.json], { type: pakket.mime || 'application/json' });
+      url = URL.createObjectURL(blob);
+    } catch (e) { return; }
+    var a = el('a');
+    a.href = url;
+    a.download = pakket.bestandsnaam || 'customplus-dossier.json';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    if (a.parentNode) a.parentNode.removeChild(a);
+    setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* stil */ } }, 1500);
+  }
+
+  /* Een fase uit de bundel draagt in demomodus geen id en geen projectId:
+     de demoseed nest de fasen in project.stages en loadBundle() geeft die
+     objecten door zoals ze zijn. De datalaag zoekt een fase zonder id op
+     projectId + stageKey en vindt hem dus niet — 'Deze fase is niet
+     gevonden' voor een fase die wel degelijk op akkoord wacht. Live hebben
+     de rijen van project_stages allebei de velden en verandert er niets.
+     Een KOPIE met het projectId van de open bundel erbij, nooit het object
+     zelf: dat deelt de demoservice met zijn opslagstaat. */
+  function kMetProject(rij) {
+    if (!rij || typeof rij !== 'object' || rij.projectId || !BUNDLE || !BUNDLE.project) return rij;
+    var uit = {}, k;
+    for (k in rij) { if (Object.prototype.hasOwnProperty.call(rij, k)) uit[k] = rij[k]; }
+    uit.projectId = BUNDLE.project.id;
+    return uit;
+  }
+
+  function kActies() {
+    return {
+      akkoordGeven: function (stage, naam) { return kSchrijf('akkoordGeven', [kMetProject(stage), naam]); },
+      sampleBeoordelen: function (ronde, beslissing, opmerking, markeringen) { return kSchrijf('sampleBeoordelen', [ronde, beslissing, opmerking, markeringen]); },
+      betalingMelden: function (invoice, gegevens) { return kSchrijf('betalingMelden', [invoice, gegevens]); },
+      bezwaarMaken: function (invoice, reden) { return kSchrijf('bezwaarMaken', [invoice, reden]); },
+      berichtSturen: function (question, tekst) { return kSchrijf('berichtSturen', [question, tekst]); },
+      vraagStellen: function (project, tekst, media) { return kSchrijf('vraagStellen', [project, tekst, media]); },
+      bestandAanleveren: function (slot, bestand, opmerking) { return kSchrijf('bestandAanleveren', [slot, bestand, opmerking]); },
+      herbestellen: function (project, gegevens) { return kSchrijf('herbestellen', [project, gegevens]); },
+      contactpersoonOpslaan: function (contact) { return kSchrijf('contactpersoonOpslaan', [contact]); },
+      contactpersoonVerwijderen: function (contact) { return kSchrijf('contactpersoonVerwijderen', [contact]); },
+      taalKiezen: kTaalKiezen,
+      meldingenOpslaan: function (voorkeuren) { return kSchrijf('meldingenOpslaan', [voorkeuren]); },
+      downloadAlles: kDownloadAlles,
+      /* een factuur-PDF openen schrijft een downloadregel in het logboek van
+         de klant; in de voorvertoning hoort die regel er niet te komen (de
+         klant downloadde niets), dus ook dit loopt door kSchrijf */
+      factuurPdf: function (invoice) { return kSchrijf('factuurPdf', [invoice]); }
+    };
+  }
+
+  /* ============================================================
+     ÉÉN LOPEND PRODUCT — DE KORTSTE WEG  (voorstel 1 en 5)
+     ============================================================
+     De meeste klanten hebben precies één product in bewerking. Voor hen was
+     de weg na het inloggen Overzicht → Producten → product: twee klikken
+     naar het enige scherm dat ertoe doet. Heeft een klant precies één
+     lopend product, dan landt Overzicht (ook de lege hash en #/) direct op
+     dat product, en landt Activiteit op de tijdlijn van dat product. Bij
+     nul of twee of meer lopende producten verandert er niets.
+
+     "Lopend" is hier exact wat de productenplank (portaal-schermen-werk.js,
+     tekenProducten) op de actieve plank zet: niet gearchiveerd en niet alle
+     fases afgerond (CP_PORTAAL.voortgang(...).klaar). Twee plekken met twee
+     definities zouden vroeg of laat een klant op de plank laten landen
+     terwijl dit blok "één product" telde.
+
+     OVERZICHT BLIJFT BEREIKBAAR. De omleiding geldt alleen voor een
+     navigatie die niet uitdrukkelijk om Overzicht vroeg. Wat wél
+     uitdrukkelijk is: een klik op Overzicht in de zijbalk (kMonteer hangt
+     daar een luisteraar in de vangfase, want de eigen klikbinding van de
+     shell navigeert synchroon en zou de vlag te laat vinden), en een
+     hash die van buiten de shell op #/overzicht komt te staan — de
+     terugknop van de browser, of een met de hand getypt adres. Beide
+     zetten kOverzichtGewild; kNavigeer leest de vlag bij de eerstvolgende
+     navigatie één keer en zet hem terug, zodat een geannuleerde navigatie
+     hem nooit laat hangen. De eerste route na het inloggen (kStart) en een
+     herlaad kennen de vlag niet en leiden dus om. */
+  var kOverzichtGewild = false;
+
+  function kProductIsLopend(p) {
+    if (!p || typeof p !== 'object') return false;
+    if (String(p.status || '') === 'archived') return false;
+    var P = window.CP_PORTAAL;
+    if (P && typeof P.voortgang === 'function') {
+      try { return !P.voortgang(p).klaar; }
+      catch (e) { /* een kapotte fase-lijst: dan de regel van de oude indeling */ }
+    }
+    return !projectIsCompleted(p);
+  }
+  /* de productenplank als die er is (alle projecten van de klant, met hun
+     fases), anders de lijst uit afterLogin — die draagt dezelfde velden */
+  function kLopendeProducten() {
+    var bron = (PORTFOLIO && PORTFOLIO.projects && PORTFOLIO.projects.length) ? PORTFOLIO.projects : ALL_PROJECTS;
+    return (bron || []).filter(kProductIsLopend);
+  }
+  /* het id van het enige lopende product, of null bij nul of meer dan één */
+  function kEnigLopendId() {
+    var l = kLopendeProducten();
+    return (l.length === 1 && l[0] && l[0].id) ? String(l[0].id) : null;
+  }
+  /* welke route in de plaats komt van de gevraagde, of null als de route
+     gewoon mag tekenen. Leest en wist de vlag: zie boven. */
+  function kOmleiding(route) {
+    var a = String(route && route.area || '');
+    var gewild = kOverzichtGewild;
+    kOverzichtGewild = false;
+    if (a !== 'overzicht' && a !== 'activiteit') return null;
+    if (a === 'overzicht' && gewild) return null;
+    var id = kEnigLopendId();
+    if (!id) return null;
+    if (a === 'overzicht') return { area: 'producten', id: id };
+    /* de tijdlijn-tab van het productdetail; kent het detail die tab (nog)
+       niet, dan valt het zelf terug op Voortgang */
+    return { area: 'producten', id: id, tab: 'tijdlijn' };
+  }
+  /* de zijbalkklik op Overzicht — in de vangfase, vóór de klikbinding van
+     de shell op dezelfde knop (zie de uitleg hierboven) */
+  function kLuisterOverzichtKlik() {
+    if (!kHandvat || !kHandvat.zijbalkEl) return;
+    kHandvat.zijbalkEl.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== kHandvat.zijbalkEl) {
+        if (t.classList && t.classList.contains('navbtn')) {
+          if (t.getAttribute('data-area') === 'overzicht') kOverzichtGewild = true;
+          return;
+        }
+        t = t.parentNode;
+      }
+    }, true);
+  }
+  /* de hash die van buiten verandert (terugknop, getypt adres). Deze
+     luisteraar staat hier, bij het laden, en dus VÓÓR die van de shell (die
+     komt pas bij het monteren): op hetzelfde venster lopen luisteraars in
+     volgorde van aanmelding, en de shell navigeert synchroon vanuit de
+     zijne. Een hash die de shell zelf schreef na een klik op Overzicht komt
+     hier ook langs; dan staat de huidige route al op Overzicht en is er
+     niets te onthouden. */
+  window.addEventListener('hashchange', function () {
+    if (!kActief()) return;
+    var nu = window.CP_SHELL.route();
+    if (nu && String(nu.area || '') === 'overzicht') return;
+    if (/^#\/overzicht(\/|\?|$)/i.test(String(location.hash || ''))) kOverzichtGewild = true;
+  });
+
+  /* ============================================================
+     DE SCHERMTABEL — route in, schermbouwer uit
+     ============================================================ */
+  function kKiesScherm(route) {
+    var S = window.CP_PORTAAL_SCHERMEN || {};
+    var a = String(route.area || '');
+    if (a === 'overzicht')    return S.overzicht;
+    if (a === 'producten')    return route.id ? S.product : S.producten;
+    if (a === 'berichten')    return S.berichten;
+    if (a === 'bestanden')    return S.bestanden;
+    if (a === 'betalingen')   return S.betalingen;
+    if (a === 'activiteit')   return S.activiteit;
+    if (a === 'instellingen') return (kTabOf(route, '') && S.instellingCategorie) ? S.instellingCategorie : S.instellingen;
+    return null;
+  }
+
+  /* wat een scherm meekrijgt: het contract uit de basis (route, nu, bundle,
+     ui, chart, model, portaal, data, i18nT, i18nTpl, lang, ga, ververs,
+     registreerGuard, klant, acties) plus wat het beheer óók meegeeft en wat
+     de zeven werkgebieden over ALLE producten nodig hebben: het portfolio
+     (alle projecten met hun media, samples, facturen, vragen en zendingen —
+     de bundel is één project), de datumopmaak in de taal van de klant en de
+     kop- en meldfuncties van de shell. */
+  function kCtx(route) {
+    var SH = window.CP_SHELL;
+    var naam = SESSION ? String(SESSION.contactName || '') : '';
+    return {
+      route: route,
+      nu: new Date().toISOString(),
+      bundle: BUNDLE,
+      portfolio: PORTFOLIO,
+      projecten: ALL_PROJECTS.slice(),
+      ui: window.CP_UI,
+      chart: window.CP_CHART,
+      model: kRouteModel,
+      portaal: window.CP_PORTAAL,
+      data: window.CP_PORTAAL_DATA,
+      i18nT: i18nT,
+      i18nTpl: i18nTpl,
+      lang: currentLang,
+      locale: i18nLocale(),
+      fmtDate: fmtDate,
+      fmtDateShort: fmtDateShort,
+      fmtDateTime: fmtDateTime,
+      fmtMoney: fmtMoney,
+      stageLabel: function (key) { return i18nT(stageName(key)); },
+      ga: function (r, o) { return SH.ga(r, o); },
+      ververs: kVervers,
+      registreerGuard: function (g) { return SH.registreerGuard(g); },
+      verwijderGuard: function (g) { return SH.verwijderGuard(g); },
+      registreerLaag: function (soort, sluit, isOpen) { return SH.registreerLaag(soort, sluit, isOpen); },
+      zetTitel: function (t) { return SH.zetTitel(t); },
+      zetKruimels: function (lijst) { return SH.zetKruimels(lijst); },
+      zetKop: function (kop) { return SH.zetKop(kop); },
+      meld: function (t) { return SH.meld(t); },
+      zetSelectie: function (v) { return SH.zetSelectie(v); },
+      selectie: function () { return SH.selectie(); },
+      klant: {
+        id: SESSION ? String(SESSION.clientId || '') : '',
+        naam: naam,
+        voornaam: naam.split(/\s+/)[0] || '',
+        bedrijf: SESSION ? String(SESSION.company || '') : '',
+        email: SESSION ? String(SESSION.email || '') : ''
+      },
+      voorvertoning: !!PREVIEW,
+      acties: kActies()
+    };
+  }
+
+  /* ============================================================
+     DATA VÓÓR HET TEKENEN
+     ============================================================
+     De productenplank (PORTFOLIO) altijd; het project uit de route wanneer
+     dat een ander is dan de open bundel (openProject: bundel, koppen,
+     secties, live meeluisteren); en de open bundel opnieuw wanneer een
+     klantactie hem als verouderd markeerde. */
+  function kZorgData(route) {
+    var stappen = Promise.resolve(null);
+    if (SESSION) {
+      stappen = stappen.then(function () {
+        return fetchPortfolio().then(null, function () { return null; });
+      });
+    }
+    var a = String(route.area || '');
+    if (a === 'producten' && route.id && kHuidigProjectId() !== String(route.id)) {
+      stappen = stappen.then(function () {
+        var p = null;
+        ALL_PROJECTS.forEach(function (x) { if (x && String(x.id) === String(route.id)) p = x; });
+        if (!p && PORTFOLIO) (PORTFOLIO.projects || []).forEach(function (x) { if (x && String(x.id) === String(route.id)) p = x; });
+        if (!p) return null; /* niet van deze klant of bestaat niet: het scherm zegt dat */
+        return openProject(p);
+      });
+    } else if (kBundelVerouderd && BUNDLE && BUNDLE.project) {
+      stappen = stappen.then(kHerlaadBundel);
+    }
+    return stappen;
+  }
+  function kHerlaadBundel() {
+    if (!BUNDLE || !BUNDLE.project) return Promise.resolve(null);
+    var pid = BUNDLE.project.id;
+    return DS.loadBundle(pid).then(function (b) {
+      /* intussen gewisseld van project: dan is deze bundel niet meer de open bundel */
+      if (!BUNDLE || !BUNDLE.project || BUNDLE.project.id !== pid) return b;
+      BUNDLE = b;
+      kBundelVerouderd = false;
+      renderAllSections();
+      updateNotifDot();
+      return b;
+    }, function () { return null; });
+  }
+
+  /* ============================================================
+     DE ROUTER — één functie: data zorgen, scherm kiezen, tekenen
+     ============================================================ */
+  function kNavigeer(route) {
+    var SH = window.CP_SHELL;
+    var mijn = SH.tokenNu();
+    var a = String(route.area || '');
+    var raw = String(route.raw || '');
+    /* dezelfde route opnieuw = een verversing (taalwissel, klantactie, live
+       verversing): dan geen scrollsprong en geen herhaalde onthulling */
+    var opnieuw = (kLaatsteRaw !== null && kLaatsteRaw === raw);
+    kLaatsteRaw = raw;
+    /* een verversing van dezelfde route (taalwissel, klantactie, live
+       verversing) leidt nooit om — wie op Overzicht staat en van taal
+       wisselt, blijft op Overzicht — en verbruikt de vlag van voorstel 1
+       dus ook, want die geldt voor precies één navigatie */
+    var omleiden = !opnieuw;
+    if (opnieuw) kOverzichtGewild = false;
+    /* de kruimel en de venstertitel in de taal van de klant — de shell
+       zette zojuist de Nederlandse werkgebiednaam */
+    SH.zetTitel(i18nT(kAreaLabel(a)));
+    /* de haak uit portaal-skin.css hoofdstuk 5: rood alleen in Betalingen */
+    var main = kHandvat ? kHandvat.inhoudEl : null;
+    if (main) main.setAttribute('data-area', a);
+
+    return kZorgData(route).then(function () {
+      /* het render-token: twee snelle navigaties zouden allebei in hetzelfde
+         vak schrijven en een half scherm opleveren */
+      if (!SH.tokenGeldig(mijn)) return false;
+      /* voorstel 1 en 5: pas HIER, met een verse productenplank — de
+         telling van lopende producten mag niet op een plank rusten die een
+         klantactie zojuist verouderd verklaarde. ga() met vervang:true
+         schrijft de nieuwe hash over de gevraagde heen (geen extra
+         geschiedenisregel) en maakt dit render-token ongeldig, zodat de
+         navigatie hierboven stil eindigt en alleen de omgeleide tekent. */
+      var om = omleiden ? kOmleiding(route) : null;
+      if (om) return SH.ga(om, { vervang: true, guardOverslaan: true });
+      kRuimOp();
+      closeTermPop(false);
+      var bouwer = kKiesScherm(route);
+      if (typeof bouwer !== 'function') {
+        kToonOudeSectie(route, opnieuw);
+        kNaTekenen();
+        return true;
+      }
+      var vak = byId('k-scherm');
+      kVerbergOudeSecties();
+      vak.textContent = '';
+      var node;
+      try { node = bouwer(kCtx(route)); }
+      catch (e) { kToonFout(e); return false; }
+      /* een bouwer mag een node óf een Promise van een node teruggeven */
+      return Promise.resolve(node).then(function (n) {
+        if (!SH.tokenGeldig(mijn)) return false;
+        if (!n || typeof n.nodeType !== 'number') {
+          kToonFout(kFout('Dit onderdeel kon niet worden getekend.'));
+          return false;
+        }
+        /* een scherm MAG stop() op zijn wortel hangen (zelfde afspraak als
+           in het beheer); aanroepen als het er is, verder niets aannemen */
+        if (typeof n.stop === 'function') kBijOpruimen(n.stop);
+        vak.textContent = '';
+        vak.appendChild(n);
+        kNaTekenen();
+        return true;
+      }, function (e) { kToonFout(e); return false; });
+    }, function (fout) {
+      kToonFout(fout);
+      return false;
+    });
+  }
+  function kNaTekenen() {
+    var b = kBadge();
+    kZetBadge(b.n, b.soort);
+    /* voorstel 19: de productenplank is zojuist ververst (kZorgData), dus
+       nu klopt de telling waarop het zoekveld aan of uit gaat */
+    kZetZoekveld();
+    /* de taalknop en de taalbalk volgen de taal: een taalwissel komt hier
+       langs via setLang → kVervers → kNavigeer */
+    kTekenTaalKnop();
+    kTekenTaalbalk();
+  }
+
+  /* de oude sectie als terugval, in de werkkolom van de shell */
+  function kToonOudeSectie(route, passief) {
+    var page = kOudePaginaVanRoute(route);
+    if (!page) { kToonNogNietGebouwd(route); return; }
+    if (String(route.area || '') === 'producten' && route.id && kHuidigProjectId() !== String(route.id)) {
+      kToonNietGevonden();
+      return;
+    }
+    document.body.classList.remove('k-scherm-nieuw');
+    var vak = byId('k-scherm');
+    if (vak) {
+      vak.textContent = '';
+      /* een onzichtbare h1 met de naam van het werkgebied. Twee redenen:
+         (1) de oude secties hebben alleen h2's, en een schermlezer hoort na
+         een navigatie wél waar hij is; (2) CP_SHELL zet na elke navigatie
+         de focus op h1[tabindex=-1] en valt zonder h1 terug op <main> zelf —
+         en focus() op een element dat hoger is dan het venster scrolt de
+         pagina precies de topbalk uit beeld. Op renderpunt vertaald. */
+      var kop = el('h1', 'sr-only', i18nT(kAreaLabel(String(route.area || ''))));
+      kop.setAttribute('tabindex', '-1');
+      kop.setAttribute('data-no-i18n', '');
+      vak.appendChild(kop);
+    }
+    renderRoute({ page: page, passive: !!passief });
+  }
+  /* alle tien oude secties (en de statusband) uit beeld zolang er een nieuw
+     scherm in #k-scherm staat; de klasse op body verbergt de banden eromheen */
+  function kVerbergOudeSecties() {
+    document.body.classList.add('k-scherm-nieuw');
+    document.body.setAttribute('data-page', 'k-scherm');
+    PAGES.forEach(function (p) { var s = byId(p); if (s) s.hidden = true; });
+    var sb = byId('statusband');
+    if (sb) sb.hidden = true;
+  }
+  function kLeegVak() {
+    kVerbergOudeSecties();
+    var vak = byId('k-scherm');
+    if (vak) vak.textContent = '';
+    return vak;
+  }
+  /* een werkgebied zonder oud scherm én zonder bouwer: zeg dat, in plaats
+     van een leeg vak of een sectie die iets anders belooft */
+  function kToonNogNietGebouwd(route) {
+    var vak = kLeegVak();
+    if (!vak || !window.CP_UI) return;
+    var a = String(route.area || '');
+    var uitleg = (a === 'instellingen')
+      ? i18nT('Dit onderdeel wordt nog gebouwd. Je taal kies je in het gebruikersmenu rechtsboven; daar staat ook Download alles.')
+      : i18nT('Dit onderdeel wordt nog gebouwd.');
+    var actie = null;
+    if (a === 'berichten') actie = { label: i18nT('Stel een vraag'), onClick: askSteffan };
+    vak.appendChild(window.CP_UI.emptyState({ titel: i18nT(kAreaLabel(a)), uitleg: uitleg, actie: actie }));
+  }
+  function kToonNietGevonden() {
+    var vak = kLeegVak();
+    if (!vak || !window.CP_UI) return;
+    vak.appendChild(window.CP_UI.emptyState({
+      titel: i18nT('Dit product kon niet worden gevonden.'),
+      uitleg: i18nT('Het hoort niet bij jouw account, of het bestaat niet meer.'),
+      actie: { label: i18nT('Naar mijn producten'), onClick: function () { window.CP_SHELL.ga({ area: 'producten' }); } }
+    }));
+  }
+  function kToonFout(fout) {
+    var vak = kLeegVak();
+    if (window.console && console.error) console.error(fout);
+    if (!vak || !window.CP_UI) return;
+    vak.appendChild(window.CP_UI.emptyState({
+      titel: i18nT('Dit onderdeel kon niet worden geladen.'),
+      uitleg: i18nT((fout && fout.message) || 'Er ging iets mis. Vernieuw de pagina en probeer het opnieuw.'),
+      actie: { label: i18nT('Opnieuw proberen'), onClick: function () { kVervers(); } }
+    }));
+  }
+
+  /* de badge op Berichten (voorstel 16): het aantal ongelezen antwoorden
+     van Steffan, geteld door het berichtenscherm zelf
+     (CP_PORTAAL_SCHERMEN.ongelezenAntwoorden), want alleen dat kent de
+     leesstand van de gesprekken. Ontbreekt die functie, of geeft ze geen
+     getal, dan de oude telling: CP_PORTAAL.aantalNodig over de open
+     bundel, alles wat op de klant wacht (akkoord, sample, factuur, vraag,
+     bestand). De soort reist mee: de schermlezerszin verschilt per telling. */
+  function kBadge() {
+    var S = window.CP_PORTAAL_SCHERMEN;
+    if (S && typeof S.ongelezenAntwoorden === 'function' && BUNDLE && window.CP_SHELL) {
+      try {
+        var n = S.ongelezenAntwoorden(kCtx(window.CP_SHELL.route()));
+        if (typeof n === 'number' && isFinite(n)) return { n: Math.max(0, Math.round(n)), soort: 'antwoorden' };
+      } catch (e) { /* dan de oude telling hieronder */ }
+    }
+    var P = window.CP_PORTAAL;
+    if (!P || typeof P.aantalNodig !== 'function' || !BUNDLE) return { n: 0, soort: 'nodig' };
+    try {
+      return { n: P.aantalNodig(BUNDLE, new Date().toISOString(), { stageLabel: function (k) { return i18nT(stageName(k)); } }), soort: 'nodig' };
+    } catch (e) { return { n: 0, soort: 'nodig' }; } /* liever geen badge dan een verzonnen getal */
+  }
+  /* bevinding B: de badge bestaat in de shell alleen voor 'inbox'; hier
+     dezelfde vorm op Berichten. Het getal staat in de badge (aria-hidden),
+     de betekenis in een schermlezerstekst die bij elke stand opnieuw wordt
+     geschreven — als tekst, niet als aria-label, want een attribuut dat de
+     i18n-pass één keer onthoudt zou bij een taalwissel terugspringen. */
+  function kMaakBadge() {
+    if (!kHandvat || !kHandvat.zijbalkEl) return;
+    var knop = kHandvat.zijbalkEl.querySelector('.navbtn[data-area="berichten"]');
+    if (!knop) return;
+    kBadgeEl = el('span', 'navbadge', '0');
+    kBadgeEl.hidden = true;
+    kBadgeEl.setAttribute('aria-hidden', 'true');
+    kBadgeSr = el('span', 'sr-only');
+    kBadgeSr.setAttribute('data-no-i18n', ''); /* op renderpunt vertaald */
+    knop.appendChild(kBadgeEl);
+    knop.appendChild(kBadgeSr);
+  }
+  function kZetBadge(n, soort) {
+    var aantal = (typeof n === 'number' && n > 0) ? Math.round(n) : 0;
+    if (!kBadgeEl) return;
+    kBadgeEl.textContent = String(aantal);
+    kBadgeEl.hidden = aantal === 0;
+    if (kBadgeSr) {
+      var zin = '';
+      if (aantal) {
+        /* Hele zinnen, geen geplakte stukjes: dit is de tekst die een schermlezer
+           bij de badge voorleest en die een vertaler als één zin moet kunnen
+           vertalen. Een zin die met een komma begint is in geen enkele taal te
+           vertalen zonder de rest van de zin te kennen. */
+        if (soort === 'antwoorden') {
+          zin = (aantal === 1) ? i18nT('Je hebt 1 nieuw antwoord van Steffan.') : i18nTpl('Je hebt {n} nieuwe antwoorden van Steffan.', { n: aantal });
+        } else {
+          zin = (aantal === 1) ? i18nT('Er wacht 1 bericht op jouw reactie.') : i18nTpl('Er wachten {n} berichten op jouw reactie.', { n: aantal });
+        }
+      }
+      kBadgeSr.textContent = zin;
+    }
+  }
+
+  /* ctx.ververs: de productenplank en de bundel opnieuw, dan de huidige route
+     opnieuw tekenen met behoud van de scrollpositie */
+  function kVervers() {
+    PORTFOLIO = null;
+    kBundelVerouderd = true;
+    return window.CP_SHELL.ververs();
+  }
+
+  /* de eerste route ná het inloggen. start() leest de hash — een gedeelde
+     of ververste #/producten/<id> (of een oude #/mijlpalen) landt zo op
+     dezelfde plek. Zonder hash en met meer dan één project is de
+     productenplank de landing, precies zoals afterLogin dat al besliste. */
+  function kStart(project, landing) {
+    var SH = window.CP_SHELL;
+    if (!kGestart) {
+      kGestart = true;
+      /* een nieuwe sessie begint zonder wens van de vorige klant */
+      kOverzichtGewild = false;
+      if (!location.hash && landing === 'producten') {
+        /* voorstel 1: afterLogin telt álle projecten (ook het archief) en
+           kiest bij meer dan één de plank; heeft de klant daarvan precies
+           één LOPEND product, dan is dat product de landing — dezelfde
+           regel als kOmleiding voor de lege hash, alleen komt de lege hash
+           hier niet als route 'overzicht' langs */
+        var enig = kEnigLopendId();
+        SH.ga(enig ? { area: 'producten', id: enig } : { area: 'producten' }, { vervang: true, guardOverslaan: true });
+      } else {
+        SH.start();
+      }
+      return;
+    }
+    SH.ga({ area: 'producten', id: project.id });
+  }
+
+  /* het zoekveld in de topbalk: dezelfde index als de oude Cmd+K-dialog
+     (pagina's, documenten, foto's, samples, facturen, zendingen, acties),
+     zodat er niets minder vindbaar is dan gisteren. Cmd+K zet de shell nu op
+     dit veld. */
+  function kZoekBronnen() {
+    if (!BUNDLE) return [];
+    var ix;
+    try { ix = buildQsIndex(); } catch (e) { return []; }
+    return ix.map(function (e) {
+      return {
+        label: String(e.label || ''),
+        sub: String(e.sub || ''),
+        onKies: function () { if (typeof e.run === 'function') e.run(); }
+      };
+    });
+  }
+
+  /* voorstel 19: het zoekveld "Zoek in je project" alleen bij twee of meer
+     lopende producten. Met precies één product (kEnigLopendId) is er niets
+     om tussen te kiezen: alles wat de index vindt, staat op het scherm dat
+     al open is. De klasse op de topbalk verbergt het veld én de compacte
+     zoekknop van de telefoon (stijlregel bovenin dit bestand). De sneltoets
+     Cmd+K van de shell blijft bestaan, maar wordt hieronder tegengehouden
+     zolang het veld verborgen is: op de telefoon zou hij anders het
+     kruimelpad en de actierij wegzetten voor een veld dat niet verschijnt,
+     en zonder focus komt de blur die alles terugzet nooit. */
+  function kZoekVerborgen() {
+    return !!(kHandvat && kHandvat.topbalkEl && kHandvat.topbalkEl.classList.contains('k-zonder-zoek'));
+  }
+  function kZetZoekveld() {
+    if (!kHandvat || !kHandvat.topbalkEl) return;
+    kHandvat.topbalkEl.classList.toggle('k-zonder-zoek', !!kEnigLopendId());
+  }
+  /* in de vangfase op window: dat is vóór de document-luisteraar van de
+     shell (opToets) én vóór de oude Cmd+K-dialoog, en het raakt alleen de
+     toets die naar het zoekveld zou gaan */
+  window.addEventListener('keydown', function (e) {
+    if (!kActief() || !kZoekVerborgen()) return;
+    if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  /* voorstel 20: de bel. De shell bouwt hem altijd (er is geen optie voor)
+     en het portaal heeft er niets voor: wat op de klant wacht staat als
+     badge op Berichten en als "Wacht op jou" op het scherm zelf. Weg dus,
+     mét zijn menu (.u-menuwrap), zodat er geen loos element in de
+     tabvolgorde blijft. CP_SHELL.verversMeldingen() blijft aanroepbaar en
+     doet dan niets: menuHouder.herbouw() slaat een menu zonder ouder over.
+     Het aria-label is op dit moment nog de Nederlandse bron van de shell
+     (de i18n-pass loopt pas ná deze synchrone montage). */
+  function kVerwijderBel(acts) {
+    var bel = acts.querySelector('.u-iconbtn[aria-label="Meldingen"], .u-iconbtn[aria-label^="Meldingen ("]');
+    if (!bel) return;
+    var wrap = bel.parentNode;
+    while (wrap && wrap !== acts && !(wrap.classList && wrap.classList.contains('u-menuwrap'))) wrap = wrap.parentNode;
+    var weg = (wrap && wrap !== acts) ? wrap : bel;
+    if (weg.parentNode) weg.parentNode.removeChild(weg);
+  }
+
+  function kUitloggen() {
+    if (PREVIEW) return; /* R1-5, zie doLogout */
+    doLogout();
+  }
+  /* preciezer dan de standaard van de shell ("staat er een .overlay in de
+     DOM"): de drie lagen die dit portaal kent */
+  function kModaalOpen() {
+    var sheet = byId('sheet'), mo = byId('moment');
+    return !!((sheet && sheet.classList.contains('open')) || (mo && mo.classList.contains('open')) || (qsDialog && qsDialog.open));
+  }
+  function kZetDocumentTitel(tekst) {
+    var t = String(tekst == null ? '' : tekst);
+    document.title = t ? (t + ' — CUSTOM+') : 'CUSTOM+';
+  }
+  /* de klant in de omlijsting: de bedrijfsnaam onder het woordmerk (de skin
+     tekent daar de kicker als naam) en de contactpersoon in het gebruikersmenu */
+  function kTekenKlant() {
+    if (!kHandvat || !SESSION) return;
+    var kick = kHandvat.zijbalkEl ? kHandvat.zijbalkEl.querySelector('.u-side-brand .kicker') : null;
+    if (kick) {
+      kick.textContent = String(SESSION.company || '');
+      kick.setAttribute('title', String(SESSION.company || ''));
+      kick.setAttribute('data-no-i18n', ''); /* een bedrijfsnaam is data */
+    }
+    kGebruiker.naam = String(SESSION.contactName || '');
+    kGebruiker.mail = String(SESSION.email || '');
+    kHandvat.tekenGebruiker();
+  }
+
+  /* ============================================================
+     MONTEREN
+     ============================================================ */
+  function kMonteer() {
+    if (kGemonteerd) return true;
+    if (kVoorkeur() !== 'nieuw') return false;
+
+    var ontbreekt = [];
+    if (!window.CP_MODEL)        ontbreekt.push('portal/admin-model.js');
+    if (!window.CP_CHART)        ontbreekt.push('portal/admin-charts.js');
+    if (!window.CP_UI)           ontbreekt.push('portal/admin-ui.js');
+    if (!window.CP_SHELL)        ontbreekt.push('portal/admin-shell.js');
+    if (!window.CP_PORTAAL)      ontbreekt.push('portal/portaal-model.js');
+    if (!window.CP_PORTAAL_DATA) ontbreekt.push('portal/portaal-data.js');
+    if (ontbreekt.length) {
+      /* niet stil terugvallen: dan zou de klant de oude indeling zien zonder
+         dat iemand ooit merkt dat er een bestand mist */
+      if (window.console && console.warn) console.warn('De nieuwe portaalindeling is niet gestart — deze bestanden ontbreken: ' + ontbreekt.join(', '));
+      kHashNaarOudeIndeling();
+      return false;
+    }
+    if (!window.CP_PORTAAL_SCHERMEN && window.console && console.info) {
+      console.info('portal/portaal-schermen-*.js is er nog niet: de oude secties tekenen als terugval.');
+    }
+
+    var app = byId('view-app');
+    var main = null;
+    var footer = null;
+    for (var i = 0; app && i < app.children.length; i++) {
+      if (app.children[i].tagName === 'MAIN') main = app.children[i];
+      if (app.children[i].tagName === 'FOOTER') footer = app.children[i];
+    }
+    if (!app || !main) { kHashNaarOudeIndeling(); return false; }
+
+    kZetRouteModel();
+    kZetIcoonAliassen();
+    kZetMenuRijen();
+
+    /* ---- de oude omlijsting in het bewaarvak, de banden de werkkolom in ----
+       Vóór het monteren, want CP_SHELL.monteer() gooit elk direct kind van
+       #view-app weg dat niet van hem is. Het bewaarvak staat daarom tijdelijk
+       IN <main> (dat verhuist intact) en gaat daarna naar de topbalk. De
+       hostkaartband en de voettekst horen bij de oude secties en gaan mee
+       de werkkolom in — ze tonen alleen bij een oude sectie als terugval. */
+    var holder = el('div');
+    holder.id = 'k-oud-omlijsting';
+    holder.hidden = true;
+    holder.setAttribute('aria-hidden', 'true');
+    var oudeDelen = [];
+    ['.sidebar', '.topbar', '.subnav'].forEach(function (sel) {
+      var n = app.querySelector(sel);
+      if (n && n.parentNode === app) { oudeDelen.push(n); holder.appendChild(n); }
+    });
+    var host = app.querySelector('.hostcard-wrap');
+    if (host && host.parentNode !== app) host = null;
+    var vak = el('div');
+    vak.id = 'k-scherm';
+    main.insertBefore(holder, main.firstChild);
+    main.insertBefore(vak, holder.nextSibling);
+    if (host) main.insertBefore(host, vak.nextSibling);
+    if (footer) main.appendChild(footer);
+    /* .content: de werkkolomklasse van admin-ui.css (breedte, zijruimte);
+       #content: het doel van de skiplink van de shell */
+    main.classList.add('content');
+    if (!main.id) main.id = 'content';
+    document.body.classList.add('k-nieuw');
+
+    var handvat = window.CP_SHELL.monteer({
+      container: app,
+      /* HET BESTAANDE <main>. Het wordt VERPLAATST, nooit vervangen: alle
+         renderfuncties schrijven via byId() in de secties erin. */
+      contentEl: main,
+      onNavigeer: kNavigeer,
+      onUitloggen: kUitloggen,
+      zoekBronnen: kZoekBronnen,
+      /* geen meldingen: de bel heeft voor de klant geen inhoud (voorstel 20)
+         en gaat na het monteren uit de topbalk (kVerwijderBel). Geen
+         maakItems: het + Nieuw-menu is voor de klant leeg en staat in de
+         skin op display:none; geen onSneltoetshulp: er is geen venster */
+      bevestig: function (tekst) { return Promise.resolve(!!window.confirm(i18nT(tekst))); },
+      modaalOpen: kModaalOpen,
+      /* de modusbadge is in de skin verborgen; eerlijk gevuld voor het geval
+         iemand hem ooit aanzet */
+      modus: function () { return { mode: DS.demo ? 'demo' : 'live', staat: 'ok', tekst: DS.demo ? 'Demo' : 'Live' }; },
+      gebruiker: kGebruiker
+    });
+    if (!handvat) {
+      /* terugdraaien: zonder handvat is er niets gemonteerd en hoort de
+         oude omlijsting terug op zijn plek */
+      if (window.console && console.warn) console.warn('CP_SHELL.monteer() gaf geen handvat terug; de oude indeling blijft staan.');
+      oudeDelen.forEach(function (n) { app.insertBefore(n, main); });
+      if (host) app.insertBefore(host, main);
+      if (footer) app.appendChild(footer);
+      if (holder.parentNode) holder.parentNode.removeChild(holder);
+      if (vak.parentNode) vak.parentNode.removeChild(vak);
+      main.classList.remove('content');
+      document.body.classList.remove('k-nieuw');
+      kHashNaarOudeIndeling();
+      return false;
+    }
+    kHandvat = handvat;
+
+    /* ---- nabewerking van de omlijsting ---- */
+    /* het bewaarvak uit de inhoud, naar de topbalk (onzichtbaar, buiten de
+       tabvolgorde) — dezelfde plek als het bewaarvak van de shell zelf */
+    handvat.topbalkEl.appendChild(holder);
+    var acts = handvat.topbalkEl.querySelector('.u-topbar-acts');
+    /* de taalkeuze is één knop met een menu (voorstel 7, kMaakTaalMenu);
+       de oude knoppengroep #lang-switch blijft in het bewaarvak staan —
+       setLang() zet er nog aria-pressed op en de oude indeling heeft hem
+       nodig — en komt niet meer in de topbalk */
+    var taalMenu = kMaakTaalMenu();
+    if (acts && taalMenu) acts.insertBefore(taalMenu.el, acts.firstChild);
+    /* het derde topbalkslot van het beheer (deadlinekalender op elke pagina,
+       sneltoetshulp op Overzicht) heeft in het portaal geen uitvoerder: geen
+       kalenderkaart, geen sneltoetsvenster. Een knop die niets doet is
+       erger dan geen knop, dus allebei weg. De aria-labels zijn op dit
+       moment nog de Nederlandse bron van de shell (de i18n-pass loopt pas
+       ná deze synchrone montage). */
+    if (acts) {
+      ['Deadlinekalender', 'Sneltoetsen'].forEach(function (label) {
+        var b = acts.querySelector('.u-iconbtn[aria-label="' + label + '"]');
+        if (b && b.parentNode) b.parentNode.removeChild(b);
+      });
+      kVerwijderBel(acts);
+      /* de compacte zoekknop van de telefoon krijgt een eigen klasse, zodat
+         de stijlregel van voorstel 19 hem zonder aria-label vindt — dat
+         label vertaalt de i18n-pass straks */
+      var zk = acts.querySelector('.u-iconbtn[aria-label="Zoeken"]');
+      if (zk) zk.classList.add('k-zoekknop');
+    }
+    /* het zoekveld: de klant zoekt in zijn project, niet in klanten en
+       fabrieken. Vóór de eerste i18n-pass gezet, dus dit ís de bronstring. */
+    var inp = handvat.topbalkEl.querySelector('.u-search input');
+    if (inp) {
+      inp.setAttribute('aria-label', 'Zoek in je project');
+      inp.setAttribute('placeholder', 'Zoek in je project');
+    }
+    /* de venstertitel: de shell schrijft '… — CUSTOM+ Beheer', en dat is
+       precies het woord dat een klant niet hoort te lezen. zetTitel op het
+       handvat is ook wat CP_SHELL.zetTitel (voor de schermen) aanroept. */
+    var oudZetTitel = handvat.zetTitel;
+    handvat.zetTitel = function (tekst) {
+      oudZetTitel(tekst);
+      kZetDocumentTitel(tekst);
+    };
+    kMaakBadge();
+    /* voorstel 19: ALL_PROJECTS staat al (afterLogin), dus de telling van
+       lopende producten klopt hier al vóór de eerste route */
+    kZetZoekveld();
+    kGemonteerd = true;
+    /* voorstel 1: de zijbalkklik op Overzicht is een uitdrukkelijke wens en
+       mag niet worden omgeleid; kHandvat staat, dus de zijbalk is er */
+    kLuisterOverzichtKlik();
+    kTekenKlant();
+    /* voorstel 39: als laatste, nu de omlijsting en het vak voor de balk
+       er zijn en appActive nog false is (zie de uitleg bij kTaalUitBrowser) */
+    kTaalUitBrowser();
+    return true;
+  }
+
+  /* ============================================================
      Start
      ============================================================ */
+  /* de overgangsschakelaar in de oude kopbalk (alleen zichtbaar in de oude
+     indeling; de nieuwe heeft zijn rij in het gebruikersmenu) */
+  kZetOudeIndelingKnop();
+  /* gaat de oude indeling draaien (?indeling=oud of de bewaarde voorkeur),
+     dan moet een nieuwe hash NU al een oude pagina worden: de oude router
+     leest hem bij het inloggen (enterProject → renderRoute) */
+  if (kVoorkeur() !== 'nieuw') kHashNaarOudeIndeling();
   /* taalknoppen NL EN DE FR ES in de topbar-meta */
   (function () {
     var wrap = byId('lang-switch');

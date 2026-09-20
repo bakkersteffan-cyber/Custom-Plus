@@ -560,6 +560,13 @@
 
   window.CP_QR = {
     encode: encode,
+    /* fase 3 (PDF): svgParts/pathData waren al de motor onder svgMarkup en
+       svgElement; ze staan nu ook in de publieke API zodat portal/pdf.js
+       exact hetzelfde pad als PDF-vectorpad kan tekenen. Eén QR-encoder in
+       dit project, drie weergaven — een tweede encoder zou vroeg of laat
+       een andere code opleveren dan die op het scherm. */
+    svgParts: svgParts,
+    pathData: pathData,
     svgMarkup: svgMarkup,
     svgElement: svgElement,
     epcPayload: epcPayload,
