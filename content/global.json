@@ -8,7 +8,14 @@
     "newsletterHeading": "Notes on manufacturing, sent occasionally.",
     "newsletterLead": "No newsletter fluff. Just what we learn running real projects through Chinese factories.",
     "brandTagline": "From sketch to shipping container: one accountable process, with someone on the factory floor who answers to you.",
-    "copyright": "© 2026 CUSTOM+ Studio"
+    "copyright": "© 2026 CUSTOM+"
+  },
+  "company": {
+    "name": "CUSTOM+",
+    "email": "steffan@customplus.nl",
+    "kvk": "",
+    "btw": "",
+    "adres": ""
   },
   "callBooking": {
     "url": "https://cal.com/steffan-bakker-isqvg1/30min",
@@ -16,6 +23,8 @@
     "fallbackLabel": "Open in a new tab",
     "notReadyBody": "Call booking isn't switched on yet. Start a project instead and Steffan will suggest a time in his reply.",
     "notReadyCta": "Start a project",
-    "loadingLabel": "Loading the calendar…"
+    "loadingLabel": "Loading the calendar…",
+    "consentBody": "The calendar is provided by cal.com and loads only after you click.",
+    "consentCta": "Plan a call"
   }
 }

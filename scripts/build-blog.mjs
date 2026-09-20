@@ -9,8 +9,8 @@
   2. sitemap.xml: het blok tussen <!-- blog:start --> en <!-- blog:end -->
      verversen met een <url> entry voor #/blog + elk artikel (priority 0.6).
      Alles buiten de markers blijft onaangeraakt. Geen markers = warn + skip.
-  3. feed.xml: RSS 2.0, kanaal "CUSTOM+ Field notes", nieuwste 20 artikelen,
-     link = DOMAIN/#/blog/<slug>, pubDate in RFC822.
+  3. feed.xml: RSS 2.0, kanaal "CUSTOM+ Field notes" (Nederlandstalig), nieuwste
+     20 artikelen, link = DOMAIN/blog/<slug>, pubDate in RFC822.
 
   Het domein komt uit de Sitemap regel in robots.txt (zelfde placeholder als
   de rest van het project totdat het echte domein is ingevuld).
@@ -29,15 +29,12 @@ import { fileURLToPath } from 'node:url';
 var ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 var BLOG_DIR = path.join(ROOT, 'content', 'blog');
 var INDEX_FILE = path.join(ROOT, 'content', 'blog-index.json');
-var SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 var FEED_FILE = path.join(ROOT, 'feed.xml');
 var ROBOTS_FILE = path.join(ROOT, 'robots.txt');
 
 var FALLBACK_DOMAIN = 'https://REPLACE-WITH-YOUR-DOMAIN.example';
 var WORDS_PER_MIN = 220;
 var FEED_MAX = 20;
-var MARK_START = '<!-- blog:start -->';
-var MARK_END = '<!-- blog:end -->';
 var CATEGORIES = ['ontwerp', 'sourcing', 'sampling', 'productie', 'kwaliteit', 'logistiek', 'ondernemen'];
 
 /* ---------- helpers ---------- */
@@ -140,15 +137,6 @@ function readDomain(){
 }
 
 /* robots.txt laten meelopen met het echte domein van de deploy */
-function syncRobots(domain){
-  var robots = readFileSafe(ROBOTS_FILE);
-  if(robots === null) return;
-  var gewenst = 'Sitemap: ' + domain + '/sitemap.xml';
-  var next = robots.match(/^Sitemap:\s*\S+/mi)
-    ? robots.replace(/^Sitemap:\s*\S+/mi, gewenst)
-    : robots.replace(/\s*$/, '\n\n' + gewenst + '\n');
-  writeIfChanged(ROBOTS_FILE, next, 'robots.txt');
-}
 
 /* ---------- 1. artikelen lezen + valideren ---------- */
 
@@ -238,45 +226,25 @@ function buildIndexJson(articles){
   return JSON.stringify(index, null, 2) + '\n';
 }
 
-/* ---------- 3. sitemap.xml markerblok ---------- */
-
-function updateSitemap(articles, domain){
-  var xml = readFileSafe(SITEMAP_FILE);
-  if(xml === null){
-    console.warn('build-blog: sitemap.xml niet gevonden, blogsectie overgeslagen');
-    return;
-  }
-  var start = xml.indexOf(MARK_START);
-  var end = xml.indexOf(MARK_END);
-  if(start === -1 || end === -1 || end < start){
-    console.warn('build-blog: markers ' + MARK_START + ' / ' + MARK_END + ' niet (correct) gevonden in sitemap.xml, blogsectie overgeslagen');
-    return;
-  }
-  var lines = ['<url><loc>' + escXml(domain + '/#/blog') + '</loc><priority>0.6</priority></url>'];
-  articles.forEach(function(a){
-    lines.push('<url><loc>' + escXml(domain + '/#/blog/' + a.slug) + '</loc><priority>0.6</priority></url>');
-  });
-  var block = MARK_START + '\n  ' + lines.join('\n  ') + '\n  ' + MARK_END;
-  writeIfChanged(SITEMAP_FILE, xml.slice(0, start) + block + xml.slice(end + MARK_END.length));
-}
-
 /* ---------- 4. feed.xml (RSS 2.0) ---------- */
 
 function buildFeedXml(articles, domain){
   var items = articles.slice(0, FEED_MAX);
   var newest = articles.length ? articles[0].date : todayIso();
-  var blogUrl = domain + '/#/blog';
+  var blogUrl = domain + '/blog';
   var out = [];
   out.push('<?xml version="1.0" encoding="UTF-8"?>');
   out.push('<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">');
   out.push('  <channel>');
   out.push('    <title>CUSTOM+ Field notes</title>');
   out.push('    <link>' + escXml(blogUrl) + '</link>');
-  out.push('    <description>' + escXml('Honest notes on getting products made in China: costs, sampling, MOQ negotiation, quality control and freight.') + '</description>');
+  /* de feed is Nederlandstalig, net als de artikelen en de site zelf */
+  out.push('    <description>' + escXml('Eerlijke notities over produceren in China: kosten, samples, onderhandelen over MOQ, kwaliteitscontrole en transport.') + '</description>');
+  out.push('    <language>nl</language>');
   out.push('    <lastBuildDate>' + rfc822(newest) + '</lastBuildDate>');
   out.push('    <atom:link href="' + escXml(domain + '/feed.xml') + '" rel="self" type="application/rss+xml"/>');
   items.forEach(function(a){
-    var link = domain + '/#/blog/' + a.slug;
+    var link = domain + '/blog/' + a.slug;
     out.push('    <item>');
     out.push('      <title>' + escXml(a.title) + '</title>');
     out.push('      <link>' + escXml(link) + '</link>');
@@ -292,10 +260,11 @@ function buildFeedXml(articles, domain){
 
 /* ---------- main ---------- */
 
+/* robots.txt en sitemap.xml worden volledig door scripts/build-site.mjs
+   geschreven, dat de complete routelijst kent. Dit script levert alleen nog de
+   blogindex en de RSS feed. */
 var domain = readDomain();
-syncRobots(domain);
 var articles = loadArticles();
 console.log('build-blog: ' + articles.length + ' artikel(en) in de index');
 writeIfChanged(INDEX_FILE, buildIndexJson(articles));
-updateSitemap(articles, domain);
 writeIfChanged(FEED_FILE, buildFeedXml(articles, domain));

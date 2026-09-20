@@ -1,6 +1,6 @@
 /* CUSTOM+ AI productcheck — serverless proxy naar Mistral.
    De API key leeft uitsluitend hier (Netlify env var MISTRAL_API_KEY), nooit in de client.
-   Model overschrijfbaar via MISTRAL_MODEL (default mistral-small-latest). */
+   Model overschrijfbaar via MISTRAL_MODEL; standaardketen ministral-14b → 8b → small. */
 
 var MISTRAL_URL = 'https://api.mistral.ai/v1/chat/completions';
 var AGENTS_URL = 'https://api.mistral.ai/v1/agents';
@@ -181,24 +181,37 @@ export default async function handler(req) {
     extraSystem.push('The visitor is asking something they already asked. Do not repeat your earlier answer or its examples: open differently, and give genuinely new substance — other materials, another finish or format, another angle on the same product. Acknowledge lightly that you will look at it from another side.');
   }
 
-  var upstream;
-  try {
-    upstream = await fetch(MISTRAL_URL, {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: process.env.MISTRAL_MODEL || 'mistral-small-latest',
-        temperature: repeat ? 0.85 : 0.5,
-        max_tokens: 460,
-        messages: [{ role: 'system', content: systemPrompt(LANGS[lang]) }]
-          .concat(extraSystem.map(function (t) { return { role: 'system', content: t }; }))
-          .concat(messages)
-      })
-    });
-  } catch (e) {
-    return json({ error: 'upstream-unreachable' }, 502);
+  /* Modelketen (zie site-chat.mjs): bij 429/403 op het ene model het volgende
+     proberen; de sleutel mag op het huidige abonnement alleen Ministral. */
+  var modellen = [];
+  if (process.env.MISTRAL_MODEL) modellen.push(process.env.MISTRAL_MODEL);
+  ['ministral-14b-latest', 'ministral-8b-latest', 'mistral-small-latest'].forEach(function (m) {
+    if (modellen.indexOf(m) < 0) modellen.push(m);
+  });
+  var upstream = null, laatsteStatus = 0;
+  for (var mi = 0; mi < modellen.length; mi++) {
+    try {
+      upstream = await fetch(MISTRAL_URL, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: modellen[mi],
+          temperature: repeat ? 0.85 : 0.5,
+          max_tokens: 460,
+          messages: [{ role: 'system', content: systemPrompt(LANGS[lang]) }]
+            .concat(extraSystem.map(function (t) { return { role: 'system', content: t }; }))
+            .concat(messages)
+        })
+      });
+    } catch (e) {
+      return json({ error: 'upstream-unreachable' }, 502);
+    }
+    laatsteStatus = upstream.status;
+    if (upstream.ok) break;
+    upstream = null;
+    if (laatsteStatus !== 429 && laatsteStatus !== 403) break;
   }
-  if (!upstream.ok) return json({ error: 'upstream-' + upstream.status }, 502);
+  if (!upstream) return json({ error: 'upstream-' + laatsteStatus }, 502);
 
   var data;
   try { data = await upstream.json(); } catch (e) { return json({ error: 'upstream-bad-json' }, 502); }

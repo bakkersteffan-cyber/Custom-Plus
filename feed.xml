@@ -2,35 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CUSTOM+ Field notes</title>
-    <link>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog</link>
-    <description>Honest notes on getting products made in China: costs, sampling, MOQ negotiation, quality control and freight.</description>
+    <link>https://customplus.nl/blog</link>
+    <description>Eerlijke notities over produceren in China: kosten, samples, onderhandelen over MOQ, kwaliteitscontrole en transport.</description>
+    <language>nl</language>
     <lastBuildDate>Thu, 20 Aug 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://REPLACE-WITH-YOUR-DOMAIN.example/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://customplus.nl/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Wat een sample echt kost</title>
-      <link>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/wat-een-sample-echt-kost</link>
-      <guid isPermaLink="true">https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/wat-een-sample-echt-kost</guid>
+      <link>https://customplus.nl/blog/wat-een-sample-echt-kost</link>
+      <guid isPermaLink="true">https://customplus.nl/blog/wat-een-sample-echt-kost</guid>
       <pubDate>Thu, 20 Aug 2026 00:00:00 +0000</pubDate>
       <description>Vierhonderd euro voor één stuk voelt scheef als de stukprijs straks drie euro is. Toch klopt die factuur meestal: hier is de uitsplitsing, plus wanneer je het geld terugziet.</description>
     </item>
     <item>
       <title>MOQ is een gesprek, geen wet</title>
-      <link>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/moq-is-een-gesprek</link>
-      <guid isPermaLink="true">https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/moq-is-een-gesprek</guid>
+      <link>https://customplus.nl/blog/moq-is-een-gesprek</link>
+      <guid isPermaLink="true">https://customplus.nl/blog/moq-is-een-gesprek</guid>
       <pubDate>Thu, 13 Aug 2026 00:00:00 +0000</pubDate>
       <description>Die duizend stuks minimum op de leverancierspagina is een openingsbod. Waarom een MOQ bestaat, waar de rek zit, en wat je beter niet kunt proberen.</description>
     </item>
     <item>
       <title>De containerrekensom</title>
-      <link>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/de-containerrekensom</link>
-      <guid isPermaLink="true">https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/de-containerrekensom</guid>
+      <link>https://customplus.nl/blog/de-containerrekensom</link>
+      <guid isPermaLink="true">https://customplus.nl/blog/de-containerrekensom</guid>
       <pubDate>Thu, 06 Aug 2026 00:00:00 +0000</pubDate>
       <description>De stukprijs uit de fabriek is niet je kostprijs. Wat er onderweg bij komt, waarom je doos meer bepaalt dan je vrachttarief, en de rekensom die je vooraf maakt.</description>
     </item>
     <item>
       <title>AQL zonder jargon</title>
-      <link>https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/aql-zonder-jargon</link>
-      <guid isPermaLink="true">https://REPLACE-WITH-YOUR-DOMAIN.example/#/blog/aql-zonder-jargon</guid>
+      <link>https://customplus.nl/blog/aql-zonder-jargon</link>
+      <guid isPermaLink="true">https://customplus.nl/blog/aql-zonder-jargon</guid>
       <pubDate>Thu, 30 Jul 2026 00:00:00 +0000</pubDate>
       <description>Hoe weet je of vijfduizend stuks lijken op het ene sample dat je goedkeurde? Daar is een systeem voor. Wat AQL wel en niet belooft, uitgelegd zonder tabellenmagie.</description>
     </item>

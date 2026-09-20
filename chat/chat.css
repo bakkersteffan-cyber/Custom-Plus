@@ -1,0 +1,204 @@
+/* CUSTOM+ sitechat — losse stylesheet, laadt naast /assets/app.css op elke
+   publieke pagina. Alle kleuren komen uit de tokens van de site (--black,
+   --white, --gray-*, --line); de terugvalwaarden erachter zijn exact de
+   waarden die de site zelf in het lichte thema gebruikt, zodat het paneel
+   er ook goed uitziet als het buiten de .fl-scope van de site staat. Er
+   komen geen nieuwe kleuren bij: zwart accent, grijze bubbels, dezelfde
+   radius (22px kaart, 18px bubbel, 50px balk) en schaduwen als de
+   productcheck-popup. Fonts: Hanken Grotesk (tekst) en JetBrains Mono
+   (kickers), dezelfde stapels als custom-plus.html. */
+
+.cpc-fab, .cpc-panel, .cpc-panel * { box-sizing: border-box; }
+
+/* ---------- de ronde knop ---------- */
+.cpc-fab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 330;
+  width: 56px; height: 56px; border-radius: 50%; border: 0; padding: 0;
+  background: var(--black, #000); color: var(--white, #fff); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 16px 40px rgba(17,17,17,.24);
+  transition: transform .3s cubic-bezier(.85,0,.15,1), box-shadow .3s ease;
+}
+.cpc-fab:hover { transform: translateY(-2px); box-shadow: 0 20px 44px rgba(17,17,17,.28); }
+.cpc-fab svg { width: 24px; height: 24px; }
+.cpc-fab .cpc-fab__close { display: none; }
+.cpc-fab[aria-expanded="true"] .cpc-fab__open { display: none; }
+.cpc-fab[aria-expanded="true"] .cpc-fab__close { display: block; }
+/* ongelezen antwoord terwijl het paneel dicht is: een klein wit puntje */
+.cpc-fab.has-unread::after {
+  content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--white, #fff); border: 2px solid var(--black, #000);
+}
+
+/* ---------- het paneel ---------- */
+.cpc-panel {
+  position: fixed; right: 20px; bottom: 88px; z-index: 331;
+  width: 400px; max-width: calc(100vw - 40px);
+  height: 640px; max-height: calc(100vh - 108px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--white, #fff); color: var(--black, #000);
+  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(17,17,17,.24);
+  font-family: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14.5px; line-height: 1.6; font-weight: 400;
+  opacity: 0; transform: translateY(12px) scale(.98); pointer-events: none;
+  transition: opacity .35s ease, transform .4s cubic-bezier(.83,0,.17,1);
+}
+.cpc-panel[hidden] { display: none; }
+.cpc-panel.is-open { opacity: 1; transform: none; pointer-events: auto; }
+
+.cpc-head {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 20px 20px 14px; border-bottom: 1px solid var(--line, rgba(228,224,219,.6));
+}
+.cpc-head__text { flex: 1; min-width: 0; }
+.cpc-title { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; }
+.cpc-sub {
+  display: block; margin-top: 3px; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: var(--gray-9, #727272);
+}
+.cpc-close {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; padding: 0;
+  border: 1px solid var(--line, rgba(228,224,219,.6)); background: none; color: var(--black, #000); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color .3s, transform .3s cubic-bezier(.85,0,.15,1);
+}
+.cpc-close:hover { border-color: var(--black, #000); transform: rotate(90deg); }
+.cpc-close svg { width: 16px; height: 16px; }
+
+/* modus: twee pillen, de actieve is zwart */
+.cpc-modes { display: flex; gap: 6px; padding: 12px 20px 0; }
+.cpc-mode {
+  font: inherit; font-size: 12px; font-weight: 500; letter-spacing: .2px; cursor: pointer;
+  padding: 7px 14px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
+  background: var(--white, #fff); color: var(--gray-33, #333);
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+.cpc-mode:hover { border-color: var(--black, #000); }
+.cpc-mode[aria-pressed="true"] { background: var(--black, #000); color: var(--white, #fff); border-color: var(--black, #000); }
+
+/* ---------- gesprek ---------- */
+.cpc-thread {
+  flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin;
+  display: flex; flex-direction: column; gap: 12px; padding: 16px 20px;
+}
+.cpc-msg { white-space: pre-line; overflow-wrap: break-word; }
+.cpc-msg--user { align-self: flex-end; max-width: 84%; background: var(--black, #000); color: var(--white, #fff); border-radius: 18px 18px 4px 18px; padding: 10px 16px; }
+.cpc-msg--ai   { align-self: flex-start; max-width: 90%; background: var(--gray-f9, #f9f9f9); color: var(--black, #000); border-radius: 18px 18px 18px 4px; padding: 12px 16px; }
+.cpc-msg--ai.is-muted { color: var(--gray-69, #696969); }
+
+.cpc-typing { align-self: flex-start; display: inline-flex; gap: 5px; background: var(--gray-f9, #f9f9f9); border-radius: 18px 18px 18px 4px; padding: 14px 16px; }
+.cpc-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-9, #727272); animation: cpc-blink 1.2s infinite ease-in-out; }
+.cpc-typing i:nth-child(2) { animation-delay: .15s; }
+.cpc-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes cpc-blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+/* bronlinks onder een antwoord */
+.cpc-sources { align-self: flex-start; max-width: 90%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
+.cpc-sources__label { flex-basis: 100%; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: var(--gray-9, #727272); }
+.cpc-sources a {
+  font-size: 12.5px; color: var(--black, #000); text-decoration: none;
+  padding: 5px 11px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6)); background: var(--white, #fff);
+  transition: border-color .25s ease, background-color .25s ease;
+}
+.cpc-sources a:hover { border-color: var(--black, #000); background: var(--gray-f9, #f9f9f9); }
+
+/* uitval: het briefingblok in plaats van een foutmelding */
+.cpc-fallback { align-self: stretch; background: var(--gray-f9, #f9f9f9); border-radius: 18px; padding: 16px 18px; }
+.cpc-fallback strong { display: block; font-weight: 600; margin-bottom: 4px; }
+.cpc-fallback p { margin: 0 0 12px; color: var(--gray-33, #333); }
+
+/* ---------- chips ---------- */
+.cpc-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 20px 10px; }
+.cpc-chips[hidden] { display: none; }
+.cpc-chip {
+  font: inherit; font-size: 12.5px; cursor: pointer; text-align: left;
+  padding: 7px 12px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
+  background: var(--white, #fff); color: var(--black, #000);
+  transition: background-color .25s ease, border-color .25s ease;
+}
+.cpc-chip:hover { background: var(--gray-f9, #f9f9f9); border-color: var(--black, #000); }
+
+/* ---------- invoer ---------- */
+.cpc-form { padding: 0 16px 6px; }
+.cpc-bar {
+  display: flex; align-items: flex-end; gap: 8px;
+  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 26px; background: var(--white, #fff);
+  padding: 6px 6px 6px 18px; box-shadow: 0 1px 2px rgba(17,17,17,.04);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.cpc-bar:focus-within { border-color: var(--black, #000); }
+.cpc-input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: none; resize: none;
+  font: inherit; font-size: 16px; line-height: 1.45; color: var(--black, #000);
+  padding: 9px 0; max-height: 120px; overflow-y: auto;
+}
+.cpc-input::placeholder { color: var(--gray-9, #727272); }
+.cpc-send {
+  flex: none; width: 42px; height: 42px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  background: var(--black, #000); color: var(--white, #fff);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background-color .25s ease, transform .25s cubic-bezier(.85,0,.15,1);
+}
+.cpc-send:hover { background: var(--gray-33, #333); }
+.cpc-send[disabled] { background: var(--gray-f2, #f2f2f2); color: var(--gray-9, #727272); cursor: default; }
+.cpc-send svg { width: 16px; height: 16px; }
+.cpc-meta { display: flex; justify-content: space-between; gap: 10px; padding: 6px 12px 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .3px; color: var(--gray-9, #727272); }
+.cpc-counter.is-max { color: var(--black, #000); font-weight: 700; }
+
+/* ---------- uitwegen ---------- */
+.cpc-exits { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 16px; border-top: 1px solid var(--line, rgba(228,224,219,.6)); }
+.cpc-exit {
+  font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; text-decoration: none;
+  padding: 9px 14px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
+  background: var(--white, #fff); color: var(--black, #000); min-height: 36px;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+.cpc-exit:hover { border-color: var(--black, #000); background: var(--gray-f9, #f9f9f9); }
+.cpc-exit--primary { background: var(--black, #000); color: var(--white, #fff); border-color: var(--black, #000); }
+.cpc-exit--primary:hover { background: var(--gray-33, #333); color: var(--white, #fff); }
+
+.cpc-mail { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.cpc-mail[hidden] { display: none; }
+.cpc-mail input {
+  flex: 1; min-width: 160px; font: inherit; font-size: 16px; padding: 8px 14px;
+  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 50px; background: var(--white, #fff); color: var(--black, #000);
+}
+.cpc-mail input:focus { outline: 0; border-color: var(--black, #000); }
+.cpc-mail__note { flex-basis: 100%; font-size: 12.5px; color: var(--gray-69, #696969); margin: 2px 0 0; }
+/* het honeypotveld staat buiten beeld, niet display:none: sommige bots
+   slaan verborgen velden over, maar vullen wel wat ze niet kunnen zien */
+.cpc-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- focus ---------- */
+.cpc-fab:focus-visible, .cpc-panel button:focus-visible, .cpc-panel a:focus-visible,
+.cpc-panel textarea:focus-visible, .cpc-panel input:focus-visible {
+  outline: 2px solid var(--black, #000); outline-offset: 3px;
+}
+.cpc-input:focus-visible { outline: 0; }
+
+/* ---------- mobiel: volledig scherm ---------- */
+@media (max-width: 640px) {
+  .cpc-panel {
+    right: 0; bottom: 0; left: 0; top: 0;
+    width: 100%; max-width: none; height: 100%; max-height: none;
+    border-radius: 0; border: 0;
+  }
+  .cpc-head { padding-top: max(20px, env(safe-area-inset-top)); }
+  .cpc-exits { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  /* op een telefoon is elk raakvlak minstens 44 px (gemeten: 33 tot 41 px
+     zonder deze regel); de vorm blijft een pil, alleen de hoogte groeit */
+  .cpc-close { width: 44px; height: 44px; }
+  .cpc-mode, .cpc-chip, .cpc-exit { min-height: 44px; }
+  .cpc-send { width: 44px; height: 44px; }
+  .cpc-panel.is-open ~ .cpc-fab { display: none; }
+  html.cpc-lock, html.cpc-lock body { overflow: hidden; }
+}
+
+/* ---------- minder beweging ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .cpc-fab, .cpc-panel, .cpc-close, .cpc-mode, .cpc-chip, .cpc-send, .cpc-exit, .cpc-bar, .cpc-sources a { transition: none; }
+  .cpc-typing i { animation: none; opacity: .6; }
+  .cpc-panel { transform: none; }
+}

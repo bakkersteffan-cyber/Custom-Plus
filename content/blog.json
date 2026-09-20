@@ -45,7 +45,7 @@
       "Reads and answers every brief himself"
     ],
     "cta": "Put your question to Steffan",
-    "photo": "images/founder.jpg"
+    "photo": "/images/founder.jpg"
   },
   "cta": {
     "scope": {
@@ -53,21 +53,21 @@
       "headingMain": "Not sure what your idea takes?",
       "headingSub": "The two minute scope check tells you.",
       "btn": "Start the scope check",
-      "href": "#/scope"
+      "href": "#scope"
     },
     "brief": {
       "kicker": "Next step",
       "headingMain": "Bring us the sketch.",
       "headingSub": "We'll bring the factory floor.",
       "btn": "Start a project",
-      "href": "#/contact"
+      "href": "/contact"
     },
     "download": {
       "kicker": "Next step",
       "headingMain": "Take the checklists with you.",
       "headingSub": "Real templates, no email wall.",
       "btn": "See the downloads",
-      "href": "#/resources"
+      "href": "/hulpmiddelen"
     }
   }
 }

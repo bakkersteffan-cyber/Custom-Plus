@@ -6,7 +6,7 @@
   },
   "founder": {
     "kicker": "Who's actually doing this work",
-    "photo": "images/founder.jpg",
+    "photo": "/images/founder.jpg",
     "name": "Steffan Bakker",
     "bio": [
       "Steffan Bakker is a serial entrepreneur and Asia expert with a strong focus on real estate development, sourcing, and product development. After his exit from Customforyou at the age of twenty, he built years of experience in Asia, where he worked on real estate development and on guiding entrepreneurs through developing and sourcing their own products.",
@@ -19,35 +19,35 @@
     "items": [
       {
         "name": "OGER",
-        "logo": "images/logos/oger.png"
+        "logo": "/images/logos/oger.png"
       },
       {
         "name": "Newomij",
-        "logo": "images/logos/newomij.png"
+        "logo": "/images/logos/newomij.png"
       },
       {
         "name": "Beelen.nl",
-        "logo": "images/logos/beelen.png"
+        "logo": "/images/logos/beelen.png"
       },
       {
         "name": "van Duuren",
-        "logo": "images/logos/vanduuren.png"
+        "logo": "/images/logos/vanduuren.png"
       },
       {
         "name": "Caliber",
-        "logo": "images/logos/caliber.png"
+        "logo": "/images/logos/caliber.png"
       },
       {
         "name": "Inter College Amsterdam",
-        "logo": "images/logos/intercollege.png"
+        "logo": "/images/logos/intercollege.png"
       },
       {
         "name": "Berghoef",
-        "logo": "images/logos/berghoef.png"
+        "logo": "/images/logos/berghoef.png"
       },
       {
         "name": "De Nederlandse Ondernemersgroep",
-        "logo": "images/logos/ondernemersgroep.png"
+        "logo": "/images/logos/ondernemersgroep.png"
       }
     ]
   },

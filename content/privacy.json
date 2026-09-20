@@ -1,0 +1,132 @@
+{
+  "pagehead": {
+    "kicker": "Privacy",
+    "heading": "Wat we van je verwerken, en waarom."
+  },
+  "updated": "2026-09-20",
+  "intro": "Deze site gebruikt geen cookies en geen trackers. Hieronder staat precies wat er wél gebeurt met wat je ons stuurt, welke partijen daarbij helpen en welke rechten je hebt.",
+  "sections": [
+    {
+      "id": "verantwoordelijke",
+      "title": "Wie is verantwoordelijk",
+      "paragraphs": [
+        "CUSTOM+ is verantwoordelijk voor de verwerking van persoonsgegevens via deze website en het klantportaal. Heb je een vraag over je gegevens, mail dan naar {email}."
+      ]
+    },
+    {
+      "id": "kort",
+      "title": "In het kort",
+      "items": [
+        "Geen cookies, geen analytics, geen advertentiepixels en geen trackers van derden op de publieke site.",
+        "Je gegevens krijgen wij alleen als je ze zelf stuurt: via het contactformulier, per mail, via een geplande afspraak of in het klantportaal.",
+        "Wij verkopen geen gegevens en delen ze alleen met de partijen die nodig zijn om de site en het portaal te laten werken. Die staan hieronder met naam genoemd."
+      ]
+    },
+    {
+      "id": "contactformulier",
+      "title": "Contactformulier en aanmelding voor Field notes",
+      "paragraphs": [
+        "Op de contactpagina vul je een onderwerp, je mailadres en je bericht in. Die drie velden zijn alles wat het formulier verstuurt; een verborgen spamveld hoort er technisch bij, maar blijft leeg. De inzending wordt afgehandeld door Netlify Forms, onderdeel van onze hosting, en komt bij ons binnen op {email}.",
+        "Wij gebruiken je bericht alleen om je vraag te beantwoorden en, als er een opdracht uit volgt, om die voor te bereiden. Inzendingen blijven in het formulierenoverzicht bij Netlify staan totdat wij ze verwijderen; wij bewaren ze niet langer dan nodig is voor je aanvraag en de samenwerking die er eventueel uit volgt.",
+        "Meld je je onderaan de pagina aan voor Field notes, dan gaat je mailadres via datzelfde formulier naar ons. Er hangt geen nieuwsbriefsysteem aan: wij sturen af en toe zelf een mail. Afmelden kan altijd met een mail naar {email}.",
+        "Terwijl je het formulier invult, bewaart je browser een concept in de eigen opslag (zie verderop), zodat je niets kwijtraakt als je de pagina per ongeluk sluit. Dat concept verlaat je apparaat niet."
+      ]
+    },
+    {
+      "id": "gesprek",
+      "title": "Een gesprek plannen via Cal.com",
+      "paragraphs": [
+        "Wil je direct een gesprek inplannen, dan opent de agenda van Cal.com in een kader op onze site. Die agenda wordt pas geladen als je hem opent; tot dat moment wordt er niets van Cal.com opgehaald. Wat je in de agenda invult (naam, mailadres, gekozen tijd en eventuele toelichting) verwerkt Cal.com volgens zijn eigen privacybeleid, en Cal.com kan daarbij cookies plaatsen binnen dat kader. Wij ontvangen de afspraak in onze agenda en gebruiken je gegevens alleen voor dat gesprek."
+      ]
+    },
+    {
+      "id": "mail",
+      "title": "Mailcontact",
+      "paragraphs": [
+        "Mail je ons rechtstreeks, dan bewaren wij je bericht in onze mailbox zolang dat nodig is om je vraag te beantwoorden. Volgt er een opdracht, dan bewaren wij de correspondentie zolang de samenwerking loopt en zolang de wettelijke bewaartermijn voor onze administratie geldt."
+      ]
+    },
+    {
+      "id": "productcheck",
+      "title": "AI productcheck",
+      "paragraphs": [
+        "Op de pagina voor ecommerce kun je in een chatvenster beschrijven wat je wilt laten maken. Wat je daar typt, sturen wij via onze eigen server door naar Mistral AI om een antwoord te maken; het model kan daarbij openbare webbronnen raadplegen voor een indicatie van prijzen. Wij slaan die gesprekken zelf niet op. Zet er geen persoonsgegevens in: de check heeft alleen je productidee nodig."
+      ]
+    },
+    {
+      "id": "browser",
+      "title": "Wat je browser bewaart",
+      "paragraphs": [
+        "De publieke site gebruikt geen cookies. Wel zet de site een paar voorkeuren in de eigen opslag van je browser (localStorage en sessionStorage). Die blijven op je apparaat, worden nooit naar ons of naar anderen verstuurd en kun je zelf wissen via de instellingen van je browser."
+      ],
+      "items": [
+        "cp_lang: de taal die je op de site hebt gekozen.",
+        "cp_returning: dat je hier al eerder was, zodat de kennismakingspopup niet elke keer opnieuw verschijnt.",
+        "cp_blueprint: of je de blauwdrukweergave hebt aangezet.",
+        "cp_form_state: het concept van je bericht op de contactpagina, maximaal dertig dagen.",
+        "cpBlogRead: welke blogartikelen je hebt gelezen, voor het leesvinkje bij de artikelen.",
+        "cp_intro en cp_scope_seen: alleen voor de duur van je tabblad, zodat de intro en de scopecheck niet twee keer verschijnen."
+      ]
+    },
+    {
+      "id": "hosting",
+      "title": "Hosting en technische gegevens",
+      "paragraphs": [
+        "De site en het klantportaal worden gehost door Netlify. Om pagina's te kunnen leveren en misbruik te weren verwerkt Netlify technische gegevens zoals je IP-adres, browsertype en het tijdstip van je bezoek in serverlogboeken. Wij gebruiken die gegevens niet om bezoekers te volgen of te profileren."
+      ]
+    },
+    {
+      "id": "portaal",
+      "title": "Klantportaal",
+      "paragraphs": [
+        "Het klantportaal is alleen bereikbaar met een persoonlijke login. Je projectgegevens, berichten, documenten, foto's en facturen staan in een database en bestandsopslag bij Supabase. Elke klant ziet uitsluitend zijn eigen gegevens: die afscherming zit op databaseniveau (row level security) en niet alleen in het scherm. Downloadlinks voor documenten zijn persoonlijk en verlopen na korte tijd.",
+        "Meldingen en facturen uit het portaal worden per mail verzonden via Resend. Het portaal laadt daarnaast lettertypen van Google Fonts; daarbij ziet Google het IP-adres van je browser.",
+        "Bekijk je het portaal in de demomodus, zonder login, dan draait alles op voorbeelddata in je eigen browser en gaat er niets naar een server."
+      ]
+    },
+    {
+      "id": "verwerkers",
+      "title": "Met wie we gegevens delen",
+      "paragraphs": [
+        "Wij schakelen alleen partijen in die nodig zijn om de site en het portaal te laten werken. Zij verwerken gegevens in onze opdracht en voor geen ander doel:"
+      ],
+      "items": [
+        "Netlify: hosting van de site en het portaal en afhandeling van het contactformulier.",
+        "Cal.com: het plannen van een gesprek, alleen als je de agenda opent.",
+        "Mistral AI: het antwoord van de AI productcheck.",
+        "Supabase: database en bestandsopslag van het klantportaal.",
+        "Resend: het verzenden van mail vanuit het klantportaal.",
+        "Google Fonts: lettertypen in het klantportaal."
+      ],
+      "after": [
+        "Een aantal van deze partijen is gevestigd buiten de Europese Unie."
+      ]
+    },
+    {
+      "id": "grondslag",
+      "title": "Grondslag en bewaartermijn",
+      "paragraphs": [
+        "Wij verwerken je gegevens omdat dat nodig is om je vraag te beantwoorden of een overeenkomst met je voor te bereiden en uit te voeren, en vanuit het gerechtvaardigde belang om de site veilig en werkend te houden. Gegevens die wij wettelijk moeten bewaren, zoals facturen, bewaren wij zolang die wettelijke termijn geldt. Al het andere bewaren wij niet langer dan nodig is voor het doel waarvoor je het ons gaf."
+      ]
+    },
+    {
+      "id": "rechten",
+      "title": "Je rechten",
+      "paragraphs": [
+        "Je hebt het recht om in te zien welke gegevens wij van je hebben, om ze te laten corrigeren of verwijderen, om de verwerking te laten beperken, om bezwaar te maken en om je gegevens in een gangbaar bestandsformaat te ontvangen. Mail je verzoek naar {email}; wij reageren zo snel mogelijk en uiterlijk binnen een maand.",
+        "Ben je niet tevreden over hoe wij met je gegevens omgaan, dan kun je een klacht indienen bij de Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl)."
+      ]
+    },
+    {
+      "id": "wijzigingen",
+      "title": "Wijzigingen",
+      "paragraphs": [
+        "Verandert er iets aan de site of aan de partijen die wij inschakelen, dan passen wij deze verklaring aan. De datum bovenaan laat zien wanneer dat voor het laatst is gebeurd."
+      ]
+    }
+  ],
+  "closingCta": {
+    "heading": "Vragen over je gegevens?",
+    "cta": "Mail ons"
+  }
+}

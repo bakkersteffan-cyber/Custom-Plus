@@ -1,2 +1,31 @@
 .DS_Store
 .env
+
+# Werkmappen die niet bij de site horen: specs en sessienotities van de
+# bouwagents (.claude/) en losse experimenten (dev/). test/ en docs/ blijven
+# wel in de repo, maar netlify.toml serveert ze niet.
+.claude/
+dev/
+
+# Door scripts/build-site.mjs gegenereerd; Netlify maakt dit bij elke deploy opnieuw
+/assets/
+/content/nl/
+/index.html
+/404.html
+/diensten/
+/ecommerce/
+/relatiegeschenken/
+/waarom-china/
+/faq/
+/over-ons/
+/begrippen/
+/hulpmiddelen/
+/contact/
+/blog/
+/zoeken/
+/privacy/
+/images/css-bg-*
+/robots.txt
+/sitemap.xml
+# Door scripts/build-chat-index.mjs gegenereerd
+/chat/index.json

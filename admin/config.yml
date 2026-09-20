@@ -4,7 +4,7 @@ backend:
 
 publish_mode: simple
 media_folder: "images"
-public_folder: "images"
+public_folder: "/images"
 
 site_url: https://customplus.io
 display_url: https://customplus.io
@@ -641,7 +641,7 @@ collections:
               - { label: "Fallback note", name: fallbackNote, widget: string }
               - { label: "Fallback copy button", name: fallbackCopy, widget: string }
 
-      - name: "blog"
+      - name: "blog-page"
         label: "Blog page"
         file: "content/blog.json"
         fields:
@@ -742,76 +742,98 @@ collections:
               - { label: "Kicker", name: kicker, widget: string }
               - { label: "Heading", name: heading, widget: string }
 
-      - name: "seo"
-        label: "SEO — page titles & descriptions"
-        file: "content/seo.json"
+      - name: "seo-nl"
+        label: "SEO — paginatitels en omschrijvingen"
+        file: "content/seo-nl.json"
+        # Dit bestand bepaalt wat er in Google staat: de titel is de blauwe
+        # regel, de omschrijving het grijze zinnetje eronder. Houd de titel
+        # onder de 60 tekens en de omschrijving tussen 120 en 158, anders kapt
+        # Google hem af. Laat " | CUSTOM+" achter elke titel staan.
         fields:
-          - label: "Services page"
+          - label: "Homepage"
+            name: page-home
+            widget: object
+            fields:
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Diensten"
             name: page-services
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Ecommerce page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Ecommerce"
             name: page-ecommerce
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Corporate gifting page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Relatiegeschenken"
             name: page-gifting
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Why China page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Waarom China"
             name: page-why
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "FAQ page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Veelgestelde vragen"
             name: page-faq
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "About us page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Over ons"
             name: page-trust
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Contact page"
-            name: page-contact
-            widget: object
-            fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Glossary page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Begrippen"
             name: page-glossary
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Resources page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Hulpmiddelen"
             name: page-resources
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Search page"
-            name: page-search
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Contact"
+            name: page-contact
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
-          - label: "Blog page"
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Blog"
             name: page-blog
             widget: object
             fields:
-              - { label: "Title", name: titleBase, widget: string }
-              - { label: "Description", name: description, widget: text }
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
+          - label: "Zoeken"
+            name: page-search
+            widget: object
+            fields:
+              - { label: "Titel in Google (max 60 tekens)", name: title, widget: string, pattern: [".{10,60}", "Houd de titel tussen 10 en 60 tekens"] }
+              - { label: "Omschrijving in Google (120 tot 158 tekens)", name: description, widget: text, pattern: [".{80,158}", "Houd de omschrijving tussen 80 en 158 tekens"] }
+              - { label: "Naam in het kruimelpad", name: crumb, widget: string, required: false }
 
       - name: "scope-quiz"
         label: "Scope-check quiz questions"
@@ -872,7 +894,7 @@ collections:
     slug: "{{fields.slug}}"
     summary: "{{title}}"
     media_folder: "/images/blog"
-    public_folder: "images/blog"
+    public_folder: "/images/blog"
     fields:
       - { label: "Title", name: title, widget: string }
       - { label: "Slug (technical)", name: slug, widget: string, hint: "Same as the file name: lower case, words separated by hyphens. Do not change after publishing." }

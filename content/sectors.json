@@ -1,13 +1,13 @@
 {
-  "heading": "Do we build in your sector?",
-  "intro": "Search your sector below — if it is on the list, we already know how to build in it.",
-  "placeholder": "Type your sector…",
-  "noMatchHeading": "We have not listed “{query}” by name.",
-  "noMatchBody": "Our range covers 300+ sectors, and not being listed by name does not mean we cannot help. Ask us directly and we will give you a straight answer.",
-  "noMatchCta": "Ask us directly",
-  "matchHeading": "Yes — we build in {sector}.",
-  "matchBody": "Starting something new here, or just have a question about this sector first? Either way, start the conversation now.",
-  "matchCta": "Start a project",
+  "heading": "Produceren wij in jouw sector?",
+  "intro": "Zoek hieronder je sector. Staat hij in de lijst, dan weten we al hoe je daarin produceert.",
+  "placeholder": "Typ je sector…",
+  "noMatchHeading": "Wij hebben “{query}” niet bij naam in de lijst staan.",
+  "noMatchBody": "Ons bereik dekt meer dan 300 sectoren, en er niet bij naam in staan betekent niet dat wij je niet kunnen helpen. Vraag het ons gewoon, dan krijg je een eerlijk antwoord.",
+  "noMatchCta": "Vraag het ons gewoon",
+  "matchHeading": "Ja, wij produceren in {sector}.",
+  "matchBody": "Begin je hier iets nieuws, of heb je eerst een vraag over deze sector? Hoe dan ook, begin nu het gesprek.",
+  "matchCta": "Start een project",
   "sectors": [
     {
       "en": "Fashion & clothing",

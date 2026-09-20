@@ -11,27 +11,27 @@
     {
       "title": "Payment milestone visualizer",
       "desc": "What has to be true before your money moves. Click a gate to see what unlocks it.",
-      "href": "#/services#fl-paygate"
+      "href": "/diensten#fl-paygate"
     },
     {
       "title": "Production planner",
       "desc": "Work backward from the date you need stock in hand, dead zones included.",
-      "href": "#/services#fl-planner"
+      "href": "/diensten#fl-planner"
     },
     {
       "title": "IP exposure stage diagram",
       "desc": "See exactly who sees your design, and when, across every stage.",
-      "href": "#/why-china#risk-theft"
+      "href": "/waarom-china#risk-theft"
     },
     {
       "title": "Sample factory vetting dossier",
       "desc": "The shape of what gets checked before a factory reaches your shortlist.",
-      "href": "#/why-china#risk-fake"
+      "href": "/waarom-china#risk-fake"
     },
     {
       "title": "Sample AQL inspection report",
       "desc": "The report format every production batch gets measured against.",
-      "href": "#/why-china#risk-quality"
+      "href": "/waarom-china#risk-quality"
     }
   ]
 }

@@ -1,16 +1,300 @@
 [build]
-  command = "node scripts/build-blog.mjs"
+  # build-blog levert de blogindex en de RSS feed; build-site bouwt daarna alle
+  # route-bestanden, de assets, robots.txt en de sitemap.
+  command = "node scripts/build-blog.mjs && node scripts/build-site.mjs && node scripts/build-chat-index.mjs"
   publish = "."
 
 [functions]
   directory = "netlify/functions"
 
+# ---------------------------------------------------------------- redirects
+#
+# Netlify verwerkt de eerste regel die past, en een regel met force = true
+# wint ook van een bestand dat op dat pad bestaat. Daarom staan de
+# afschermingsregels bovenaan: publish = "." zet de hele repo online, dus
+# zonder deze regels zou iedereen de SQL-migraties, de generator, de tests en
+# de werkdocumenten kunnen lezen. Een splat mag van Netlify alleen aan het
+# eind van een pad staan (dus geen "/*.md"); losse bestanden in de root staan
+# daarom met naam genoemd. .env en .DS_Store staan in .gitignore en komen
+# nooit op Netlify terecht.
+#
+# Wat WEL bereikbaar moet blijven: /content/* (de app haalt de JSON op),
+# /portal/* (scripts en CSS van portaal en beheer), /images/*, /assets/*,
+# /admin/* (het CMS met zijn config.yml) en de functies onder /.netlify/*.
+
 [[redirects]]
-  from = "/"
-  to = "/custom-plus.html"
+  from = "/supabase/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/test/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/dev/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/docs/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/.claude/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/HOSTING-GIDS.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/.gitignore"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# De oude Engelse paden uit de hashroute-tijd (#/services enz.) leven nog in
+# bladwijzers en gedeelde links. Het deel achter de # ziet de server niet (dat
+# vangt de pagina zelf op), maar wie ze zonder # gebruikt komt hier terecht.
+# Doelen komen uit de routetabel in custom-plus.html; /ecommerce, /faq,
+# /contact en /blog heten in beide talen hetzelfde en hebben geen regel nodig.
+[[redirects]]
+  from = "/services"
+  to = "/diensten"
+  status = 301
+
+[[redirects]]
+  from = "/services/*"
+  to = "/diensten/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/why-china"
+  to = "/waarom-china"
+  status = 301
+
+[[redirects]]
+  from = "/gifting"
+  to = "/relatiegeschenken"
+  status = 301
+
+[[redirects]]
+  from = "/trust"
+  to = "/over-ons"
+  status = 301
+
+[[redirects]]
+  from = "/glossary"
+  to = "/begrippen"
+  status = 301
+
+[[redirects]]
+  from = "/resources"
+  to = "/hulpmiddelen"
+  status = 301
+
+[[redirects]]
+  from = "/search"
+  to = "/zoeken"
+  status = 301
+
+[[redirects]]
+  from = "/search/*"
+  to = "/zoeken/:splat"
+  status = 301
+
+# Subroutes zonder eigen bestand: de router in de pagina leest het pad zelf en
+# toont de juiste stap, categorie of zoekopdracht.
+[[redirects]]
+  from = "/diensten/*"
+  to = "/diensten/index.html"
   status = 200
 
+[[redirects]]
+  from = "/contact/*"
+  to = "/contact/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/zoeken/*"
+  to = "/zoeken/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/categorie/*"
+  to = "/blog/index.html"
+  status = 200
+
+# De oude enkele-bestand versie van de site. Die bestaat nog als bron voor de
+# generator, maar mag geen tweede vindbare kopie van de hele site worden.
+[[redirects]]
+  from = "/custom-plus.html"
+  to = "/"
+  status = 301
+  force = true
+
+# Onbekende paden: Netlify pakt /404.html (uit build-site.mjs) automatisch op
+# en geeft hem met status 404 terug; daar is geen regel voor nodig.
+
+# ------------------------------------------------------------------ headers
+
+# Beveiligingskoppen voor alles op dit domein: de publieke site, portal.html,
+# beheer.html en factuur.html. Eén Content-Security-Policy voor allemaal, want
+# Netlify voegt meerdere passende [[headers]] samen en twee CSP's zouden
+# elkaar alleen maar verder beperken.
+#
+# Per bron in de CSP, waarom hij erin staat (geïnventariseerd met grep op
+# https:// in custom-plus.html, portal.html, beheer.html, factuur.html en
+# portal/*.js; scripts/dev-server.mjs stuurt dezelfde kop mee zodat je een
+# overtreding lokaal in de console ziet):
+#   default-src 'self'          alles wat hieronder niet genoemd wordt, blijft
+#                               op het eigen domein (media, manifest, workers)
+#   script-src  'self'          /assets/app.<hash>.js, /portal/*.js
+#               'unsafe-inline' inline scripts in alle vier de pagina's (de
+#                               hashroute-omleiding in elke <head>, de app in
+#                               portal/beheer/factuur); zonder nonces of hashes
+#                               is dit de enige manier om ze te laten draaien
+#               cdn.jsdelivr.net  @supabase/supabase-js@2, geladen door
+#                               portal.html en beheer.html zodra Supabase is
+#                               geconfigureerd
+#               unpkg.com       decap-cms in /admin/index.html (het CMS)
+#   style-src   'self'          /assets/app.<hash>.css, /portal/*.css
+#               'unsafe-inline' style="" op honderden elementen en inline
+#                               <style> in portal/beheer/factuur
+#               fonts.googleapis.com  de fontstylesheet van portal, beheer en
+#                               factuur (de publieke site host zijn fonts zelf)
+#   font-src    'self'          /assets/fonts/*.woff2
+#               fonts.gstatic.com  de fontbestanden achter Google Fonts
+#   img-src     'self'          /images/*
+#               data:           de favicon (SVG als data-URI) en de
+#                               voorbeeldlogo's in portal/demo-*.js
+#               blob:           voorvertoning van geüploade foto's en de
+#                               gerenderde PDF in beheer.html
+#               *.supabase.co   ondertekende downloadlinks uit Supabase Storage
+#                               (projectfoto's, documenten) in <img>
+#   connect-src 'self'          /.netlify/functions/* (AI-productcheck,
+#                               klantmeldingen, factuurlink), Netlify Forms
+#                               (POST naar /), /content/*.json, /assets/i18n/*
+#               *.supabase.co   REST, auth en storage van Supabase
+#               wss://*.supabase.co  het realtime-kanaal per project in
+#                               portal.html
+#   frame-src   cal.com         de boekingsagenda in een <iframe>, geladen
+#                               vanaf de URL in content/global.json
+#                               (callBooking.url); app.cal.com is de host
+#                               waar de embedcode van Cal.com zelf naar kan
+#                               doorverwijzen
+#               blob:           beheer.html toont de gerenderde factuur-PDF in
+#                               een <object data="blob:...">; Chrome rendert
+#                               zo'n PDF als genest frame en toetst hem dus
+#                               óók aan frame-src (in de console: "Framing
+#                               'blob:...' violates frame-src")
+#   object-src  blob:           dezelfde <object> met de factuur-PDF; een
+#                               <object> van elders (https://...) blijft
+#                               geblokkeerd
+#   base-uri    'self'          niemand kan met een <base> alle relatieve
+#                               links verleggen
+#   form-action 'self'          het contactformulier post naar het eigen
+#                               domein (Netlify Forms); verder is er geen enkel
+#                               formulier dat ergens anders heen mag
+#   frame-ancestors 'none'      geen enkele site mag deze pagina's inlijsten
+#                               (clickjacking); X-Frame-Options zegt hetzelfde
+#                               voor oudere browsers
+#
+# Niet in de CSP: api.mistral.ai en api.resend.com (alleen server-side, vanuit
+# netlify/functions), en de trackinglinks van vervoerders in portal/shipping.js
+# (dat zijn gewone links naar een nieuw tabblad, geen ingeladen bronnen).
 [[headers]]
-  for = "/content/*.json"
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src https://cal.com https://app.cal.com blob:; object-src blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# CSS en JS dragen een inhoudshash in hun naam, dus die mogen permanent blijven
+# hangen: een wijziging levert vanzelf een nieuwe naam op.
+[[headers]]
+  for = "/assets/app.*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# Woordenboeken en content wisselen bij een CMS bewerking zonder nieuwe naam.
+# De app haalt content/*.json met gewone HTTP-caching op (niet meer met
+# cache:'no-store'), dus deze vijf minuten zijn nu de echte grens voor hoe lang
+# een bezoeker oude tekst kan zien; must-revalidate voorkomt dat een verlopen
+# kopie toch nog gebruikt wordt.
+[[headers]]
+  for = "/assets/i18n/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/content/*"
   [headers.values]
     Cache-Control = "public, max-age=300, must-revalidate"
+
+# De kennisindex van de sitechat: bij elke deploy opnieuw gebouwd, dus kort cachen.
+[[headers]]
+  for = "/chat/index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+
+# De bron van de generator hoort nooit als losse pagina in de index te komen.
+[[headers]]
+  for = "/custom-plus.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/portal.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/beheer.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/factuur.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/404.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

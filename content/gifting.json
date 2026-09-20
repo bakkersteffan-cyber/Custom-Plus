@@ -141,7 +141,7 @@
         "idea": "A box that goes further than a bottle of wine.",
         "detail": "The busiest gifting week of the year, and the one most likely to hit a factory closure if briefed late.",
         "icon": "tree",
-        "photo": "images/occ-christmas.jpg"
+        "photo": "/images/occ-christmas.jpg"
       },
       {
         "category": "seasonal",
@@ -150,7 +150,7 @@
         "idea": "Something useful for the new work year, not a calendar.",
         "detail": "A quieter moment to open the year with clients or teams, without the December rush.",
         "icon": "flute",
-        "photo": "images/occ-newyear.jpg"
+        "photo": "/images/occ-newyear.jpg"
       },
       {
         "category": "milestone",
@@ -159,7 +159,7 @@
         "idea": "A numbered piece, not a mug with a logo on it.",
         "detail": "Round numbers deserve something that will not end up in a drawer.",
         "icon": "pennant",
-        "photo": "images/occ-anniversary.jpg"
+        "photo": "/images/occ-anniversary.jpg"
       },
       {
         "category": "milestone",
@@ -168,7 +168,7 @@
         "idea": "A preview kit for press or early customers.",
         "detail": "Timed to land before the announcement, not after it.",
         "icon": "rocket",
-        "photo": "images/occ-launch.jpg"
+        "photo": "/images/occ-launch.jpg"
       },
       {
         "category": "milestone",
@@ -177,7 +177,7 @@
         "idea": "A personal thank you, not a standard fruit basket.",
         "detail": "The moment a client re signs is the moment they are most open to noticing you.",
         "icon": "signing",
-        "photo": "images/occ-renewal.jpg"
+        "photo": "/images/occ-renewal.jpg"
       },
       {
         "category": "milestone",
@@ -186,7 +186,7 @@
         "idea": "One box that marks the day the doors open, for the team and the first guests.",
         "detail": "A new location, store or office deserves its own box: something branded for the team on day one, plus a smaller version to hand to the first visitors.",
         "icon": "door",
-        "photo": "images/occ-opening.jpg"
+        "photo": "/images/occ-opening.jpg"
       },
       {
         "category": "client",
@@ -195,7 +195,7 @@
         "idea": "A first impression as sharp as the proposal.",
         "detail": "Sets the tone before the first invoice does.",
         "icon": "door",
-        "photo": "images/occ-newclient.jpg"
+        "photo": "/images/occ-newclient.jpg"
       },
       {
         "category": "client",
@@ -204,7 +204,7 @@
         "idea": "A giveaway that survives the walk back to the hotel.",
         "detail": "Built to be picked, not just picked up.",
         "icon": "ticket",
-        "photo": "images/occ-events.jpg"
+        "photo": "/images/occ-events.jpg"
       },
       {
         "category": "client",
@@ -213,7 +213,7 @@
         "idea": "Something that makes the project itself memorable.",
         "detail": "Sent at the exact moment the client is already thinking well of you.",
         "icon": "sparkle",
-        "photo": "images/occ-thankyou.jpg"
+        "photo": "/images/occ-thankyou.jpg"
       },
       {
         "category": "seasonal",
@@ -222,7 +222,7 @@
         "idea": "A themed surprise box, no clichés, no coal.",
         "detail": "Playful and seasonal, delivered before the fifth. Timing is the whole point here.",
         "icon": "gift",
-        "photo": "images/occ-sinterklaas.jpg"
+        "photo": "/images/occ-sinterklaas.jpg"
       }
     ],
     "otherCard": {
