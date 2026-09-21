@@ -1700,17 +1700,19 @@
       uitleg: 'Zodra de eerste klantlogin in het toegangslogboek staat, is deze stap ook echt af.' }
   ];
 
-  /* DE NEGEN STAPPEN VAN DE WIZARD "KLAAR VOOR LIVE", in de volgorde van de
+  /* DE TIEN STAPPEN VAN DE WIZARD "KLAAR VOOR LIVE", in de volgorde van de
      oplevering: databank, migraties, beveiliging, jouw beheeraccount, de
-     server, mail, de portal-URL en de eerste klant.
+     server, mail, de AI-assistent, de portal-URL en de eerste klant.
 
      Per stap staat er:
        probe    de sleutel waaronder voerGoLiveControlesUit() in beheer.html
                 zijn uitslag meldt (config · migraties · resend · portalurl ·
                 klant), of een eigen controle van dit bestand ('staf' vraagt
                 is_staff() aan de databank, 'netlifyEnv' vraagt de
-                mailfunctie welke omgevingsvariabelen er staan). null = de
-                browser kan het niet controleren; dan telt alleen het vinkje.
+                mailfunctie welke omgevingsvariabelen er staan, 'mistral'
+                stuurt een echte testvraag naar de sitechat-functie om
+                MISTRAL_API_KEY te controleren). null = de browser kan het
+                niet controleren; dan telt alleen het vinkje.
        vink     de sleutel in GO_LIVE_VINKJES die deze stap handmatig
                 afvinkt, of null.
        demoDb   waar: de controle heeft een databank nodig. In demomodus
@@ -1727,6 +1729,65 @@
      anders dan het vinkje teruggelezen; de wizard negeert hem daarom en
      laat het vinkje zelf spreken — anders zou een vinkje eruitzien als een
      gecontroleerde uitslag. */
+
+  /* DE VOLLEDIGE, ACTUELE LIJST OMGEVINGSVARIABELEN OP NETLIFY.
+     Verzameld op 2026-09-21 door alle netlify/functions/*.mjs te doorzoeken
+     op process.env — inclusief site-chat.mjs, die er ná de vorige versie
+     van deze stap is bijgekomen.
+
+     verplicht  zonder deze staat de site of een kernfunctie eerlijk uit
+                (503) voor IEDEREEN, sessie of niet: de databank, de mail en
+                de AI (productcheck én sitechat).
+     optioneel  heeft een eerlijke terugval: een standaardwaarde, of een
+                functie die zich netjes uitschakelt (503/'not-configured')
+                in plaats van half te werken. `terugval` citeert daarvoor
+                letterlijk het commentaar uit de functie die de variabele
+                leest — niets ervan is verzonnen.
+
+     Bewust NIET in deze lijst, en dus ook niet als "te zetten" getoond:
+       URL, DEPLOY_PRIME_URL, DEPLOY_URL   zet Netlify zelf bij elke build;
+                                            die staan niet in de UI van
+                                            Environment variables om te
+                                            zetten en horen hier dus niet.
+       CHAT_INDEX_PATH                     alleen voor de lokale dev-server
+                                            en de testsuite (site-chat.mjs:
+                                            "optioneel: pad naar
+                                            chat/index.json op schijf
+                                            (lokaal en in de tests)"); op
+                                            Netlify zelf leest de functie
+                                            haar index altijd van de eigen
+                                            site, dus dit zou daar niets
+                                            toevoegen en kan verwarren. */
+  var GO_LIVE_ENV_VARS = {
+    verplicht: [
+      { naam: 'SUPABASE_URL', uitleg: 'De Project URL van je Supabase-project (Project Settings → API) — dezelfde als in portal/config.js, hier als servervariabele voor de functies die met de service-role-sleutel lezen en schrijven.' },
+      { naam: 'SUPABASE_SERVICE_ROLE_KEY', uitleg: 'De service-role-sleutel van datzelfde project (Project Settings → API). Dit is niet de anon-sleutel uit portal/config.js: deze sleutel gaat buiten RLS om en hoort dus nooit in een publiek bestand.' },
+      { naam: 'RESEND_API_KEY', uitleg: 'Een API-sleutel uit je Resend-account, onder API Keys.' },
+      { naam: 'RESEND_FROM', uitleg: 'Het afzenderadres van klant- en factuurmails, op het domein dat je bij Resend verifieert (zie de stap Afzenderdomein in Resend hieronder).' },
+      { naam: 'MISTRAL_API_KEY', uitleg: 'Een API-sleutel van console.mistral.ai. Dezelfde sleutel voedt zowel de AI-productcheck als de sitechat; zie de stap AI-assistent verderop.' }
+    ],
+    optioneel: [
+      { naam: 'NOTIFY_SHARED_SECRET', uitleg: 'Geen sleutel van een dienst — een zelf gekozen lange, willekeurige tekenreeks (bijvoorbeeld gegenereerd door een wachtwoordmanager).',
+        terugval: 'Letterlijk uit notify-client.mjs: "Zonder een van de env vars is deze functie uit (503), zodat er nooit per ongeluk een halfgeconfigureerde open relay live staat." Hetzelfde geldt voor invoice-ai.mjs, invoice-validate.mjs en admin-revoke-sessions.mjs: die vier functies weigeren zonder dit geheim elke aanroep, óók met een ingelogde staf-sessie.' },
+      { naam: 'PORTAL_BASE_URL', uitleg: 'De oorsprong waar de knop in klantmails naartoe wijst, bijvoorbeeld https://custom-plus.nl. Alleen nodig als de portal op een ander domein draait dan de site zelf.',
+        terugval: 'Letterlijk uit notify-client.mjs: "Staat hij niet ingesteld, dan geldt de door Netlify zelf gezette URL; is er geen van beide, dan is de functie uit (503)."' },
+      { naam: 'PORTAL_URL_EXTRA_ORIGINS', uitleg: 'Komma-gescheiden lijst met extra toegestane oorsprongen voor diezelfde knop, naast PORTAL_BASE_URL.',
+        terugval: 'Letterlijk uit notify-client.mjs: "Nodig zodra de instelling ‘klantlinkbasis’ in het beheer naar een ander domein wijst dan de site zelf, anders worden die links geweigerd."' },
+      { naam: 'RESEND_WEBHOOK_SECRET', uitleg: 'Het signing secret dat Resend toont zodra je de webhook aanmaakt (Resend-dashboard → Webhooks → Add Webhook), begint met whsec_.',
+        terugval: 'Letterlijk uit resend-webhook.mjs: "Zonder deze webhook toont de factuurtijdlijn dus eerlijk ‘verstuurd — bezorgstatus onbekend’. Dat is geen gebrek dat wordt weggepoetst: het is precies wat er dan bekend is."' },
+      { naam: 'CHAT_LEAD_TO', uitleg: 'Het adres waar een bezoeker naartoe mailt als hij het chatgesprek per mail wil ontvangen.',
+        terugval: 'Letterlijk uit site-chat.mjs: "adres van Steffan; terugval op RESEND_FROM" — zonder deze variabele gaat die mail naar het adres in RESEND_FROM.' },
+      { naam: 'CHAT_DAILY_BUDGET_EUR', uitleg: 'Het dagbudget van de sitechat in euro, als rem op de Mistral-kosten.',
+        terugval: 'Letterlijk uit site-chat.mjs: "optioneel, standaard 5 (euro per dag)" — zonder deze variabele geldt gewoon €5 per dag.' },
+      { naam: 'MISTRAL_MODEL', uitleg: 'Een ander Mistral-model dan de standaardketen, bijvoorbeeld bij een ander abonnement.',
+        terugval: 'Letterlijk uit site-chat.mjs: "optioneel; standaardketen ministral-14b → 8b → mistral-small" — zonder deze variabele probeert de functie die drie modellen op volgorde.' },
+      { naam: 'MISTRAL_SEARCH_AGENT_ID', uitleg: 'De id van de Mistral-zoekagent die bij prijsvragen actuele onlineprijzen opzoekt.',
+        terugval: 'Maakt de functie er zelf eenmalig een aan via de Mistral Agents-API en hergebruikt die daarna uit het geheugen van de functie-instantie — exact zoals HOSTING-GIDS.md het beschrijft: "laat je hem leeg, dan maakt de functie er zelf een aan."' },
+      { naam: 'CHAT_EUR_PER_MTOKEN', uitleg: 'De aanname voor de kostenschatting van de sitechat, in euro per miljoen tokens — geen factuur, alleen de schatting achter het dagbudget hierboven.',
+        terugval: 'Letterlijk uit site-chat.mjs: "optioneel, standaard 0.5: de aanname voor de kostenschatting in euro per miljoen tokens. Dit is een schatting, geen factuur; zet hem op het tarief van het gekozen model." Zonder deze variabele rekent de functie met 0,5.' }
+    ]
+  };
+
   var GO_LIVE_STAPPEN = [
     { key: 'config', titel: 'Supabase-project en portal/config.js', probe: 'config', vink: null, demoDb: false,
       doen: [
@@ -1762,15 +1823,12 @@
       controle: 'Vraagt de databank is_staff() voor de ingelogde sessie. Waar betekent: dit account staat in staff_users.' },
     { key: 'netlifyEnv', titel: 'Omgevingsvariabelen op Netlify', probe: 'netlifyEnv', vink: 'netlifyEnv', demoDb: false,
       doen: [
-        ['Ga in Netlify naar Site configuration → Environment variables.'],
-        ['Verplicht: ', { code: 'SUPABASE_URL' }, ', ', { code: 'SUPABASE_SERVICE_ROLE_KEY' }, ', ', { code: 'RESEND_API_KEY' }, ', ',
-          { code: 'RESEND_FROM' }, ' en ', { code: 'NOTIFY_SHARED_SECRET' }, '.'],
-        ['Optioneel: ', { code: 'PORTAL_BASE_URL' }, ' (als de portal op een andere host draait), ', { code: 'PORTAL_URL_EXTRA_ORIGINS' }, ', ',
-          { code: 'RESEND_WEBHOOK_SECRET' }, ' voor de bezorgstatus, en ', { code: 'MISTRAL_API_KEY' }, ' met ', { code: 'MISTRAL_MODEL' }, ' voor de AI-assistent.'],
+        ['Ga in Netlify naar Site configuration → Environment variables en zet de variabelen hieronder — verplicht en optioneel staan apart, elk met de naam, waar de waarde vandaan komt, en een knop die alleen die naam kopieert (er is geen waarde om te kopiëren).'],
+        ['Bij een optionele variabele staat er ook bij wat er eerlijk gebeurt als je hem overslaat: nooit een gok, alleen wat de functie zelf doet als hij ontbreekt.'],
         ['Deploy daarna opnieuw: een functie leest zijn variabelen bij het uitrollen, niet bij elke aanroep.']
       ],
       plekken: [{ label: 'Netlify', pad: 'https://app.netlify.com' }],
-      controle: 'Vraagt de mailfunctie (een GET zonder gevolgen) of de verplichte variabelen staan. Die antwoordt met ja of nee per groep, nooit met een waarde. Draait de mailfunctie niet op deze host, dan is dit vanaf hier niet te controleren en telt je vinkje.' },
+      controle: 'Vraagt de mailfunctie (een GET zonder gevolgen) of de verplichte variabelen staan. Die antwoordt met ja of nee per groep, nooit met een waarde. Draait de mailfunctie niet op deze host, dan is dit vanaf hier niet te controleren en telt je vinkje. De AI-assistent (MISTRAL_API_KEY) heeft zijn eigen stap verderop, want de mailfunctie weet daar niets van.' },
     { key: 'resendDomein', titel: 'Afzenderdomein in Resend', probe: null, vink: 'resendDomein', demoDb: false,
       doen: [
         ['Voeg onder Domains het afzenderdomein toe en zet de SPF- en DKIM-records bij je DNS-beheerder; wacht tot beide op ', { code: 'Verified' }, ' staan.'],
@@ -1785,6 +1843,14 @@
       ],
       plekken: [{ label: 'Netlify', pad: 'https://app.netlify.com' }],
       controle: 'Vraagt notify-client of hij bereikbaar én geconfigureerd is. Een uitgerolde maar half geconfigureerde functie telt eerlijk niet als klaar.' },
+    { key: 'mistral', titel: 'AI-assistent (Mistral) werkt echt', probe: 'mistral', vink: null, demoDb: false,
+      doen: [
+        ['Niets extra te doen als de stap Omgevingsvariabelen hierboven ', { code: 'MISTRAL_API_KEY' }, ' al heeft gezet: ',
+          { code: 'netlify/functions/site-chat.mjs' }, ' (de sitechat) en ', { code: 'netlify/functions/product-check.mjs' }, ' (de productcheck) rollen met de site mee uit.'],
+        ['De controle hieronder stuurt een echte, korte testvraag naar de sitechat-functie — dat kost een fractie van een cent bij Mistral, net als een bezoeker die de chat gebruikt.']
+      ],
+      plekken: [{ label: 'Mistral-console (API-sleutels)', pad: 'https://console.mistral.ai' }],
+      controle: 'Stuurt een korte testvraag naar netlify/functions/site-chat.mjs (action "chat"). Komt er een echt, gestreamd antwoord terug, dan werkt de sleutel. Antwoordt de functie met fallback "briefing" en foutcode "not-configured", dan staat MISTRAL_API_KEY nog niet. Bij elke andere fout of bij een netwerkfout wordt nooit een succes gemeld.' },
     { key: 'portalurl', titel: 'Portal-URL', probe: 'portalurl', vink: null, demoDb: false,
       doen: [
         [{ code: 'portal.html' }, ' moet op dezelfde host bereikbaar zijn als dit beheer; de links in klantmails wijzen daarheen.'],
@@ -1963,6 +2029,53 @@
       });
     }, function () {
       return { stand: 'onbekend', tekst: 'De mailfunctie is niet bereikbaar vanaf deze pagina — draait de site op Netlify? Zo niet, dan is dit vanaf hier niet te controleren.' };
+    });
+  }
+
+  /* {stand, tekst} uit een ECHTE testvraag aan de sitechat-functie. Net als
+     de resend-stap hierboven doet dit een echt verzoek — hier is dat de
+     enige manier, want site-chat.mjs heeft geen GET-gezondheidscheck zoals
+     notify-client.mjs en resend-webhook.mjs. mode:'product' slaat het
+     ophalen van chat/index.json over (zie retrieve() in site-chat.mjs), zo
+     test dit alleen MISTRAL_API_KEY en niets van de siteindex erbij. Een
+     geslaagd antwoord kost een fractie van een cent bij Mistral (zie
+     HOSTING-GIDS.md); dat is hier precies wat "echt werkt" betekent, niet
+     alleen "is ingevuld". Volgt exact het patroon van goLiveNetlifyEnvProbe
+     hierboven: 'onbekend' bij een netwerkfout, nooit een verzonnen succes. */
+  function goLiveMistralProbe() {
+    var g = G();
+    if (!g || !fn(g.fetch)) {
+      return Promise.resolve({ stand: 'onbekend', tekst: 'Deze browser kan geen verzoek doen (geen fetch), dus MISTRAL_API_KEY is vanaf hier niet na te kijken.' });
+    }
+    return g.fetch('/.netlify/functions/site-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'chat', mode: 'product', lang: 'nl', messages: [{ role: 'user', content: 'Testbericht van de go-live-controle: is de AI-assistent bereikbaar?' }] })
+    }).then(function (r) {
+      if (r.status === 404) {
+        return { stand: 'onbekend', tekst: 'De sitechat-functie antwoordt hier met 404: op deze host draait netlify/functions/site-chat.mjs niet, dus MISTRAL_API_KEY is vanuit dit beheer niet na te kijken.' };
+      }
+      var ct = str(r.headers.get('content-type'));
+      if (r.ok && /event-stream/i.test(ct)) {
+        /* een echte gestreamde reactie komt alleen tot stand ná een geslaagd
+           antwoord van Mistral zelf (zie de modelketen in site-chat.mjs);
+           de inhoud lezen we niet, dat zegt de vorm van het antwoord al */
+        return { stand: 'ok', tekst: 'De sitechat-functie antwoordt met een echt, gestreamd antwoord van Mistral: MISTRAL_API_KEY werkt.' };
+      }
+      return r.json().then(function (j) {
+        var o = opt(j);
+        if (o.fallback === 'briefing' && o.error === 'not-configured') {
+          return { stand: 'bad', tekst: 'De sitechat-functie valt terug op het briefingformulier met foutcode not-configured: MISTRAL_API_KEY staat nog niet op Netlify.' };
+        }
+        if (o.fallback === 'briefing') {
+          return { stand: 'warn', tekst: 'De sitechat-functie viel deze keer terug op het briefingformulier (' + (str(o.error) || str(o.reason) || 'zonder foutcode') + '), niet met foutcode not-configured. MISTRAL_API_KEY lijkt dus gezet, maar dit ene antwoord bewijst nog niet dat hij werkt — probeer het nog eens.' };
+        }
+        return { stand: 'bad', tekst: 'De sitechat-functie antwoordt met status ' + r.status + ' op een testvraag (' + (str(o.error) || 'zonder foutcode') + ').' };
+      }, function () {
+        return { stand: 'onbekend', tekst: 'De sitechat-functie gaf geen leesbaar antwoord op een testvraag.' };
+      });
+    }, function () {
+      return { stand: 'onbekend', tekst: 'De sitechat-functie is niet bereikbaar vanaf deze pagina — draait de site op Netlify? Zo niet, dan is dit vanaf hier niet te controleren.' };
     });
   }
 
@@ -3115,6 +3228,49 @@
     }, [ui.el('span', { text: str(label) }), fn(ui.icon) ? ui.icon('extern', 15) : null]);
   }
 
+  /* één rij in de omgevingsvariabelenlijst van de netlifyEnv-stap: de naam
+     in mono, een kopieerknop die ALLEEN die naam op het klembord zet (er is
+     geen waarde om te kopiëren — die typt de eigenaar zelf in Netlify), en
+     de uitleg eronder. `item.terugval`, als die er is, is het eerlijke
+     antwoord op "wat gebeurt er als ik dit oversla" — letterlijk geciteerd
+     uit de functie zelf (zie GO_LIVE_ENV_VARS hierboven). */
+  function goLiveEnvVarRegel(ui, meld, item) {
+    var kopieerKnop = ui.el('button', {
+      type: 'button', class: 'u-btn ghost klein',
+      text: 'Kopieer naam', 'aria-label': 'Kopieer de naam ' + item.naam + ' (geen waarde, die staat nergens om te kopiëren)'
+    });
+    kopieerKnop.addEventListener('click', function () {
+      var g = G();
+      var belofte = (g && g.navigator && g.navigator.clipboard && fn(g.navigator.clipboard.writeText))
+        ? g.navigator.clipboard.writeText(item.naam)
+        : Promise.reject(new Error('geen klembord beschikbaar'));
+      belofte.then(function () {
+        meld('Naam gekopieerd: ' + item.naam + ' (geen waarde — die vul je zelf in op Netlify).');
+      }, function () {
+        meld('Kopiëren naar het klembord lukte niet in deze browser; typ de naam over: ' + item.naam);
+      });
+    });
+    var kinderen = [
+      ui.el('div', { style: 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;' }, [
+        ui.el('code', { style: 'font-family:var(--mono);font-size:13px;', text: item.naam }),
+        kopieerKnop
+      ]),
+      ui.el('p', { class: 'u-sub', style: 'margin:4px 0 0;max-width:64ch;', text: item.uitleg })
+    ];
+    if (item.terugval) {
+      kinderen.push(ui.el('p', { class: 'u-sub', style: 'margin:2px 0 0;max-width:64ch;', text: 'Ontbreekt hij: ' + item.terugval }));
+    }
+    return ui.el('div', { style: 'padding:10px 0;border-top:1px solid var(--line-2);' }, kinderen);
+  }
+
+  /* een groep (Verplicht of Optioneel) van GO_LIVE_ENV_VARS als kop + rijen */
+  function goLiveEnvVarGroep(ui, meld, titel, lijst) {
+    return ui.el('div', { style: 'margin:14px 0 4px;' }, [
+      ui.el('span', { class: 'u-kicker', text: titel }),
+      ui.el('div', null, arr(lijst).map(function (item) { return goLiveEnvVarRegel(ui, meld, item); }))
+    ]);
+  }
+
   /* Integraties: de wizard "Klaar voor live".
      Dezelfde data en dezelfde controles als de lijst die hier stond — de
      vinkjes in settings.goLive en voerGoLiveControlesUit() in beheer.html —
@@ -3212,7 +3368,7 @@
       'aria-label': 'Go-live-checklist'
     }, [
       ui.sectionHead({ kicker: 'Go-live-checklist', titel: 'Klaar voor live' }),
-      uitlegP(ui, 'Negen stappen naar een echte omgeving, één tegelijk. Waar een controle vanuit de browser kan, doet '
+      uitlegP(ui, 'Tien stappen naar een echte omgeving, één tegelijk. Waar een controle vanuit de browser kan, doet '
         + 'de knop Controleer een echt verzoek en zegt de uitslag wat hij zag; waar dat niet kan, staat dat erbij en '
         + 'vink je zelf af. Klaar betekent dus altijd een echte uitslag of jouw vinkje, nooit een aanname.')
     ]);
@@ -3377,10 +3533,11 @@
         goLiveStafProbe(c).then(function (r) { zetStand('staf', r.stand, r.tekst); });
       }
       goLiveNetlifyEnvProbe().then(function (r) { zetStand('netlifyEnv', r.stand, r.tekst); });
+      goLiveMistralProbe().then(function (r) { zetStand('mistral', r.stand, r.tekst); });
     }
     allesKnop.addEventListener('click', controleerAlles);
 
-    /* ---- de negen stappen ------------------------------------------ */
+    /* ---- de tien stappen --------------------------------------------- */
     GO_LIVE_STAPPEN.forEach(function (stap, i) {
       var kopId = 'golive-kop-' + stap.key;
       var paneelId = 'golive-paneel-' + stap.key;
@@ -3415,6 +3572,15 @@
         paneel.appendChild(ui.el('span', { class: 'u-kicker', text: 'Waar' }));
         paneel.appendChild(ui.el('div', { style: 'display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 14px;' },
           stap.plekken.map(function (p) { return goLiveExterneLink(ui, p.label, supabaseLink(p.pad)); })));
+      }
+
+      /* de volledige, actuele lijst omgevingsvariabelen — alleen bij deze
+         ene stap, want de lijst zelf (GO_LIVE_ENV_VARS) hoort daar en
+         nergens anders thuis */
+      if (stap.key === 'netlifyEnv') {
+        paneel.appendChild(ui.el('span', { class: 'u-kicker', text: 'Alle omgevingsvariabelen' }));
+        paneel.appendChild(goLiveEnvVarGroep(ui, meld, 'Verplicht', GO_LIVE_ENV_VARS.verplicht));
+        paneel.appendChild(goLiveEnvVarGroep(ui, meld, 'Optioneel', GO_LIVE_ENV_VARS.optioneel));
       }
 
       /* de controle: wat hij doet, en de uitslag — de zin is de uitkomst en
@@ -3466,7 +3632,7 @@
          laatste stap. Geen knop die niets doet: zonder haak én zonder
          eigen probe staat er geen Controleer. */
       var knoppen = [];
-      var kanControleren = !!stap.probe && (stap.probe === 'staf' || stap.probe === 'netlifyEnv' || !!controleren);
+      var kanControleren = !!stap.probe && (stap.probe === 'staf' || stap.probe === 'netlifyEnv' || stap.probe === 'mistral' || !!controleren);
       if (kanControleren) {
         knoppen.push(ui.el('button', { type: 'button', class: 'u-btn', text: 'Controleer', onclick: controleerAlles }));
       } else if (stap.probe) {

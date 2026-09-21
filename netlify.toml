@@ -1,3 +1,17 @@
+# ------------------------------------------------------------ lighthouse
+#
+# Draai `npm run lighthouse` lokaal, of laat de losse GitHub Actions-stap
+# (.github/workflows/lighthouse.yml) het doen vóórdat je merget — NIET in
+# het build-commando hieronder. Netlify's eigen build-image garandeert
+# geen Chrome-installatie, en dat is vanuit deze sandbox niet te verifiëren
+# tegen de echte Netlify-infrastructuur. Een build-commando dat stilletjes
+# faalt omdat Chrome ontbreekt, is erger dan geen Lighthouse-check: die zou
+# élke deploy blokkeren, niet alleen een echte regressie. De GitHub Actions
+# check draait wel op elke push/pull request en geeft daar een rode of
+# groene status, wat de eerlijke manier is om een kwaliteitsdrempel af te
+# dwingen zonder Netlify's build te gijzelen aan een garantie die hij niet
+# geeft. Zie scripts/lighthouse-check.mjs voor de drempels en de aanpak.
+
 [build]
   # build-blog levert de blogindex en de RSS feed; build-site bouwt daarna alle
   # route-bestanden, de assets, robots.txt en de sitemap.

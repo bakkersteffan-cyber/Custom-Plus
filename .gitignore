@@ -29,3 +29,13 @@ dev/
 /sitemap.xml
 # Door scripts/build-chat-index.mjs gegenereerd
 /chat/index.json
+
+# Alleen voor scripts/ (Lighthouse, migratierunner, restore-drill); de site zelf heeft geen dependencies
+node_modules/
+
+# Volledige Lighthouse-rapporten (JSON) van scripts/lighthouse-check.mjs; lokale
+# meetdata, hoort niet in de repo
+scripts/.lighthouse-reports/
+
+# Echte database-dumps (voorstel 50, scripts/supabase-backup.sh) horen nooit in git
+backups/

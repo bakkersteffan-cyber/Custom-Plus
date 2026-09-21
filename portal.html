@@ -8951,5 +8951,72 @@ body.k-nieuw .u-topbar.k-zonder-zoek .k-zoekknop{display:none !important}
   });
 })();
 </script>
+<!-- voorstel 49: foutlogboek — vangt onverwachte JS-fouten en stuurt een
+     anonieme melding naar log-client-error.mjs; geen tracker, geen PII.
+     ES5, geen dependency, nooit blokkerend: zie netlify/functions/log-client-error.mjs -->
+<script>
+(function(){
+  var APP = 'portal';
+  var ENDPOINT = '/.netlify/functions/log-client-error';
+  var STORE_KEY = 'cp_err_client_id';
+  var DEDUPE_MS = 10000;
+  var recent = {};
+
+  function clientId(){
+    try{
+      var id = sessionStorage.getItem(STORE_KEY);
+      if(!id){
+        id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+        sessionStorage.setItem(STORE_KEY, id);
+      }
+      return id;
+    }catch(e){ return ''; }
+  }
+
+  function lang(){
+    try{
+      var l = document.documentElement.getAttribute('lang');
+      if(l) return l;
+    }catch(e){}
+    try{ return localStorage.getItem('cp_lang') || ''; }catch(e){ return ''; }
+  }
+
+  function send(message, stack, url){
+    try{
+      message = String(message || 'Onbekende fout').slice(0, 500);
+      url = String(url || '');
+      var key = message + '|' + url;
+      var now = Date.now();
+      if(recent[key] && now - recent[key] < DEDUPE_MS) return;
+      recent[key] = now;
+      var body = JSON.stringify({
+        app: APP,
+        message: message,
+        stack: stack ? String(stack).slice(0, 4000) : '',
+        url: url.slice(0, 300),
+        lang: lang(),
+        client_id: clientId()
+      });
+      if(typeof fetch !== 'function') return;
+      fetch(ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:body, keepalive:true })['catch'](function(){});
+    }catch(e){ /* de logger mag de site nooit breken */ }
+  }
+
+  window.addEventListener('error', function(e){
+    try{
+      if(!e) return;
+      send(e.message, e.error && e.error.stack, String(location.href));
+    }catch(ex){}
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    try{
+      var reason = e && e.reason;
+      var message = (reason && reason.message) ? reason.message : String(reason);
+      var stack = reason && reason.stack;
+      send(message, stack, String(location.href));
+    }catch(ex){}
+  });
+})();
+</script>
 </body>
 </html>

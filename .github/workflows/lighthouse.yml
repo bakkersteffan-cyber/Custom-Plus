@@ -1,0 +1,36 @@
+# CUSTOM+ — Lighthouse-drempel als losse GitHub Actions check.
+#
+# Draait NIET als onderdeel van de Netlify-build (zie het commentaarblok
+# bovenaan netlify.toml voor het waarom): dit is de eerlijke manier om
+# scripts/lighthouse-check.mjs op elke push en pull request als rode of
+# groene status te laten meetellen, zonder Netlify's eigen build-image te
+# laten garanderen dat er een Chrome beschikbaar is — dat garandeert hij
+# niet, en dat is vanuit een sandbox niet te verifiëren tegen de echte
+# Netlify-infrastructuur.
+#
+# Geen enkele stap hieronder gebruikt GitHub-event-tekst (issue/PR-titel,
+# commit message, enz.) in een run:-commando — er is dus geen command-
+# injectierisico via ${{ github.event.* }}.
+
+name: Lighthouse
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    env:
+      # ubuntu-latest-runners hebben Google Chrome al geïnstalleerd. Dit
+      # vertelt scripts/lighthouse-check.mjs waar: dat script gebruikt
+      # process.env.CHROME_PATH als die gezet is, en valt anders terug op
+      # het vaste macOS-pad — dat bestaat hier niet.
+      CHROME_PATH: /usr/bin/google-chrome-stable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lighthouse

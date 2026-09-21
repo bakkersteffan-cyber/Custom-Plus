@@ -1,0 +1,18 @@
+{
+  "name": "custom-plus-tooling",
+  "private": true,
+  "description": "Bouw- en onderhoudstooling voor CUSTOM+. Bewust GEEN dependency van de site zelf: portal.html, beheer.html, factuur.html en custom-plus.html blijven vanilla ES5 zonder build stap. Deze package.json bestaat alleen voor scripts/ (Lighthouse-drempel, Supabase-migratierunner, restore-drill).",
+  "scripts": {
+    "test": "node test/run.mjs",
+    "lighthouse": "node scripts/lighthouse-check.mjs",
+    "migrate": "node scripts/supabase-migrate.mjs",
+    "restore-drill": "node scripts/supabase-restore-drill.mjs",
+    "backup": "bash scripts/supabase-backup.sh"
+  },
+  "devDependencies": {
+    "lighthouse": "^13.5.0",
+    "chrome-launcher": "^1.1.2",
+    "pg": "^8.13.1",
+    "@electric-sql/pglite": "^0.2.17"
+  }
+}
