@@ -10,9 +10,10 @@
     "backup": "bash scripts/supabase-backup.sh"
   },
   "devDependencies": {
-    "lighthouse": "^13.5.0",
+    "@electric-sql/pglite": "^0.2.17",
     "chrome-launcher": "^1.1.2",
-    "pg": "^8.13.1",
-    "@electric-sql/pglite": "^0.2.17"
+    "esbuild": "^0.28.2",
+    "lighthouse": "^13.5.0",
+    "pg": "^8.13.1"
   }
 }

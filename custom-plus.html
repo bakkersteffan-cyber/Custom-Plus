@@ -677,7 +677,16 @@ button.fl-stage-tab:not([aria-selected="true"]):hover{ background:var(--gray-f2)
 .fl-stage-panel ul{ display:flex; flex-direction:column; }
 .fl-stage-panel li{ font-size:13.5px; color:var(--gray-69); padding-block:10px; border-top:1px solid var(--line); display:flex; gap:10px; }
 .fl-stage-panel li::before{ content:"—"; color:var(--gray-9); }
-@media (max-width:860px){ .fl-stages{ grid-template-columns:1fr; } .fl-stage-panel{ min-height:0; } }
+/* Onder 860px stapelt .fl-stages in één kolom; #stage-tabs en #stage-panel
+   staan leeg in de HTML en worden pas door de app-JS gevuld (zes tabs, dan
+   de eerste stap). Zonder gereserveerde ruimte was dat een sprong van bijna
+   0px naar ~900px zodra het script draaide — precies de cumulative-layout-
+   shift die Lighthouse op de diensten-pagina mat (0,269, ruim onder de
+   score-drempel). Gemeten op 390px met echte inhoud: tabs 334px, paneel
+   (eerste stap) 566px; de waarden hieronder liggen daar net onder, zodat de
+   sprong nagenoeg verdwijnt zonder dat een kortere stap straks een
+   onnodig grote lege ruimte overhoudt. */
+@media (max-width:860px){ .fl-stages{ grid-template-columns:1fr; } .fl-stages__tabs{ min-height:320px; } .fl-stage-panel{ min-height:520px; } }
 
 /* ---------- shared section head + form label ---------- */
 .fl-section-head{ display:flex; flex-direction:column; gap:6px; max-width:64ch; }

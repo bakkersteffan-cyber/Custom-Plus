@@ -26,6 +26,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { transformSync } from 'esbuild';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, 'custom-plus.html');
@@ -854,10 +855,40 @@ function rewriteJs(source) {
   return s;
 }
 
+/* De Lighthouse-run van 2026-09-21 wees 86 KB (JS) en 25 KB (CSS) potentiële
+ * winst aan onder "unminified-javascript"/"unminified-css" — de build minifte
+ * tot dan toe niets. esbuild.transformSync doet hier alleen minify:true
+ * (whitespace/comments weg, identifiers verkort): bewust GEEN target/
+ * transpileren, de syntax moet exact ES5 blijven zoals de rest van de site.
+ * Faalt esbuild (bijvoorbeeld een syntaxfout die het niet kan parsen), dan
+ * stopt de build met een duidelijke foutmelding — nooit stilletjes de rauwe,
+ * ongeminifiede versie serveren alsof minificatie gelukt is. */
+const rawCssBytes = Buffer.byteLength(css);
+const rawJsRaw = MISSING_SHIM + rewriteJs(js);
+const rawJsBytes = Buffer.byteLength(rawJsRaw);
+let minifiedCss, minifiedJs;
+try {
+  minifiedCss = transformSync(css, { loader: 'css', minify: true }).code;
+} catch (err) {
+  console.error('build-site: FOUT — esbuild kon de CSS niet minifyen, build gestopt.');
+  console.error(err && err.message ? err.message : err);
+  process.exit(1);
+}
+try {
+  minifiedJs = transformSync(rawJsRaw, { loader: 'js', minify: true }).code;
+} catch (err) {
+  console.error('build-site: FOUT — esbuild kon de JavaScript niet minifyen, build gestopt.');
+  console.error(err && err.message ? err.message : err);
+  process.exit(1);
+}
+css = minifiedCss;
+const appJs = minifiedJs;
+
 /* Een hash in de bestandsnaam laat de browser deze twee een jaar bewaren en
-   toch meteen de nieuwe versie pakken zodra er iets verandert. Oude gehashte
-   bestanden gooien we eerst weg, anders groeit de map bij elke build. */
-const appJs = MISSING_SHIM + rewriteJs(js);
+   toch meteen de nieuwe versie pakken zodra er iets verandert. De hash gaat
+   over de GEMINIFIEDE inhoud, zodat de bestandsnaam echt overeenkomt met wat
+   er straks geserveerd wordt. Oude gehashte bestanden gooien we eerst weg,
+   anders groeit de map bij elke build. */
 const hash8 = (str) => createHash('sha256').update(str).digest('hex').slice(0, 8);
 const CSS_NAME = 'app.' + hash8(css) + '.css';
 const JS_NAME = 'app.' + hash8(appJs) + '.js';
@@ -908,6 +939,31 @@ const LEGACY_HASH_SCRIPT = '<script>(function(){var m={"/services":"/diensten","
   out('content/nl/seo.json', JSON.stringify(runtimeSeo));
 }
 
+/* Kritieke boven-de-vouw-CSS, met de hand overgenomen uit de bestaande
+ * css-string (niets verzonnen, alleen een subset van al bestaande regels):
+ * basistypografie/kleuren zodat er geen onopgemaakte witte flits optreedt
+ * terwijl de preload hieronder nog laadt, de vaste navigatiebalk (.fl-nav)
+ * en de .fl-pulse hero-band met zijn achtergrondfoto — dat laatste maakt de
+ * LCP-achtergrond meteen ontdekbaar in de eerste HTML (lcp-discovery-insight).
+ * Blijft bewust klein: dit is geen kopie van de hele CSS, dus mag een paar
+ * overbodige spaties bevatten (leesbaarheid weegt hier zwaarder dan de
+ * laatste bytes). */
+const CRITICAL_CSS = `
+:root{ --black:#000; --white:#fff; --green:#1B6E45; --gray-a7:#a7a7a7; --ease-fl: cubic-bezier(.83,0,.17,1); }
+html{ -webkit-text-size-adjust:100%; }
+body{ margin:0; background:var(--white); }
+.fl{ font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif; background:var(--white); color:var(--black); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:clip; min-height:100vh; }
+.fl-container{ max-width:1600px; margin-inline:auto; padding-inline:clamp(20px,4vw,64px); }
+.fl-nav{ position:sticky; top:0; z-index:100; background:var(--white); transition:transform .5s var(--ease-fl), box-shadow .3s; margin-top:-8px; border-radius:8px 8px 0 0; }
+.fl-nav.is-hidden{ transform:translateY(-100%); }
+.fl-nav.is-stuck{ box-shadow:0 1px 0 rgba(0,0,0,.07); }
+.fl-nav .fl-container{ display:flex; align-items:center; justify-content:space-between; height:76px; gap:24px; }
+.fl-wordmark{ font-weight:600; font-size:19px; letter-spacing:.02em; display:flex; align-items:baseline; }
+.fl-wordmark em{ font-style:normal; color:var(--green); }
+.fl-pulse{ background:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band.jpg') center 30%/cover no-repeat, var(--black); color:var(--white); position:relative; overflow:hidden; height:clamp(320px,60vh,640px); }
+.fl-pulse__label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-a7); text-align:center; padding-inline:20px; pointer-events:none; }
+`.trim();
+
 const missingSeo = [];
 function headFor(route, extraLd) {
   const seo = SEO_NL[route.seo] || {};
@@ -941,8 +997,15 @@ function headFor(route, extraLd) {
     + LEGACY_HASH_SCRIPT
     + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-400.woff2" crossorigin>\n'
     + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-600.woff2" crossorigin>\n'
-    + '<link rel="stylesheet" href="/assets/' + CSS_NAME + '">\n'
-    + '<link rel="stylesheet" href="/chat/chat.css">\n'
+    + '<style>' + CRITICAL_CSS + '</style>\n'
+    /* render-blocking-insight (2810ms geschatte winst): beide stylesheets waren
+     * gewone blocking <link rel="stylesheet">-tags in <head>. Het preload+onload
+     * patroon laadt ze non-blocking en schakelt pas naar rel=stylesheet zodra ze
+     * binnen zijn; <noscript> is de terugval voor bezoekers/crawlers zonder JS. */
+    + '<link rel="preload" as="style" href="/assets/' + CSS_NAME + '" onload="this.onload=null;this.rel=\'stylesheet\'">\n'
+    + '<noscript><link rel="stylesheet" href="/assets/' + CSS_NAME + '"></noscript>\n'
+    + '<link rel="preload" as="style" href="/chat/chat.css" onload="this.onload=null;this.rel=\'stylesheet\'">\n'
+    + '<noscript><link rel="stylesheet" href="/chat/chat.css"></noscript>\n'
     + extraLd;
 }
 
@@ -1124,7 +1187,7 @@ for (const route of ROUTES) {
     + '</head>\n<body data-route="' + escAttr(route.path) + '"'
     + (route.staticPage ? ' data-static-page="' + escAttr(route.page) + '"' : '') + '>\n'
     + shellHead + unhide(block) + shellTail + afterResult.html
-    + '\n<script src="/assets/' + JS_NAME + '"></script>\n</body>\n</html>\n';
+    + '\n<script src="/assets/' + JS_NAME + '" defer></script>\n</body>\n</html>\n';
 
   out(route.file || (route.path === '/' ? 'index.html' : route.path.slice(1) + '/index.html'), html);
 }
@@ -1280,7 +1343,7 @@ for (const art of articles) {
     '<!DOCTYPE html>\n<html lang="nl">\n<head>\n' + head + '</head>\n'
     + '<body data-route="/blog/' + escAttr(art.slug) + '">\n'
     + shellHead + unhide(pageHtml) + shellTail + afterResult.html
-    + '\n<script src="/assets/' + JS_NAME + '"></script>\n</body>\n</html>\n');
+    + '\n<script src="/assets/' + JS_NAME + '" defer></script>\n</body>\n</html>\n');
 }
 
 /* -------------------------------------------------------------- 9. sitemap */
@@ -1363,6 +1426,7 @@ console.log('build-site: data-ck ingevuld ' + ckFilled + ', overgeslagen ' + ckS
 console.log('build-site: tekstnodes vertaald ' + (bodyResult.textHits + afterResult.textHits)
   + ', niet gevonden ' + (bodyResult.textMiss + afterResult.textMiss)
   + ', attributen ' + (bodyResult.attrHits + afterResult.attrHits));
-console.log('build-site: app.css ' + kb(Buffer.byteLength(css)) + ', app.js ' + kb(Buffer.byteLength(appJs)));
+console.log('build-site: app.css ' + kb(rawCssBytes) + ' ruw -> ' + kb(Buffer.byteLength(css)) + ' geminifieerd, '
+  + 'app.js ' + kb(rawJsBytes) + ' ruw -> ' + kb(Buffer.byteLength(appJs)) + ' geminifieerd');
 if (missingSeo.length) console.warn('build-site: LET OP geen seo-nl.json titel/description voor: ' + missingSeo.join(', '));
 for (const w of pages) console.log('  ' + w[0].padEnd(30) + kb(w[1]));
