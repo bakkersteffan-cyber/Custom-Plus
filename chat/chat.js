@@ -34,6 +34,7 @@
   var FORM_KEY = 'cp_form_state';
   var BRIEF_KEY = 'cp_chat_brief';
   var MAX_CHARS = 1000;
+  var NEAR_CHARS = 800;
   var MAX_HISTORY = 12;
   /* dezelfde link als content/global.json (callBooking.url); die wordt bij
      het openen opgehaald en wint, dit is alleen de terugval */
@@ -218,7 +219,9 @@
   var titleEl = el('h2', { 'class': 'cpc-title', id: 'cpc-title', text: T('Vraag het CUSTOM+') });
   var subEl = el('span', { 'class': 'cpc-sub', text: T('Antwoorden uit de site, geen offerte') });
   var closeBtn = el('button', { 'class': 'cpc-close', type: 'button', 'aria-label': T('Sluiten') }, [svg(['M6 6 L18 18', 'M18 6 L6 18'], '1.6')]);
-  var head = el('div', { 'class': 'cpc-head' }, [el('div', { 'class': 'cpc-head__text' }, [titleEl, subEl]), closeBtn]);
+  /* het avatarvlak is decoratie naast de kop; de kop zelf benoemt het venster */
+  var avatar = el('span', { 'class': 'cpc-avatar', 'aria-hidden': 'true', text: 'C+' });
+  var head = el('div', { 'class': 'cpc-head' }, [avatar, el('div', { 'class': 'cpc-head__text' }, [titleEl, subEl]), closeBtn]);
 
   var modeSite = el('button', { 'class': 'cpc-mode', type: 'button', 'aria-pressed': 'true', text: T('Vraag') });
   var modeProduct = el('button', { 'class': 'cpc-mode', type: 'button', 'aria-pressed': 'false', text: T('Productidee') });
@@ -363,7 +366,9 @@
     var list = state.mode === 'product' ? CHIPS.product : (CHIPS[pageKey()] || CHIPS.home);
     for (var i = 0; i < list.length; i++) {
       (function (txt) {
-        var c = el('button', { 'class': 'cpc-chip', type: 'button', text: txt });
+        var chev = svg(['M9 6l6 6-6 6'], '1.6');
+        chev.setAttribute('class', 'cpc-chip__chev');
+        var c = el('button', { 'class': 'cpc-chip', type: 'button' }, [el('span', { text: txt }), chev]);
         c.addEventListener('click', function () { input.value = txt; send(); });
         chipsEl.appendChild(c);
       })(chipText(list[i]));
@@ -388,7 +393,10 @@
   function updateCounter() {
     var n = input.value.length;
     counter.firstChild.nodeValue = n + '/' + MAX_CHARS;
-    if (n >= MAX_CHARS) counter.className = 'cpc-counter is-max'; else counter.className = 'cpc-counter';
+    /* de teller komt pas in beeld als het maximum in zicht is; de verstuurknop
+       wordt pas donker zodra er echt iets te versturen valt */
+    counter.className = n >= MAX_CHARS ? 'cpc-counter is-max' : (n >= NEAR_CHARS ? 'cpc-counter is-near' : 'cpc-counter');
+    bar.className = input.value.trim() ? 'cpc-bar is-ready' : 'cpc-bar';
     input.style.height = 'auto';
     input.style.height = Math.min(120, input.scrollHeight) + 'px';
   }

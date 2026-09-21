@@ -1,34 +1,59 @@
 /* CUSTOM+ sitechat — losse stylesheet, laadt naast /assets/app.css op elke
-   publieke pagina. Alle kleuren komen uit de tokens van de site (--black,
-   --white, --gray-*, --line); de terugvalwaarden erachter zijn exact de
-   waarden die de site zelf in het lichte thema gebruikt, zodat het paneel
-   er ook goed uitziet als het buiten de .fl-scope van de site staat. Er
-   komen geen nieuwe kleuren bij: zwart accent, grijze bubbels, dezelfde
-   radius (22px kaart, 18px bubbel, 50px balk) en schaduwen als de
-   productcheck-popup. Fonts: Hanken Grotesk (tekst) en JetBrains Mono
-   (kickers), dezelfde stapels als custom-plus.html. */
+   publieke pagina. Alle kleuren komen uit de tokens van de site (--ink,
+   --white, --gray-*, --line, --green); de terugvalwaarden erachter zijn de
+   waarden van het lichte thema, zodat het paneel er ook goed uitziet buiten
+   de .fl-scope van de site.
+
+   WAAROM DIT ZO RUSTIG IS. De eerste versie stond vol dunne randen, mono
+   hoofdletterlabels en drie zwarte vlakken tegelijk in beeld, en las daardoor
+   als een strak formulier. Nu, in de geest van een hulpvenster als dat van
+   Airbnb: geen randen maar zachte vlakken (f9 en f2) en lucht, geen
+   hoofdletterlabels, één donker element in rust (de briefingknop) en één dat
+   pas donker wordt zodra het ertoe doet (de verstuurknop, zodra er tekst
+   staat). Antwoorden staan als losse tekst op het vel, alleen de eigen vraag
+   zit in een zachte bubbel. Hover is altijd één tint achtergrond, nooit een
+   rand die zwart wordt; één easing en drie duren voor alle beweging.
+   Blueprint-modus (data-mode="blueprint") draait alle tokens om; omdat daar
+   een randloos donker vlak op een donkere pagina zonder contour blijft, krijgen
+   die vlakken daar onderaan een dunne lijn terug. */
 
 .cpc-fab, .cpc-panel, .cpc-panel * { box-sizing: border-box; }
+
+/* lokale tokens: één easing, drie duren, twee rustvlakken, één schaduw */
+.cpc-fab, .cpc-panel {
+  --cpc-ease: cubic-bezier(.2,.8,.2,1);
+  --cpc-fast: 160ms; --cpc-base: 220ms; --cpc-slow: 320ms;
+  --cpc-soft: var(--gray-f9, #f9f9f9);
+  --cpc-soft-2: var(--gray-f2, #f2f2f2);
+  --cpc-shadow: 0 24px 64px -16px rgba(17,17,17,.22), 0 2px 6px rgba(17,17,17,.05);
+}
 
 /* ---------- de ronde knop ---------- */
 .cpc-fab {
   position: fixed; right: 20px; bottom: 20px; z-index: 330;
-  width: 56px; height: 56px; border-radius: 50%; border: 0; padding: 0;
-  background: var(--black, #000); color: var(--white, #fff); cursor: pointer;
+  width: 56px; height: 56px; border-radius: 50%; padding: 0;
+  border: 1px solid var(--line, rgba(228,224,219,.6));
+  background: var(--white, #fff); color: var(--ink, #111); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: 0 16px 40px rgba(17,17,17,.24);
-  transition: transform .3s cubic-bezier(.85,0,.15,1), box-shadow .3s ease;
+  box-shadow: 0 12px 32px -8px rgba(17,17,17,.28);
+  transition: transform var(--cpc-base) var(--cpc-ease), box-shadow var(--cpc-base) var(--cpc-ease);
 }
-.cpc-fab:hover { transform: translateY(-2px); box-shadow: 0 20px 44px rgba(17,17,17,.28); }
-.cpc-fab svg { width: 24px; height: 24px; }
-.cpc-fab .cpc-fab__close { display: none; }
-.cpc-fab[aria-expanded="true"] .cpc-fab__open { display: none; }
-.cpc-fab[aria-expanded="true"] .cpc-fab__close { display: block; }
-/* ongelezen antwoord terwijl het paneel dicht is: een klein wit puntje */
+.cpc-fab:hover { transform: scale(1.04); box-shadow: 0 16px 36px -8px rgba(17,17,17,.32); }
+.cpc-fab:active { transform: scale(.96); }
+/* beide iconen staan over elkaar en vervagen in elkaar over, in plaats van
+   een harde wissel via display none */
+.cpc-fab svg { position: absolute; width: 22px; height: 22px; transition: opacity var(--cpc-fast) ease, transform var(--cpc-base) var(--cpc-ease); }
+.cpc-fab .cpc-fab__close { opacity: 0; transform: rotate(-45deg) scale(.8); }
+.cpc-fab[aria-expanded="true"] .cpc-fab__open { opacity: 0; transform: rotate(45deg) scale(.8); }
+.cpc-fab[aria-expanded="true"] .cpc-fab__close { opacity: 1; transform: none; }
+/* ongelezen antwoord terwijl het paneel dicht is: één groene stip die één
+   keer zacht verschijnt en daarna stil blijft staan */
 .cpc-fab.has-unread::after {
-  content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--white, #fff); border: 2px solid var(--black, #000);
+  content: ""; position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--green, #1B6E45); border: 2px solid var(--white, #fff);
+  animation: cpc-pop 260ms cubic-bezier(.34,1.3,.64,1) both;
 }
+@keyframes cpc-pop { from { transform: scale(0); } to { transform: scale(1); } }
 
 /* ---------- het paneel ---------- */
 .cpc-panel {
@@ -36,147 +61,194 @@
   width: 400px; max-width: calc(100vw - 40px);
   height: 640px; max-height: calc(100vh - 108px);
   display: flex; flex-direction: column; overflow: hidden;
-  background: var(--white, #fff); color: var(--black, #000);
-  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 22px;
-  box-shadow: 0 16px 40px rgba(17,17,17,.24);
+  background: var(--white, #fff); color: var(--ink, #111);
+  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 24px;
+  box-shadow: var(--cpc-shadow);
   font-family: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 14.5px; line-height: 1.6; font-weight: 400;
-  opacity: 0; transform: translateY(12px) scale(.98); pointer-events: none;
-  transition: opacity .35s ease, transform .4s cubic-bezier(.83,0,.17,1);
+  font-size: 15px; line-height: 1.55; font-weight: 400;
+  opacity: 0; transform: translateY(8px) scale(.985); transform-origin: 100% 100%; pointer-events: none;
+  /* sluiten is korter dan openen: dit is de overgang voor het sluiten */
+  transition: opacity 200ms ease, transform 200ms var(--cpc-ease);
 }
 .cpc-panel[hidden] { display: none; }
-.cpc-panel.is-open { opacity: 1; transform: none; pointer-events: auto; }
+.cpc-panel.is-open {
+  opacity: 1; transform: none; pointer-events: auto;
+  transition: opacity 260ms ease, transform var(--cpc-slow) var(--cpc-ease);
+}
 
-.cpc-head {
-  display: flex; align-items: flex-start; gap: 12px;
-  padding: 20px 20px 14px; border-bottom: 1px solid var(--line, rgba(228,224,219,.6));
+/* ---------- kop: avatar, naam, één rustige zin ---------- */
+.cpc-head { display: flex; align-items: center; gap: 12px; padding: 22px 24px 12px; }
+.cpc-avatar {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--green-soft, rgba(27,110,69,.09)); color: var(--green, #1B6E45);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: .02em;
 }
 .cpc-head__text { flex: 1; min-width: 0; }
-.cpc-title { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; }
-.cpc-sub {
-  display: block; margin-top: 3px; font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: var(--gray-9, #727272);
-}
+.cpc-title { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; color: var(--ink, #111); }
+.cpc-sub { display: block; margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--gray-9, #727272); }
 .cpc-close {
-  flex: none; width: 34px; height: 34px; border-radius: 50%; padding: 0;
-  border: 1px solid var(--line, rgba(228,224,219,.6)); background: none; color: var(--black, #000); cursor: pointer;
+  flex: none; width: 36px; height: 36px; border-radius: 50%; padding: 0; border: 0;
+  background: transparent; color: var(--gray-33, #333); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
-  transition: border-color .3s, transform .3s cubic-bezier(.85,0,.15,1);
+  transition: background-color var(--cpc-fast) ease, color var(--cpc-fast) ease, transform 120ms ease;
 }
-.cpc-close:hover { border-color: var(--black, #000); transform: rotate(90deg); }
+.cpc-close:hover { background: var(--cpc-soft-2); color: var(--ink, #111); }
+.cpc-close:active { transform: scale(.94); }
 .cpc-close svg { width: 16px; height: 16px; }
 
-/* modus: twee pillen, de actieve is zwart */
-.cpc-modes { display: flex; gap: 6px; padding: 12px 20px 0; }
-.cpc-mode {
-  font: inherit; font-size: 12px; font-weight: 500; letter-spacing: .2px; cursor: pointer;
-  padding: 7px 14px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
-  background: var(--white, #fff); color: var(--gray-33, #333);
-  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+/* ---------- modus: een zachte segmentkeuze, de actieve is wit op grijs ---------- */
+.cpc-modes {
+  display: inline-flex; align-self: flex-start; gap: 2px;
+  margin: 4px 24px 0; padding: 3px; border-radius: 50px; background: var(--cpc-soft-2);
 }
-.cpc-mode:hover { border-color: var(--black, #000); }
-.cpc-mode[aria-pressed="true"] { background: var(--black, #000); color: var(--white, #fff); border-color: var(--black, #000); }
+.cpc-mode {
+  font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  padding: 7px 16px; border-radius: 50px; border: 0; background: transparent; color: var(--gray-69, #696969);
+  transition: background-color var(--cpc-base) var(--cpc-ease), color var(--cpc-base) var(--cpc-ease), box-shadow var(--cpc-base) var(--cpc-ease);
+}
+.cpc-mode:hover { color: var(--ink, #111); }
+.cpc-mode[aria-pressed="true"] { background: var(--white, #fff); color: var(--ink, #111); box-shadow: 0 1px 3px rgba(17,17,17,.10); }
 
 /* ---------- gesprek ---------- */
 .cpc-thread {
   flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin;
-  display: flex; flex-direction: column; gap: 12px; padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 14px; padding: 16px 24px;
 }
-.cpc-msg { white-space: pre-line; overflow-wrap: break-word; }
-.cpc-msg--user { align-self: flex-end; max-width: 84%; background: var(--black, #000); color: var(--white, #fff); border-radius: 18px 18px 4px 18px; padding: 10px 16px; }
-.cpc-msg--ai   { align-self: flex-start; max-width: 90%; background: var(--gray-f9, #f9f9f9); color: var(--black, #000); border-radius: 18px 18px 18px 4px; padding: 12px 16px; }
+.cpc-msg { white-space: pre-line; overflow-wrap: break-word; animation: cpc-in 260ms var(--cpc-ease) both; }
+/* de eigen vraag in een zachte bubbel; het antwoord als losse tekst op het vel */
+.cpc-msg--user { align-self: flex-end; max-width: 82%; background: var(--cpc-soft-2); color: var(--ink, #111); border-radius: 20px 20px 6px 20px; padding: 11px 16px; }
+.cpc-msg--ai   { align-self: flex-start; max-width: 92%; color: var(--ink, #111); }
 .cpc-msg--ai.is-muted { color: var(--gray-69, #696969); }
+@keyframes cpc-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-.cpc-typing { align-self: flex-start; display: inline-flex; gap: 5px; background: var(--gray-f9, #f9f9f9); border-radius: 18px 18px 18px 4px; padding: 14px 16px; }
-.cpc-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-9, #727272); animation: cpc-blink 1.2s infinite ease-in-out; }
-.cpc-typing i:nth-child(2) { animation-delay: .15s; }
-.cpc-typing i:nth-child(3) { animation-delay: .3s; }
-@keyframes cpc-blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+.cpc-typing { align-self: flex-start; display: inline-flex; gap: 5px; padding: 8px 2px; animation: cpc-in 260ms var(--cpc-ease) both; }
+.cpc-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-a7, #a7a7a7); animation: cpc-breathe 1.4s ease-in-out infinite; }
+.cpc-typing i:nth-child(2) { animation-delay: .18s; }
+.cpc-typing i:nth-child(3) { animation-delay: .36s; }
+@keyframes cpc-breathe { 0%, 100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(-2px); opacity: .9; } }
 
 /* bronlinks onder een antwoord */
-.cpc-sources { align-self: flex-start; max-width: 90%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
-.cpc-sources__label { flex-basis: 100%; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .4px; text-transform: uppercase; color: var(--gray-9, #727272); }
+.cpc-sources { align-self: flex-start; max-width: 92%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: -6px; animation: cpc-in 260ms var(--cpc-ease) both; }
+.cpc-sources__label { flex-basis: 100%; font-size: 12px; font-weight: 500; color: var(--gray-9, #727272); }
 .cpc-sources a {
-  font-size: 12.5px; color: var(--black, #000); text-decoration: none;
-  padding: 5px 11px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6)); background: var(--white, #fff);
-  transition: border-color .25s ease, background-color .25s ease;
+  font-size: 13px; font-weight: 500; color: var(--ink, #111); text-decoration: none;
+  padding: 6px 12px; border-radius: 50px; background: var(--cpc-soft);
+  transition: background-color var(--cpc-fast) ease;
 }
-.cpc-sources a:hover { border-color: var(--black, #000); background: var(--gray-f9, #f9f9f9); }
+.cpc-sources a:hover { background: var(--cpc-soft-2); }
 
 /* uitval: het briefingblok in plaats van een foutmelding */
-.cpc-fallback { align-self: stretch; background: var(--gray-f9, #f9f9f9); border-radius: 18px; padding: 16px 18px; }
+.cpc-fallback { align-self: stretch; background: var(--cpc-soft); border-radius: 20px; padding: 20px 22px; animation: cpc-in 260ms var(--cpc-ease) both; }
 .cpc-fallback strong { display: block; font-weight: 600; margin-bottom: 4px; }
-.cpc-fallback p { margin: 0 0 12px; color: var(--gray-33, #333); }
+.cpc-fallback p { margin: 0 0 14px; font-size: 14.5px; color: var(--gray-33, #333); }
+.cpc-fallback .cpc-exit--primary { flex-basis: auto; width: auto; margin-bottom: 0; }
 
-/* ---------- chips ---------- */
-.cpc-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 20px 10px; }
+/* ---------- vraagsuggesties: rustige rijen met een pijltje, geen losse pillen ---------- */
+.cpc-chips { display: flex; flex-direction: column; gap: 6px; padding: 0 24px 12px; }
 .cpc-chips[hidden] { display: none; }
 .cpc-chip {
-  font: inherit; font-size: 12.5px; cursor: pointer; text-align: left;
-  padding: 7px 12px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
-  background: var(--white, #fff); color: var(--black, #000);
-  transition: background-color .25s ease, border-color .25s ease;
+  font: inherit; font-size: 14px; font-weight: 500; line-height: 1.35; cursor: pointer; text-align: left;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+  min-height: 44px; padding: 10px 14px 10px 16px; border: 0; border-radius: 16px;
+  background: var(--cpc-soft); color: var(--ink, #111);
+  transition: background-color var(--cpc-fast) ease, transform 120ms ease;
 }
-.cpc-chip:hover { background: var(--gray-f9, #f9f9f9); border-color: var(--black, #000); }
+.cpc-chip:hover { background: var(--cpc-soft-2); }
+.cpc-chip:active { transform: scale(.985); }
+.cpc-chip__chev { flex: none; width: 16px; height: 16px; color: var(--gray-9, #727272); }
 
-/* ---------- invoer ---------- */
-.cpc-form { padding: 0 16px 6px; }
+/* ---------- invoer: gevuld veld, verstuurknop wordt pas donker zodra er tekst staat ---------- */
+.cpc-form { padding: 0 20px 4px; }
 .cpc-bar {
   display: flex; align-items: flex-end; gap: 8px;
-  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 26px; background: var(--white, #fff);
-  padding: 6px 6px 6px 18px; box-shadow: 0 1px 2px rgba(17,17,17,.04);
-  transition: border-color .3s ease, box-shadow .3s ease;
+  border: 1px solid transparent; border-radius: 28px; background: var(--cpc-soft);
+  padding: 5px 5px 5px 18px;
+  transition: background-color var(--cpc-base) ease, border-color var(--cpc-base) ease;
 }
-.cpc-bar:focus-within { border-color: var(--black, #000); }
+.cpc-bar:focus-within { background: var(--white, #fff); border-color: var(--gray-a7, #a7a7a7); }
 .cpc-input {
   flex: 1; min-width: 0; border: 0; outline: 0; background: none; resize: none;
-  font: inherit; font-size: 16px; line-height: 1.45; color: var(--black, #000);
+  font: inherit; font-size: 16px; line-height: 1.45; color: var(--ink, #111);
   padding: 9px 0; max-height: 120px; overflow-y: auto;
 }
 .cpc-input::placeholder { color: var(--gray-9, #727272); }
 .cpc-send {
-  flex: none; width: 42px; height: 42px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
-  background: var(--black, #000); color: var(--white, #fff);
+  flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  background: transparent; color: var(--gray-a7, #a7a7a7);
   display: inline-flex; align-items: center; justify-content: center;
-  transition: background-color .25s ease, transform .25s cubic-bezier(.85,0,.15,1);
+  transition: background-color var(--cpc-base) ease, color var(--cpc-base) ease, transform 120ms ease;
 }
-.cpc-send:hover { background: var(--gray-33, #333); }
-.cpc-send[disabled] { background: var(--gray-f2, #f2f2f2); color: var(--gray-9, #727272); cursor: default; }
+.cpc-bar.is-ready .cpc-send { background: var(--ink, #111); color: var(--white, #fff); }
+.cpc-bar.is-ready .cpc-send:hover { background: var(--gray-33, #333); }
+.cpc-send:active { transform: scale(.92); }
+.cpc-send[disabled] { background: var(--cpc-soft-2); color: var(--gray-9, #727272); cursor: default; }
 .cpc-send svg { width: 16px; height: 16px; }
-.cpc-meta { display: flex; justify-content: space-between; gap: 10px; padding: 6px 12px 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .3px; color: var(--gray-9, #727272); }
-.cpc-counter.is-max { color: var(--black, #000); font-weight: 700; }
+/* de sneltoetsuitleg verschijnt pas als het veld focus heeft, en de teller
+   pas als het maximum in zicht komt: in rust staat er niets onder de balk */
+.cpc-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; min-height: 20px; padding: 4px 16px 0; font-size: 12px; line-height: 1.4; color: var(--gray-9, #727272); }
+.cpc-hint { opacity: 0; transition: opacity var(--cpc-base) ease; }
+.cpc-form:focus-within .cpc-hint { opacity: 1; }
+.cpc-counter { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-variant-numeric: tabular-nums; visibility: hidden; }
+.cpc-counter.is-near, .cpc-counter.is-max { visibility: visible; }
+.cpc-counter.is-max { color: var(--ink, #111); font-weight: 500; }
 
-/* ---------- uitwegen ---------- */
-.cpc-exits { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 16px; border-top: 1px solid var(--line, rgba(228,224,219,.6)); }
+/* ---------- uitwegen: één volle knop, de rest als stille tekstknoppen ---------- */
+.cpc-exits { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px 20px; padding: 8px 24px 20px; }
 .cpc-exit {
-  font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; text-decoration: none;
-  padding: 9px 14px; border-radius: 50px; border: 1px solid var(--line, rgba(228,224,219,.6));
-  background: var(--white, #fff); color: var(--black, #000); min-height: 36px;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+  font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer;
+  padding: 9px 4px; border: 0; border-radius: 50px; background: none; color: var(--gray-33, #333); min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--gray-a7, #a7a7a7);
+  transition: color var(--cpc-fast) ease, text-decoration-color var(--cpc-fast) ease, background-color var(--cpc-fast) ease, transform 120ms ease;
 }
-.cpc-exit:hover { border-color: var(--black, #000); background: var(--gray-f9, #f9f9f9); }
-.cpc-exit--primary { background: var(--black, #000); color: var(--white, #fff); border-color: var(--black, #000); }
+.cpc-exit:hover { color: var(--ink, #111); text-decoration-color: var(--ink, #111); }
+.cpc-exit:active { transform: scale(.985); }
+.cpc-exit--primary {
+  flex-basis: 100%; min-height: 46px; padding: 0 20px; margin-bottom: 4px;
+  font-size: 14.5px; font-weight: 600; text-decoration: none;
+  background: var(--ink, #111); color: var(--white, #fff);
+}
 .cpc-exit--primary:hover { background: var(--gray-33, #333); color: var(--white, #fff); }
 
-.cpc-mail { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.cpc-mail { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; animation: cpc-in 260ms var(--cpc-ease) both; }
 .cpc-mail[hidden] { display: none; }
 .cpc-mail input {
-  flex: 1; min-width: 160px; font: inherit; font-size: 16px; padding: 8px 14px;
-  border: 1px solid var(--line, rgba(228,224,219,.6)); border-radius: 50px; background: var(--white, #fff); color: var(--black, #000);
+  flex: 1; min-width: 160px; min-height: 44px; font: inherit; font-size: 16px; padding: 9px 16px;
+  border: 1px solid transparent; border-radius: 50px; background: var(--cpc-soft); color: var(--ink, #111);
+  transition: background-color var(--cpc-base) ease, border-color var(--cpc-base) ease;
 }
-.cpc-mail input:focus { outline: 0; border-color: var(--black, #000); }
-.cpc-mail__note { flex-basis: 100%; font-size: 12.5px; color: var(--gray-69, #696969); margin: 2px 0 0; }
+.cpc-mail input:focus { background: var(--white, #fff); border-color: var(--gray-a7, #a7a7a7); }
+/* het veld toont zijn focus zelf via de rand; zonder .cpc-panel ervoor wint
+   de algemene focusregel en komt er een tweede, zwarte ring omheen */
+.cpc-panel .cpc-mail input:focus-visible { outline: 0; }
+.cpc-mail .cpc-exit--primary { flex-basis: auto; min-height: 44px; margin-bottom: 0; }
+.cpc-mail__note { flex-basis: 100%; font-size: 12.5px; color: var(--gray-69, #696969); margin: 0; }
 /* het honeypotveld staat buiten beeld, niet display:none: sommige bots
    slaan verborgen velden over, maar vullen wel wat ze niet kunnen zien */
 .cpc-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-/* ---------- focus ---------- */
+/* ---------- focus: toetsenbordfocus blijft duidelijk, de rust zit in hover ---------- */
 .cpc-fab:focus-visible, .cpc-panel button:focus-visible, .cpc-panel a:focus-visible,
 .cpc-panel textarea:focus-visible, .cpc-panel input:focus-visible {
-  outline: 2px solid var(--black, #000); outline-offset: 3px;
+  outline: 2px solid var(--ink, #111); outline-offset: 2px;
 }
-.cpc-input:focus-visible { outline: 0; }
+/* de balk zelf toont de focus (wit vlak, grijze rand); de regel hierboven
+   is specifieker dan een losse .cpc-input, vandaar .cpc-panel ervoor, anders
+   wint de algemene regel en staat er een zwarte rechthoek om het tekstveld */
+.cpc-panel .cpc-input:focus-visible { outline: 0; }
+
+/* ---------- blueprint: randloze vlakken op een donkere pagina krijgen een contour terug ---------- */
+:root[data-mode="blueprint"] .cpc-chip,
+:root[data-mode="blueprint"] .cpc-sources a,
+:root[data-mode="blueprint"] .cpc-msg--user,
+:root[data-mode="blueprint"] .cpc-fallback,
+:root[data-mode="blueprint"] .cpc-modes { box-shadow: 0 0 0 1px var(--line); }
+:root[data-mode="blueprint"] .cpc-mode[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--line); }
+:root[data-mode="blueprint"] .cpc-bar,
+:root[data-mode="blueprint"] .cpc-mail input { border-color: var(--line); }
+:root[data-mode="blueprint"] .cpc-bar:focus-within,
+:root[data-mode="blueprint"] .cpc-mail input:focus { border-color: var(--gray-a7); }
 
 /* ---------- mobiel: volledig scherm ---------- */
 @media (max-width: 640px) {
@@ -184,13 +256,22 @@
     right: 0; bottom: 0; left: 0; top: 0;
     width: 100%; max-width: none; height: 100%; max-height: none;
     border-radius: 0; border: 0;
+    transform: translateY(24px); transform-origin: 50% 100%;
   }
-  .cpc-head { padding-top: max(20px, env(safe-area-inset-top)); }
-  .cpc-exits { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .cpc-panel.is-open { transform: none; }
+  .cpc-head { padding: max(20px, env(safe-area-inset-top)) 20px 10px; }
+  .cpc-modes { margin: 4px 20px 0; }
+  .cpc-thread { padding: 14px 20px; }
+  .cpc-chips { padding: 0 20px 12px; }
+  .cpc-form { padding: 0 16px 4px; }
+  .cpc-exits { padding: 8px 20px max(20px, env(safe-area-inset-bottom)); }
+  /* op een telefoon is er geen Shift+Enter, dus geen sneltoetsuitleg */
+  .cpc-hint { display: none; }
   /* op een telefoon is elk raakvlak minstens 44 px (gemeten: 33 tot 41 px
-     zonder deze regel); de vorm blijft een pil, alleen de hoogte groeit */
+     zonder deze regels); de vorm blijft hetzelfde, alleen de hoogte groeit */
   .cpc-close { width: 44px; height: 44px; }
   .cpc-mode, .cpc-chip, .cpc-exit { min-height: 44px; }
+  .cpc-exit--primary { min-height: 50px; }
   .cpc-send { width: 44px; height: 44px; }
   .cpc-panel.is-open ~ .cpc-fab { display: none; }
   html.cpc-lock, html.cpc-lock body { overflow: hidden; }
@@ -198,7 +279,8 @@
 
 /* ---------- minder beweging ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .cpc-fab, .cpc-panel, .cpc-close, .cpc-mode, .cpc-chip, .cpc-send, .cpc-exit, .cpc-bar, .cpc-sources a { transition: none; }
-  .cpc-typing i { animation: none; opacity: .6; }
-  .cpc-panel { transform: none; }
+  .cpc-fab, .cpc-fab svg, .cpc-panel, .cpc-close, .cpc-mode, .cpc-chip, .cpc-send, .cpc-exit, .cpc-bar, .cpc-sources a, .cpc-hint, .cpc-mail input { transition: none; }
+  .cpc-msg, .cpc-typing, .cpc-sources, .cpc-fallback, .cpc-mail, .cpc-fab.has-unread::after { animation: none; }
+  .cpc-typing i { animation: none; opacity: .5; }
+  .cpc-panel, .cpc-fab:hover, .cpc-fab:active, .cpc-close:active, .cpc-chip:active, .cpc-send:active, .cpc-exit:active { transform: none; }
 }
