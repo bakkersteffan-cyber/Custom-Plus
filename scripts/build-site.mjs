@@ -962,16 +962,46 @@ body{ margin:0; background:var(--white); }
 .fl-wordmark em{ font-style:normal; color:var(--green); }
 .fl-pulse{ background:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band.jpg') center 30%/cover no-repeat, var(--black); color:var(--white); position:relative; overflow:hidden; height:clamp(320px,60vh,640px); }
 .fl-pulse__label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-a7); text-align:center; padding-inline:20px; pointer-events:none; }
+`.trim() + '\n' + `
+/* Blueprint-modus (dark-mode-insight): de knop die data-mode="blueprint" op
+ * <html> zet zit in het grote appbundle-script, dat nu defer laadt en dus pas
+ * ná deze kritieke CSS uitvoert. Zonder deze override zag een terugkerende
+ * blueprint-gebruiker (localStorage cp_blueprint=1) eerst kort het lichte
+ * thema voordat de deferred JS het attribuut zet: een zichtbare flits. Deze
+ * waarden zijn letterlijk overgenomen uit custom-plus.html (:root[data-mode="blueprint"],
+ * rond regel 58-66) — alleen het subset dat CRITICAL_CSS hierboven ook echt
+ * gebruikt (--black/--white/--green/--gray-a7). Dit lost alleen de flits op;
+ * de onderliggende "met de hand gekopieerde CSS" opzet van CRITICAL_CSS zelf
+ * blijft ongewijzigd, dat is een apart punt. */
+:root[data-mode="blueprint"]{ --bp-surface:#0a1420; --bp-ink:#8fd8ea; --black:var(--bp-ink); --white:var(--bp-surface); --gray-a7:#6f9aa8; --green:#22d3ee; color-scheme:dark; }
 `.trim();
 
 const missingSeo = [];
+/* headFor() bouwt de <head> voor elke pagina, inclusief de performancefix
+ * (kritieke CSS inline, niet-blokkerende CSS via preload+onload, defer op
+ * het script). Blogartikelen gebruiken 'm ook: die hebben geen entry in
+ * SEO_NL (elk artikel heeft een eigen titel/omschrijving uit content/blog/*.json,
+ * niet uit de statische SEO-lijst), dus route.seo ontbreekt daar bewust en
+ * geeft route.title/route.description direct mee in plaats van een lookup.
+ * Ze zetten ook route.ogType ('article' i.p.v. 'website') en route.image (het
+ * eigen artikelbeeld i.p.v. de vaste og-share.jpg met bekende afmetingen —
+ * daarom laten we og:image:width/height weg zodra route.image gezet is). */
 function headFor(route, extraLd) {
-  const seo = SEO_NL[route.seo] || {};
-  if (!seo.title || !seo.description) missingSeo.push(route.path);
-  const title = seo.title || 'CUSTOM+';
-  const desc = seo.description || '';
+  let title;
+  let desc;
+  if (route.seo) {
+    const seo = SEO_NL[route.seo] || {};
+    if (!seo.title || !seo.description) missingSeo.push(route.path);
+    title = seo.title || 'CUSTOM+';
+    desc = seo.description || '';
+  } else {
+    title = route.title || 'CUSTOM+';
+    desc = route.description || '';
+  }
   const url = SITE + route.path;
   const robots = route.noindex ? 'noindex, follow' : 'index, follow';
+  const ogType = route.ogType || 'website';
+  const image = route.image || OG_IMAGE;
   return '<meta charset="utf-8">\n'
     + '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
     + '<meta name="robots" content="' + robots + '">\n'
@@ -979,19 +1009,18 @@ function headFor(route, extraLd) {
     + '<meta name="description" content="' + escAttr(desc) + '">\n'
     + '<link rel="canonical" href="' + escAttr(url) + '" id="fl-canonical">\n'
     + '<meta name="theme-color" content="#000000">\n'
-    + '<meta property="og:type" content="website">\n'
+    + '<meta property="og:type" content="' + ogType + '">\n'
     + '<meta property="og:site_name" content="CUSTOM+">\n'
     + '<meta property="og:locale" content="nl_NL">\n'
     + '<meta property="og:title" content="' + escAttr(title) + '" id="og-title">\n'
     + '<meta property="og:description" content="' + escAttr(desc) + '" id="og-description">\n'
     + '<meta property="og:url" content="' + escAttr(url) + '" id="og-url">\n'
-    + '<meta property="og:image" content="' + escAttr(OG_IMAGE) + '" id="og-image">\n'
-    + '<meta property="og:image:width" content="1731">\n'
-    + '<meta property="og:image:height" content="909">\n'
+    + '<meta property="og:image" content="' + escAttr(image) + '" id="og-image">\n'
+    + (route.image ? '' : '<meta property="og:image:width" content="1731">\n<meta property="og:image:height" content="909">\n')
     + '<meta name="twitter:card" content="summary_large_image">\n'
     + '<meta name="twitter:title" content="' + escAttr(title) + '" id="twitter-title">\n'
     + '<meta name="twitter:description" content="' + escAttr(desc) + '" id="twitter-description">\n'
-    + '<meta name="twitter:image" content="' + escAttr(OG_IMAGE) + '" id="twitter-image">\n'
+    + '<meta name="twitter:image" content="' + escAttr(image) + '" id="twitter-image">\n'
     + FAVICON + '\n'
     + '<link rel="alternate" type="application/rss+xml" title="CUSTOM+ Field notes" href="/feed.xml">\n'
     + LEGACY_HASH_SCRIPT
@@ -1287,34 +1316,20 @@ for (const art of articles) {
     ],
   };
 
+  /* headFor() bouwt de rest van de <head> (meta/OG/canonical/preload+onload
+   * CSS/kritieke CSS) precies zoals de gewone pagina's hierboven; alleen
+   * title/description/og:type/og:image wijken af van het SEO_NL-lookuppad,
+   * dus die geven we hier direct mee (zie de route.seo-check in headFor()). */
   const title = art.title + ' | CUSTOM+';
   const desc = (art.dek || '').slice(0, 158);
-  const head = '<meta charset="utf-8">\n'
-    + '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-    + '<meta name="robots" content="index, follow">\n'
-    + '<title>' + escAttr(title) + '</title>\n'
-    + '<meta name="description" content="' + escAttr(desc) + '">\n'
-    + '<link rel="canonical" href="' + escAttr(url) + '" id="fl-canonical">\n'
-    + '<meta name="theme-color" content="#000000">\n'
-    + '<meta property="og:type" content="article">\n'
-    + '<meta property="og:site_name" content="CUSTOM+">\n'
-    + '<meta property="og:locale" content="nl_NL">\n'
-    + '<meta property="og:title" content="' + escAttr(title) + '" id="og-title">\n'
-    + '<meta property="og:description" content="' + escAttr(desc) + '" id="og-description">\n'
-    + '<meta property="og:url" content="' + escAttr(url) + '" id="og-url">\n'
-    + '<meta property="og:image" content="' + escAttr(ld.image || OG_IMAGE) + '" id="og-image">\n'
-    + '<meta name="twitter:card" content="summary_large_image">\n'
-    + '<meta name="twitter:title" content="' + escAttr(title) + '" id="twitter-title">\n'
-    + '<meta name="twitter:description" content="' + escAttr(desc) + '" id="twitter-description">\n'
-    + '<meta name="twitter:image" content="' + escAttr(ld.image || OG_IMAGE) + '" id="twitter-image">\n'
-    + FAVICON + '\n'
-    + '<link rel="alternate" type="application/rss+xml" title="CUSTOM+ Field notes" href="/feed.xml">\n'
-    + LEGACY_HASH_SCRIPT
-    + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-400.woff2" crossorigin>\n'
-    + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-600.woff2" crossorigin>\n'
-    + '<link rel="stylesheet" href="/assets/' + CSS_NAME + '">\n'
-    + '<link rel="stylesheet" href="/chat/chat.css">\n'
-    + ldScript(orgLd(), 'ld-organization') + ldScript(ld) + ldScript(crumbs);
+  const blogRoute = {
+    path: '/blog/' + art.slug,
+    title,
+    description: desc,
+    ogType: 'article',
+    image: ld.image || OG_IMAGE,
+  };
+  const head = headFor(blogRoute, ldScript(orgLd(), 'ld-organization') + ldScript(ld) + ldScript(crumbs));
 
   /* de indexweergave verbergen en het artikel in de artikelweergave zetten:
      precies de toestand die blogActivate(slug) straks zelf ook maakt */

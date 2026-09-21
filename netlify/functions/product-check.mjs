@@ -64,26 +64,45 @@ function splitReply(text) {
 /* ---------- prijsvraag: echte online prijzen erbij zoeken ---------- */
 var PRICE_RE = /(prijs|prijzen|kost|kosten|hoeveel|duur|budget|price|cost|how much|pricing|preis|kostet|teuer|prix|co[uû]t|combien|precio|cuesta|cu[aá]nto)/i;
 
+/* zelfde modelketen als de hoofdcompletion-lus verderop: env override eerst,
+   dan de drie ministral namen, ontdubbeld. Gedeeld zodat beide plekken die
+   een Mistral model kiezen (agent-aanmaak en completion) hetzelfde doen. */
+function buildModelChain() {
+  var modellen = [];
+  if (process.env.MISTRAL_MODEL) modellen.push(process.env.MISTRAL_MODEL);
+  ['ministral-14b-latest', 'ministral-8b-latest', 'mistral-small-latest'].forEach(function (m) {
+    if (modellen.indexOf(m) < 0) modellen.push(m);
+  });
+  return modellen;
+}
+
 async function getSearchAgent(key) {
   if (process.env.MISTRAL_SEARCH_AGENT_ID) return process.env.MISTRAL_SEARCH_AGENT_ID;
   if (searchAgentCache) return searchAgentCache;
-  try {
-    var r = await fetch(AGENTS_URL, {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'mistral-small-latest',
-        name: 'custom-plus-price-lookup',
-        description: 'Looks up typical bulk prices for CUSTOM+',
-        instructions: 'You look up typical wholesale and bulk prices from suppliers. Answer with the price range you actually find and nothing else.',
-        tools: [{ type: 'web_search' }]
-      })
-    });
-    if (!r.ok) return null;
-    var d = await r.json();
-    searchAgentCache = d && d.id ? d.id : null;
-    return searchAgentCache;
-  } catch (e) { return null; }
+  var modellen = buildModelChain();
+  for (var mi = 0; mi < modellen.length; mi++) {
+    try {
+      var r = await fetch(AGENTS_URL, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: modellen[mi],
+          name: 'custom-plus-price-lookup',
+          description: 'Looks up typical bulk prices for CUSTOM+',
+          instructions: 'You look up typical wholesale and bulk prices from suppliers. Answer with the price range you actually find and nothing else.',
+          tools: [{ type: 'web_search' }]
+        })
+      });
+      if (r.ok) {
+        var d = await r.json();
+        searchAgentCache = d && d.id ? d.id : null;
+        return searchAgentCache;
+      }
+      if (r.status !== 429 && r.status !== 403) return null;
+      /* anders: volgende model in de keten proberen */
+    } catch (e) { return null; }
+  }
+  return null;
 }
 
 /* geeft een korte samenvatting van wat er online te vinden is, of null */
@@ -183,11 +202,7 @@ export default async function handler(req) {
 
   /* Modelketen (zie site-chat.mjs): bij 429/403 op het ene model het volgende
      proberen; de sleutel mag op het huidige abonnement alleen Ministral. */
-  var modellen = [];
-  if (process.env.MISTRAL_MODEL) modellen.push(process.env.MISTRAL_MODEL);
-  ['ministral-14b-latest', 'ministral-8b-latest', 'mistral-small-latest'].forEach(function (m) {
-    if (modellen.indexOf(m) < 0) modellen.push(m);
-  });
+  var modellen = buildModelChain();
   var upstream = null, laatsteStatus = 0;
   for (var mi = 0; mi < modellen.length; mi++) {
     try {

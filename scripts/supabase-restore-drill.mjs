@@ -49,11 +49,26 @@ function migratienummer(bestand) {
   return m ? parseInt(m[1], 10) : NaN;
 }
 
+/* Een .sql-bestand zonder geldig leidend nummer (patroon "NNNN_naam.sql")
+   NIET stil overslaan. De échte migratierunner (listMigrationFiles() in
+   scripts/supabase-migrate.mjs) weigert zo'n bestand met een Error, omdat
+   de volgorde dan niet betrouwbaar te bepalen is. Als deze drill zo'n
+   bestand gewoon negeert, kan hij "alles reproduceerbaar" melden terwijl
+   de echte migratierunner zou stoppen -- een fout-positief dat REGELS.md
+   verbiedt. Vandaar: geldige en ongeldige bestandsnamen apart teruggeven,
+   zodat de aanroeper de ongeldige als afwijking kan melden in plaats van
+   ze onzichtbaar te laten verdwijnen. */
 async function vindMigraties(map) {
   const entries = await readdir(map);
-  return entries
-    .filter((f) => f.endsWith('.sql') && !Number.isNaN(migratienummer(f)))
-    .sort((a, b) => migratienummer(a) - migratienummer(b));
+  const sqlBestanden = entries.filter((f) => f.endsWith('.sql'));
+  const geldig = [];
+  const ongeldig = [];
+  for (const bestand of sqlBestanden) {
+    if (Number.isNaN(migratienummer(bestand))) ongeldig.push(bestand);
+    else geldig.push(bestand);
+  }
+  geldig.sort((a, b) => migratienummer(a) - migratienummer(b));
+  return { geldig, ongeldig };
 }
 
 /* De tabelnamen die de migraties ZELF aanmaken — dit is de "vaste lijst
@@ -79,11 +94,13 @@ function rapportTekst(r) {
   const regels = [];
   regels.push('=== CUSTOM+ — hersteltest Supabase-schema (restore-drill) ===');
   regels.push('Migraties gevonden in supabase/portal/: ' + r.migraties.gevonden);
+  regels.push('Migratiebestanden met ongeldige naam (geweigerd, net als de echte migratierunner): ' + r.migraties.ongeldigeNamen.length);
   regels.push('Migraties zonder fout uitgevoerd: ' + r.migraties.gelukt + '/' + r.migraties.gevonden);
   regels.push('Kerntabellen gevonden in de migraties: ' + r.tabellen.kern);
   regels.push('Kerntabellen aanwezig na migratie: ' + r.tabellen.aanwezig + '/' + r.tabellen.kern);
   regels.push('Tabellen met een klant- of projectkolom: ' + r.rls.totaal);
   regels.push('Daarvan met RLS aan: ' + r.rls.aan + '/' + r.rls.totaal);
+  regels.push('Daarvan met minstens één policy in pg_policies: ' + (r.rls.aan - r.rls.zonderPolicy.length) + '/' + r.rls.aan);
   regels.push('Functie is_staff(): ' + (r.functies.is_staff ? 'aanwezig' : 'ONTBREEKT'));
   regels.push('Functie owns_project(uuid): ' + (r.functies.owns_project ? 'aanwezig' : 'ONTBREEKT'));
   regels.push('');
@@ -98,7 +115,14 @@ function rapportTekst(r) {
 
 export async function hersteltest() {
   const afwijkingen = [];
-  const migratiebestanden = await vindMigraties(SQLMAP);
+  const { geldig: migratiebestanden, ongeldig: ongeldigeMigratienamen } = await vindMigraties(SQLMAP);
+  for (const bestand of ongeldigeMigratienamen) {
+    afwijkingen.push(
+      'migratiebestand "' + bestand + '" begint niet met een nummer (patroon "NNNN_naam.sql"); ' +
+      'de echte migratierunner (listMigrationFiles() in scripts/supabase-migrate.mjs) zou dit ' +
+      'bestand met een fout weigeren -- hier dus niet stil overgeslagen maar als afwijking geteld'
+    );
+  }
   const kernTabellen = new Set();
 
   const db = new PGlite();
@@ -153,14 +177,35 @@ export async function hersteltest() {
   );
   let rlsAan = 0;
   const zonderRls = [];
+  const zonderPolicy = [];
   for (const t of [...tabellenMetKlantOfProject].sort()) {
     const r = await q(
       "select relrowsecurity from pg_class where relname = $1 and relnamespace = 'public'::regnamespace",
       [t]
     );
     const aan = !!(r.rows[0] && r.rows[0].relrowsecurity);
-    if (aan) rlsAan++;
-    else {
+    if (aan) {
+      rlsAan++;
+      /* pg_class.relrowsecurity is alleen de aan/uit-schakelaar. Een tabel
+         met RLS aan maar ZONDER enige policy in pg_policies rapporteerde
+         hiervoor stilzwijgend groen, terwijl dat precies het gat is dat
+         een kapotte of vergeten policy verbergt (in Postgres blokkeert
+         "RLS aan, geen policy" wel alle toegang -- fail-closed, geen lek
+         -- maar het betekent vrijwel altijd een vergeten policy). Deze
+         controle checkt alleen OF er minstens één policy bestaat, niet OF
+         die policy inhoudelijk correct is (de juiste voorwaarde, de juiste
+         rol, enz.) -- die inhoudelijke toets doet de aanvaller-simulatie in
+         test/keten-portaal.test.mjs al (hoofdstuk "RLS als aanvaller"). */
+      const beleid = await q(
+        "select count(*)::int as n from pg_policies where schemaname = 'public' and tablename = $1",
+        [t]
+      );
+      const aantalBeleid = beleid.rows[0] ? beleid.rows[0].n : 0;
+      if (aantalBeleid === 0) {
+        zonderPolicy.push(t);
+        afwijkingen.push('RLS staat aan op "' + t + '" maar er is GEEN enkele policy in pg_policies (heeft een klant- of projectkolom)');
+      }
+    } else {
       zonderRls.push(t);
       afwijkingen.push('RLS staat NIET aan op "' + t + '" (heeft een klant- of projectkolom)');
     }
@@ -182,14 +227,25 @@ export async function hersteltest() {
   }
 
   const resultaat = {
-    migraties: { gevonden: migratiebestanden.length, gelukt: migratiesGelukt, bestanden: migratiebestanden },
+    migraties: {
+      gevonden: migratiebestanden.length,
+      gelukt: migratiesGelukt,
+      bestanden: migratiebestanden,
+      ongeldigeNamen: ongeldigeMigratienamen
+    },
     tabellen: {
       kern: kernTabellen.size,
       aanwezig: kernTabellen.size - ontbrekendeTabellen.length,
       ontbrekend: ontbrekendeTabellen,
       lijst: [...kernTabellen].sort()
     },
-    rls: { totaal: tabellenMetKlantOfProject.size, aan: rlsAan, zonder: zonderRls, lijst: [...tabellenMetKlantOfProject].sort() },
+    rls: {
+      totaal: tabellenMetKlantOfProject.size,
+      aan: rlsAan,
+      zonder: zonderRls,
+      zonderPolicy,
+      lijst: [...tabellenMetKlantOfProject].sort()
+    },
     functies: { is_staff: heeftIsStaff, owns_project: heeftOwnsProject },
     afwijkingen,
     ok: afwijkingen.length === 0

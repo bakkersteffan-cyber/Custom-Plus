@@ -170,8 +170,31 @@ export function stripReadMore(text) {
   return String(text).replace(re, '').replace(/\n{3,}/g, '\n\n').trim();
 }
 
+/* Alle volledige getal-tokens uit de bron halen, elk genormaliseerd naar
+   uitsluitend cijfers. LET OP waarom dit GEEN losse punten-versus-kale-tekst-
+   toets meer is (dat was de vorige fix, en die opende zelf een nieuw gat):
+   een woordgrens-op-cijfers op de RUWE tekst ziet de punt in "1.234,56" niet
+   als onderdeel van hetzelfde getal — daardoor matchte een verzonnen "234
+   euro" tegen de losse groep "234" middenin "1.234,56", want "." en ","
+   zijn geen cijfers. De site-content bevat echte gegroepeerde getallen
+   (5.000, 1.000, 2.000 stuks), dus dit was geen theoretisch risico.
+   De juiste aanpak: haal uit de bron elk VOLLEDIG getal-token (dezelfde
+   \d[\d.,]* vorm als waarmee een kandidaat-getal uit het antwoord wordt
+   gehaald, zie stripInventedAmounts hieronder), normaliseer elk token naar
+   kale cijfers, en vergelijk een kandidaat pas als EXACTE match tegen die
+   verzameling — nooit als substring binnen een langere, aan elkaar geplakte
+   tekst. Zo kan "234" nooit meer matchen tegen de bron "1.234,56" (die is
+   precies één token, genormaliseerd "123456", nooit gelijk aan "234"), en
+   "285" nooit meer tegen "2859" (genormaliseerd "2859" ≠ "285"). */
+function bronGetallen(sourcesText) {
+  var tokens = String(sourcesText || '').match(/\d[\d.,]*\d|\d/g) || [];
+  var set = {};
+  tokens.forEach(function (t) { set[t.replace(/[.,]/g, '')] = true; });
+  return set;
+}
+
 export function stripInventedAmounts(text, sourcesText) {
-  var bron = String(sourcesText || '').replace(/[.,\s]/g, '');
+  var bronSet = bronGetallen(sourcesText);
   return String(text).split(/(\n+)/).map(function (blok) {
     if (/^\n+$/.test(blok)) return blok;
     var zinnen = blok.split(/(?<=[.!?])\s+/);
@@ -180,7 +203,7 @@ export function stripInventedAmounts(text, sourcesText) {
       if (!treffers) return true;
       return treffers.every(function (t) {
         var getallen = t.match(/\d[\d.,]*/g) || [];
-        return getallen.every(function (g) { return bron.indexOf(g.replace(/[.,]/g, '')) >= 0; });
+        return getallen.every(function (g) { return Object.prototype.hasOwnProperty.call(bronSet, g.replace(/[.,]/g, '')); });
       });
     }).join(' ');
   }).join('').replace(/[ \t]+\n/g, '\n').trim();
@@ -390,14 +413,20 @@ function rateAllow(ip, now) {
 }
 
 function today() { return new Date().toISOString().slice(0, 10); }
-function eurPerToken() {
-  var v = parseFloat(process.env.CHAT_EUR_PER_MTOKEN || '0.5');
-  return (isFinite(v) && v > 0 ? v : 0.5);
+/* "Niet gezet" (env ontbreekt of is leeg) betekent de standaardwaarde; een
+   expliciet gezette "0" betekent echt 0, niet de standaardwaarde. Een
+   `||`-fallback of een `> 0`-toets op de geparste waarde ziet die twee
+   gevallen niet uit elkaar (falsy-zero), waardoor CHAT_DAILY_BUDGET_EUR=0
+   als noodstop niet werkte: budgetMicro() gaf dan alsnog het standaardbudget
+   van 5 euro terug in plaats van 0. */
+function envNumber(name, standaard) {
+  var raw = process.env[name];
+  if (raw === undefined || raw === '') return standaard;
+  var v = parseFloat(raw);
+  return isFinite(v) ? v : standaard;
 }
-function budgetMicro() {
-  var v = parseFloat(process.env.CHAT_DAILY_BUDGET_EUR || '5');
-  return Math.round((isFinite(v) && v > 0 ? v : 5) * 1e6);
-}
+function eurPerToken() { return envNumber('CHAT_EUR_PER_MTOKEN', 0.5); }
+function budgetMicro() { return Math.round(envNumber('CHAT_DAILY_BUDGET_EUR', 5) * 1e6); }
 export function estimateTokens(text) { return Math.ceil(String(text || '').length / 4); }
 
 function supabaseEnv() {
@@ -440,11 +469,45 @@ async function remoteSpentMicro() {
   } catch (e) { return remoteUsage.day === d ? remoteUsage.eurMicro : 0; }
 }
 
-async function recordUsage(tokens) {
+/* Het dagbudget wordt vóór de stream gecontroleerd (budgetLeft() hieronder)
+   en pas ná afloop bijgewerkt (recordUsage()); de stream duurt meerdere
+   seconden, dus gelijktijdige verzoeken kunnen in die tussentijd allemaal
+   dezelfde, nog niet bijgewerkte teller zien en allemaal worden
+   doorgelaten. Een sluitende oplossing vraagt een atomaire
+   reserveer-vooraf-en-corrigeer-achteraf-aanpak op de gedeelde
+   Supabase-teller (RPC met een eigen reserveringsrij per verzoek); dat is
+   te veel scope voor deze fix. Pragmatisch alternatief: reserveUsage()
+   telt bij de start van een verzoek, vóór de streaming-aanroep, alvast een
+   SCHATTING (dezelfde tekens/4-schatter als de tokenschatting hieronder)
+   bij de LOKALE (in-memory) teller op. recordUsage() trekt die schatting er
+   na afloop weer af en telt het echte verbruik erbij (netto, geen dubbele
+   telling), of — als de stream nooit begon (alle modellen faalden) — trekt
+   hem er zonder iets bij te tellen weer af via recordUsage(0, …). Dit dekt
+   alleen de race binnen één warme functie-instantie: Netlify draait
+   meerdere instanties naast elkaar, en over instanties heen blijft de
+   gedeelde Supabase-teller (remoteSpentMicro/site_chat_add_usage) de bron
+   van waarheid met zijn eigen, hier bewust geaccepteerde vertraging. Dit is
+   een uitgelegde, bewuste keuze, geen volledige oplossing. */
+function reserveUsage(tokens) {
   var d = today();
-  var micro = Math.round(tokens * eurPerToken());
   if (dayUsage.day !== d) dayUsage = { day: d, calls: 0, tokens: 0, eurMicro: 0 };
-  dayUsage.calls += 1; dayUsage.tokens += tokens; dayUsage.eurMicro += micro;
+  dayUsage.tokens += tokens;
+  dayUsage.eurMicro += Math.round(tokens * eurPerToken());
+}
+
+/* tokens = het echte verbruik van dit verzoek (of de schatting als Mistral
+   geen usage-blok stuurde); reservedTokens = wat reserveUsage() voor
+   ditzelfde verzoek al vast bijtelde (0 als er niets gereserveerd was, of
+   bij het gewoon niet meegeven van dat argument). */
+async function recordUsage(tokens, reservedTokens) {
+  var d = today();
+  var reserved = reservedTokens || 0;
+  var micro = Math.round(tokens * eurPerToken());
+  var reservedMicro = Math.round(reserved * eurPerToken());
+  if (dayUsage.day !== d) dayUsage = { day: d, calls: 0, tokens: 0, eurMicro: 0 };
+  dayUsage.calls += 1;
+  dayUsage.tokens = Math.max(0, dayUsage.tokens - reserved + tokens);
+  dayUsage.eurMicro = Math.max(0, dayUsage.eurMicro - reservedMicro + micro);
   var env = supabaseEnv();
   if (!env) return;
   try {
@@ -563,14 +626,23 @@ async function handleChat(req, body) {
   var promptChars = system.reduce(function (a, m) { return a + m.content.length; }, 0)
     + messages.reduce(function (a, m) { return a + m.content.length; }, 0);
 
+  /* Reservering vooraf voor het dagbudget, zie de uitleg bij reserveUsage()
+     hierboven; dit moet vóór de streaming-aanroep staan, niet pas na afloop. */
+  var reserveTokens = Math.ceil(promptChars / 4);
+  reserveUsage(reserveTokens);
+
   /* Modelketen: het eerste model dat antwoordt wint. De sleutel van CUSTOM+
      had op 2026-09-20 voor mistral-small/medium een limiet van 0 per minuut
      (429) terwijl de Ministral-modellen wél werkten; één vaste modelnaam
-     zette daarom de hele chat op "niet beschikbaar". Bij 429/403 gaat de
-     volgende in de rij; andere fouten (500, netwerk) stoppen meteen. */
-  var upstream = null, laatsteStatus = 0;
+     zette daarom de hele chat op "niet beschikbaar". Bij 429/403 én bij een
+     fetch-exceptie (netwerkfout) gaat de volgende in de rij; alleen andere
+     foutstatussen (zoals 500) stoppen meteen. Een netwerkfout is dus geen
+     reden om meteen te stoppen: pas als OOK het laatste model in de keten
+     een exceptie geeft, geven we het op met upstream-unreachable. */
+  var upstream = null, laatsteStatus = 0, netwerkfout = false;
   var modellen = modelKeten();
   for (var mi = 0; mi < modellen.length; mi++) {
+    netwerkfout = false;
     try {
       upstream = await fetch(MISTRAL_URL, {
         method: 'POST',
@@ -584,14 +656,24 @@ async function handleChat(req, body) {
         })
       });
     } catch (e) {
-      return json({ fallback: 'briefing', error: 'upstream-unreachable' });
+      netwerkfout = true;
+      upstream = null;
+      continue;
     }
     laatsteStatus = upstream.status;
     if (upstream.ok && upstream.body) break;
     upstream = null;
     if (laatsteStatus !== 429 && laatsteStatus !== 403) break;
   }
-  if (!upstream) return json({ fallback: 'briefing', error: 'upstream-' + laatsteStatus });
+  if (!upstream) {
+    /* geen stream begonnen: de reservering hierboven nettoteren zonder er
+       iets echts bij te tellen, anders blijft ze de teller permanent
+       opblazen zonder ooit gecorrigeerd te worden */
+    recordUsage(0, reserveTokens);
+    return netwerkfout
+      ? json({ fallback: 'briefing', error: 'upstream-unreachable' })
+      : json({ fallback: 'briefing', error: 'upstream-' + laatsteStatus });
+  }
 
   var sources = hits.map(function (h) { return { titel: h.titel, url: h.url }; });
   var enc = new TextEncoder();
@@ -630,30 +712,50 @@ async function handleChat(req, body) {
         if (chunk) sse(controller, enc, { delta: stripHyphens(stripMarkdown(chunk), lang) });
       }
 
-      function finish() {
-        if (closed) return;
-        closed = true;
-        emitPending(true);
-        var ex = extractUnknown(raw);
+      /* Gedeelde opschoonpijplijn van finish() en fail(): dezelfde stappen
+         in dezelfde volgorde (extractUnknown → stripMarkdown/stripHyphens →
+         stripInventedAmounts → stripReadMore-indien-onbekend →
+         splitReply-met-de-juiste-mode-cap), zodat de twee paden nooit meer
+         uit elkaar kunnen lopen. hits/lang/mode zitten al in de closure,
+         net zoals finish() ze altijd al gebruikte. */
+      function cleanedParts(ruweTekst) {
+        var ex = extractUnknown(ruweTekst);
         var clean = stripInventedAmounts(stripHyphens(stripMarkdown(ex.text.trim()), lang), hits.map(function (h) { return h.tekst; }).join(' '));
         /* na een "weet ik niet" hoort geen bronregel: die zou suggereren dat
            het antwoord ergens op de site staat */
         if (ex.unknown || unknown) clean = stripReadMore(clean);
         var parts = clean ? splitReply(clean, mode === 'product' ? 4 : 3) : [];
-        /* Mistral stuurt het echte verbruik in het laatste blok; blijft dat
-           uit, dan schatten we op tekens (ongeveer vier per token) */
-        var tokens = usageTokens || (Math.ceil(promptChars / 4) + estimateTokens(raw));
-        sse(controller, enc, { done: true, unknown: ex.unknown || unknown, parts: parts, sources: sources });
+        return { unknown: ex.unknown || unknown, parts: parts };
+      }
+      /* Mistral stuurt het echte verbruik in het laatste blok; blijft dat
+         uit (ook bij een afgebroken stream), dan schatten we op tekens
+         (ongeveer vier per token). */
+      function verbruikTokens() { return usageTokens || (Math.ceil(promptChars / 4) + estimateTokens(raw)); }
+
+      function finish() {
+        if (closed) return;
+        closed = true;
+        emitPending(true);
+        var cp = cleanedParts(raw);
+        sse(controller, enc, { done: true, unknown: cp.unknown, parts: cp.parts, sources: sources });
         controller.close();
-        recordUsage(tokens);
+        recordUsage(verbruikTokens(), reserveTokens);
       }
 
       function fail() {
         if (closed) return;
         closed = true;
-        /* al tekst onderweg: laat de client dat afmaken; nog niets: formulier */
-        sse(controller, enc, raw.trim() ? { done: true, unknown: unknown, parts: splitReply(stripHyphens(stripMarkdown(extractUnknown(raw).text.trim()), lang)), sources: sources, truncated: true } : { fallback: 'briefing' });
+        /* al tekst onderweg: dezelfde opschoonpijplijn als finish(), zodat
+           een afgebroken antwoord nooit ongefilterd naar de bezoeker gaat;
+           nog niets binnen: het briefingformulier is hier het antwoord */
+        if (raw.trim()) {
+          var cp = cleanedParts(raw);
+          sse(controller, enc, { done: true, unknown: cp.unknown, parts: cp.parts, sources: sources, truncated: true });
+        } else {
+          sse(controller, enc, { fallback: 'briefing' });
+        }
         controller.close();
+        recordUsage(verbruikTokens(), reserveTokens);
       }
 
       function pump() {

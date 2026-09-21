@@ -84,6 +84,15 @@ const PAGES = [
   { name: 'contact', path: '/contact/', file: 'contact/index.html' },
   { name: 'privacy', path: '/privacy/', file: 'privacy/index.html' },
   { name: 'blog', path: '/blog/', file: 'blog/index.html' },
+  /* Deze vijf hebben, net als /diensten, een container die pas door app.js
+     gevuld wordt (of opnieuw gevuld wordt na een async content-fetch) — zie
+     de CLS-toelichting bij .fl-ecom-spine__grid en .fl-gift-deck__rail in
+     custom-plus.html. Padnamen komen uit ROUTES in build-site.mjs. */
+  { name: 'ecommerce', path: '/ecommerce/', file: 'ecommerce/index.html' },
+  { name: 'relatiegeschenken', path: '/relatiegeschenken/', file: 'relatiegeschenken/index.html' },
+  { name: 'faq', path: '/faq/', file: 'faq/index.html' },
+  { name: 'begrippen', path: '/begrippen/', file: 'begrippen/index.html' },
+  { name: 'hulpmiddelen', path: '/hulpmiddelen/', file: 'hulpmiddelen/index.html' },
 ];
 
 function log(line) { console.log(line); }
@@ -202,6 +211,14 @@ async function auditPage(page, chromePort) {
    voor "hoeveel had deze audit kunnen opleveren" — werkt voor performance-
    opportunities net zo goed als voor een gemiste alt-tekst in accessibility. */
 function topCostlyAudits(category, lhr, limit = 3) {
+  /* Lighthouse laat lhr.categories[key] undefined als hij die categorie voor
+     deze pagina niet kon scoren (bijv. een crash in een audit-plugin). Zonder
+     deze guard crasht category.auditRefs hier met een TypeError en stopt het
+     hele script — de aanroeper telt zo'n pagina dan nooit als "gefaald",
+     want hij komt nooit bij de samenvatting. Een lege lijst hier laat de
+     aanroepende code (die de score al als null behandelt) de pagina gewoon
+     als gefaald rapporteren en doorgaan naar de volgende. */
+  if (!category) return [];
   const refs = category.auditRefs || [];
   const scored = refs
     .map((ref) => {
@@ -284,6 +301,14 @@ async function main() {
       if (failedHere.length) {
         for (const key of failedHere) {
           const cat = lhr.categories[key];
+          if (!cat) {
+            /* Lighthouse kon deze categorie helemaal niet scoren (lhr.categories[key]
+               ontbreekt) — dat is iets anders dan "wel gescoord, maar onder de
+               drempel", dus dat verdient een eigen, eerlijke melding in plaats
+               van "geen audit met een tekort te vinden". */
+            log('   ✗ ' + CATEGORY_LABELS[key] + ': gefaald — kon categorie "' + key + '" niet scoren (ontbreekt in het Lighthouse-rapport).');
+            continue;
+          }
           const top = topCostlyAudits(cat, lhr);
           log('   ✗ ' + CATEGORY_LABELS[key] + ' onder de drempel (' +
             pct(scores[key]).trim() + ' < ' + Math.round(THRESHOLDS[key] * 100) + '%). Duurste audits:');

@@ -471,6 +471,15 @@
     var bubbles = [];
     var finished = false;
 
+    /* (a) live typen toont een delta al vóór het server side gefilterd wordt
+       (stripInventedAmounts en co draaien pas op de volledige tekst in
+       finish()/fail()), dus een verzonnen bedrag kan héél even in beeld
+       staan tijdens het typen. Dat venster volledig dichten zonder het live
+       typen zelf op te geven kan niet redelijk binnen deze scope: het zou
+       betekenen dat er niets getoond wordt voor het hele antwoord binnen
+       is. Bewust geaccepteerd risico dus, kort van duur: zodra done()
+       binnenkomt worden deze bubbels hieronder altijd weggehaald en
+       vervangen door de gefilterde ev.parts, nooit door de ruwe acc. */
     function liveRender() {
       var parts = acc.split(/\n[ \t]*-{3,}[ \t]*\n?/);
       for (var i = 0; i < parts.length; i++) {
@@ -485,7 +494,12 @@
       typingOff();
       for (var i = 0; i < bubbles.length; i++) threadEl.removeChild(bubbles[i]);
       bubbles = [];
-      var parts = (ev && ev.parts && ev.parts.length) ? ev.parts : (acc.trim() ? [acc.trim()] : []);
+      /* alleen de gefilterde parts van de server tonen of bewaren, nooit de
+         ruwe opgetelde acc: zie fix (b) hieronder bij end(), en de reden
+         daarvoor in de uitleg boven liveRender(). Een leeg parts-array
+         (server hield na filteren niets verifieerbaars over) valt dus ook
+         niet meer terug op de ruwe tekst, maar op het foutscherm hieronder. */
+      var parts = (ev && ev.parts) ? ev.parts : [];
       var unknown = !!(ev && ev.unknown);
       if (!parts.length) { fallbackBlock(); setBusy(false); return; }
       renderAnswer(parts, sources, unknown);
@@ -522,7 +536,15 @@
         if (d.sources) { sources = d.sources; return; }
         if (typeof d.delta === 'string') { typingOff(); acc += d.delta; liveRender(); }
       },
-      end: function () { if (!finished) { if (acc.trim()) done(null); else fail(); } },
+      /* Eindigt de stroom zonder dat er ooit een done-event binnenkwam, dan
+         is de opgetelde acc nooit server side gefilterd (geen
+         stripInventedAmounts, geen stripReadMore). Vroeger viel dit terug op
+         die ruwe tekst (done(null) las dan acc.trim() als parts), en die
+         belandde zo permanent in de gespreksgeschiedenis in sessionStorage.
+         Nu behandelen we dit net als elke andere foutmelding: fail(), met
+         hetzelfde foutscherm/dezelfde uitweg als de andere foutpaden. Nooit
+         ongeverifieerde tekst tonen of bewaren. */
+      end: function () { if (!finished) fail(); },
       json: function (d) {
         /* JSON in plaats van een stroom: uitval, limiet of budget. Het
            briefingblok is hier het antwoord, geen foutmelding. */

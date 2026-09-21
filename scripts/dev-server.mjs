@@ -279,12 +279,31 @@ createServer(function (req, res) {
         return mod.default(request);
       }).then(function (response) {
         res.writeHead(response.status, Object.fromEntries(response.headers));
-        return response.text();
-      }).then(function (text) { res.end(text); })
-        .catch(function (err) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'dev-server: ' + err.message }));
-        });
+        /* BEVINDING 14: altijd de body als stream doorpijpen, ook als hij niet
+           op event-stream lijkt. Één pad in plaats van twee is eenvoudiger, en
+           `response.body` is voor een gewone JSON-Response net zo goed een
+           ReadableStream (met één chunk) — de reader-lus hieronder werkt dus
+           voor beide. Alleen als er geen `body` is (bv. een 204/HEAD-achtig
+           antwoord) valt hij terug op meteen sluiten, zonder .text() te lezen. */
+        if (!response.body) { res.end(); return; }
+        var reader = response.body.getReader();
+        function pump() {
+          return reader.read().then(function (step) {
+            if (step.done) { res.end(); return; }
+            /* direct schrijven zodra de chunk binnenkomt — dit is precies wat
+               echte Netlify-infrastructuur doet voor een streamende functie
+               zoals site-chat.mjs, in tegenstelling tot het oude .text()-pad
+               dat eerst het hele antwoord bufferde */
+            res.write(Buffer.from(step.value));
+            return pump();
+          });
+        }
+        return pump();
+      }).catch(function (err) {
+        if (res.headersSent) { res.end(); return; }
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'dev-server: ' + err.message }));
+      });
     });
     return;
   }

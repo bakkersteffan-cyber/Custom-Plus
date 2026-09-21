@@ -319,6 +319,16 @@ button.fl-langswitch__btn{ font-size:12px; letter-spacing:.3px; text-transform:u
 .fl-gift-deck__rail::-webkit-scrollbar{ display:none; }
 .fl-gift-deck__rail.is-dragging{ cursor:grabbing; scroll-snap-type:none; }
 .fl-gift-deck__rail:focus-visible{ outline:2px solid var(--black); outline-offset:6px; border-radius:8px; }
+/* #gift-occ-grid staat leeg in de HTML en wordt pas door app.js gevuld (elf
+   occasion-kaarten in de rail), dezelfde CLS-oorzaak als #stage-tabs/
+   #stage-panel hierboven (zie de toelichting daar) — zelfde aanpak. Gemeten
+   op 390px met echte inhoud: 454px. De kaarthoogte komt uit
+   clamp(400px,34vw,470px) en zit onder ~1176px viewportbreedte vast op de
+   vloerwaarde van 400px, dus deze waarde blijft kloppen ruim voorbij mobiel;
+   hij staat toch in dezelfde 960px-media-query als de rest van de gift-hero
+   hierboven, zodat hij zichtbaar bij de andere mobiele aanpassingen staat.
+   De waarde hieronder ligt net onder de gemeten 454px. */
+@media (max-width:960px){ .fl-gift-deck__rail{ min-height:440px; } }
 
 /* the deal-in: cards slide in from the right with a whisper of rotation */
 .fl-gift-card{ flex:0 0 clamp(290px,30vw,400px); height:clamp(400px,34vw,470px); perspective:1400px; scroll-snap-align:start; position:relative;
@@ -896,7 +906,12 @@ a.fl-ecom-spine__step:focus-visible{ opacity:1; transform:translateY(0) scale(1)
 a.fl-ecom-spine__step:focus-visible .fl-ecom-spine__dot{ border-color:var(--black); color:var(--black); box-shadow:0 10px 24px -14px rgba(17,17,17,.35); }
 a.fl-ecom-spine__step:focus-visible .fl-ecom-spine__dot svg *{ stroke-dashoffset:0 !important; }
 @media (max-width:960px){ .fl-ecom-spine__grid{ grid-template-columns:1fr 1fr; } .fl-ecom-spine__svg{ display:none; } }
-@media (max-width:640px){ .fl-ecom-spine__grid{ grid-template-columns:1fr; } }
+/* #ecom-spine staat leeg in de HTML en wordt pas door app.js gevuld (zes
+   stappen, single-column onder deze breedte) — dezelfde CLS-oorzaak als
+   #stage-tabs/#stage-panel hierboven (zie de toelichting daar) en dezelfde
+   aanpak. Gemeten op 390px met echte inhoud: 976px voor zes gestapelde
+   stappen. De waarde hieronder ligt daar net onder. */
+@media (max-width:640px){ .fl-ecom-spine__grid{ grid-template-columns:1fr; min-height:960px; } }
 @media (prefers-reduced-motion: reduce){
   a.fl-ecom-spine__step{ opacity:1; transform:none; }
 }
