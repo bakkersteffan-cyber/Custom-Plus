@@ -713,4 +713,14 @@
 
   /* voor de testpagina en eventuele koppelingen vanuit de app */
   window.CP_CHAT = { open: function () { openPanel(true); }, close: closePanel, send: function (q) { input.value = q; send(); }, setMode: setMode, lang: lang };
+  /* haak voor de e-commercepagina: paneel open in productmodus en meteen de
+     eerste vraag stellen; send() bewaakt zelf de busy-vergrendeling en het maximum */
+  window.cpChat = {
+    open: function () { openPanel(true); },
+    setMode: function (m) { setMode(m); },
+    ask: function (q) {
+      setMode('product'); openPanel(true);
+      if (q) { input.value = String(q).slice(0, MAX_CHARS); updateCounter(); send(); }
+    }
+  };
 })();

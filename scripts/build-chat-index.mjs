@@ -143,17 +143,28 @@ function collectServices(d, lang) {
 }
 
 function collectEcommerce(d, lang) {
+  /* De pagina is herbouwd als reis in zes hoofdstukken (ecommerce.journey.*);
+   * de oude sleutels pagehead/twoWays/pipeline/trust/cta bestaan niet meer.
+   * De termen DFM, NNN, AQL en de certificaten staan letterlijk in de markup
+   * (geen contentsleutel) en worden hier op dezelfde plek ingevoegd. */
   const out = [];
-  const ph = d.pagehead || {};
-  const tw = d.twoWays || {};
-  out.push({ titel: L(lang, 'Ecommerce: twee wegen naar binnen', 'Ecommerce: two ways in'), url: '/ecommerce',
-    tekst: para(ph.kicker, ph.headingMain, ph.headingSub, ph.lead, tw.kicker, tw.heading, tw.fastTag + ':', tw.fastTitle + '.', tw.fastBody, tw.customTag + ':', tw.customTitle + '.') });
-  const st = d.statement || {};
-  const pi = d.pipeline || {};
-  const tr = d.trust || {};
-  const cta = d.cta || {};
-  out.push({ titel: L(lang, 'Ecommerce: productcheck, pipeline en bescherming', 'Ecommerce: product check, pipeline and protection'), url: '/ecommerce',
-    tekst: para(st.kicker, st.heading, st.aiTitle + ':', st.aiIntro, st.aiNote, pi.kicker, pi.heading, tr.kicker, tr.heading, tr.noHiddenFees, tr.milestonePayments, cta.headingMain, cta.headingSub) });
+  const j = d.journey || {};
+  const c1 = j.c1 || {}, c2 = j.c2 || {}, c3 = j.c3 || {}, c4 = j.c4 || {}, c5 = j.c5 || {}, c6 = j.c6 || {};
+  const mi = j.miles || {}, sl = j.slot || {}, st = d.statement || {};
+  const zin = (...p) => p.map(clean).filter(Boolean).join('');
+  out.push({ titel: L(lang, 'Ecommerce: van listing tot deur, twee routes', 'Ecommerce: from listing to door, two routes'), url: '/ecommerce',
+    tekst: para(c1.kicker, c1.h1 && c1.h1 + '.', c1.sub, c1.lead, c1.monoline, c2.h2 && c2.h2 + '.', c2.intro,
+      c2.wlName && c2.wlName + ':', c2.wlText, c2.devName && c2.devName + ':', c2.devText, c2.honest) });
+  out.push({ titel: L(lang, 'Ecommerce: productcheck en sectorzoeker', 'Ecommerce: product check and sector search'), url: '/ecommerce#ec-c2',
+    tekst: para(st.aiTitle && st.aiTitle + ':', st.aiIntro, st.aiNote, c2.aiNote1, c2.aiNote2Rest && 'MOQ ' + c2.aiNote2Rest, c2.sectorLabel, c2.scopeLink) });
+  out.push({ titel: L(lang, 'Ecommerce: van schets naar tekening, de mal en de mijlpalen', 'Ecommerce: from sketch to drawing, the mold and the milestones'), url: '/ecommerce#ec-c3',
+    tekst: para(c3.h2 && c3.h2 + '.', zin(c3.bodyDev1, 'DFM', c3.bodyDev2, ' NNN', c3.bodyDev3), c3.bodyWl, c3.mono,
+      c4.h2 && c4.h2 + '.', zin(c4.bodyDev1, ' ', c4.termGolden, ' ', c4.bodyDev2, ' ', c4.termTooling, ' ', c4.bodyDev3), c4.bodyWl,
+      c4.doubleLabel, c4.doubleNote1, c4.milesLabel && c4.milesLabel + ':', [mi.m1, mi.m2, mi.m3, mi.m4].map(clean).filter(Boolean).join(', ') + '.', c4.milesMono) });
+  out.push({ titel: L(lang, 'Ecommerce: steekproef, compliance en levering', 'Ecommerce: sample check, compliance and delivery'), url: '/ecommerce#ec-c5',
+    tekst: para(c5.h2 && c5.h2 + '.', zin(c5.body1, ' AQL ', c5.body2), c5.iqc && 'IQC: ' + c5.iqc + '.', c5.ipqc && 'IPQC: ' + c5.ipqc + '.', c5.fqc && 'FQC: ' + c5.fqc + '.', c5.reportNote,
+      c6.h2 && c6.h2 + '.', zin(c6.body1, ' CE, FCC, RoHS ', c6.and, ' REACH', c6.body2),
+      sl.h2 && sl.h2 + '.', sl.body, [sl.fact1, sl.fact2, sl.fact3, sl.fact4, sl.fact5].map(clean).filter(Boolean).join('. ') + '.') });
   return out;
 }
 

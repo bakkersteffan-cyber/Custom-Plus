@@ -1035,6 +1035,10 @@ function headFor(route, extraLd) {
     + '<noscript><link rel="stylesheet" href="/assets/' + CSS_NAME + '"></noscript>\n'
     + '<link rel="preload" as="style" href="/chat/chat.css" onload="this.onload=null;this.rel=\'stylesheet\'">\n'
     + '<noscript><link rel="stylesheet" href="/chat/chat.css"></noscript>\n'
+    /* zonder JavaScript zet niets .fl-reveal/.fl-clip op zichtbaar; op /ecommerce zou de
+     * pagina dan vrijwel leeg zijn. Bewust alleen voor die pagina (huisregel: geen andere
+     * pagina's aanraken); de bronfile custom-plus.html draagt dezelfde regel in zijn head. */
+    + '<noscript><style>#page-ecommerce .fl-reveal,#page-ecommerce .fl-clip > span{opacity:1;transform:none}</style></noscript>\n'
     + extraLd;
 }
 
