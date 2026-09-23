@@ -57,7 +57,7 @@
       "aiNote1": "You get a first read on material, MOQ and the logical first step. No quote, no price.",
       "aiNote2Rest": "is a conversation, not a wall.",
       "sectorChipMatch": "Yes, we produce in {sector}. Added to your brief.",
-      "scopeLink": "Not sure? Run the two minute scope check"
+      "scopeLink": "Not sure? Run the scope check"
     },
     "check": {
       "h2": "Tell us what you want to make."
