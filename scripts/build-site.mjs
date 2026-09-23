@@ -762,7 +762,8 @@ function caseBlock(c, others) {
     + (c.uitkomst ? '<p class="fl-case-tagline">' + escText(c.uitkomst) + '</p>' : '')
     + '<h3 class="fl-case-h3">De vraag' + (vraag.kop ? ' <span>– ' + escText(vraag.kop) + '</span>' : '') + '</h3>'
     + '<div class="fl-case-cols">'
-    + '<div>' + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '') + '</div>'
+    + '<div>' + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '')
+    + (vraag.alineas || []).map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>'
     + '<div>' + ((vraag.randvoorwaarden || []).length ? '<ul class="fl-case-list">' + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '') + '</div>'
     + '</div>'
     + ((aanpak.alineas || []).length

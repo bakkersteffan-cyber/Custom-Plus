@@ -352,7 +352,7 @@ function collectCase(c) {
   const feiten = (c.feiten || []).filter((f) => f && f.label && f.waarde).map((f) => f.label + ': ' + f.waarde).join('. ');
   if (feiten) out.push({ titel: titel + ' – feiten', url, tekst: clean(feiten) });
   const vraag = c.vraag || {};
-  const vraagTekst = [vraag.citaat].concat(vraag.randvoorwaarden || []).filter(Boolean).join(' ');
+  const vraagTekst = [vraag.kop, vraag.citaat].concat(vraag.alineas || [], vraag.randvoorwaarden || []).filter(Boolean).join(' ');
   if (vraagTekst) out.push({ titel: titel + ' – de vraag', url, tekst: clean(vraagTekst) });
   const aanpak = c.aanpak || {};
   const aanpakTekst = [aanpak.kop].concat(aanpak.alineas || []).filter(Boolean).join(' ');

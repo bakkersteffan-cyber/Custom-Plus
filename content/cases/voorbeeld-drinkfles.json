@@ -1,9 +1,9 @@
 {
   "slug": "voorbeeld-drinkfles",
   "lang": "nl",
-  "gepubliceerd": true,
+  "gepubliceerd": false,
   "voorbeeld": true,
-  "volgorde": 1,
+  "volgorde": 99,
   "titel": "Drinkfles 750 ml",
   "klant": "Voorbeeldcase, geen klant",
   "klantKort": "Outdoormerk",

@@ -89,10 +89,11 @@ export default async function (t) {
     const badUrl = rows.filter((r) => {
       const path = r.url.split('#')[0];
       if (bi.ROUTE_PATHS.includes(path)) return false;
-      const m = path.match(/^\/blog\/([a-z0-9-]+)$/);
-      return !(m && existsSync(join(ROOT, 'content', 'blog', m[1] + '.json')));
+      /* blogartikelen en cases hebben geen ROUTES-regel: hun url is goed als het contentbestand bestaat */
+      const m = path.match(/^\/(blog|cases)\/([a-z0-9-]+)$/);
+      return !(m && existsSync(join(ROOT, 'content', m[1], m[2] + '.json')));
     });
-    t.deep(badUrl.map((r) => r.url), [], 'elke url is een gebouwde route of een bestaand blogartikel');
+    t.deep(badUrl.map((r) => r.url), [], 'elke url is een gebouwde route, een bestaand blogartikel of een bestaande case');
     t.true(blogSlugs.size >= 4, 'de vier blogartikelen zijn geïndexeerd');
     t.true(rows.some((r) => /stap-4/.test(r.url) && /Tooling/i.test(r.titel)), 'diensten stap 4 (tooling) heeft een eigen stuk met anker');
     t.true(rows.some((r) => r.bron === 'content/nl/faq.json' && /faq-timeline/.test(r.url)), 'FAQ doorlooptijd heeft het faq-anker');

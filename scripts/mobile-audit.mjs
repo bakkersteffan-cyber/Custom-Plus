@@ -41,7 +41,7 @@ const SHOT_WIDTH = parseInt(argValue('--shot-width', '375'), 10);
 const ROUTES = (argValue('--routes', '') || [
   '/', '/diensten/', '/ecommerce/', '/relatiegeschenken/', '/waarom-china/', '/faq/', '/over-ons/',
   '/begrippen/', '/hulpmiddelen/', '/contact/', '/blog/', '/privacy/', '/zoeken/', '/deze-pagina-bestaat-niet/',
-  '/cases/', '/cases/voorbeeld-drinkfles/',
+  '/cases/', '/cases/beelen-keychains/',
   '/blog/wat-een-sample-echt-kost/', '/blog/moq-is-een-gesprek/', '/blog/de-containerrekensom/', '/blog/aql-zonder-jargon/',
 ].join(',')).split(',').map((r) => r.trim()).filter(Boolean);
 

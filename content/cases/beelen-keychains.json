@@ -1,0 +1,140 @@
+{
+  "slug": "beelen-keychains",
+  "lang": "nl",
+  "gepubliceerd": true,
+  "voorbeeld": false,
+  "volgorde": 1,
+  "titel": "CUSTOM+ × Beelen",
+  "seoTitel": "Beelen: 100.000 custom keychains, ontwikkeld vanaf nul",
+  "klant": "Beelen",
+  "klantKort": "Beelen",
+  "categorie": "Marketing & merchandise",
+  "jaar": "",
+  "uitkomst": "Van een onvindbaar product naar 100.000 custom keychains.",
+  "intro": "Beelen wilde een offline marketingpropositie ontwikkelen die direct herkenbaar zou zijn voor hun doelgroep. Het idee: een custom sleutelhanger gebaseerd op de iconische caps die binnen Beelen worden gedragen. Het specifieke model bestond niet als standaardproduct, dus ging CUSTOM+ terug naar de bron: een eigen mal, een gespecialiseerde fabriek en 100.000 stuks in circa twaalf weken.",
+  "introKop": "De iconische Beelen-cap, als sleutelhanger",
+  "omschrijving": "Case: hoe CUSTOM+ voor Beelen een custom keychain op basis van de iconische Beelen-cap liet maken. Eigen mal, gespecialiseerde fabriek, 100.000 stuks in circa 12 weken van sourcing tot levering.",
+  "diensten": ["Sourcing", "Productontwikkeling", "Eigen mal", "Sampling", "Productie & QC", "Levering"],
+  "productLink": { "label": "", "url": "" },
+  "kaartFeiten": [
+    { "waarde": "100.000", "label": "stuks" },
+    { "waarde": "1", "label": "eigen mal" },
+    { "waarde": "12 wk", "label": "sourcing tot levering" }
+  ],
+  "hero": { "src": "", "w": 2048, "h": 878, "alt": "", "bijschrift": "De Beelen-keychain naast de originele cap waarop hij is gebaseerd" },
+  "beeldGroot": { "src": "", "w": 2048, "h": 1152, "bijschrift": "De eerste stuks uit de eigen mal, in de kleurstelling van Beelen" },
+  "feiten": [
+    { "label": "Klant", "waarde": "Beelen" },
+    { "label": "Categorie", "waarde": "Marketing & merchandise" },
+    { "label": "Onze rol", "waarde": "Sourcing, productontwikkeling, mal, sampling, productie, levering" },
+    { "label": "Fabriek", "waarde": "Gespecialiseerde fabriek voor volledig custom productie" },
+    { "label": "Oplage", "waarde": "100.000 stuks" },
+    { "label": "Tooling", "waarde": "Eigen mal, speciaal voor Beelen ontwikkeld" },
+    { "label": "Doorlooptijd", "waarde": "Circa 12 weken, van sourcing tot levering" },
+    { "label": "Bedrukking", "waarde": "Beelen-logo en kleurstelling in de mal, geen opdruk achteraf" }
+  ],
+  "vraag": {
+    "kop": "Een marketingtool die je meteen herkent",
+    "citaat": "",
+    "alineas": [
+      "Beelen wilde een offline marketingpropositie die direct herkenbaar zou zijn voor hun doelgroep: een custom sleutelhanger gebaseerd op de iconische caps die binnen Beelen worden gedragen.",
+      "De uitdaging zat in de uitvoering. Het specifieke model bestond simpelweg niet als standaardproduct, en door de vorm, kleur en detaillering bleek productie en bedrukking via reguliere Nederlandse leveranciers niet mogelijk."
+    ],
+    "randvoorwaarden": [
+      "Direct herkenbaar voor de doelgroep: de vorm van de Beelen-cap, in het klein",
+      "Eigen kleurstelling en detaillering, met het Beelen-logo",
+      "Niet als standaardproduct verkrijgbaar: volledig custom produceren",
+      "Op schaal: 100.000 stuks",
+      "Sourcing, ontwikkeling, productie en levering in één traject"
+    ]
+  },
+  "aanpak": {
+    "kop": "Terug naar de bron, met een eigen mal",
+    "alineas": [
+      "CUSTOM+ ging terug naar de bron. We sourceten gespecialiseerde fabrieken die in staat waren om volledig custom te produceren en ontwikkelden speciaal voor Beelen een eigen mal. Vanuit die mal konden we de keychain exact naar wens produceren, inclusief de juiste vorm, kleurstelling en het Beelen-logo.",
+      "Van een product dat nergens verkrijgbaar was, naar een volledig op maat gemaakte marketingtool. Binnen circa twaalf weken hebben we het traject van sourcing en productontwikkeling tot productie en levering gerealiseerd."
+    ]
+  },
+  "fasen": [
+    {
+      "nummer": "01", "fase": "Concept & Industrieel Ontwerp", "duur": "",
+      "titel": "Van cap naar keychain",
+      "tekst": "De cap is vertaald naar een sleutelhanger die op één blik als Beelen leest: de verhoudingen van de klep en de kroon, de kleurstelling en de plek van het logo. Klein genoeg voor een sleutelbos, herkenbaar genoeg om niet in een la te belanden.",
+      "opleverde": "Ontwerp van de keychain met maatvoering, kleuren en logopositie",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "De originele Beelen-cap naast het ontwerp van de keychain" }
+    },
+    {
+      "nummer": "02", "fase": "Ontwerp voor Produceerbaarheid", "duur": "",
+      "titel": "Detaillering die in een mal past",
+      "tekst": "De vorm, kleur en detaillering die bij reguliere leveranciers niet te maken waren, zijn hier uitgewerkt tot een ontwerp dat wél uit een mal kan komen: het logo en de kleurvlakken als onderdeel van de mal zelf, zodat er geen opdruk achteraf nodig is die kan slijten.",
+      "opleverde": "Productietekening voor de mal, met kleurvlakken en logo",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "De productietekening van de keychain met de kleurvlakken gemarkeerd" }
+    },
+    {
+      "nummer": "03", "fase": "Fabriekssourcing & Screening", "duur": "",
+      "titel": "Fabrieken die volledig custom kunnen",
+      "tekst": "Reguliere leveranciers werken vanuit bestaande mallen en standaard drukmethodes. Daarom zijn gespecialiseerde fabrieken gesourcet die vanaf nul produceren, met een eigen mal en de mogelijkheid om kleurstelling en logo exact naar wens te maken.",
+      "opleverde": "Gekozen fabriek met eigen malbouw en volledig custom productie",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "De productievloer van de gekozen fabriek tijdens de doorlichting" }
+    },
+    {
+      "nummer": "04", "fase": "Tooling, Sampling & Iteratie", "duur": "",
+      "titel": "Een eigen mal voor Beelen",
+      "tekst": "Speciaal voor Beelen is een eigen mal ontwikkeld. Uit die mal kwamen de eerste samples, die naast de originele cap zijn gelegd en beoordeeld op vorm, kleurstelling en logo, tot de keychain exact was wat Beelen voor ogen had.",
+      "opleverde": "Eigen mal en goedgekeurd sample als meetlat voor de productie",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "De eerste samples uit de eigen mal naast de originele cap" }
+    },
+    {
+      "nummer": "05", "fase": "Massaproductie & Kwaliteitscontrole", "duur": "",
+      "titel": "100.000 stuks, één standaard",
+      "tekst": "De productie is gedraaid op schaal, met het goedgekeurde sample als maatstaf: elke keychain in dezelfde vorm, dezelfde kleuren en met hetzelfde logo, gecontroleerd tijdens en na de run.",
+      "opleverde": "100.000 keychains, gekeurd tegen het goedgekeurde sample",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "De productie op schaal, met de kleurcontrole tegen het goedgekeurde sample" }
+    },
+    {
+      "nummer": "06", "fase": "Compliance & Logistiek", "duur": "",
+      "titel": "Geleverd, klaar voor gebruik",
+      "tekst": "Het hele traject, van sourcing en productontwikkeling tot productie en levering, is binnen circa twaalf weken gerealiseerd. De keychains zijn verpakt en geleverd, klaar om als marketingtool ingezet te worden.",
+      "opleverde": "100.000 stuks geleverd, circa 12 weken na de start",
+      "foto": { "src": "", "w": 1600, "h": 1200, "bijschrift": "100.000 keychains verpakt en klaar voor levering" }
+    }
+  ],
+  "problemen": [
+    {
+      "tag": "Sourcing",
+      "misging": "Het specifieke model bestond niet als standaardproduct. Door de vorm, kleur en detaillering was productie en bedrukking via reguliere Nederlandse leveranciers niet mogelijk.",
+      "oorzaak": "Reguliere leveranciers werken vanuit bestaande mallen en standaard drukmethodes; een cap-vorm met deze detaillering past daar niet in.",
+      "deden": "Terug naar de bron: gespecialiseerde fabrieken gesourcet die volledig custom produceren, en speciaal voor Beelen een eigen mal ontwikkeld.",
+      "effect": "Van onvindbaar naar exact naar wens"
+    },
+    {
+      "tag": "Sampling",
+      "misging": "Een cap in het klein is lastiger dan hij lijkt: in de eerste samples moesten de verhoudingen en de kleurstelling nog dichter bij de originele cap komen.",
+      "oorzaak": "Op sleutelhangerformaat vallen kleine afwijkingen in klep, kroon en kleur direct op naast het origineel.",
+      "deden": "Mal en kleuren bijgesteld en opnieuw gesampled, tot de keychain één op één de Beelen-cap was, inclusief het logo.",
+      "effect": "Opgelost binnen het traject van circa 12 weken"
+    }
+  ],
+  "fotos": [
+    { "src": "", "w": 1600, "h": 1200, "type": "Context", "bijschrift": "De Beelen-keychain aan een sleutelbos, naast de cap waarop hij is gebaseerd" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Briefing", "bijschrift": "De iconische Beelen-cap: het uitgangspunt voor het ontwerp" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Ontwerp", "bijschrift": "Het ontwerp van de keychain met maatvoering, kleurvlakken en logopositie" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Mal", "bijschrift": "De eigen mal die speciaal voor Beelen is ontwikkeld" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Sampling", "bijschrift": "De eerste samples naast de originele cap, beoordeeld op vorm, kleur en logo" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Productie", "bijschrift": "De productie op schaal bij de gespecialiseerde fabriek" },
+    { "src": "", "w": 1600, "h": 1200, "type": "QC", "bijschrift": "Kleur- en vormcontrole tegen het goedgekeurde sample" },
+    { "src": "", "w": 1600, "h": 1200, "type": "Levering", "bijschrift": "100.000 keychains verpakt en geleverd" }
+  ],
+  "fotosTitel": "Van cap tot keychain.",
+  "resultaat": {
+    "regel": "100.000 volledig custom Beelen-keychains, ontwikkeld vanaf nul en geproduceerd op schaal.",
+    "cijfers": [
+      { "waarde": "100.000", "label": "Custom keychains, vanaf nul" },
+      { "waarde": "12", "eenheid": "wk", "label": "Van sourcing tot levering, circa" },
+      { "waarde": "1", "label": "Eigen mal, speciaal voor Beelen" }
+    ],
+    "citaat": { "tekst": "", "naam": "", "rol": "", "bedrijf": "" },
+    "andersDoen": ""
+  },
+  "volgende": ""
+}
