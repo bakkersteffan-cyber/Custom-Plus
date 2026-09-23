@@ -54,6 +54,8 @@ const ROUTES = [
   { path: '/hulpmiddelen',      page: 'page-resources', seo: 'page-resources', prio: '0.6', changefreq: 'monthly', content: ['resources', 'downloads'] },
   { path: '/contact',           page: 'page-contact',   seo: 'page-contact',   prio: '0.9', changefreq: 'monthly', content: ['contact', 'scope-quiz'] },
   { path: '/blog',              page: 'page-blog',      seo: 'page-blog',      prio: '0.7', changefreq: 'weekly',  content: ['blog', 'blog-index'] },
+  /* /cases bestaat alleen in de generator (sectie 6d), net als /privacy */
+  { path: '/cases',             page: 'page-cases',     seo: 'page-cases',     prio: '0.7', changefreq: 'monthly', staticPage: true },
   { path: '/privacy',           page: 'page-privacy',   seo: 'page-privacy',   prio: '0.3', changefreq: 'yearly',  content: ['privacy'], staticPage: true },
   /* /zoeken is bewust geen sitemapregel: een zoekresultatenpagina hoort niet in
    * de index, die krijgt hieronder noindex mee. */
@@ -629,6 +631,191 @@ function notFoundBlock() {
 
 pageBlocks.set('page-privacy', privacyBlock());
 pageBlocks.set('page-404', notFoundBlock());
+
+/* --------------------------------------------------------------- 6d. cases */
+
+/* Cases staan in content/cases/<slug>.json (Nederlands, zoals de blogartikelen)
+ * en bestaan alleen in de generator: de home-sectie (#home-cases), de index
+ * (/cases) en de detailpagina's (/cases/<slug>) zijn statische HTML. De app
+ * doet daar alleen de fotorail bij. Een case met "voorbeeld": true is een
+ * demonstratie van de opbouw: hij krijgt een label, noindex en geen JSON-LD,
+ * en de chat-index slaat hem over. "gepubliceerd": false houdt een case
+ * helemaal buiten de build. */
+const casesDir = join(ROOT, 'content', 'cases');
+const caseFiles = existsSync(casesDir) ? readdirSync(casesDir).filter((f) => f.endsWith('.json')).sort() : [];
+const CASES = caseFiles
+  .map((f) => JSON.parse(readFileSync(join(casesDir, f), 'utf8')))
+  .filter((c) => c && c.slug && c.titel && c.gepubliceerd)
+  .sort((a, b) => ((a.volgorde || 99) - (b.volgorde || 99)) || String(b.jaar || '').localeCompare(String(a.jaar || '')));
+
+const CASES_INTRO = {
+  kicker: 'Cases',
+  h2: 'Wat we maakten. En wat er tussendoor misging.',
+  lead: 'Per product de vraag waarmee het begon, hoe we het uitvoerden, wat er in de samplerondes misging en wat er nu op de pallet staat. Cijfers alleen als ze echt zijn.',
+};
+const CASE_CAM_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 8h3.2l1.6-2.2h6.4L16.8 8H20v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg>';
+const CASE_ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const CASE_BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
+
+/* Eén foto: <picture> met webp als die naast de jpg staat, anders een kale
+ * <img>. Zonder src komt er een rustig vlak dat zegt welke foto hier hoort,
+ * zodat de shotlist letterlijk op de pagina staat tot de foto's er zijn. */
+function casePhoto(photo, cls) {
+  photo = photo || {};
+  const cap = photo.bijschrift || '';
+  if (photo.src) {
+    const webp = photo.src.replace(/\.(jpe?g|png)$/i, '.webp');
+    const hasWebp = webp !== photo.src && existsSync(join(ROOT, webp.replace(/^\/+/, '')));
+    const img = '<img src="' + escAttr(photo.src) + '" alt="' + escAttr(photo.alt || cap) + '" loading="lazy" decoding="async"'
+      + (photo.w && photo.h ? ' width="' + Number(photo.w) + '" height="' + Number(photo.h) + '"' : '') + '>';
+    return '<div class="' + cls + '">' + (hasWebp
+      ? '<picture><source type="image/webp" srcset="' + escAttr(webp) + '">' + img + '</picture>' : img) + '</div>';
+  }
+  return '<div class="' + cls + ' fl-case-ph" role="img" aria-label="Foto volgt: ' + escAttr(cap) + '">'
+    + CASE_CAM_SVG + '<span>Foto volgt</span></div>';
+}
+
+function caseRowsHtml(list, stagger) {
+  return '<div class="fl-cases__rows' + (stagger ? ' fl-stagger' : '') + '">\n' + list.map((c) => {
+    const facts = (c.kaartFeiten || []).filter((f) => f && f.waarde)
+      .map((f) => '<span class="fl-case-row__fact"><b data-no-i18n>' + escText(f.waarde) + '</b>' + escText(f.label || '') + '</span>').join('');
+    const meta = [c.klantKort || c.klant, c.categorie, c.jaar].filter(Boolean).map((v) => escText(String(v))).join(' · ')
+      + (c.voorbeeld ? ' · <em>Voorbeeldcase</em>' : '');
+    return '      <a class="fl-case-row" href="/cases/' + escAttr(c.slug) + '">'
+      + casePhoto(c.hero, 'fl-case-row__media')
+      + '<div class="fl-case-row__text">'
+      + '<span class="fl-case-row__meta">' + meta + '</span>'
+      + '<span class="fl-case-row__title">' + escText(c.titel) + '</span>'
+      + (c.uitkomst ? '<span class="fl-case-row__outcome">' + escText(c.uitkomst) + '</span>' : '')
+      + (facts ? '<span class="fl-case-row__facts">' + facts + '</span>' : '')
+      + '<span class="fl-case-row__link">Bekijk de case' + CASE_ARROW_SVG + '</span>'
+      + '</div></a>';
+  }).join('\n') + '\n    </div>';
+}
+
+function homeCasesSection() {
+  if (!CASES.length) return '';
+  return '\n<section class="fl-section fl-cases">\n  <div class="fl-container">\n'
+    + '    <div class="fl-cases__intro fl-reveal"><span class="fl-kicker">' + escText(CASES_INTRO.kicker) + '</span>'
+    + '<h2 class="fl-h2">' + escText(CASES_INTRO.h2) + '</h2>'
+    + '<p class="fl-lead" style="margin-top:18px;">' + escText(CASES_INTRO.lead) + '</p></div>\n'
+    + caseRowsHtml(CASES.slice(0, 4), true) + '\n'
+    + '    <div class="fl-cases__more fl-reveal"><a class="fl-btn fl-btn-glass" href="/cases" data-magnetic>Alle cases</a></div>\n'
+    + '  </div>\n</section>\n';
+}
+pageBlocks.set('page-home', fillContainer(pageBlocks.get('page-home'), 'home-cases', homeCasesSection()));
+
+function casesIndexBlock() {
+  return '<div class="fl-page" id="page-cases">\n'
+    + '  <section class="fl-pagehead fl-container is-ready-target">\n'
+    + '    <span class="fl-kicker">Cases</span>\n'
+    + '    <h1>\n      <span class="fl-clip"><span>Elk product, van vraag tot pallet.</span></span>\n'
+    + '      <span class="fl-clip"><span class="sub">Uitgeschreven zoals het ging, inclusief de samplerondes.</span></span>\n    </h1>\n'
+    + '    <p class="fl-lead fl-reveal" style="margin-top:clamp(20px,2.6vw,32px);">' + escText(CASES_INTRO.lead) + '</p>\n'
+    + '  </section>\n'
+    + '  <section class="fl-container" style="padding-bottom:clamp(64px,9vw,128px);">\n'
+    + (CASES.length ? caseRowsHtml(CASES, true) : '    <p class="fl-note">Nog geen cases gepubliceerd.</p>')
+    + '\n  </section>\n'
+    + CLOSING_CTA('Vergelijkbare vraag?', '/contact', 'Stuur je brief', true)
+    + '</div>\n';
+}
+pageBlocks.set('page-cases', casesIndexBlock());
+
+function caseBlock(c, next) {
+  const kicker = ['Case', c.categorie, c.jaar].filter(Boolean).map((v) => escText(String(v))).join(' · ')
+    + (c.voorbeeld ? ' · <em>Voorbeeldcase</em>' : '');
+  const facts = (c.feiten || []).filter((f) => f && f.label && f.waarde);
+  const vraag = c.vraag || {};
+  const fasen = c.fasen || [];
+  const problemen = c.problemen || [];
+  const fotos = c.fotos || [];
+  const res = c.resultaat || {};
+  const quote = res.citaat && res.citaat.tekst ? res.citaat : null;
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  let html = '<div class="fl-page" id="page-case">\n';
+  html += '  <section class="fl-pagehead fl-container is-ready-target fl-case-head">\n'
+    + '    <a class="fl-case-back" href="/cases">' + CASE_BACK_SVG + 'Alle cases</a>\n'
+    + '    <span class="fl-kicker">' + kicker + '</span>\n'
+    + '    <h1>\n      <span class="fl-clip"><span>' + escText(c.titel) + '</span></span>\n'
+    + (c.uitkomst ? '      <span class="fl-clip"><span class="sub">' + escText(c.uitkomst) + '</span></span>\n' : '')
+    + '    </h1>\n  </section>\n';
+  html += '  <section class="fl-container fl-case-herowrap fl-reveal">' + casePhoto(c.hero, 'fl-case-hero')
+    + (c.hero && c.hero.bijschrift ? '<p class="fl-case-cap">' + escText(c.hero.bijschrift) + '</p>' : '') + '</section>\n';
+
+  html += '  <section class="fl-container fl-case-layout">\n    <div class="fl-case-main">\n';
+  if (c.voorbeeld) {
+    html += '      <p class="fl-case-example fl-reveal">Dit is een voorbeeldcase: de opbouw is echt, de klant en de cijfers zijn illustratief. Echte cases verschijnen hier in precies deze vorm.</p>\n';
+  }
+  html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">De vraag</span><h2 class="fl-case-h2">Waarmee het begon.</h2>'
+    + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '')
+    + ((vraag.randvoorwaarden || []).length
+      ? '<h3 class="fl-case-h3">De randvoorwaarden</h3><ul class="fl-case-list">'
+        + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '')
+    + '</div>\n';
+  if (fasen.length) {
+    html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">Hoe we het uitvoerden</span>'
+      + '<h2 class="fl-case-h2">' + escText(c.fasenTitel || 'Fase voor fase, zoals het ging.') + '</h2>'
+      + '<ol class="fl-case-phases">' + fasen.map((f, i) => '<li class="fl-case-phase">'
+        + '<div class="fl-case-phase__side"><span class="fl-case-phase__num" data-no-i18n>' + escText(f.nummer || pad2(i + 1)) + ' / ' + pad2(fasen.length) + '</span>'
+        + (f.duur ? '<span class="fl-case-phase__dur">' + escText(f.duur) + '</span>' : '') + '</div>'
+        + '<div class="fl-case-phase__body">'
+        + (f.fase ? '<span class="fl-case-phase__fase">' + escText(f.fase) + '</span>' : '')
+        + '<h3>' + escText(f.titel || f.fase || '') + '</h3>'
+        + (f.tekst ? '<p>' + escText(f.tekst) + '</p>' : '')
+        + (f.opleverde ? '<p class="fl-case-phase__out"><span>Opgeleverd</span>' + escText(f.opleverde) + '</p>' : '')
+        + '</div></li>').join('') + '</ol></div>\n';
+  }
+  if (problemen.length) {
+    html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">Wat misging</span>'
+      + '<h2 class="fl-case-h2">' + escText(c.problemenTitel || (problemen.length + ' keer bijgestuurd, en waarom.')) + '</h2>'
+      + '<div class="fl-case-issues">' + problemen.map((p) => '<article class="fl-case-issue">'
+        + '<div class="fl-case-issue__head">' + (p.tag ? '<span class="fl-case-issue__tag">' + escText(p.tag) + '</span>' : '')
+        + (p.effect ? '<span class="fl-case-issue__effect">' + escText(p.effect) + '</span>' : '') + '</div>'
+        + '<div class="fl-case-issue__cols">'
+        + '<div><span class="fl-kicker">Wat misging</span><p>' + escText(p.misging || '') + '</p>'
+        + (p.oorzaak ? '<p class="fl-case-issue__why"><span>Oorzaak</span>' + escText(p.oorzaak) + '</p>' : '') + '</div>'
+        + '<div class="fl-case-issue__fix"><span class="fl-kicker">Wat we deden</span><p>' + escText(p.deden || '') + '</p></div>'
+        + '</div></article>').join('') + '</div></div>\n';
+  }
+  html += '    </div>\n';
+  html += '    <aside class="fl-case-facts fl-reveal"><span class="fl-kicker">In het kort</span><dl>'
+    + facts.map((f) => '<div class="fl-case-facts__row"><dt>' + escText(f.label) + '</dt><dd>' + escText(f.waarde) + '</dd></div>').join('')
+    + '</dl>' + (c.voorbeeld ? '<p class="fl-case-facts__note">Voorbeeldcase: cijfers illustratief.</p>' : '') + '</aside>\n';
+  html += '  </section>\n';
+
+  if (fotos.length) {
+    html += '  <section class="fl-container fl-case-railsec fl-reveal">\n'
+      + '    <div class="fl-case-railsec__head"><span class="fl-kicker">Foto’s · ' + fotos.length + '</span>'
+      + '<h2 class="fl-case-h2">' + escText(c.fotosTitel || 'Van schets tot pallet.') + '</h2></div>\n'
+      + '    <div class="fl-case-rail" data-case-rail tabindex="0" aria-label="Foto’s van het project">'
+      + fotos.map((p, i) => '<figure class="fl-case-slide">' + casePhoto(p, 'fl-case-slide__media')
+        + '<figcaption><span class="fl-case-slide__type"><span data-no-i18n>' + pad2(i + 1) + '</span>' + (p.type ? ' · ' + escText(p.type) : '') + '</span>'
+        + escText(p.bijschrift || '') + '</figcaption></figure>').join('')
+      + '</div>\n'
+      + '    <div class="fl-rail__nav"><button type="button" class="fl-rail__prev" aria-label="Vorige foto">' + CASE_BACK_SVG + '</button>'
+      + '<span class="fl-rail__count" data-no-i18n>01 / ' + pad2(fotos.length) + '</span>'
+      + '<div class="fl-rail__bar" aria-hidden="true"><span></span></div>'
+      + '<button type="button" class="fl-rail__next" aria-label="Volgende foto">' + CASE_ARROW_SVG + '</button></div>\n'
+      + '  </section>\n';
+  }
+
+  html += '  <section class="fl-section fl-section--alt fl-corner-seam fl-case-result">\n    <div class="fl-container fl-case-result__grid">\n'
+    + '      <div class="fl-reveal"><span class="fl-kicker">Wat er nu staat</span>'
+    + '<h2 class="fl-h2">' + escText(res.regel || c.uitkomst || '') + '</h2>'
+    + (quote ? '<figure class="fl-case-testimonial"><blockquote>' + escText(quote.tekst) + '</blockquote>'
+      + '<figcaption>' + escText([quote.naam, quote.rol, quote.bedrijf].filter(Boolean).join(', ')) + '</figcaption></figure>' : '')
+    + (res.andersDoen ? '<p class="fl-case-anders"><span>Wat we nu anders zouden doen</span>' + escText(res.andersDoen) + '</p>' : '')
+    + '</div>\n'
+    + (next ? '      <a class="fl-case-next fl-reveal" href="/cases/' + escAttr(next.slug) + '">' + casePhoto(next.hero, 'fl-case-next__media')
+      + '<span class="fl-case-next__text"><span class="fl-kicker">Volgende case</span>'
+      + '<span class="fl-case-next__title">' + escText(next.titel) + '</span>'
+      + (next.uitkomst ? '<span class="fl-case-next__outcome">' + escText(next.uitkomst) + '</span>' : '') + '</span></a>\n' : '')
+    + '    </div>\n  </section>\n';
+  html += CLOSING_CTA('Vergelijkbare vraag?', '/contact', 'Stuur je brief', true);
+  html += '</div>\n';
+  return html;
+}
 
 /* ------------------------------------------ 7b. ontbrekende pagina-elementen */
 
@@ -1373,6 +1560,52 @@ for (const art of articles) {
     + '\n<script src="/assets/' + JS_NAME + '" defer></script>\n</body>\n</html>\n');
 }
 
+
+/* --------------------------------------------------- 8c. casepagina's */
+
+/* Elke case krijgt een eigen bestand op /cases/<slug>, net als een blogartikel:
+ * eigen titel/omschrijving/og:image, Article + BreadcrumbList als JSON-LD.
+ * Een voorbeeldcase is noindex en krijgt geen JSON-LD: hij bestaat om de
+ * opbouw te laten zien, niet om gevonden te worden. */
+CASES.forEach((c, i) => {
+  let next = (c.volgende && CASES.find((x) => x.slug === c.volgende)) || CASES[(i + 1) % CASES.length];
+  if (!next || next.slug === c.slug) next = null;
+  const path = '/cases/' + c.slug;
+  const url = SITE + path;
+  const image = c.hero && c.hero.src ? (c.hero.src.startsWith('http') ? c.hero.src : SITE + '/' + c.hero.src.replace(/^\/+/, '')) : null;
+  const title = (c.seoTitel || (c.titel + ': case')) + ' | CUSTOM+';
+  const desc = (c.omschrijving || c.uitkomst || '').slice(0, 158);
+  let ld = ldScript(orgLd(), 'ld-organization');
+  if (!c.voorbeeld) {
+    const article = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: c.titel,
+      description: desc,
+      inLanguage: 'nl-NL',
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+      author: founderLd() || { '@type': 'Organization', name: 'CUSTOM+', '@id': SITE + '/#organization' },
+      publisher: { '@id': SITE + '/#organization' },
+    };
+    if (image) article.image = image;
+    ld += ldScript(article) + ldScript({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+        { '@type': 'ListItem', position: 2, name: 'Cases', item: SITE + '/cases' },
+        { '@type': 'ListItem', position: 3, name: c.titel, item: url },
+      ],
+    });
+  }
+  const route = { path, title, description: desc, ogType: 'article', image: image || OG_IMAGE, noindex: !!c.voorbeeld };
+  out('cases/' + c.slug + '/index.html',
+    '<!DOCTYPE html>\n<html lang="nl">\n<head>\n' + headFor(route, ld) + '</head>\n'
+    + '<body data-route="' + escAttr(path) + '" data-static-page="page-case">\n'
+    + shellHead + unhide(caseBlock(c, next)) + shellTail + afterResult.html
+    + '\n<script src="/assets/' + JS_NAME + '" defer></script>\n</body>\n</html>\n');
+});
+
 /* -------------------------------------------------------------- 9. sitemap */
 
 const today = new Date().toISOString().slice(0, 10);
@@ -1414,6 +1647,7 @@ const SHARED_DATES = [fileDate('custom-plus.html'), fileDate('content/seo-nl.jso
 function routeLastmod(route) {
   const own = (route.content || []).map((name) => fileDate('content/' + name + '.json'));
   if (route.page === 'page-blog') own.push(...blogArticles.map((a) => a.updated || a.date || null));
+  if (route.page === 'page-cases' || route.path === '/') own.push(...caseFiles.map((f) => fileDate('content/cases/' + f)));
   return newestDate(SHARED_DATES.concat(own));
 }
 
@@ -1425,6 +1659,12 @@ for (const a of blogArticles) {
      publicatie; de datum van de omliggende pagina doet er hier niet toe */
   urls.push('  <url><loc>' + escText(SITE + '/blog/' + a.slug) + '</loc><lastmod>'
     + escText(a.updated || a.date || today) + '</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>');
+}
+for (const c of CASES) {
+  if (c.voorbeeld) continue;
+  const f = caseFiles.find((name) => name === c.slug + '.json');
+  urls.push('  <url><loc>' + escText(SITE + '/cases/' + c.slug) + '</loc><lastmod>'
+    + escText((f && fileDate('content/cases/' + f)) || today) + '</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>');
 }
 out('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n'
   + '<!-- Automatisch gegenereerd door scripts/build-site.mjs. Niet met de hand aanpassen. -->\n'

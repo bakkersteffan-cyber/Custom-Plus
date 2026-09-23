@@ -68,5 +68,10 @@
     "crumb": "Niet gevonden",
     "title": "Pagina niet gevonden | CUSTOM+",
     "description": "Deze pagina bestaat niet of is verhuisd. Ga naar de homepage, bekijk de diensten of neem contact op."
+  },
+  "page-cases": {
+    "crumb": "Cases",
+    "title": "Cases: producten van vraag tot pallet | CUSTOM+",
+    "description": "Per product de vraag waarmee het begon, hoe we het uitvoerden, wat er in de samplerondes misging en wat er nu op de pallet staat."
   }
 }

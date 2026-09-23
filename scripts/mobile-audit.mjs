@@ -36,10 +36,12 @@ function argValue(name, fallback) { const i = ARGS.indexOf(name); return i >= 0 
 const BASE = argValue('--base', 'http://localhost:8790').replace(/\/$/, '');
 const WIDTHS = argValue('--widths', '320,375,390,430').split(',').map((w) => parseInt(w, 10)).filter(Boolean);
 const SHOTS = ARGS.indexOf('--no-shots') < 0;
-const SHOT_WIDTH = 375;
+/* --shot-width: op welke breedte de schermafbeeldingen gemaakt worden (ook bruikbaar voor desktopcontrole, bv. 1280) */
+const SHOT_WIDTH = parseInt(argValue('--shot-width', '375'), 10);
 const ROUTES = (argValue('--routes', '') || [
   '/', '/diensten/', '/ecommerce/', '/relatiegeschenken/', '/waarom-china/', '/faq/', '/over-ons/',
   '/begrippen/', '/hulpmiddelen/', '/contact/', '/blog/', '/privacy/', '/zoeken/', '/deze-pagina-bestaat-niet/',
+  '/cases/', '/cases/voorbeeld-drinkfles/',
   '/blog/wat-een-sample-echt-kost/', '/blog/moq-is-een-gesprek/', '/blog/de-containerrekensom/', '/blog/aql-zonder-jargon/',
 ].join(',')).split(',').map((r) => r.trim()).filter(Boolean);
 
@@ -212,7 +214,7 @@ async function main() {
           const CH = 1300; const total = Math.min(data.docH, 16000); const base = (route === '/' ? 'home' : route.replace(/^\/|\/$/g, '').replace(/\//g, '-'));
           page.shots = [];
           for (let y = 0, n = 1; y < total; y += CH, n++) {
-            const shot = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 72, captureBeyondViewport: true, clip: { x: 0, y, width, height: Math.min(CH, total - y), scale: 0.8 } }, 60000);
+            const shot = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 72, captureBeyondViewport: true, clip: { x: 0, y, width, height: Math.min(CH, total - y), scale: width > 600 ? 0.6 : 0.8 } }, 60000);
             const name = base + '-' + width + '-' + String(n).padStart(2, '0') + '.jpg';
             writeFileSync(join(OUT, name), Buffer.from(shot.data, 'base64'));
             page.shots.push(join('scripts', '.mobile-audit', name));

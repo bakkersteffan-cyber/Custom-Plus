@@ -343,6 +343,31 @@ function collectBlogArticle(a) {
   return out;
 }
 
+function collectCase(c) {
+  const out = [];
+  const url = '/cases/' + c.slug;
+  const titel = 'Case: ' + c.titel;
+  const kop = [c.uitkomst, c.omschrijving, c.klant && 'Klant: ' + c.klant, c.categorie && 'Categorie: ' + c.categorie].filter(Boolean).join(' ');
+  if (kop) out.push({ titel, url, tekst: clean(kop) });
+  const feiten = (c.feiten || []).filter((f) => f && f.label && f.waarde).map((f) => f.label + ': ' + f.waarde).join('. ');
+  if (feiten) out.push({ titel: titel + ' – feiten', url, tekst: clean(feiten) });
+  const vraag = c.vraag || {};
+  const vraagTekst = [vraag.citaat].concat(vraag.randvoorwaarden || []).filter(Boolean).join(' ');
+  if (vraagTekst) out.push({ titel: titel + ' – de vraag', url, tekst: clean(vraagTekst) });
+  (c.fasen || []).forEach((f) => {
+    const t = [f.fase, f.duur, f.tekst, f.opleverde && 'Opgeleverd: ' + f.opleverde].filter(Boolean).join(' ');
+    if (t) out.push({ titel: titel + ' – ' + (f.titel || f.fase || 'fase'), url, tekst: clean(t) });
+  });
+  (c.problemen || []).forEach((p) => {
+    const t = [p.misging, p.oorzaak, p.deden, p.effect].filter(Boolean).join(' ');
+    if (t) out.push({ titel: titel + ' – ' + (p.tag || 'wat misging'), url, tekst: clean(t) });
+  });
+  const r = c.resultaat || {};
+  const rt = [r.regel, r.andersDoen && 'Wat we nu anders zouden doen: ' + r.andersDoen].filter(Boolean).join(' ');
+  if (rt) out.push({ titel: titel + ' – resultaat', url, tekst: clean(rt) });
+  return out;
+}
+
 /* Sleutel = bestandsnaam zonder .json, waarde = verzamelaar. seo, search en
  * scope-quiz staan er bewust niet in: dat zijn metadata en vraaglabels, geen
  * inhoud waar een bezoeker iets aan heeft. */
@@ -443,6 +468,18 @@ export function buildIndex(root = DEFAULT_ROOT) {
       if (!data) { if (taal === 'en') warnings.push(file + ' ontbreekt of is geen geldige JSON'); continue; }
       add(dir + '/' + name + '.json', taal, chunkSections(COLLECTORS[name](data, taal)));
     }
+  }
+
+  /* cases: één stuk per hoofdstuk zodat "hebben jullie ooit een … gemaakt?"
+     bij de juiste case uitkomt; een voorbeeldcase is geen echte referentie en
+     wordt overgeslagen */
+  const casesDir = join(root, 'content', 'cases');
+  const caseFiles = existsSync(casesDir) ? readdirSync(casesDir).filter((f) => f.endsWith('.json')).sort() : [];
+  for (const f of caseFiles) {
+    const c = readJson(join(casesDir, f));
+    if (!c || typeof c !== 'object' || !c.slug || !c.titel) { warnings.push('content/cases/' + f + ' overgeslagen (geen slug/titel)'); continue; }
+    if (!c.gepubliceerd || c.voorbeeld) continue;
+    add('content/cases/' + f, 'nl', chunkSections(collectCase(c)));
   }
 
   const blogDir = join(root, 'content', 'blog');
