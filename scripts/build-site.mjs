@@ -304,9 +304,17 @@ function transformMarkup(html) {
   const translateText = (chunk) => {
     if (skipDepth > 0 || !chunk.trim()) return chunk;
     const key = decodeEntities(chunk);
-    const hit = NL[key];
+    let hit = NL[key];
     if (hit == null) { textMiss++; return chunk; }
     textHits++;
+    /* De vertaling mist soms de spatie waarmee de brontekst begint of eindigt
+     * (bijvoorbeeld " Non disclosure…" direct na een </strong>). Die witruimte
+     * hoort bij de opmaak, niet bij de vertaling; zonder haar plakken de
+     * vetgedrukte term en de zin aan elkaar ("NNN overeenkomst.Non…"). */
+    const lead = chunk.match(/^\s*/)[0];
+    const trail = chunk.match(/\s*$/)[0];
+    if (lead && !/^\s/.test(hit)) hit = lead + hit;
+    if (trail && !/\s$/.test(hit)) hit = hit + trail;
     return escText(hit);
   };
 
@@ -599,12 +607,12 @@ function notFoundBlock() {
     + '    <p class="fl-lead fl-reveal">Geen zorgen, alles staat er nog. Kies waar je verder wilt:</p>\n'
     + '    <div class="fl-stagger" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;">\n'
     + '      <a class="fl-btn fl-btn-black" href="/" data-magnetic>Naar de homepage</a>\n'
-    + '      <a class="fl-btn fl-btn-white" href="/diensten" data-magnetic>Bekijk de diensten</a>\n'
-    + '      <a class="fl-btn fl-btn-white" href="/contact" data-magnetic>Neem contact op</a>\n'
+    + '      <a class="fl-btn fl-btn-glass" href="/diensten" data-magnetic>Bekijk de diensten</a>\n'
+    + '      <a class="fl-btn fl-btn-glass" href="/contact" data-magnetic>Neem contact op</a>\n'
     + '    </div>\n'
     + '    <form id="notfound-search" role="search" autocomplete="off" style="margin-top:40px; max-width:520px;">\n'
     + '      <label for="notfound-q" class="fl-kicker">Of zoek op de site</label>\n'
-    + '      <div style="display:flex; gap:10px; margin-top:12px;">\n'
+    + '      <div class="fl-nf-search__row">\n'
     + '        <input type="search" id="notfound-q" placeholder="Bijvoorbeeld MOQ, samples of AQL"'
     + ' style="flex:1; min-width:0; border:1px solid var(--line); border-radius:12px; padding:14px 18px; font:inherit; font-size:16px; background:var(--gray-f9);">\n'
     + '        <button type="submit" class="fl-btn fl-btn-black">Zoeken</button>\n'

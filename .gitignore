@@ -39,3 +39,6 @@ scripts/.lighthouse-reports/
 
 # Echte database-dumps (voorstel 50, scripts/supabase-backup.sh) horen nooit in git
 backups/
+
+# meetrapporten en schermafbeeldingen van scripts/mobile-audit.mjs
+scripts/.mobile-audit/
