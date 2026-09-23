@@ -149,22 +149,23 @@ function collectEcommerce(d, lang) {
    * (geen contentsleutel) en worden hier op dezelfde plek ingevoegd. */
   const out = [];
   const j = d.journey || {};
-  const c1 = j.c1 || {}, c2 = j.c2 || {}, c3 = j.c3 || {}, c4 = j.c4 || {}, c5 = j.c5 || {}, c6 = j.c6 || {};
+  const c1 = j.c1 || {}, hero = j.hero || {}, ro = j.routes || {}, c2 = j.c2 || {}, band = j.band || {}, c4 = j.c4 || {}, cost = j.cost || {}, c5 = j.c5 || {};
   const mi = j.miles || {}, sl = j.slot || {}, st = d.statement || {};
   const zin = (...p) => p.map(clean).filter(Boolean).join('');
-  out.push({ titel: L(lang, 'Ecommerce: van listing tot deur, twee routes', 'Ecommerce: from listing to door, two routes'), url: '/ecommerce',
-    tekst: para(c1.kicker, c1.h1 && c1.h1 + '.', c1.sub, c1.lead, c1.monoline, c2.h2 && c2.h2 + '.', c2.intro,
-      c2.wlName && c2.wlName + ':', c2.wlText, c2.devName && c2.devName + ':', c2.devText, c2.honest) });
-  out.push({ titel: L(lang, 'Ecommerce: productcheck en sectorzoeker', 'Ecommerce: product check and sector search'), url: '/ecommerce#ec-c2',
-    tekst: para(st.aiTitle && st.aiTitle + ':', st.aiIntro, st.aiNote, c2.aiNote1, c2.aiNote2Rest && 'MOQ ' + c2.aiNote2Rest, c2.sectorLabel, c2.scopeLink) });
-  out.push({ titel: L(lang, 'Ecommerce: van schets naar tekening, de mal en de mijlpalen', 'Ecommerce: from sketch to drawing, the mold and the milestones'), url: '/ecommerce#ec-c3',
-    tekst: para(c3.h2 && c3.h2 + '.', zin(c3.bodyDev1, 'DFM', c3.bodyDev2, ' NNN', c3.bodyDev3), c3.bodyWl, c3.mono,
-      c4.h2 && c4.h2 + '.', zin(c4.bodyDev1, ' ', c4.termGolden, ' ', c4.bodyDev2, ' ', c4.termTooling, ' ', c4.bodyDev3), c4.bodyWl,
-      c4.doubleLabel, c4.doubleNote1, c4.milesLabel && c4.milesLabel + ':', [mi.m1, mi.m2, mi.m3, mi.m4].map(clean).filter(Boolean).join(', ') + '.', c4.milesMono) });
-  out.push({ titel: L(lang, 'Ecommerce: steekproef, compliance en levering', 'Ecommerce: sample check, compliance and delivery'), url: '/ecommerce#ec-c5',
-    tekst: para(c5.h2 && c5.h2 + '.', zin(c5.body1, ' AQL ', c5.body2), c5.iqc && 'IQC: ' + c5.iqc + '.', c5.ipqc && 'IPQC: ' + c5.ipqc + '.', c5.fqc && 'FQC: ' + c5.fqc + '.', c5.reportNote,
-      c6.h2 && c6.h2 + '.', zin(c6.body1, ' CE, FCC, RoHS ', c6.and, ' REACH', c6.body2),
-      sl.h2 && sl.h2 + '.', sl.body, [sl.fact1, sl.fact2, sl.fact3, sl.fact4, sl.fact5].map(clean).filter(Boolean).join('. ') + '.') });
+  const lijst = (...p) => p.map(clean).filter(Boolean).join(', ');
+  out.push({ titel: L(lang, 'Ecommerce: eigen product voor je webshop, twee routes', 'Ecommerce: your own product for your web store, two routes'), url: '/ecommerce',
+    tekst: para(c1.kicker, c1.h1 && c1.h1 + '.', c1.sub, hero.lead, hero.note, ro.h2, ro.intro,
+      c2.wlName && c2.wlName + ' (' + clean(ro.wlTime) + '): ' + lijst(ro.wlMold, ro.wlUnique, ro.wlChoose, ro.wlStep) + '.',
+      c2.devName && c2.devName + ' (' + clean(ro.devTime) + '): ' + lijst(ro.devMold, ro.devUnique, ro.devChoose, ro.devStep) + '.',
+      c2.honest) });
+  out.push({ titel: L(lang, 'Ecommerce: productcheck, sectorcheck, fasen, mijlpalen en steekproef', 'Ecommerce: product check, sector check, stages, milestones and sample check'), url: '/ecommerce#ec-c3',
+    tekst: para(st.aiTitle && st.aiTitle + ':', st.aiIntro, st.aiNote, c2.aiNote1, c2.aiNote2Rest && 'MOQ ' + c2.aiNote2Rest, c2.scopeLink,
+      band.h2, band.lead, c4.milesLabel && c4.milesLabel + ': ' + lijst(mi.m1, mi.m2, mi.m3, mi.m4) + '.', band.milesNote,
+      band.sampleH3, zin(c5.body1, ' AQL ', c5.body2), c5.iqc && 'IQC: ' + c5.iqc + '.', c5.ipqc && 'IPQC: ' + c5.ipqc + '.', c5.fqc && 'FQC: ' + c5.fqc + '.', c5.reportNote) });
+  out.push({ titel: L(lang, 'Ecommerce: eerlijk over kosten, de mal en het slot', 'Ecommerce: honest about cost, the mold and the closing'), url: '/ecommerce#ec-c5',
+    tekst: para(cost.kicker && cost.kicker + '.', c4.h2 && c4.h2 + '.', zin(c4.bodyDev1, ' ', c4.termGolden, ' ', c4.bodyDev2, ' ', c4.termTooling, ' ', c4.bodyDev3), c4.bodyWl,
+      c4.doubleLabel, c4.doubleNote1, [cost.t1, sl.fact3, cost.t3].map(clean).filter(Boolean).join('. ') + '.',
+      sl.h2 && sl.h2 + '.', sl.body, [sl.fact1, sl.fact2, sl.fact4].map(clean).filter(Boolean).join('. ') + '.') });
   return out;
 }
 
