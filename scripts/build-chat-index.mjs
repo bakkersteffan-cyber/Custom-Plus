@@ -347,13 +347,16 @@ function collectCase(c) {
   const out = [];
   const url = '/cases/' + c.slug;
   const titel = 'Case: ' + c.titel;
-  const kop = [c.uitkomst, c.omschrijving, c.klant && 'Klant: ' + c.klant, c.categorie && 'Categorie: ' + c.categorie].filter(Boolean).join(' ');
+  const kop = [c.uitkomst, c.intro || c.omschrijving, c.introKop, c.klant && 'Klant: ' + c.klant, c.categorie && 'Categorie: ' + c.categorie].filter(Boolean).join(' ');
   if (kop) out.push({ titel, url, tekst: clean(kop) });
   const feiten = (c.feiten || []).filter((f) => f && f.label && f.waarde).map((f) => f.label + ': ' + f.waarde).join('. ');
   if (feiten) out.push({ titel: titel + ' – feiten', url, tekst: clean(feiten) });
   const vraag = c.vraag || {};
   const vraagTekst = [vraag.citaat].concat(vraag.randvoorwaarden || []).filter(Boolean).join(' ');
   if (vraagTekst) out.push({ titel: titel + ' – de vraag', url, tekst: clean(vraagTekst) });
+  const aanpak = c.aanpak || {};
+  const aanpakTekst = [aanpak.kop].concat(aanpak.alineas || []).filter(Boolean).join(' ');
+  if (aanpakTekst) out.push({ titel: titel + ' – onze aanpak', url, tekst: clean(aanpakTekst) });
   (c.fasen || []).forEach((f) => {
     const t = [f.fase, f.duur, f.tekst, f.opleverde && 'Opgeleverd: ' + f.opleverde].filter(Boolean).join(' ');
     if (t) out.push({ titel: titel + ' – ' + (f.titel || f.fase || 'fase'), url, tekst: clean(t) });

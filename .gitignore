@@ -43,4 +43,4 @@ backups/
 # meetrapporten en schermafbeeldingen van scripts/mobile-audit.mjs
 scripts/.mobile-audit/
 
-cases/
+/cases/

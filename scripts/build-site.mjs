@@ -637,10 +637,13 @@ pageBlocks.set('page-404', notFoundBlock());
 /* Cases staan in content/cases/<slug>.json (Nederlands, zoals de blogartikelen)
  * en bestaan alleen in de generator: de home-sectie (#home-cases), de index
  * (/cases) en de detailpagina's (/cases/<slug>) zijn statische HTML. De app
- * doet daar alleen de fotorail bij. Een case met "voorbeeld": true is een
- * demonstratie van de opbouw: hij krijgt een label, noindex en geen JSON-LD,
- * en de chat-index slaat hem over. "gepubliceerd": false houdt een case
- * helemaal buiten de build. */
+ * doet daar alleen de fotorail bij. De opzet van de detailpagina volgt de
+ * Stoov-case van Flatline Agency (op verzoek): gecentreerde kop met intro en
+ * groot beeld, introductie in twee kolommen, projectrijen met beeld, galerij
+ * met pijlen, grote resultaatcijfers, andere cases. Een case met
+ * "voorbeeld": true is een demonstratie van de opbouw: label, noindex, geen
+ * JSON-LD, en de chat-index slaat hem over. "gepubliceerd": false houdt een
+ * case helemaal buiten de build. */
 const casesDir = join(ROOT, 'content', 'cases');
 const caseFiles = existsSync(casesDir) ? readdirSync(casesDir).filter((f) => f.endsWith('.json')).sort() : [];
 const CASES = caseFiles
@@ -656,6 +659,7 @@ const CASES_INTRO = {
 const CASE_CAM_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 8h3.2l1.6-2.2h6.4L16.8 8H20v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg>';
 const CASE_ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const CASE_BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
+const pad2 = (n) => String(n).padStart(2, '0');
 
 /* Eén foto: <picture> met webp als die naast de jpg staat, anders een kale
  * <img>. Zonder src komt er een rustig vlak dat zegt welke foto hier hoort,
@@ -674,22 +678,23 @@ function casePhoto(photo, cls) {
   return '<div class="' + cls + ' fl-case-ph" role="img" aria-label="Foto volgt: ' + escAttr(cap) + '">'
     + CASE_CAM_SVG + '<span>Foto volgt</span></div>';
 }
+const caseCap = (photo) => (photo && photo.bijschrift ? '<p class="fl-case-cap">' + escText(photo.bijschrift) + '</p>' : '');
+const caseMeta = (c) => [c.klantKort || c.klant, c.categorie, c.jaar].filter(Boolean).map((v) => escText(String(v))).join(' · ')
+  + (c.voorbeeld ? ' · <em>Voorbeeldcase</em>' : '');
 
-function caseRowsHtml(list, stagger) {
-  return '<div class="fl-cases__rows' + (stagger ? ' fl-stagger' : '') + '">\n' + list.map((c) => {
+/* kaarten: staand beeld, meta, titel, uitkomst, drie feiten, pil */
+function caseCardsHtml(list, stagger) {
+  return '<div class="fl-case-grid' + (stagger ? ' fl-stagger' : '') + '">\n' + list.map((c) => {
     const facts = (c.kaartFeiten || []).filter((f) => f && f.waarde)
-      .map((f) => '<span class="fl-case-row__fact"><b data-no-i18n>' + escText(f.waarde) + '</b>' + escText(f.label || '') + '</span>').join('');
-    const meta = [c.klantKort || c.klant, c.categorie, c.jaar].filter(Boolean).map((v) => escText(String(v))).join(' · ')
-      + (c.voorbeeld ? ' · <em>Voorbeeldcase</em>' : '');
-    return '      <a class="fl-case-row" href="/cases/' + escAttr(c.slug) + '">'
-      + casePhoto(c.hero, 'fl-case-row__media')
-      + '<div class="fl-case-row__text">'
-      + '<span class="fl-case-row__meta">' + meta + '</span>'
-      + '<span class="fl-case-row__title">' + escText(c.titel) + '</span>'
-      + (c.uitkomst ? '<span class="fl-case-row__outcome">' + escText(c.uitkomst) + '</span>' : '')
-      + (facts ? '<span class="fl-case-row__facts">' + facts + '</span>' : '')
-      + '<span class="fl-case-row__link">Bekijk de case' + CASE_ARROW_SVG + '</span>'
-      + '</div></a>';
+      .map((f) => '<span><b data-no-i18n>' + escText(f.waarde) + '</b>' + escText(f.label || '') + '</span>').join('');
+    return '      <a class="fl-case-card" href="/cases/' + escAttr(c.slug) + '">'
+      + casePhoto(c.kaart && c.kaart.src ? c.kaart : c.hero, 'fl-case-card__media')
+      + '<span class="fl-case-card__meta">' + caseMeta(c) + '</span>'
+      + '<span class="fl-case-card__title">' + escText(c.titel) + '</span>'
+      + (c.uitkomst ? '<span class="fl-case-card__outcome">' + escText(c.uitkomst) + '</span>' : '')
+      + (facts ? '<span class="fl-case-card__facts">' + facts + '</span>' : '')
+      + '<span class="fl-case-card__cta">Bekijk de case</span>'
+      + '</a>';
   }).join('\n') + '\n    </div>';
 }
 
@@ -699,7 +704,7 @@ function homeCasesSection() {
     + '    <div class="fl-cases__intro fl-reveal"><span class="fl-kicker">' + escText(CASES_INTRO.kicker) + '</span>'
     + '<h2 class="fl-h2">' + escText(CASES_INTRO.h2) + '</h2>'
     + '<p class="fl-lead" style="margin-top:18px;">' + escText(CASES_INTRO.lead) + '</p></div>\n'
-    + caseRowsHtml(CASES.slice(0, 4), true) + '\n'
+    + caseCardsHtml(CASES.slice(0, 3), true) + '\n'
     + '    <div class="fl-cases__more fl-reveal"><a class="fl-btn fl-btn-glass" href="/cases" data-magnetic>Alle cases</a></div>\n'
     + '  </div>\n</section>\n';
 }
@@ -714,104 +719,115 @@ function casesIndexBlock() {
     + '    <p class="fl-lead fl-reveal" style="margin-top:clamp(20px,2.6vw,32px);">' + escText(CASES_INTRO.lead) + '</p>\n'
     + '  </section>\n'
     + '  <section class="fl-container" style="padding-bottom:clamp(64px,9vw,128px);">\n'
-    + (CASES.length ? caseRowsHtml(CASES, true) : '    <p class="fl-note">Nog geen cases gepubliceerd.</p>')
+    + (CASES.length ? caseCardsHtml(CASES, true) : '    <p class="fl-note">Nog geen cases gepubliceerd.</p>')
     + '\n  </section>\n'
     + CLOSING_CTA('Vergelijkbare vraag?', '/contact', 'Stuur je brief', true)
     + '</div>\n';
 }
 pageBlocks.set('page-cases', casesIndexBlock());
 
-function caseBlock(c, next) {
-  const kicker = ['Case', c.categorie, c.jaar].filter(Boolean).map((v) => escText(String(v))).join(' · ')
-    + (c.voorbeeld ? ' · <em>Voorbeeldcase</em>' : '');
+function caseBlock(c, others) {
   const facts = (c.feiten || []).filter((f) => f && f.label && f.waarde);
   const vraag = c.vraag || {};
+  const aanpak = c.aanpak || {};
   const fasen = c.fasen || [];
   const problemen = c.problemen || [];
   const fotos = c.fotos || [];
   const res = c.resultaat || {};
+  const cijfers = (res.cijfers && res.cijfers.length ? res.cijfers : (c.kaartFeiten || [])).filter((n) => n && n.waarde);
   const quote = res.citaat && res.citaat.tekst ? res.citaat : null;
-  const pad2 = (n) => String(n).padStart(2, '0');
+  const link = c.productLink && c.productLink.url ? c.productLink : null;
 
   let html = '<div class="fl-page" id="page-case">\n';
-  html += '  <section class="fl-pagehead fl-container is-ready-target fl-case-head">\n'
-    + '    <a class="fl-case-back" href="/cases">' + CASE_BACK_SVG + 'Alle cases</a>\n'
-    + '    <span class="fl-kicker">' + kicker + '</span>\n'
-    + '    <h1>\n      <span class="fl-clip"><span>' + escText(c.titel) + '</span></span>\n'
-    + (c.uitkomst ? '      <span class="fl-clip"><span class="sub">' + escText(c.uitkomst) + '</span></span>\n' : '')
-    + '    </h1>\n  </section>\n';
-  html += '  <section class="fl-container fl-case-herowrap fl-reveal">' + casePhoto(c.hero, 'fl-case-hero')
-    + (c.hero && c.hero.bijschrift ? '<p class="fl-case-cap">' + escText(c.hero.bijschrift) + '</p>' : '') + '</section>\n';
-
-  html += '  <section class="fl-container fl-case-layout">\n    <div class="fl-case-main">\n';
-  if (c.voorbeeld) {
-    html += '      <p class="fl-case-example fl-reveal">Dit is een voorbeeldcase: de opbouw is echt, de klant en de cijfers zijn illustratief. Echte cases verschijnen hier in precies deze vorm.</p>\n';
+  /* 1. gecentreerde kop: kruimelpad, titel, intro */
+  html += '  <section class="fl-container fl-case-hero is-ready-target">\n'
+    + '    <nav class="fl-case-crumb" aria-label="Kruimelpad"><a href="/cases">Cases</a><span aria-hidden="true">›</span>'
+    + '<span>' + escText(c.titel) + '</span>' + (c.voorbeeld ? '<span aria-hidden="true">·</span><em>Voorbeeldcase</em>' : '') + '</nav>\n'
+    + '    <h1 class="fl-case-title"><span class="fl-clip"><span>' + escText(c.titel) + '</span></span></h1>\n'
+    + (c.intro ? '    <p class="fl-lead fl-reveal">' + escText(c.intro) + '</p>\n' : '')
+    + (c.voorbeeld ? '    <p class="fl-case-example fl-reveal">Voorbeeldcase: de opbouw is echt, de klant en de cijfers zijn illustratief. Echte cases verschijnen hier in precies deze vorm.</p>\n' : '')
+    + '  </section>\n';
+  /* 2. groot beeld */
+  html += '  <section class="fl-container fl-case-media fl-reveal">' + casePhoto(c.hero, 'fl-case-media__frame') + caseCap(c.hero) + '</section>\n';
+  /* 3. introductie in twee kolommen */
+  html += '  <section class="fl-container fl-case-intro2">\n'
+    + '    <aside class="fl-case-side fl-reveal"><span class="fl-case-label">Introductie</span>'
+    + (c.introKop ? '<h2 class="fl-case-h2">' + escText(c.introKop) + '</h2>' : '')
+    + ((c.diensten || []).length ? '<div class="fl-case-tags">' + c.diensten.map((t) => '<span class="fl-case-tag">' + escText(t) + '</span>').join('') + '</div>' : '')
+    + (link ? '<a class="fl-case-link" href="' + escAttr(link.url) + '" target="_blank" rel="noopener">' + escText(link.label || 'Bekijk het product') + CASE_ARROW_SVG + '</a>' : '')
+    + (facts.length ? '<dl class="fl-case-facts">' + facts.map((f) => '<div class="fl-case-facts__row"><dt>' + escText(f.label) + '</dt><dd>' + escText(f.waarde) + '</dd></div>').join('') + '</dl>' : '')
+    + (c.voorbeeld ? '<p class="fl-case-facts__note">Voorbeeldcase: cijfers illustratief.</p>' : '')
+    + '</aside>\n'
+    + '    <div class="fl-case-body fl-reveal">'
+    + (c.uitkomst ? '<p class="fl-case-tagline">' + escText(c.uitkomst) + '</p>' : '')
+    + '<h3 class="fl-case-h3">De vraag' + (vraag.kop ? ' <span>– ' + escText(vraag.kop) + '</span>' : '') + '</h3>'
+    + '<div class="fl-case-cols">'
+    + '<div>' + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '') + '</div>'
+    + '<div>' + ((vraag.randvoorwaarden || []).length ? '<ul class="fl-case-list">' + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '') + '</div>'
+    + '</div>'
+    + ((aanpak.alineas || []).length
+      ? '<h3 class="fl-case-h3">Onze aanpak' + (aanpak.kop ? ' <span>– ' + escText(aanpak.kop) + '</span>' : '') + '</h3>'
+        + '<div class="fl-case-cols">' + aanpak.alineas.map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>' : '')
+    + '</div>\n  </section>\n';
+  /* 4. tweede groot beeld */
+  if (c.beeldGroot) {
+    html += '  <section class="fl-container fl-case-media fl-case-media--big fl-reveal">' + casePhoto(c.beeldGroot, 'fl-case-media__frame') + caseCap(c.beeldGroot) + '</section>\n';
   }
-  html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">De vraag</span><h2 class="fl-case-h2">Waarmee het begon.</h2>'
-    + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '')
-    + ((vraag.randvoorwaarden || []).length
-      ? '<h3 class="fl-case-h3">De randvoorwaarden</h3><ul class="fl-case-list">'
-        + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '')
-    + '</div>\n';
+  /* 5. het project: fases als rijen tekst naast beeld */
   if (fasen.length) {
-    html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">Hoe we het uitvoerden</span>'
-      + '<h2 class="fl-case-h2">' + escText(c.fasenTitel || 'Fase voor fase, zoals het ging.') + '</h2>'
-      + '<ol class="fl-case-phases">' + fasen.map((f, i) => '<li class="fl-case-phase">'
-        + '<div class="fl-case-phase__side"><span class="fl-case-phase__num" data-no-i18n>' + escText(f.nummer || pad2(i + 1)) + ' / ' + pad2(fasen.length) + '</span>'
-        + (f.duur ? '<span class="fl-case-phase__dur">' + escText(f.duur) + '</span>' : '') + '</div>'
-        + '<div class="fl-case-phase__body">'
-        + (f.fase ? '<span class="fl-case-phase__fase">' + escText(f.fase) + '</span>' : '')
+    html += '  <section class="fl-container fl-case-project"><span class="fl-case-label">Het project</span>\n    <div class="fl-case-rows">'
+      + fasen.map((f, i) => '<div class="fl-case-prow fl-reveal"><div class="fl-case-prow__text">'
+        + '<span class="fl-case-prow__meta"><span data-no-i18n>' + escText(f.nummer || pad2(i + 1)) + ' / ' + pad2(fasen.length) + '</span>'
+        + (f.fase ? ' · ' + escText(f.fase) : '') + (f.duur ? ' · ' + escText(f.duur) : '') + '</span>'
         + '<h3>' + escText(f.titel || f.fase || '') + '</h3>'
         + (f.tekst ? '<p>' + escText(f.tekst) + '</p>' : '')
-        + (f.opleverde ? '<p class="fl-case-phase__out"><span>Opgeleverd</span>' + escText(f.opleverde) + '</p>' : '')
-        + '</div></li>').join('') + '</ol></div>\n';
+        + (f.opleverde ? '<p class="fl-case-prow__out"><span>Opgeleverd</span>' + escText(f.opleverde) + '</p>' : '')
+        + '</div><div class="fl-case-prow__media">' + casePhoto(f.foto, 'fl-case-frame') + caseCap(f.foto) + '</div></div>').join('')
+      + '</div>\n  </section>\n';
   }
+  /* 6. wat misging */
   if (problemen.length) {
-    html += '      <div class="fl-case-chapter fl-reveal"><span class="fl-kicker">Wat misging</span>'
-      + '<h2 class="fl-case-h2">' + escText(c.problemenTitel || (problemen.length + ' keer bijgestuurd, en waarom.')) + '</h2>'
-      + '<div class="fl-case-issues">' + problemen.map((p) => '<article class="fl-case-issue">'
+    html += '  <section class="fl-container fl-case-issues-sec"><span class="fl-case-label">Wat misging</span>'
+      + '<h2 class="fl-case-h2 fl-reveal">' + escText(c.problemenTitel || (problemen.length + ' keer bijgestuurd, en waarom.')) + '</h2>'
+      + '<div class="fl-case-issues fl-stagger">' + problemen.map((p) => '<article class="fl-case-issue">'
         + '<div class="fl-case-issue__head">' + (p.tag ? '<span class="fl-case-issue__tag">' + escText(p.tag) + '</span>' : '')
         + (p.effect ? '<span class="fl-case-issue__effect">' + escText(p.effect) + '</span>' : '') + '</div>'
         + '<div class="fl-case-issue__cols">'
         + '<div><span class="fl-kicker">Wat misging</span><p>' + escText(p.misging || '') + '</p>'
         + (p.oorzaak ? '<p class="fl-case-issue__why"><span>Oorzaak</span>' + escText(p.oorzaak) + '</p>' : '') + '</div>'
         + '<div class="fl-case-issue__fix"><span class="fl-kicker">Wat we deden</span><p>' + escText(p.deden || '') + '</p></div>'
-        + '</div></article>').join('') + '</div></div>\n';
+        + '</div></article>').join('') + '</div></section>\n';
   }
-  html += '    </div>\n';
-  html += '    <aside class="fl-case-facts fl-reveal"><span class="fl-kicker">In het kort</span><dl>'
-    + facts.map((f) => '<div class="fl-case-facts__row"><dt>' + escText(f.label) + '</dt><dd>' + escText(f.waarde) + '</dd></div>').join('')
-    + '</dl>' + (c.voorbeeld ? '<p class="fl-case-facts__note">Voorbeeldcase: cijfers illustratief.</p>' : '') + '</aside>\n';
-  html += '  </section>\n';
-
+  /* 7. galerij */
   if (fotos.length) {
     html += '  <section class="fl-container fl-case-railsec fl-reveal">\n'
-      + '    <div class="fl-case-railsec__head"><span class="fl-kicker">Foto’s · ' + fotos.length + '</span>'
-      + '<h2 class="fl-case-h2">' + escText(c.fotosTitel || 'Van schets tot pallet.') + '</h2></div>\n'
+      + '    <div class="fl-case-railsec__head"><div><span class="fl-case-label">Foto’s · ' + fotos.length + '</span>'
+      + '<h2 class="fl-case-h2">' + escText(c.fotosTitel || 'Van schets tot pallet.') + '</h2></div>'
+      + '<div class="fl-rail__nav"><button type="button" class="fl-rail__prev" aria-label="Vorige foto">' + CASE_BACK_SVG + '</button>'
+      + '<span class="fl-rail__count" data-no-i18n>01 / ' + pad2(fotos.length) + '</span>'
+      + '<div class="fl-rail__bar" aria-hidden="true"><span></span></div>'
+      + '<button type="button" class="fl-rail__next" aria-label="Volgende foto">' + CASE_ARROW_SVG + '</button></div></div>\n'
       + '    <div class="fl-case-rail" data-case-rail tabindex="0" aria-label="Foto’s van het project">'
       + fotos.map((p, i) => '<figure class="fl-case-slide">' + casePhoto(p, 'fl-case-slide__media')
         + '<figcaption><span class="fl-case-slide__type"><span data-no-i18n>' + pad2(i + 1) + '</span>' + (p.type ? ' · ' + escText(p.type) : '') + '</span>'
         + escText(p.bijschrift || '') + '</figcaption></figure>').join('')
-      + '</div>\n'
-      + '    <div class="fl-rail__nav"><button type="button" class="fl-rail__prev" aria-label="Vorige foto">' + CASE_BACK_SVG + '</button>'
-      + '<span class="fl-rail__count" data-no-i18n>01 / ' + pad2(fotos.length) + '</span>'
-      + '<div class="fl-rail__bar" aria-hidden="true"><span></span></div>'
-      + '<button type="button" class="fl-rail__next" aria-label="Volgende foto">' + CASE_ARROW_SVG + '</button></div>\n'
-      + '  </section>\n';
+      + '</div>\n  </section>\n';
   }
-
-  html += '  <section class="fl-section fl-section--alt fl-corner-seam fl-case-result">\n    <div class="fl-container fl-case-result__grid">\n'
-    + '      <div class="fl-reveal"><span class="fl-kicker">Wat er nu staat</span>'
-    + '<h2 class="fl-h2">' + escText(res.regel || c.uitkomst || '') + '</h2>'
+  /* 8. resultaat: grote cijfers, de uitkomstregel, citaat, wat we anders zouden doen */
+  html += '  <section class="fl-container fl-case-results">\n    <aside class="fl-reveal"><span class="fl-case-label">Resultaat</span></aside>\n    <div class="fl-reveal">'
+    + (cijfers.length ? '<div class="fl-case-nums">' + cijfers.map((n) => '<div class="fl-case-num"><span class="fl-case-num__label">' + escText(n.label || '') + '</span>'
+      + '<span class="fl-case-num__value" data-no-i18n>' + escText(n.waarde) + (n.eenheid ? '<small>' + escText(n.eenheid) + '</small>' : '') + '</span></div>').join('') + '</div>' : '')
+    + (res.regel ? '<p class="fl-case-result__line">' + escText(res.regel) + '</p>' : '')
     + (quote ? '<figure class="fl-case-testimonial"><blockquote>' + escText(quote.tekst) + '</blockquote>'
       + '<figcaption>' + escText([quote.naam, quote.rol, quote.bedrijf].filter(Boolean).join(', ')) + '</figcaption></figure>' : '')
     + (res.andersDoen ? '<p class="fl-case-anders"><span>Wat we nu anders zouden doen</span>' + escText(res.andersDoen) + '</p>' : '')
-    + '</div>\n'
-    + (next ? '      <a class="fl-case-next fl-reveal" href="/cases/' + escAttr(next.slug) + '">' + casePhoto(next.hero, 'fl-case-next__media')
-      + '<span class="fl-case-next__text"><span class="fl-kicker">Volgende case</span>'
-      + '<span class="fl-case-next__title">' + escText(next.titel) + '</span>'
-      + (next.uitkomst ? '<span class="fl-case-next__outcome">' + escText(next.uitkomst) + '</span>' : '') + '</span></a>\n' : '')
-    + '    </div>\n  </section>\n';
+    + '</div>\n  </section>\n';
+  /* 9. andere cases (alleen als die er zijn) */
+  if (others && others.length) {
+    html += '  <section class="fl-section fl-section--alt fl-corner-seam fl-case-others"><div class="fl-container">'
+      + '<span class="fl-kicker">Andere cases</span><h2 class="fl-h2 fl-reveal">Meer producten, van vraag tot pallet.</h2>'
+      + caseCardsHtml(others, true) + '</div></section>\n';
+  }
   html += CLOSING_CTA('Vergelijkbare vraag?', '/contact', 'Stuur je brief', true);
   html += '</div>\n';
   return html;
@@ -1568,8 +1584,10 @@ for (const art of articles) {
  * Een voorbeeldcase is noindex en krijgt geen JSON-LD: hij bestaat om de
  * opbouw te laten zien, niet om gevonden te worden. */
 CASES.forEach((c, i) => {
-  let next = (c.volgende && CASES.find((x) => x.slug === c.volgende)) || CASES[(i + 1) % CASES.length];
-  if (!next || next.slug === c.slug) next = null;
+  /* de band "Andere cases": eerst de aangewezen volgende, dan de rest in volgorde */
+  const rest = CASES.filter((x) => x.slug !== c.slug);
+  const first = c.volgende ? rest.find((x) => x.slug === c.volgende) : null;
+  const others = (first ? [first].concat(rest.filter((x) => x !== first)) : rest.slice(i).concat(rest.slice(0, i))).slice(0, 3);
   const path = '/cases/' + c.slug;
   const url = SITE + path;
   const image = c.hero && c.hero.src ? (c.hero.src.startsWith('http') ? c.hero.src : SITE + '/' + c.hero.src.replace(/^\/+/, '')) : null;
@@ -1602,7 +1620,7 @@ CASES.forEach((c, i) => {
   out('cases/' + c.slug + '/index.html',
     '<!DOCTYPE html>\n<html lang="nl">\n<head>\n' + headFor(route, ld) + '</head>\n'
     + '<body data-route="' + escAttr(path) + '" data-static-page="page-case">\n'
-    + shellHead + unhide(caseBlock(c, next)) + shellTail + afterResult.html
+    + shellHead + unhide(caseBlock(c, others)) + shellTail + afterResult.html
     + '\n<script src="/assets/' + JS_NAME + '" defer></script>\n</body>\n</html>\n');
 });
 

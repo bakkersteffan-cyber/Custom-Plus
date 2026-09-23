@@ -12,22 +12,67 @@
   "uitkomst": "Van catalogusfles naar eigen vorm: 2.000 stuks in 21 weken.",
   "omschrijving": "Voorbeeldcase: hoe een webshopmerk van een catalogusfles naar een eigen roestvrijstalen drinkfles ging. De vraag, de uitvoering per fase, wat er in de samplerondes misging en wat er nu op de pallet staat.",
   "kaartFeiten": [
-    { "waarde": "2.000", "label": "oplage" },
-    { "waarde": "3", "label": "samplerondes" },
-    { "waarde": "21 wk", "label": "tot verzending" }
+    {
+      "waarde": "2.000",
+      "label": "oplage"
+    },
+    {
+      "waarde": "3",
+      "label": "samplerondes"
+    },
+    {
+      "waarde": "21 wk",
+      "label": "tot verzending"
+    }
   ],
-  "hero": { "src": "", "w": 1600, "h": 900, "alt": "", "bijschrift": "Eindproduct op een neutrale ondergrond, gefotografeerd na levering" },
+  "hero": {
+    "src": "",
+    "w": 1600,
+    "h": 900,
+    "alt": "",
+    "bijschrift": "Eindproduct op een neutrale ondergrond, gefotografeerd na levering"
+  },
   "feiten": [
-    { "label": "Klant", "waarde": "Voorbeeldcase, geen klant" },
-    { "label": "Categorie", "waarde": "Outdoor, drinkwaren" },
-    { "label": "Onze rol", "waarde": "Ontwerp, DFM, sourcing, sampling, QC, logistiek" },
-    { "label": "Fabriek", "waarde": "Zhejiang, gescreend uit 14 kandidaten" },
-    { "label": "Oplage", "waarde": "2.000 stuks, eerste order" },
-    { "label": "Samplerondes", "waarde": "3, golden sample na ronde 3" },
-    { "label": "Doorlooptijd", "waarde": "21 weken, brief tot levering" },
-    { "label": "Materialen", "waarde": "RVS 304 dubbelwandig, PP dop, siliconen afdichting" },
-    { "label": "Certificering", "waarde": "LFGB foodcontact, EU 1935/2004" },
-    { "label": "Logistiek", "waarde": "LCL zeevracht Ningbo naar Rotterdam, FOB" }
+    {
+      "label": "Klant",
+      "waarde": "Voorbeeldcase, geen klant"
+    },
+    {
+      "label": "Categorie",
+      "waarde": "Outdoor, drinkwaren"
+    },
+    {
+      "label": "Onze rol",
+      "waarde": "Ontwerp, DFM, sourcing, sampling, QC, logistiek"
+    },
+    {
+      "label": "Fabriek",
+      "waarde": "Zhejiang, gescreend uit 14 kandidaten"
+    },
+    {
+      "label": "Oplage",
+      "waarde": "2.000 stuks, eerste order"
+    },
+    {
+      "label": "Samplerondes",
+      "waarde": "3, golden sample na ronde 3"
+    },
+    {
+      "label": "Doorlooptijd",
+      "waarde": "21 weken, brief tot levering"
+    },
+    {
+      "label": "Materialen",
+      "waarde": "RVS 304 dubbelwandig, PP dop, siliconen afdichting"
+    },
+    {
+      "label": "Certificering",
+      "waarde": "LFGB foodcontact, EU 1935/2004"
+    },
+    {
+      "label": "Logistiek",
+      "waarde": "LCL zeevracht Ningbo naar Rotterdam, FOB"
+    }
   ],
   "vraag": {
     "citaat": "We verkopen nu een fles uit een catalogus die drie concurrenten ook hebben. We willen een eigen vorm en onze eigen kleur, zonder dat de prijs per stuk uit de hand loopt. Voor de zomer in huis, tweeduizend stuks.",
@@ -37,44 +82,93 @@
       "Doelprijs binnen 15% van de catalogusfles",
       "2.000 stuks in huis vóór week 24",
       "Foodcontact aantoonbaar: LFGB-rapport bij de eerste partij"
-    ]
+    ],
+    "kop": "Groeien zonder catalogusproduct"
   },
   "fasen": [
     {
-      "nummer": "01", "fase": "Concept & Industrieel Ontwerp", "duur": "2 weken",
+      "nummer": "01",
+      "fase": "Concept & Industrieel Ontwerp",
+      "duur": "2 weken",
       "titel": "Eén vorm die in één mal past",
       "tekst": "Drie schetsrichtingen, één gekozen: een licht taps lichaam met een vlakke schouder. De taps toelopende vorm is niet alleen esthetisch, hij laat de fles uit een enkelvoudige dieptrekmal komen zonder tweede bewerking.",
-      "opleverde": "CAD-model, 2D-tekening met toleranties, kleurstaal in twee gloedgraden"
+      "opleverde": "CAD-model, 2D-tekening met toleranties, kleurstaal in twee gloedgraden",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "Drie schetsrichtingen naast elkaar, de gekozen vorm gemarkeerd"
+      }
     },
     {
-      "nummer": "02", "fase": "Ontwerp voor Produceerbaarheid", "duur": "1 week",
+      "nummer": "02",
+      "fase": "Ontwerp voor Produceerbaarheid",
+      "duur": "1 week",
       "titel": "Standaard hals, eigen lichaam",
       "tekst": "De halsdraad is teruggebracht naar een gangbare 43 mm-standaard, zodat de klant later andere doppen kan bijbestellen zonder nieuwe tooling. Wanddikte op de schouder verhoogd van 0,4 naar 0,5 mm na een eerste DFM-ronde met de fabriek.",
-      "opleverde": "DFM-rapport met vier wijzigingen, alle vier overgenomen"
+      "opleverde": "DFM-rapport met vier wijzigingen, alle vier overgenomen",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "CAD met de vier DFM-wijzigingen: schouderdikte, radius, halsdraad, bodemstempel"
+      }
     },
     {
-      "nummer": "03", "fase": "Fabriekssourcing & Screening", "duur": "3 weken",
+      "nummer": "03",
+      "fase": "Fabriekssourcing & Screening",
+      "duur": "3 weken",
       "titel": "Veertien kandidaten, twee samples, één keuze",
       "tekst": "Veertien fabrieken in Zhejiang en Guangdong gescreend op dubbelwandig RVS met eigen coatinglijn. Vijf kregen een RFQ, twee maakten een proefsample, één werd gekozen op vacuümprestatie en coatingkwaliteit, niet op de laagste prijs.",
-      "opleverde": "Doorlichtingsrapport, NNN-overeenkomst getekend vóór de eerste tekening werd gedeeld"
+      "opleverde": "Doorlichtingsrapport, NNN-overeenkomst getekend vóór de eerste tekening werd gedeeld",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "De dieptreklijn bij de gekozen fabriek in Zhejiang tijdens de doorlichting"
+      }
     },
     {
-      "nummer": "04", "fase": "Tooling, Sampling & Iteratie", "duur": "6 weken",
+      "nummer": "04",
+      "fase": "Tooling, Sampling & Iteratie",
+      "duur": "6 weken",
       "titel": "Drie rondes tot het klopte",
       "tekst": "Ronde 1 liet de coating los op de onderrand, ronde 2 lekte de dop bij 45 graden, ronde 3 werd het golden sample. Elke ronde is opgemeten en gefotografeerd, zodat de fabriek precies wist wat er anders moest.",
-      "opleverde": "Golden sample, ondertekend door beide partijen, als meetlat voor de productie"
+      "opleverde": "Golden sample, ondertekend door beide partijen, als meetlat voor de productie",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "Sample 1, 2 en 3 naast elkaar, met de onderrand van ronde 1 omcirkeld"
+      }
     },
     {
-      "nummer": "05", "fase": "Massaproductie & Kwaliteitscontrole", "duur": "4 weken",
+      "nummer": "05",
+      "fase": "Massaproductie & Kwaliteitscontrole",
+      "duur": "4 weken",
       "titel": "Gekeurd op de lijn, niet in de doos",
       "tekst": "IQC op het plaatmateriaal, IPQC op coatingdikte tijdens de run, FQC volgens AQL 2,5 op de partij van 2.000. Twee grote afwijkingen op 200 gecontroleerde stuks: binnen de norm, beide stuks apart gezet.",
-      "opleverde": "Inspectierapport met foto's, vrijgave vóór de laatste betaling"
+      "opleverde": "Inspectierapport met foto's, vrijgave vóór de laatste betaling",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "De FQC-tafel: 200 stuks volgens AQL 2,5, twee afwijkingen apart gezet"
+      }
     },
     {
-      "nummer": "06", "fase": "Compliance & Logistiek", "duur": "5 weken",
+      "nummer": "06",
+      "fase": "Compliance & Logistiek",
+      "duur": "5 weken",
       "titel": "Op de pallet in week 21",
       "tekst": "LFGB-rapport op de eerste partij, doosetiket en palletplan volgens de wensen van het magazijn van de klant. LCL vanaf Ningbo, inklaring in Rotterdam, geleverd drie weken vóór de deadline.",
-      "opleverde": "Geleverd in week 21, met 88 kartons op 2 pallets"
+      "opleverde": "Geleverd in week 21, met 88 kartons op 2 pallets",
+      "foto": {
+        "src": "",
+        "w": 1600,
+        "h": 1200,
+        "bijschrift": "88 kartons op 2 pallets, gelabeld volgens het magazijnplan van de klant"
+      }
     }
   ],
   "problemen": [
@@ -101,21 +195,128 @@
     }
   ],
   "fotos": [
-    { "src": "", "w": 1600, "h": 1200, "type": "Context", "bijschrift": "De fles in gebruik, buiten, gefotografeerd na levering" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Briefing", "bijschrift": "De eerste schets van de klant naast de catalogusfles die vervangen moest worden" },
-    { "src": "", "w": 1600, "h": 1200, "type": "DFM", "bijschrift": "CAD met de vier DFM-wijzigingen gemarkeerd: schouderdikte, radius, halsdraad, bodemstempel" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Fabriek", "bijschrift": "De dieptreklijn bij de gekozen fabriek in Zhejiang tijdens de doorlichting" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Sample 1", "bijschrift": "Ronde 1: loslatende coating op de onderrand, omcirkeld voor de fabriek" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Sample 3", "bijschrift": "Ronde 3: het golden sample, ondertekend door beide partijen" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Productie", "bijschrift": "De coatinglijn tijdens de run, met de IPQC-meting van de laagdikte" },
-    { "src": "", "w": 1600, "h": 1200, "type": "QC", "bijschrift": "De FQC-tafel: 200 stuks volgens AQL 2,5, twee afwijkingen apart gezet" },
-    { "src": "", "w": 1600, "h": 1200, "type": "Verzending", "bijschrift": "88 kartons op 2 pallets, gelabeld volgens het magazijnplan van de klant" },
-    { "src": "", "w": 1600, "h": 1200, "type": "In de winkel", "bijschrift": "De eerste bestelling uitgepakt door een klant, drie weken vóór de deadline" }
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Context",
+      "bijschrift": "De fles in gebruik, buiten, gefotografeerd na levering"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Briefing",
+      "bijschrift": "De eerste schets van de klant naast de catalogusfles die vervangen moest worden"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "DFM",
+      "bijschrift": "CAD met de vier DFM-wijzigingen gemarkeerd: schouderdikte, radius, halsdraad, bodemstempel"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Fabriek",
+      "bijschrift": "De dieptreklijn bij de gekozen fabriek in Zhejiang tijdens de doorlichting"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Sample 1",
+      "bijschrift": "Ronde 1: loslatende coating op de onderrand, omcirkeld voor de fabriek"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Sample 3",
+      "bijschrift": "Ronde 3: het golden sample, ondertekend door beide partijen"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Productie",
+      "bijschrift": "De coatinglijn tijdens de run, met de IPQC-meting van de laagdikte"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "QC",
+      "bijschrift": "De FQC-tafel: 200 stuks volgens AQL 2,5, twee afwijkingen apart gezet"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "Verzending",
+      "bijschrift": "88 kartons op 2 pallets, gelabeld volgens het magazijnplan van de klant"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1200,
+      "type": "In de winkel",
+      "bijschrift": "De eerste bestelling uitgepakt door een klant, drie weken vóór de deadline"
+    }
   ],
   "resultaat": {
     "regel": "2.000 flessen geleverd in week 21, drie weken vóór de deadline, binnen de doelprijs.",
-    "citaat": { "tekst": "", "naam": "", "rol": "", "bedrijf": "" },
-    "andersDoen": "De onderrand-radius al in de DFM-ronde op 3 mm zetten. Dat had ronde 1 gescheeld."
+    "citaat": {
+      "tekst": "",
+      "naam": "",
+      "rol": "",
+      "bedrijf": ""
+    },
+    "andersDoen": "De onderrand-radius al in de DFM-ronde op 3 mm zetten. Dat had ronde 1 gescheeld.",
+    "cijfers": [
+      {
+        "waarde": "2.000",
+        "label": "Stuks geleverd, week 21"
+      },
+      {
+        "waarde": "21",
+        "eenheid": "wk",
+        "label": "Van brief tot pallet"
+      },
+      {
+        "waarde": "3",
+        "label": "Samplerondes tot golden sample"
+      }
+    ]
   },
-  "volgende": ""
+  "volgende": "",
+  "intro": "Een Nederlands outdoormerk verkocht een drinkfles uit een catalogus die ook bij drie concurrenten in het schap lag. Het merk wilde een eigen vorm en een eigen kleur, tegen een prijs die de webshop kon dragen, en vóór het zomerseizoen in huis. Dit is hoe dat traject liep, inclusief de drie samplerondes.",
+  "introKop": "Een eigen fles voor een merk dat uit de catalogus groeit",
+  "diensten": [
+    "Concept & ontwerp",
+    "DFM",
+    "Sourcing",
+    "Sampling",
+    "QC",
+    "Logistiek"
+  ],
+  "productLink": {
+    "label": "Bekijk het product",
+    "url": ""
+  },
+  "aanpak": {
+    "kop": "Eén mal, één fabriek, drie rondes",
+    "alineas": [
+      "We hielden de vorm bewust in één dieptrekmal en de halsdraad op een gangbare standaard, zodat de klant later doppen kan bijbestellen zonder nieuwe tooling. Veertien fabrieken zijn gescreend, twee maakten een proefsample, één werd gekozen op vacuümprestatie en coatingkwaliteit.",
+      "Elke samplerounde is opgemeten en gefotografeerd, zodat de fabriek precies wist wat er anders moest. De productie is op de lijn gekeurd, niet in de doos, en de laatste betaling ging pas na vrijgave van het inspectierapport."
+    ]
+  },
+  "beeldGroot": {
+    "src": "",
+    "w": 2048,
+    "h": 1152,
+    "bijschrift": "De eerste schoten uit de dieptrekmal naast het golden sample"
+  }
 }

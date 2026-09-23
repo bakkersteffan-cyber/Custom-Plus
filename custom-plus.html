@@ -2389,71 +2389,102 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
 /* ---------- cases ----------
    Home-sectie, index (/cases) en detailpagina (/cases/<slug>). De markup komt
    uit scripts/build-site.mjs (statisch, uit content/cases/*.json); de app doet
-   alleen de fotorail. Zolang er geen foto's zijn toont .fl-case-ph een rustig
-   vlak dat zegt welke foto er hoort. */
-.fl-cases__intro{ max-width:62ch; margin-bottom:clamp(28px,4vw,48px); }
-.fl-cases__rows{ border-top:1px solid var(--line); }
-a.fl-case-row{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:clamp(24px,4vw,64px); align-items:center;
-  padding-block:clamp(24px,3.4vw,44px); border-bottom:1px solid var(--line); color:inherit; }
-.fl-case-row__media{ aspect-ratio:16 / 10; border-radius:22px; overflow:hidden; background:var(--gray-f2); }
-.fl-case-row__media img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .8s var(--ease-fl); }
-a.fl-case-row:hover .fl-case-row__media img{ transform:scale(1.03); }
-.fl-case-row__text{ display:flex; flex-direction:column; gap:10px; min-width:0; }
-.fl-case-row__meta{ font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
-.fl-case-row__meta em, .fl-case-head .fl-kicker em{ font-style:normal; color:var(--green); }
-.fl-case-row__title{ font-weight:300; font-size:clamp(26px,1.6vw + 14px,36px); line-height:1.15; letter-spacing:-.01em; text-wrap:balance; }
-.fl-case-row__outcome{ font-size:clamp(15px,.3vw + 14px,17px); line-height:1.55; color:var(--gray-33); max-width:44ch; }
-.fl-case-row__facts{ display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:6px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
-.fl-case-row__fact{ display:inline-flex; align-items:baseline; gap:6px; }
-.fl-case-row__fact b{ font-weight:500; color:var(--black); letter-spacing:0; text-transform:none; font-size:15px; font-variant-numeric:tabular-nums; }
-.fl-case-row__link{ display:inline-flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; font-weight:500; letter-spacing:.44px; text-transform:uppercase; color:var(--black); }
-.fl-case-row__link svg{ width:14px; height:14px; transition:transform .35s var(--ease-fl); }
-a.fl-case-row:hover .fl-case-row__link svg{ transform:translateX(4px); }
-.fl-cases__more{ margin-top:clamp(24px,3vw,40px); }
+   alleen de fotorail. Opzet van de detailpagina naar de Stoov-case van
+   Flatline Agency: gecentreerde kop met intro en groot beeld, introductie in
+   twee kolommen, projectrijen tekst-naast-beeld, galerij met pijlen, grote
+   resultaatcijfers, andere cases. Zolang er geen foto's zijn toont
+   .fl-case-ph een rustig vlak dat zegt welke foto er hoort. Marges op h1/h3/p/figure
+   staan als .fl .fl-case-…: de basisreset .fl p{margin:0} (0,1,1) wint anders van één klasse. */
 
-/* detail: kop, hero, tweekoloms lichaam met feitenpaneel */
-.fl-case-head{ padding-bottom:clamp(24px,3vw,40px); }
-a.fl-case-back{ display:inline-flex; align-items:center; gap:8px; position:relative; font-size:12px; font-weight:500; letter-spacing:.44px; text-transform:uppercase;
-  color:var(--gray-9); margin-bottom:clamp(24px,3.4vw,44px); transition:color .3s ease; }
-a.fl-case-back::before{ content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%); }
-a.fl-case-back svg{ width:14px; height:14px; transition:transform .35s var(--ease-fl); }
-a.fl-case-back:hover{ color:var(--black); }
-a.fl-case-back:hover svg{ transform:translateX(-3px); }
-.fl-case-hero{ aspect-ratio:16 / 9; border-radius:22px; overflow:hidden; background:var(--gray-f2); }
-.fl-case-hero img{ display:block; width:100%; height:100%; object-fit:cover; }
-.fl-case-cap{ margin-top:12px; font-size:13px; color:var(--gray-9); }
-.fl-case-layout{ display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:clamp(40px,6vw,112px); align-items:start; padding-block:clamp(48px,6vw,88px); }
-.fl-case-main{ max-width:680px; display:flex; flex-direction:column; gap:clamp(48px,6vw,80px); }
-.fl-case-example{ font-size:13.5px; line-height:1.55; color:var(--gray-69); padding:14px 18px; border:1px solid var(--line); border-radius:14px; background:var(--gray-f9); }
+/* kaarten (home, index, andere cases): staand beeld, meta, titel, feiten, pil */
+.fl-cases__intro{ max-width:62ch; margin-bottom:clamp(28px,4vw,48px); }
+.fl-cases__more{ margin-top:clamp(28px,3.4vw,44px); }
+.fl-case-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2.4vw,32px); }
+a.fl-case-card{ display:flex; flex-direction:column; gap:10px; color:inherit; min-width:0; }
+.fl-case-card__media{ aspect-ratio:4 / 5; border-radius:22px; overflow:hidden; background:var(--gray-f2); }
+.fl-case-card__media img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .8s var(--ease-fl); }
+a.fl-case-card:hover .fl-case-card__media img{ transform:scale(1.03); }
+.fl-case-card__meta{ margin-top:8px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
+.fl-case-card__meta em, .fl-case-crumb em{ font-style:normal; color:var(--green); }
+.fl-case-card__title{ font-weight:300; font-size:clamp(24px,1.4vw + 12px,32px); line-height:1.15; letter-spacing:-.01em; text-wrap:balance; }
+.fl-case-card__outcome{ font-size:15px; line-height:1.55; color:var(--gray-33); }
+.fl-case-card__facts{ display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:2px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
+.fl-case-card__facts b{ font-weight:500; color:var(--black); letter-spacing:0; text-transform:none; font-size:15px; margin-right:5px; font-variant-numeric:tabular-nums; }
+.fl-case-card__cta{ margin-top:8px; display:inline-flex; align-items:center; justify-content:center; align-self:flex-start; min-height:44px; padding:0 22px; border-radius:50px;
+  border:1px solid var(--line); font-size:12px; font-weight:500; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-33); transition:border-color .3s ease, color .3s ease; }
+a.fl-case-card:hover .fl-case-card__cta{ border-color:var(--black); color:var(--black); }
+
+/* 1. gecentreerde kop */
+.fl-case-hero{ padding-top:clamp(48px,6vw,96px); text-align:center; }
+.fl-case-crumb{ display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); margin-bottom:clamp(20px,2.6vw,32px); }
+.fl-case-crumb a{ position:relative; color:var(--gray-9); transition:color .3s ease; }
+.fl-case-crumb a::before{ content:""; position:absolute; left:-6px; right:-6px; top:50%; height:44px; transform:translateY(-50%); }
+.fl-case-crumb a:hover{ color:var(--black); }
+.fl .fl-case-title{ font-weight:300; letter-spacing:-.01em; line-height:1.1; font-size:clamp(34px,3.4vw + 10px,58px); max-width:20ch; margin-inline:auto; text-wrap:balance; }
+.fl-case-hero .fl-lead{ margin:clamp(18px,2.4vw,28px) auto 0; max-width:64ch; }
+.fl .fl-case-example{ display:inline-block; margin-top:20px; font-size:13px; line-height:1.55; color:var(--gray-69); padding:10px 16px; border:1px solid var(--line); border-radius:14px; background:var(--gray-f9); max-width:60ch; }
+
+/* 2. groot beeld */
+.fl-case-media{ padding-top:clamp(32px,4vw,56px); }
+.fl-case-media__frame{ aspect-ratio:21 / 9; border-radius:22px; overflow:hidden; background:var(--gray-f2); }
+.fl-case-media--big{ padding-top:clamp(56px,7vw,112px); }
+.fl-case-media--big .fl-case-media__frame{ aspect-ratio:16 / 9; }
+.fl-case-media__frame img, .fl-case-frame img, .fl-case-slide__media img{ display:block; width:100%; height:100%; object-fit:cover; }
+.fl .fl-case-cap{ margin-top:12px; font-size:13px; color:var(--gray-9); }
+
+/* het label met streep erboven, zoals bij de referentie */
+.fl-case-label{ display:block; border-top:1px solid var(--black); padding-top:14px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--black); max-width:300px; }
 .fl-case-h2{ font-weight:300; font-size:clamp(26px,1.8vw + 12px,38px); line-height:1.15; letter-spacing:-.01em; text-wrap:balance; }
-.fl-case-h3{ font-weight:500; font-size:15px; margin-top:28px; }
-.fl-case-quote{ margin-top:clamp(18px,2vw,26px); font-weight:300; font-size:clamp(20px,1.1vw + 12px,27px); line-height:1.4; letter-spacing:-.005em; color:var(--gray-33);
-  border-left:1px solid var(--black); padding-left:clamp(18px,2vw,28px); }
+.fl .fl-case-h3{ margin-top:clamp(32px,4vw,56px); font-weight:400; font-size:clamp(24px,1.6vw + 12px,36px); line-height:1.15; letter-spacing:-.01em; text-wrap:balance; }
+.fl-case-h3 span{ color:var(--gray-9); }
+
+/* 3. introductie: links label, kop, tags, link en feiten (plakt mee); rechts tagline, vraag, aanpak */
+.fl-case-intro2{ display:grid; grid-template-columns:minmax(0,4fr) minmax(0,8fr); gap:clamp(32px,6vw,112px); padding-top:clamp(56px,7vw,112px); align-items:start; }
+.fl-case-side{ position:sticky; top:calc(var(--nav-h,72px) + 24px); }
+.fl-case-side .fl-case-h2{ margin-top:22px; }
+.fl-case-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+.fl-case-tag{ display:inline-flex; align-items:center; min-height:32px; padding:0 12px; border-radius:8px; background:var(--gray-f9); font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-69); }
+a.fl-case-link{ display:inline-flex; align-items:center; gap:8px; position:relative; margin-top:22px; font-size:15px; font-weight:500; color:var(--black); }
+a.fl-case-link::before{ content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%); }
+a.fl-case-link svg{ width:16px; height:16px; transition:transform .35s var(--ease-fl); }
+a.fl-case-link:hover svg{ transform:translateX(4px); }
+.fl-case-facts{ margin:28px 0 0; border-top:1px solid var(--line); }
+.fl-case-facts__row{ display:grid; grid-template-columns:104px minmax(0,1fr); gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+.fl-case-facts dt{ font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); padding-top:2px; }
+.fl-case-facts dd{ margin:0; font-size:14px; line-height:1.5; color:var(--gray-33); }
+.fl .fl-case-facts__note{ margin-top:10px; font-size:12.5px; color:var(--gray-9); line-height:1.5; }
+.fl-case-tagline{ font-size:clamp(19px,1vw + 12px,24px); font-weight:500; line-height:1.35; letter-spacing:-.005em; color:var(--black); max-width:30ch; }
+.fl-case-cols{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,40px); margin-top:clamp(18px,2vw,26px); }
+.fl-case-cols p{ font-size:15px; line-height:1.65; color:var(--gray-69); }
+.fl-case-quote{ font-weight:300; font-size:clamp(18px,.8vw + 12px,22px); line-height:1.45; color:var(--gray-33); border-left:1px solid var(--black); padding-left:18px; }
 .fl-case-quote::before{ content:"\201C"; } .fl-case-quote::after{ content:"\201D"; }
-.fl-case-list{ list-style:none; margin-top:12px; padding:0; }
-.fl-case-list li{ position:relative; padding:12px 0 12px 26px; border-top:1px solid var(--line); font-size:14.5px; line-height:1.55; color:var(--gray-33); }
+.fl-case-list{ list-style:none; margin:0; padding:0; }
+.fl-case-list li{ position:relative; padding:10px 0 10px 26px; border-top:1px solid var(--line); font-size:14.5px; line-height:1.55; color:var(--gray-33); }
 .fl-case-list li:last-child{ border-bottom:1px solid var(--line); }
 .fl-case-list li::before{ content:"\2014"; position:absolute; left:0; color:var(--gray-9); }
 
-/* fases: nummer en duur links, beslissing en tekst rechts */
-.fl-case-phases{ list-style:none; padding:0; margin-top:clamp(20px,2.6vw,32px); border-top:1px solid var(--line); }
-.fl-case-phase{ display:grid; grid-template-columns:118px minmax(0,1fr); gap:clamp(16px,2.6vw,36px); padding-block:clamp(20px,2.6vw,30px); border-bottom:1px solid var(--line); }
-.fl-case-phase__side{ display:flex; flex-direction:column; gap:4px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
-.fl-case-phase__num{ color:var(--black); font-variant-numeric:tabular-nums; }
-.fl-case-phase__fase{ display:block; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); margin-bottom:6px; }
-.fl-case-phase__body h3{ font-weight:500; font-size:17px; line-height:1.3; }
-.fl-case-phase__body p{ margin-top:8px; font-size:14.5px; line-height:1.6; color:var(--gray-33); }
-.fl-case-phase__body p.fl-case-phase__out{ font-size:13.5px; color:var(--gray-69); }
-.fl-case-phase__out span{ color:var(--black); font-weight:500; margin-right:6px; }
-.fl-case-phase__out span::after{ content:":"; }
+/* 5. het project: rijen tekst naast beeld, om en om */
+.fl-case-project{ padding-top:clamp(56px,7vw,112px); }
+.fl-case-rows{ margin-top:clamp(28px,3.4vw,48px); border-top:1px solid var(--line); }
+.fl-case-prow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,5vw,96px); align-items:center; padding-block:clamp(28px,3.4vw,48px); border-bottom:1px solid var(--line); }
+.fl-case-prow:nth-child(even) .fl-case-prow__text{ order:2; }
+.fl-case-prow__meta{ display:block; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); margin-bottom:14px; }
+.fl-case-prow__text h3{ font-weight:400; font-size:clamp(22px,1.4vw + 12px,32px); line-height:1.2; letter-spacing:-.01em; text-wrap:balance; }
+.fl-case-prow__text p{ margin-top:14px; font-size:15px; line-height:1.65; color:var(--gray-69); max-width:52ch; }
+.fl-case-prow__text p.fl-case-prow__out{ font-size:13.5px; color:var(--gray-9); }
+.fl-case-prow__out span{ color:var(--black); font-weight:500; margin-right:6px; }
+.fl-case-prow__out span::after{ content:":"; }
+.fl-case-frame{ aspect-ratio:4 / 3; border-radius:18px; overflow:hidden; background:var(--gray-f2); }
 
-/* wat misging: per probleem een kaart met twee kolommen */
-.fl-case-issues{ display:flex; flex-direction:column; gap:14px; margin-top:clamp(20px,2.6vw,32px); }
+/* 6. wat misging: twee kaarten naast elkaar */
+.fl-case-issues-sec{ padding-top:clamp(56px,7vw,112px); }
+.fl-case-issues-sec .fl-case-h2{ margin-top:22px; max-width:24ch; }
+.fl-case-issues{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:clamp(24px,3vw,40px); }
 .fl-case-issue{ border:1px solid var(--line); border-radius:22px; padding:clamp(20px,2.4vw,28px); background:var(--white); }
 .fl-case-issue__head{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
 .fl-case-issue__tag{ display:inline-flex; align-items:center; min-height:30px; padding:0 12px; border-radius:50px; border:1px solid var(--line); font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-33); }
 .fl-case-issue__effect{ font-size:12.5px; color:var(--gray-9); }
-.fl-case-issue__cols{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2.6vw,36px); }
+.fl-case-issue__cols{ display:flex; flex-direction:column; gap:18px; }
 .fl-case-issue__cols .fl-kicker{ margin-bottom:8px; }
 .fl-case-issue__fix .fl-kicker{ color:var(--green); }
 .fl-case-issue__cols p{ font-size:14.5px; line-height:1.6; color:var(--gray-33); }
@@ -2461,27 +2492,18 @@ a.fl-case-back:hover svg{ transform:translateX(-3px); }
 .fl-case-issue__why span{ color:var(--gray-33); font-weight:500; margin-right:6px; }
 .fl-case-issue__why span::after{ content:":"; }
 
-/* feitenpaneel: plakt mee op desktop, staat op telefoon direct onder de foto */
-.fl-case-facts{ position:sticky; top:calc(var(--nav-h,72px) + 24px); border:1px solid var(--line); border-radius:22px; padding:clamp(18px,2vw,26px) clamp(18px,2vw,26px) 8px; background:var(--white); }
-.fl-case-facts .fl-kicker{ margin-bottom:6px; }
-.fl-case-facts dl{ margin:0; }
-.fl-case-facts__row{ display:grid; grid-template-columns:96px minmax(0,1fr); gap:12px; padding:11px 0; border-top:1px solid var(--line); }
-.fl-case-facts dt{ font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); padding-top:2px; }
-.fl-case-facts dd{ margin:0; font-size:14px; line-height:1.5; color:var(--gray-33); }
-.fl-case-facts__note{ padding:10px 0 6px; font-size:12.5px; color:var(--gray-9); line-height:1.5; border-top:1px solid var(--line); }
-
-/* fotorail: dezelfde mechaniek als de kaartenrail, met bijschriften */
-.fl-case-railsec{ padding-bottom:clamp(64px,9vw,128px); }
-.fl-case-railsec__head{ max-width:62ch; margin-bottom:clamp(20px,2.6vw,32px); }
+/* 7. galerij: kop links, pijlen rechts, rail eronder */
+.fl-case-railsec{ padding-top:clamp(56px,7vw,112px); }
+.fl-case-railsec__head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px 40px; flex-wrap:wrap; margin-bottom:clamp(20px,2.6vw,32px); }
+.fl-case-railsec__head .fl-case-h2{ margin-top:22px; }
+.fl-case-railsec__head .fl-rail__nav{ margin:0; min-width:min(100%,320px); }
 .fl-case-rail{ display:flex; gap:clamp(14px,1.6vw,22px); overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 2px 18px; scrollbar-width:none; outline:none; }
 .fl-case-rail::-webkit-scrollbar{ display:none; }
 .fl-case-rail:focus-visible{ outline:2px solid var(--black); outline-offset:6px; border-radius:8px; }
 .fl-case-slide{ flex:0 0 clamp(270px,38vw,520px); scroll-snap-align:start; margin:0; }
 .fl-case-slide__media{ aspect-ratio:4 / 3; border-radius:18px; overflow:hidden; background:var(--gray-f2); }
-.fl-case-slide__media img{ display:block; width:100%; height:100%; object-fit:cover; }
 .fl-case-slide figcaption{ margin-top:12px; font-size:13.5px; line-height:1.5; color:var(--gray-69); }
 .fl-case-slide__type{ display:block; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--black); margin-bottom:3px; }
-.fl-rail__nav{ margin-top:6px; }
 .fl-rail__count{ font-size:12px; }
 .fl-rail__nav button:disabled{ opacity:.35; cursor:default; }
 .fl-rail__nav button:disabled:hover{ border-color:var(--line); background:transparent; }
@@ -2493,35 +2515,43 @@ a.fl-case-back:hover svg{ transform:translateX(-3px); }
 .fl-case-ph svg{ width:26px; height:26px; }
 :root[data-mode="blueprint"] .fl-case-ph{ border-color:var(--line-dark); }
 
-/* wat er nu staat + volgende case, op de grijze band vóór de zwarte oproep */
-.fl-case-result{ padding-top:calc(clamp(64px,9vw,128px) + var(--seam)); }
-.fl-case-result__grid{ display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr); gap:clamp(32px,5vw,96px); align-items:start; }
-.fl-case-testimonial{ margin:clamp(24px,3vw,40px) 0 0; }
-.fl-case-testimonial blockquote{ font-weight:300; font-size:clamp(19px,1vw + 12px,24px); line-height:1.45; color:var(--gray-33); }
+/* 8. resultaat: label links, grote cijfers rechts */
+.fl-case-results{ display:grid; grid-template-columns:minmax(0,4fr) minmax(0,8fr); gap:clamp(32px,6vw,112px); padding-block:clamp(56px,7vw,112px) clamp(64px,9vw,128px); align-items:start; }
+.fl-case-nums{ display:flex; flex-wrap:wrap; gap:clamp(24px,4vw,72px); }
+.fl-case-num{ display:flex; flex-direction:column; gap:12px; }
+.fl-case-num__label{ font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
+.fl-case-num__value{ font-weight:300; font-size:clamp(48px,5vw + 16px,96px); line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.fl-case-num__value small{ font-size:.4em; margin-left:6px; color:var(--gray-9); }
+.fl .fl-case-result__line{ margin-top:clamp(28px,3.4vw,48px); font-weight:300; font-size:clamp(20px,1.2vw + 12px,28px); line-height:1.35; letter-spacing:-.005em; max-width:30ch; text-wrap:balance; }
+.fl .fl-case-testimonial{ margin:clamp(24px,3vw,40px) 0 0; }
+.fl-case-testimonial blockquote{ font-weight:300; font-size:clamp(19px,1vw + 12px,24px); line-height:1.45; color:var(--gray-33); max-width:44ch; }
 .fl-case-testimonial figcaption{ margin-top:12px; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); }
-.fl-case-anders{ margin-top:clamp(24px,3vw,40px); padding-top:18px; border-top:1px solid var(--line); font-size:14.5px; line-height:1.6; color:var(--gray-33); max-width:52ch; }
+.fl .fl-case-anders{ margin-top:clamp(24px,3vw,40px); padding-top:18px; border-top:1px solid var(--line); font-size:14.5px; line-height:1.6; color:var(--gray-33); max-width:52ch; }
 .fl-case-anders span{ display:block; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); margin-bottom:6px; }
-a.fl-case-next{ display:block; color:inherit; border:1px solid var(--line); border-radius:22px; overflow:hidden; background:var(--white); }
-.fl-case-next__media{ aspect-ratio:16 / 10; background:var(--gray-f2); }
-.fl-case-next__media img{ display:block; width:100%; height:100%; object-fit:cover; }
-.fl-case-next__text{ display:flex; flex-direction:column; gap:6px; padding:clamp(18px,2vw,26px); }
-.fl-case-next__text .fl-kicker{ margin-bottom:4px; }
-.fl-case-next__title{ font-weight:300; font-size:clamp(22px,1.2vw + 12px,30px); line-height:1.15; }
-.fl-case-next__outcome{ font-size:14px; color:var(--gray-69); line-height:1.5; }
 
+/* 9. andere cases: grijze band met kaarten, vóór de zwarte oproep */
+.fl-case-others{ padding-top:calc(clamp(64px,9vw,128px) + var(--seam)); }
+.fl-case-others .fl-h2{ max-width:20ch; margin-bottom:clamp(28px,3.4vw,48px); }
+
+@media (max-width:1100px){
+  .fl-case-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
 @media (max-width:900px){
-  a.fl-case-row{ grid-template-columns:1fr; gap:18px; align-items:start; }
-  .fl-case-layout{ grid-template-columns:1fr; gap:clamp(32px,6vw,48px); }
-  .fl-case-facts{ order:-1; position:static; }
-  .fl-case-result__grid{ grid-template-columns:1fr; }
+  .fl-case-intro2, .fl-case-results{ grid-template-columns:1fr; gap:clamp(28px,5vw,40px); }
+  .fl-case-side{ position:static; }
+  .fl-case-prow{ grid-template-columns:1fr; gap:18px; align-items:start; }
+  .fl-case-prow:nth-child(even) .fl-case-prow__text{ order:0; }
+  .fl-case-prow__media{ order:-1; }
+  .fl-case-issues{ grid-template-columns:1fr; }
 }
 @media (max-width:640px){
-  .fl-case-hero{ aspect-ratio:4 / 3; }
-  .fl-case-phase{ grid-template-columns:1fr; gap:8px; }
-  .fl-case-phase__side{ flex-direction:row; gap:14px; }
-  .fl-case-issue__cols{ grid-template-columns:1fr; gap:18px; }
+  .fl-case-grid{ grid-template-columns:1fr; }
+  .fl-case-media__frame, .fl-case-media--big .fl-case-media__frame{ aspect-ratio:4 / 3; }
+  .fl-case-cols{ grid-template-columns:1fr; }
   .fl-case-slide{ flex-basis:min(78vw,420px); }
   .fl-case-facts__row{ grid-template-columns:104px minmax(0,1fr); }
+  .fl-case-nums{ gap:22px 32px; }
+  .fl-case-railsec__head .fl-rail__nav{ width:100%; }
 }
 
 /* ---------- telefoon: sitebrede afwerking ----------
