@@ -670,9 +670,15 @@ function casePhoto(photo, cls) {
   if (photo.src) {
     const webp = photo.src.replace(/\.(jpe?g|png)$/i, '.webp');
     const hasWebp = webp !== photo.src && existsSync(join(ROOT, webp.replace(/^\/+/, '')));
-    const img = '<img src="' + escAttr(photo.src) + '" alt="' + escAttr(photo.alt || cap) + '" loading="lazy" decoding="async"'
-      + (photo.w && photo.h ? ' width="' + Number(photo.w) + '" height="' + Number(photo.h) + '"' : '') + '>';
-    return '<div class="' + cls + '">' + (hasWebp
+    /* eager: de herofoto is de LCP en mag niet op de lazy-loader wachten;
+       positie: object-position als het onderwerp niet in het midden staat */
+    const img = '<img src="' + escAttr(photo.src) + '" alt="' + escAttr(photo.alt || cap) + '"'
+      + (photo.eager ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"'
+      + (photo.w && photo.h ? ' width="' + Number(photo.w) + '" height="' + Number(photo.h) + '"' : '')
+      + (photo.positie ? ' style="object-position:' + escAttr(photo.positie) + '"' : '') + '>';
+    /* ratio: eigen beeldverhouding voor het kader (bv. "16 / 9"), anders de standaard uit de CSS */
+    const frameStyle = photo.ratio ? ' style="--ratio:' + escAttr(photo.ratio) + '"' : '';
+    return '<div class="' + cls + '"' + frameStyle + '>' + (hasWebp
       ? '<picture><source type="image/webp" srcset="' + escAttr(webp) + '">' + img + '</picture>' : img) + '</div>';
   }
   return '<div class="' + cls + ' fl-case-ph" role="img" aria-label="Foto volgt: ' + escAttr(cap) + '">'

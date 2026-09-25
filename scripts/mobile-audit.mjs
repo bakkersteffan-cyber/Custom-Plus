@@ -210,6 +210,8 @@ async function main() {
         const data = JSON.parse(ev.result.value);
         page.results[width] = data;
         if (SHOTS && width === SHOT_WIDTH) {
+          /* lazy afbeeldingen eerst laden, anders staan er lege vlakken op de schermafbeelding */
+          await cdp.send('Runtime.evaluate', { expression: "(async()=>{var imgs=[].slice.call(document.querySelectorAll('img[loading=lazy]'));imgs.forEach(function(i){i.loading='eager'});await Promise.race([Promise.all(imgs.map(function(i){return i.decode().catch(function(){})})),new Promise(function(r){setTimeout(r,5000)})]);return imgs.length})()", awaitPromise: true }, 20000);
           /* in stukken van anderhalf scherm: één lange afbeelding is niet meer te lezen */
           const CH = 1300; const total = Math.min(data.docH, 16000); const base = (route === '/' ? 'home' : route.replace(/^\/|\/$/g, '').replace(/\//g, '-'));
           page.shots = [];
