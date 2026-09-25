@@ -14,23 +14,69 @@
   "intro": "Mon Frère Amsterdam is een e-commerce- en kledingmerk uit Amsterdam. Ze wilden een custom rugtas in ostrich-leer, naar eigen schets, en kregen overal nee. CUSTOM+ zette de schetsen uit bij vijfentwintig fabrieken. Vier konden het. Bij de beste is het sample gemaakt.",
   "introKop": "Een rugtas in ostrich-leer, naar eigen schets",
   "omschrijving": "Case: hoe CUSTOM+ voor Mon Frère Amsterdam een custom rugtas in ostrich-leer van schets naar sample bracht. 25 fabrieken benaderd, 4 konden het, sample gemaakt bij de beste.",
-  "diensten": ["Sourcing", "Productontwikkeling", "Sampling"],
-  "productLink": { "label": "Bekijk het merk", "url": "https://monfrere-amsterdam.com/" },
-  "kaartFeiten": [
-    { "waarde": "25", "label": "fabrieken benaderd" },
-    { "waarde": "4", "label": "konden het" },
-    { "waarde": "1", "label": "sample bij de beste" }
+  "diensten": [
+    "Sourcing",
+    "Productontwikkeling",
+    "Sampling"
   ],
-  "hero": { "src": "", "alt": "", "bijschrift": "" },
-  "kaart": { "src": "", "w": 1080, "h": 1350, "alt": "Model met de Monfrère-cap, foto van het merk", "bijschrift": "Merkfoto van Mon Frère Amsterdam" },
+  "productLink": {
+    "label": "Bekijk het merk",
+    "url": "https://monfrere-amsterdam.com/"
+  },
+  "kaartFeiten": [
+    {
+      "waarde": "25",
+      "label": "fabrieken benaderd"
+    },
+    {
+      "waarde": "4",
+      "label": "konden het"
+    },
+    {
+      "waarde": "1",
+      "label": "sample bij de beste"
+    }
+  ],
+  "hero": {
+    "src": "",
+    "alt": "",
+    "bijschrift": ""
+  },
+  "kaart": {
+    "src": "/images/cases/mon-frere-amsterdam/kaart.jpg",
+    "w": 1080,
+    "h": 1350,
+    "alt": "Model met de Monfrère-cap, merkfoto van Mon Frère Amsterdam"
+  },
   "feiten": [
-    { "label": "Klant", "waarde": "Mon Frère Amsterdam" },
-    { "label": "Categorie", "waarde": "Fashion & accessoires" },
-    { "label": "Onze rol", "waarde": "Sourcing, productontwikkeling, sampling" },
-    { "label": "Fabrieken", "waarde": "25 benaderd, 4 geschikt, 1 gekozen" },
-    { "label": "Materiaal", "waarde": "Ostrich-leer, zwart, met witte schouderbanden" },
-    { "label": "Hardware", "waarde": "Zilverkleurige ritsen en gespen, leren ritstrekkers" },
-    { "label": "Status", "waarde": "Sample gemaakt bij de gekozen fabriek" }
+    {
+      "label": "Klant",
+      "waarde": "Mon Frère Amsterdam"
+    },
+    {
+      "label": "Categorie",
+      "waarde": "Fashion & accessoires"
+    },
+    {
+      "label": "Onze rol",
+      "waarde": "Sourcing, productontwikkeling, sampling"
+    },
+    {
+      "label": "Fabrieken",
+      "waarde": "25 benaderd, 4 geschikt, 1 gekozen"
+    },
+    {
+      "label": "Materiaal",
+      "waarde": "Ostrich-leer, zwart, met witte schouderbanden"
+    },
+    {
+      "label": "Hardware",
+      "waarde": "Zilverkleurige ritsen en gespen, leren ritstrekkers"
+    },
+    {
+      "label": "Status",
+      "waarde": "Sample gemaakt bij de gekozen fabriek"
+    }
   ],
   "vraag": {
     "kop": "Een tas die niemand kon maken",
@@ -64,30 +110,128 @@
     }
   ],
   "fotos": [
-    { "src": "", "w": 1600, "h": 1300, "type": "Schuin", "bijschrift": "De rugtas in zwart ostrich-leer, schuin van voren: zilverkleurige rits en het voorvak" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Achterkant", "bijschrift": "De achterkant: witte ostrich-schouderbanden en de Monfrère-hangtag" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Zijkant", "bijschrift": "Van opzij: de doorlopende rits en het zijvak" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Onderkant", "bijschrift": "De bodem, volledig in ostrich-leer" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Voorkant", "bijschrift": "Recht van voren: de vorm en het voorvak" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het open zijvak" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De gesp van de schouderband, zilverkleurig" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De dubbele ritstrekkers met leren lussen" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De hangtag met MONFRÈRE Amsterdam in zilverfolie" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het zijvak, met een fles erin, op maat" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het voorvak met de rits open" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De witte ostrich-schouderbanden van dichtbij" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De hangtag los, met gespsluiting" },
-    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het handvat en de bovenkant van de schouderbanden" }
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Schuin",
+      "bijschrift": "De rugtas in zwart ostrich-leer, schuin van voren: zilverkleurige rits en het voorvak"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Achterkant",
+      "bijschrift": "De achterkant: witte ostrich-schouderbanden en de Monfrère-hangtag"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Zijkant",
+      "bijschrift": "Van opzij: de doorlopende rits en het zijvak"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Onderkant",
+      "bijschrift": "De bodem, volledig in ostrich-leer"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Voorkant",
+      "bijschrift": "Recht van voren: de vorm en het voorvak"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "Het open zijvak"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "De gesp van de schouderband, zilverkleurig"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "De dubbele ritstrekkers met leren lussen"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "De hangtag met MONFRÈRE Amsterdam in zilverfolie"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "Het zijvak, met een fles erin, op maat"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "Het voorvak met de rits open"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "De witte ostrich-schouderbanden van dichtbij"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "De hangtag los, met gespsluiting"
+    },
+    {
+      "src": "",
+      "w": 1600,
+      "h": 1300,
+      "type": "Detail",
+      "bijschrift": "Het handvat en de bovenkant van de schouderbanden"
+    }
   ],
   "fotosTitel": "Het sample, van alle kanten.",
   "resultaat": {
     "regel": "Van ‘dit kan nergens’ naar een sample in ostrich-leer, gemaakt bij de fabriek die het het beste kon.",
     "cijfers": [
-      { "waarde": "25", "label": "Fabrieken benaderd met de schetsen" },
-      { "waarde": "4", "label": "Die het konden aantonen" },
-      { "waarde": "1", "label": "Sample, bij de beste van de vier" }
+      {
+        "waarde": "25",
+        "label": "Fabrieken benaderd met de schetsen"
+      },
+      {
+        "waarde": "4",
+        "label": "Die het konden aantonen"
+      },
+      {
+        "waarde": "1",
+        "label": "Sample, bij de beste van de vier"
+      }
     ],
-    "citaat": { "tekst": "", "naam": "", "rol": "", "bedrijf": "" },
+    "citaat": {
+      "tekst": "",
+      "naam": "",
+      "rol": "",
+      "bedrijf": ""
+    },
     "andersDoen": ""
   },
   "volgende": "beelen-keychains"
