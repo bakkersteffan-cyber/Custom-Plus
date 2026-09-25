@@ -752,8 +752,11 @@ function caseBlock(c, others) {
     + (c.intro ? '    <p class="fl-lead fl-reveal">' + escText(c.intro) + '</p>\n' : '')
     + (c.voorbeeld ? '    <p class="fl-case-example fl-reveal">Voorbeeldcase: de opbouw is echt, de klant en de cijfers zijn illustratief. Echte cases verschijnen hier in precies deze vorm.</p>\n' : '')
     + '  </section>\n';
-  /* 2. groot beeld */
-  html += '  <section class="fl-container fl-case-media fl-reveal">' + casePhoto(c.hero, 'fl-case-media__frame') + caseCap(c.hero) + '</section>\n';
+  /* 2. groot beeld: alleen als er een foto is; zonder foto gaat de pagina
+     direct van de intro naar de tekst */
+  if (c.hero && c.hero.src) {
+    html += '  <section class="fl-container fl-case-media fl-reveal">' + casePhoto(c.hero, 'fl-case-media__frame') + caseCap(c.hero) + '</section>\n';
+  }
   /* 3. introductie in twee kolommen */
   html += '  <section class="fl-container fl-case-intro2">\n'
     + '    <aside class="fl-case-side fl-reveal"><span class="fl-case-label">Introductie</span>'
@@ -776,7 +779,7 @@ function caseBlock(c, others) {
         + '<div class="fl-case-cols">' + aanpak.alineas.map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>' : '')
     + '</div>\n  </section>\n';
   /* 4. tweede groot beeld */
-  if (c.beeldGroot) {
+  if (c.beeldGroot && c.beeldGroot.src) {
     html += '  <section class="fl-container fl-case-media fl-case-media--big fl-reveal">' + casePhoto(c.beeldGroot, 'fl-case-media__frame') + caseCap(c.beeldGroot) + '</section>\n';
   }
   /* 5. het project: fases als rijen tekst naast beeld */
@@ -791,20 +794,7 @@ function caseBlock(c, others) {
         + '</div><div class="fl-case-prow__media">' + casePhoto(f.foto, 'fl-case-frame') + caseCap(f.foto) + '</div></div>').join('')
       + '</div>\n  </section>\n';
   }
-  /* 6. wat misging */
-  if (problemen.length) {
-    html += '  <section class="fl-container fl-case-issues-sec"><span class="fl-case-label">Wat misging</span>'
-      + '<h2 class="fl-case-h2 fl-reveal">' + escText(c.problemenTitel || (problemen.length + ' keer bijgestuurd, en waarom.')) + '</h2>'
-      + '<div class="fl-case-issues fl-stagger">' + problemen.map((p) => '<article class="fl-case-issue">'
-        + '<div class="fl-case-issue__head">' + (p.tag ? '<span class="fl-case-issue__tag">' + escText(p.tag) + '</span>' : '')
-        + (p.effect ? '<span class="fl-case-issue__effect">' + escText(p.effect) + '</span>' : '') + '</div>'
-        + '<div class="fl-case-issue__cols">'
-        + '<div><span class="fl-kicker">Wat misging</span><p>' + escText(p.misging || '') + '</p>'
-        + (p.oorzaak ? '<p class="fl-case-issue__why"><span>Oorzaak</span>' + escText(p.oorzaak) + '</p>' : '') + '</div>'
-        + '<div class="fl-case-issue__fix"><span class="fl-kicker">Wat we deden</span><p>' + escText(p.deden || '') + '</p></div>'
-        + '</div></article>').join('') + '</div></section>\n';
-  }
-  /* 7. galerij */
+  /* 7. galerij: direct onder de tekst (op verzoek), daarna pas wat misging */
   if (fotos.length) {
     html += '  <section class="fl-container fl-case-railsec fl-reveal">\n'
       + '    <div class="fl-case-railsec__head"><div><span class="fl-case-label">Foto’s · ' + fotos.length + '</span>'
@@ -818,6 +808,19 @@ function caseBlock(c, others) {
         + '<figcaption><span class="fl-case-slide__type"><span data-no-i18n>' + pad2(i + 1) + '</span>' + (p.type ? ' · ' + escText(p.type) : '') + '</span>'
         + escText(p.bijschrift || '') + '</figcaption></figure>').join('')
       + '</div>\n  </section>\n';
+  }
+  /* 6. wat misging */
+  if (problemen.length) {
+    html += '  <section class="fl-container fl-case-issues-sec"><span class="fl-case-label">Wat misging</span>'
+      + '<h2 class="fl-case-h2 fl-reveal">' + escText(c.problemenTitel || (problemen.length + ' keer bijgestuurd, en waarom.')) + '</h2>'
+      + '<div class="fl-case-issues fl-stagger">' + problemen.map((p) => '<article class="fl-case-issue">'
+        + '<div class="fl-case-issue__head">' + (p.tag ? '<span class="fl-case-issue__tag">' + escText(p.tag) + '</span>' : '')
+        + (p.effect ? '<span class="fl-case-issue__effect">' + escText(p.effect) + '</span>' : '') + '</div>'
+        + '<div class="fl-case-issue__cols">'
+        + '<div><span class="fl-kicker">Wat misging</span><p>' + escText(p.misging || '') + '</p>'
+        + (p.oorzaak ? '<p class="fl-case-issue__why"><span>Oorzaak</span>' + escText(p.oorzaak) + '</p>' : '') + '</div>'
+        + '<div class="fl-case-issue__fix"><span class="fl-kicker">Wat we deden</span><p>' + escText(p.deden || '') + '</p></div>'
+        + '</div></article>').join('') + '</div></section>\n';
   }
   /* 8. resultaat: grote cijfers, de uitkomstregel, citaat, wat we anders zouden doen */
   html += '  <section class="fl-container fl-case-results">\n    <aside class="fl-reveal"><span class="fl-case-label">Resultaat</span></aside>\n    <div class="fl-reveal">'
@@ -1596,7 +1599,8 @@ CASES.forEach((c, i) => {
   const others = (first ? [first].concat(rest.filter((x) => x !== first)) : rest.slice(i).concat(rest.slice(0, i))).slice(0, 3);
   const path = '/cases/' + c.slug;
   const url = SITE + path;
-  const image = c.hero && c.hero.src ? (c.hero.src.startsWith('http') ? c.hero.src : SITE + '/' + c.hero.src.replace(/^\/+/, '')) : null;
+  const imgSrc = (c.hero && c.hero.src) || (c.kaart && c.kaart.src) || '';
+  const image = imgSrc ? (imgSrc.startsWith('http') ? imgSrc : SITE + '/' + imgSrc.replace(/^\/+/, '')) : null;
   const title = (c.seoTitel || (c.titel + ': case')) + ' | CUSTOM+';
   const desc = (c.omschrijving || c.uitkomst || '').slice(0, 158);
   let ld = ldScript(orgLd(), 'ld-organization');

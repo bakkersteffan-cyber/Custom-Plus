@@ -41,20 +41,9 @@
     }
   ],
   "hero": {
-    "src": "/images/cases/beelen-keychains/hero.jpg",
-    "w": 1240,
-    "h": 827,
-    "eager": true,
-    "ratio": "3 / 2",
-    "alt": "Overslagmachine van Beelen op een recyclinglocatie, met het Beelen-logo op de arm",
-    "bijschrift": "Beelen op locatie: het B-logo van de machines is hetzelfde logo dat op de keychain staat"
-  },
-  "beeldGroot": {
-    "src": "/images/cases/beelen-keychains/05-bovenkant.jpg",
-    "w": 1536,
-    "h": 1330,
-    "ratio": "4 / 3",
-    "bijschrift": "Van boven: de drie ribbels over de kroon en het B-logo op de voorkant"
+    "src": "",
+    "alt": "",
+    "bijschrift": ""
   },
   "feiten": [
     {
@@ -112,92 +101,7 @@
       "Van een product dat nergens verkrijgbaar was, naar een volledig op maat gemaakte marketingtool. Binnen circa twaalf weken hebben we het traject van sourcing en productontwikkeling tot productie en levering gerealiseerd."
     ]
   },
-  "fasen": [
-    {
-      "nummer": "01",
-      "fase": "Concept & Industrieel Ontwerp",
-      "duur": "",
-      "titel": "Van cap naar keychain",
-      "tekst": "De cap is vertaald naar een sleutelhanger die op één blik als Beelen leest: de verhoudingen van de rand en de kroon, de kleurstelling en de plek van het logo. Klein genoeg voor een sleutelbos, herkenbaar genoeg om niet in een la te belanden.",
-      "opleverde": "Ontwerp van de keychain met maatvoering, kleuren en logopositie",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/01-voorkant.jpg",
-        "w": 1536,
-        "h": 1250,
-        "bijschrift": "De voorkant: de vorm van de Beelen-cap, in het klein, met het B-logo"
-      }
-    },
-    {
-      "nummer": "02",
-      "fase": "Ontwerp voor Produceerbaarheid",
-      "duur": "",
-      "titel": "Detaillering die in een mal past",
-      "tekst": "De vorm, kleur en detaillering die bij reguliere leveranciers niet te maken waren, zijn hier uitgewerkt tot een ontwerp dat wél uit een mal kan komen: het logo en de kleurvlakken als onderdeel van de mal zelf, zodat er geen opdruk achteraf nodig is die kan slijten.",
-      "opleverde": "Productietekening voor de mal, met kleurvlakken en logo",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/05-bovenkant.jpg",
-        "w": 1536,
-        "h": 1330,
-        "bijschrift": "Van boven: de ribbels over de kroon en de logopositie, uitgewerkt voor de mal"
-      }
-    },
-    {
-      "nummer": "03",
-      "fase": "Fabriekssourcing & Screening",
-      "duur": "",
-      "titel": "Fabrieken die volledig custom kunnen",
-      "tekst": "Reguliere leveranciers werken vanuit bestaande mallen en standaard drukmethodes. Daarom zijn gespecialiseerde fabrieken gesourcet die vanaf nul produceren, met een eigen mal en de mogelijkheid om kleurstelling en logo exact naar wens te maken.",
-      "opleverde": "Gekozen fabriek met eigen malbouw en volledig custom productie",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/03-zijkant.jpg",
-        "w": 1536,
-        "h": 1250,
-        "bijschrift": "Van opzij: de lijn van rand en kroon, zoals hij uit de mal komt"
-      }
-    },
-    {
-      "nummer": "04",
-      "fase": "Tooling, Sampling & Iteratie",
-      "duur": "",
-      "titel": "Een eigen mal voor Beelen",
-      "tekst": "Speciaal voor Beelen is een eigen mal ontwikkeld. Uit die mal kwamen de eerste samples, die naast de originele cap zijn gelegd en beoordeeld op vorm, kleurstelling en logo, tot de keychain exact was wat Beelen voor ogen had.",
-      "opleverde": "Eigen mal en goedgekeurd sample als meetlat voor de productie",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/04-achterkant.jpg",
-        "w": 1536,
-        "h": 1310,
-        "bijschrift": "De achterkant met de bevestiging van ketting en sleutelring"
-      }
-    },
-    {
-      "nummer": "05",
-      "fase": "Massaproductie & Kwaliteitscontrole",
-      "duur": "",
-      "titel": "100.000 stuks, één standaard",
-      "tekst": "De productie is gedraaid op schaal, met het goedgekeurde sample als maatstaf: elke keychain in dezelfde vorm, dezelfde kleuren en met hetzelfde logo, gecontroleerd tijdens en na de run.",
-      "opleverde": "100.000 keychains, gekeurd tegen het goedgekeurde sample",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/06-onderkant.jpg",
-        "w": 1536,
-        "h": 1270,
-        "bijschrift": "De onderkant: de afdrukken van de uitwerpers van de mal, hij komt er als één stuk uit"
-      }
-    },
-    {
-      "nummer": "06",
-      "fase": "Compliance & Logistiek",
-      "duur": "",
-      "titel": "Geleverd, klaar voor gebruik",
-      "tekst": "Het hele traject, van sourcing en productontwikkeling tot productie en levering, is binnen circa twaalf weken gerealiseerd. De keychains zijn verpakt en geleverd, klaar om als marketingtool ingezet te worden.",
-      "opleverde": "100.000 stuks geleverd, circa 12 weken na de start",
-      "foto": {
-        "src": "/images/cases/beelen-keychains/02-schuin.jpg",
-        "w": 1536,
-        "h": 1250,
-        "bijschrift": "De keychain zoals hij geleverd is, met ketting en sleutelring"
-      }
-    }
-  ],
+  "fasen": [],
   "problemen": [
     {
       "tag": "Sourcing",
@@ -290,5 +194,91 @@
     "w": 960,
     "h": 1200,
     "alt": "Overslagmachine van Beelen met het Beelen-logo op de arm"
-  }
+  },
+  "_fasen": [
+    {
+      "nummer": "01",
+      "fase": "Concept & Industrieel Ontwerp",
+      "duur": "",
+      "titel": "Van cap naar keychain",
+      "tekst": "De cap is vertaald naar een sleutelhanger die op één blik als Beelen leest: de verhoudingen van de rand en de kroon, de kleurstelling en de plek van het logo. Klein genoeg voor een sleutelbos, herkenbaar genoeg om niet in een la te belanden.",
+      "opleverde": "Ontwerp van de keychain met maatvoering, kleuren en logopositie",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/01-voorkant.jpg",
+        "w": 1536,
+        "h": 1250,
+        "bijschrift": "De voorkant: de vorm van de Beelen-cap, in het klein, met het B-logo"
+      }
+    },
+    {
+      "nummer": "02",
+      "fase": "Ontwerp voor Produceerbaarheid",
+      "duur": "",
+      "titel": "Detaillering die in een mal past",
+      "tekst": "De vorm, kleur en detaillering die bij reguliere leveranciers niet te maken waren, zijn hier uitgewerkt tot een ontwerp dat wél uit een mal kan komen: het logo en de kleurvlakken als onderdeel van de mal zelf, zodat er geen opdruk achteraf nodig is die kan slijten.",
+      "opleverde": "Productietekening voor de mal, met kleurvlakken en logo",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/05-bovenkant.jpg",
+        "w": 1536,
+        "h": 1330,
+        "bijschrift": "Van boven: de ribbels over de kroon en de logopositie, uitgewerkt voor de mal"
+      }
+    },
+    {
+      "nummer": "03",
+      "fase": "Fabriekssourcing & Screening",
+      "duur": "",
+      "titel": "Fabrieken die volledig custom kunnen",
+      "tekst": "Reguliere leveranciers werken vanuit bestaande mallen en standaard drukmethodes. Daarom zijn gespecialiseerde fabrieken gesourcet die vanaf nul produceren, met een eigen mal en de mogelijkheid om kleurstelling en logo exact naar wens te maken.",
+      "opleverde": "Gekozen fabriek met eigen malbouw en volledig custom productie",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/03-zijkant.jpg",
+        "w": 1536,
+        "h": 1250,
+        "bijschrift": "Van opzij: de lijn van rand en kroon, zoals hij uit de mal komt"
+      }
+    },
+    {
+      "nummer": "04",
+      "fase": "Tooling, Sampling & Iteratie",
+      "duur": "",
+      "titel": "Een eigen mal voor Beelen",
+      "tekst": "Speciaal voor Beelen is een eigen mal ontwikkeld. Uit die mal kwamen de eerste samples, die naast de originele cap zijn gelegd en beoordeeld op vorm, kleurstelling en logo, tot de keychain exact was wat Beelen voor ogen had.",
+      "opleverde": "Eigen mal en goedgekeurd sample als meetlat voor de productie",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/04-achterkant.jpg",
+        "w": 1536,
+        "h": 1310,
+        "bijschrift": "De achterkant met de bevestiging van ketting en sleutelring"
+      }
+    },
+    {
+      "nummer": "05",
+      "fase": "Massaproductie & Kwaliteitscontrole",
+      "duur": "",
+      "titel": "100.000 stuks, één standaard",
+      "tekst": "De productie is gedraaid op schaal, met het goedgekeurde sample als maatstaf: elke keychain in dezelfde vorm, dezelfde kleuren en met hetzelfde logo, gecontroleerd tijdens en na de run.",
+      "opleverde": "100.000 keychains, gekeurd tegen het goedgekeurde sample",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/06-onderkant.jpg",
+        "w": 1536,
+        "h": 1270,
+        "bijschrift": "De onderkant: de afdrukken van de uitwerpers van de mal, hij komt er als één stuk uit"
+      }
+    },
+    {
+      "nummer": "06",
+      "fase": "Compliance & Logistiek",
+      "duur": "",
+      "titel": "Geleverd, klaar voor gebruik",
+      "tekst": "Het hele traject, van sourcing en productontwikkeling tot productie en levering, is binnen circa twaalf weken gerealiseerd. De keychains zijn verpakt en geleverd, klaar om als marketingtool ingezet te worden.",
+      "opleverde": "100.000 stuks geleverd, circa 12 weken na de start",
+      "foto": {
+        "src": "/images/cases/beelen-keychains/02-schuin.jpg",
+        "w": 1536,
+        "h": 1250,
+        "bijschrift": "De keychain zoals hij geleverd is, met ketting en sleutelring"
+      }
+    }
+  ]
 }
