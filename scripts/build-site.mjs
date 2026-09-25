@@ -691,15 +691,13 @@ const caseMeta = (c) => [c.klantKort || c.klant, c.categorie, c.jaar].filter(Boo
 /* kaarten: staand beeld, meta, titel, uitkomst, drie feiten, pil */
 function caseCardsHtml(list, stagger) {
   return '<div class="fl-case-grid' + (stagger ? ' fl-stagger' : '') + '">\n' + list.map((c) => {
-    const facts = (c.kaartFeiten || []).filter((f) => f && f.waarde)
-      .map((f) => '<span><b data-no-i18n>' + escText(f.waarde) + '</b>' + escText(f.label || '') + '</span>').join('');
     return '      <a class="fl-case-card" href="/cases/' + escAttr(c.slug) + '">'
       + casePhoto(c.kaart && c.kaart.src ? c.kaart : c.hero, 'fl-case-card__media')
+      /* op de fotokaart alleen de titel en de knop (op verzoek); het label
+         "Voorbeeldcase" blijft, want dat is eerlijkheid, geen opsmuk */
       + '<span class="fl-case-card__overlay">'
-      + '<span class="fl-case-card__meta">' + caseMeta(c) + '</span>'
+      + (c.voorbeeld ? '<span class="fl-case-card__meta"><em>Voorbeeldcase</em></span>' : '')
       + '<span class="fl-case-card__title">' + escText(c.titel) + '</span>'
-      + (c.uitkomst ? '<span class="fl-case-card__outcome">' + escText(c.uitkomst) + '</span>' : '')
-      + (facts ? '<span class="fl-case-card__facts">' + facts + '</span>' : '')
       + '<span class="fl-case-card__cta">Bekijk de case</span>'
       + '</span></a>';
   }).join('\n') + '\n    </div>';
