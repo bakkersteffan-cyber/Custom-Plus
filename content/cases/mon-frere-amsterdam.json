@@ -1,0 +1,94 @@
+{
+  "slug": "mon-frere-amsterdam",
+  "lang": "nl",
+  "gepubliceerd": true,
+  "voorbeeld": false,
+  "volgorde": 2,
+  "titel": "CUSTOM+ × Mon Frère Amsterdam",
+  "seoTitel": "Mon Frère Amsterdam: een custom rugtas in ostrich-leer, van schets naar sample",
+  "klant": "Mon Frère Amsterdam",
+  "klantKort": "Mon Frère Amsterdam",
+  "categorie": "Fashion & accessoires",
+  "jaar": "",
+  "uitkomst": "Een tas die nergens te maken was, van schets naar sample in ostrich-leer.",
+  "intro": "Mon Frère Amsterdam is een e-commerce- en kledingmerk uit Amsterdam. Ze wilden een custom rugtas in ostrich-leer, naar eigen schets, en kregen overal nee. CUSTOM+ zette de schetsen uit bij vijfentwintig fabrieken. Vier konden het. Bij de beste is het sample gemaakt.",
+  "introKop": "Een rugtas in ostrich-leer, naar eigen schets",
+  "omschrijving": "Case: hoe CUSTOM+ voor Mon Frère Amsterdam een custom rugtas in ostrich-leer van schets naar sample bracht. 25 fabrieken benaderd, 4 konden het, sample gemaakt bij de beste.",
+  "diensten": ["Sourcing", "Productontwikkeling", "Sampling"],
+  "productLink": { "label": "Bekijk het merk", "url": "https://monfrere-amsterdam.com/" },
+  "kaartFeiten": [
+    { "waarde": "25", "label": "fabrieken benaderd" },
+    { "waarde": "4", "label": "konden het" },
+    { "waarde": "1", "label": "sample bij de beste" }
+  ],
+  "hero": { "src": "", "alt": "", "bijschrift": "" },
+  "kaart": { "src": "", "w": 1080, "h": 1350, "alt": "Model met de Monfrère-cap, foto van het merk", "bijschrift": "Merkfoto van Mon Frère Amsterdam" },
+  "feiten": [
+    { "label": "Klant", "waarde": "Mon Frère Amsterdam" },
+    { "label": "Categorie", "waarde": "Fashion & accessoires" },
+    { "label": "Onze rol", "waarde": "Sourcing, productontwikkeling, sampling" },
+    { "label": "Fabrieken", "waarde": "25 benaderd, 4 geschikt, 1 gekozen" },
+    { "label": "Materiaal", "waarde": "Ostrich-leer, zwart, met witte schouderbanden" },
+    { "label": "Hardware", "waarde": "Zilverkleurige ritsen en gespen, leren ritstrekkers" },
+    { "label": "Status", "waarde": "Sample gemaakt bij de gekozen fabriek" }
+  ],
+  "vraag": {
+    "kop": "Een tas die niemand kon maken",
+    "citaat": "",
+    "alineas": [
+      "Mon Frère Amsterdam wilde een custom rugtas in ostrich-leer: eigen ontwerp, eigen details, eigen merk erop. Ze liepen vast op één ding: nergens konden ze dit laten maken. Niet omdat het onmogelijk is, maar omdat de meeste tassenfabrieken vanuit hun eigen modellen werken en een klein, bijzonder ontwerp liever niet aannemen.",
+      "Met de schetsen als vertrekpunt kwamen ze bij CUSTOM+. De vraag was simpel en lastig tegelijk: maak precies dít, in dít materiaal, en laat eerst zien dat het kan."
+    ],
+    "randvoorwaarden": [
+      "Ostrich-leer, volledig naar eigen schets: vorm, vakken en afwerking",
+      "Een fabriek die dit materiaal én dit ontwerp echt aankan",
+      "Eerst een sample om te beoordelen, dan pas een besluit over productie",
+      "Merkdetails erin: Monfrère-label, hangtag en de witte schouderbanden"
+    ]
+  },
+  "aanpak": {
+    "kop": "Vijfentwintig fabrieken, vier die het konden, één sample",
+    "alineas": [
+      "We hebben de schetsen uitgezet bij vijfentwintig fabrieken. Niet met de vraag wat het kost, maar of ze dit kunnen: in dit leer, precies zo. Vier bleven over die dat konden aantonen. Bij de beste van die vier hebben we het sample laten maken.",
+      "Het resultaat is de tas die je hieronder ziet: zwart ostrich-leer, witte ostrich-schouderbanden, zilverkleurige ritsen en gespen, de Monfrère-hangtag. Dit is ook ongeveer wat we kunnen: een ontwerp dat nergens te maken lijkt, toch bij de juiste fabriek krijgen."
+    ]
+  },
+  "fasen": [],
+  "problemen": [
+    {
+      "tag": "Sourcing",
+      "misging": "Nergens te laten maken: geen leverancier die een custom rugtas in ostrich-leer naar eigen schets wilde of kon maken.",
+      "oorzaak": "Klein volume, een bijzonder materiaal en een volledig eigen ontwerp. De meeste tassenfabrieken werken vanuit hun eigen modellen en zeggen daarop nee.",
+      "deden": "De schetsen uitgezet bij vijfentwintig fabrieken en gevraagd om bewijs, niet om een prijs. Vier konden het. Bij de beste van die vier is het sample gemaakt.",
+      "effect": "Van 25 fabrieken naar 1 sample"
+    }
+  ],
+  "fotos": [
+    { "src": "", "w": 1600, "h": 1300, "type": "Schuin", "bijschrift": "De rugtas in zwart ostrich-leer, schuin van voren: zilverkleurige rits en het voorvak" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Achterkant", "bijschrift": "De achterkant: witte ostrich-schouderbanden en de Monfrère-hangtag" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Zijkant", "bijschrift": "Van opzij: de doorlopende rits en het zijvak" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Onderkant", "bijschrift": "De bodem, volledig in ostrich-leer" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Voorkant", "bijschrift": "Recht van voren: de vorm en het voorvak" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het open zijvak" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De gesp van de schouderband, zilverkleurig" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De dubbele ritstrekkers met leren lussen" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De hangtag met MONFRÈRE Amsterdam in zilverfolie" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het zijvak, met een fles erin, op maat" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het voorvak met de rits open" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De witte ostrich-schouderbanden van dichtbij" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "De hangtag los, met gespsluiting" },
+    { "src": "", "w": 1600, "h": 1300, "type": "Detail", "bijschrift": "Het handvat en de bovenkant van de schouderbanden" }
+  ],
+  "fotosTitel": "Het sample, van alle kanten.",
+  "resultaat": {
+    "regel": "Van ‘dit kan nergens’ naar een sample in ostrich-leer, gemaakt bij de fabriek die het het beste kon.",
+    "cijfers": [
+      { "waarde": "25", "label": "Fabrieken benaderd met de schetsen" },
+      { "waarde": "4", "label": "Die het konden aantonen" },
+      { "waarde": "1", "label": "Sample, bij de beste van de vier" }
+    ],
+    "citaat": { "tekst": "", "naam": "", "rol": "", "bedrijf": "" },
+    "andersDoen": ""
+  },
+  "volgende": "beelen-keychains"
+}

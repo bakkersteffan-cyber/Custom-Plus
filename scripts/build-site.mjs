@@ -768,12 +768,14 @@ function caseBlock(c, others) {
     + '</aside>\n'
     + '    <div class="fl-case-body fl-reveal">'
     + (c.uitkomst ? '<p class="fl-case-tagline">' + escText(c.uitkomst) + '</p>' : '')
-    + '<h3 class="fl-case-h3">De vraag' + (vraag.kop ? ' <span>– ' + escText(vraag.kop) + '</span>' : '') + '</h3>'
-    + '<div class="fl-case-cols">'
-    + '<div>' + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '')
-    + (vraag.alineas || []).map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>'
-    + '<div>' + ((vraag.randvoorwaarden || []).length ? '<ul class="fl-case-list">' + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '') + '</div>'
-    + '</div>'
+    /* "De vraag" alleen als er inhoud is: citaat, alinea's of randvoorwaarden */
+    + ((vraag.citaat || (vraag.alineas || []).length || (vraag.randvoorwaarden || []).length)
+      ? '<h3 class="fl-case-h3">De vraag' + (vraag.kop ? ' <span>– ' + escText(vraag.kop) + '</span>' : '') + '</h3>'
+        + '<div class="fl-case-cols">'
+        + '<div>' + (vraag.citaat ? '<blockquote class="fl-case-quote">' + escText(vraag.citaat) + '</blockquote>' : '')
+        + (vraag.alineas || []).map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>'
+        + '<div>' + ((vraag.randvoorwaarden || []).length ? '<ul class="fl-case-list">' + vraag.randvoorwaarden.map((r) => '<li>' + escText(r) + '</li>').join('') + '</ul>' : '') + '</div>'
+        + '</div>' : '')
     + ((aanpak.alineas || []).length
       ? '<h3 class="fl-case-h3">Onze aanpak' + (aanpak.kop ? ' <span>– ' + escText(aanpak.kop) + '</span>' : '') + '</h3>'
         + '<div class="fl-case-cols">' + aanpak.alineas.map((p) => '<p>' + escText(p) + '</p>').join('') + '</div>' : '')
@@ -823,6 +825,8 @@ function caseBlock(c, others) {
         + '</div></article>').join('') + '</div></section>\n';
   }
   /* 8. resultaat: grote cijfers, de uitkomstregel, citaat, wat we anders zouden doen */
+  /* resultaat alleen als er iets te melden is */
+  if (cijfers.length || res.regel || quote || res.andersDoen) {
   html += '  <section class="fl-container fl-case-results">\n    <aside class="fl-reveal"><span class="fl-case-label">Resultaat</span></aside>\n    <div class="fl-reveal">'
     + (cijfers.length ? '<div class="fl-case-nums">' + cijfers.map((n) => '<div class="fl-case-num"><span class="fl-case-num__label">' + escText(n.label || '') + '</span>'
       + '<span class="fl-case-num__value" data-no-i18n>' + escText(n.waarde) + (n.eenheid ? '<small>' + escText(n.eenheid) + '</small>' : '') + '</span></div>').join('') + '</div>' : '')
@@ -831,6 +835,7 @@ function caseBlock(c, others) {
       + '<figcaption>' + escText([quote.naam, quote.rol, quote.bedrijf].filter(Boolean).join(', ')) + '</figcaption></figure>' : '')
     + (res.andersDoen ? '<p class="fl-case-anders"><span>Wat we nu anders zouden doen</span>' + escText(res.andersDoen) + '</p>' : '')
     + '</div>\n  </section>\n';
+  }
   /* 9. andere cases (alleen als die er zijn) */
   if (others && others.length) {
     html += '  <section class="fl-section fl-section--alt fl-corner-seam fl-case-others"><div class="fl-container">'
