@@ -41,13 +41,12 @@
     }
   ],
   "hero": {
-    "src": "/images/cases/beelen-keychains/hero.jpg",
+    "src": "",
     "w": 1536,
     "h": 864,
-    "eager": true,
     "ratio": "16 / 9",
-    "alt": "De Beelen-keychain: groene helmvorm met het B-logo, aan ketting en sleutelring",
-    "bijschrift": "De Beelen-keychain, schuin van voren: de ribbels over de kroon, de rand en het B-logo, alles uit de eigen mal"
+    "alt": "",
+    "bijschrift": "Openingsfoto volgt: de nieuwe foto van de Beelen-keychain"
   },
   "beeldGroot": {
     "src": "/images/cases/beelen-keychains/05-bovenkant.jpg",
