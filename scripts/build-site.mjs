@@ -695,12 +695,13 @@ function caseCardsHtml(list, stagger) {
       .map((f) => '<span><b data-no-i18n>' + escText(f.waarde) + '</b>' + escText(f.label || '') + '</span>').join('');
     return '      <a class="fl-case-card" href="/cases/' + escAttr(c.slug) + '">'
       + casePhoto(c.kaart && c.kaart.src ? c.kaart : c.hero, 'fl-case-card__media')
+      + '<span class="fl-case-card__overlay">'
       + '<span class="fl-case-card__meta">' + caseMeta(c) + '</span>'
       + '<span class="fl-case-card__title">' + escText(c.titel) + '</span>'
       + (c.uitkomst ? '<span class="fl-case-card__outcome">' + escText(c.uitkomst) + '</span>' : '')
       + (facts ? '<span class="fl-case-card__facts">' + facts + '</span>' : '')
       + '<span class="fl-case-card__cta">Bekijk de case</span>'
-      + '</a>';
+      + '</span></a>';
   }).join('\n') + '\n    </div>';
 }
 
