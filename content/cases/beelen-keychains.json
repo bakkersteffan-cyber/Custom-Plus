@@ -41,12 +41,13 @@
     }
   ],
   "hero": {
-    "src": "",
-    "w": 1536,
-    "h": 864,
-    "ratio": "16 / 9",
-    "alt": "",
-    "bijschrift": "Openingsfoto volgt: de nieuwe foto van de Beelen-keychain"
+    "src": "/images/cases/beelen-keychains/hero.jpg",
+    "w": 1240,
+    "h": 827,
+    "eager": true,
+    "ratio": "3 / 2",
+    "alt": "Overslagmachine van Beelen op een recyclinglocatie, met het Beelen-logo op de arm",
+    "bijschrift": "Beelen op locatie: het B-logo van de machines is hetzelfde logo dat op de keychain staat"
   },
   "beeldGroot": {
     "src": "/images/cases/beelen-keychains/05-bovenkant.jpg",
@@ -286,8 +287,8 @@
   "volgende": "",
   "kaart": {
     "src": "/images/cases/beelen-keychains/kaart.jpg",
-    "w": 1150,
-    "h": 1210,
-    "alt": "De Beelen-keychain, schuin van voren"
+    "w": 960,
+    "h": 1200,
+    "alt": "Overslagmachine van Beelen met het Beelen-logo op de arm"
   }
 }
