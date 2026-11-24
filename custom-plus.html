@@ -201,11 +201,12 @@ button.fl-langswitch__btn{ font-size:12px; letter-spacing:.3px; text-transform:u
    1100. De contactknop blijft naast de burger staan tot 640px; pas op een telefoon
    is daar geen ruimte meer voor. */
 @media (max-width:1160px){ .fl-nav__links{ display:none; } }
-/* acht links in de balk: nooit een woord afbreken; tussen 1160 en 1320px valt de FAQ-link
+/* acht links in de balk (zeven zolang er geen cases gepubliceerd zijn, dan staat de
+   Cases-link er niet en blijft FAQ gewoon staan): nooit een woord afbreken; tussen 1160 en 1320px valt de FAQ-link
    (staat ook in het menu en de voettekst) zodat de rest op één regel past */
 .fl-nav__links a{ white-space:nowrap; }
 @media (max-width:1440px){ .fl-nav__links{ gap:20px; } }
-@media (max-width:1320px){ .fl-nav__links a[href="/faq"]{ display:none; } }
+@media (max-width:1320px){ .fl-nav__links:has(a[href="/cases"]) a[href="/faq"]{ display:none; } }
 @media (max-width:640px){ .fl-nav__cta{ display:none; } }
 .fl-menu-btn{ display:none; font-size:12px; letter-spacing:.44px; text-transform:uppercase; font-weight:500;
   /* raakvlak 44x44 zonder groter label: de padding is onzichtbaar, de negatieve marge houdt de rechterkant op zijn plek */
@@ -271,7 +272,10 @@ button.fl-langswitch__btn{ font-size:12px; letter-spacing:.3px; text-transform:u
    De achtergrond stond hier als base64 (296 KB in elke kopie van dit bestand). Nu een los
    bestand van 82 KB (1440x1080, q60): achter de zwarte overlay van 58-70% is het verschil
    onzichtbaar. Absoluut pad, want de gebouwde routes staan in submappen (/diensten/). */
-.fl-pulse{ background:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band.jpg') center 30%/cover no-repeat, var(--black); color:var(--white); position:relative; overflow:hidden; height:clamp(320px,60vh,640px); }
+.fl-pulse{ background:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band.webp') center 30%/cover no-repeat, var(--black); color:var(--white); position:relative; overflow:hidden; height:clamp(320px,60vh,640px); }
+/* op een telefoon de kleine variant (29 KB in plaats van 54). build-site (PULSE_PRELOAD)
+   wijst dezelfde twee bestanden met dezelfde grens aan: houd die twee plekken gelijk */
+@media (max-width:700px){ .fl-pulse{ background-image:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band-960.webp'), none; } }
 .fl-pulse canvas{ position:absolute; inset:0; width:100%; height:100%; }
 .fl-pulse__label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-a7); text-align:center; padding-inline:20px; pointer-events:none; }
@@ -1211,6 +1215,9 @@ button.fl-totop:hover .fl-totop__arrow{ transform:translateY(-2px); }
 .fl-loader{ position:fixed; inset:0; z-index:600; background:var(--black); display:flex; align-items:center; justify-content:center;
   clip-path:inset(0 0 0 0); transition:clip-path .6s var(--ease-fl); }
 .fl-loader.is-done{ clip-path:inset(0 0 100% 0); }
+/* .cp-seen komt van het regeltje script in de head (build-site, SEEN_SCRIPT): de intro
+   is in deze sessie al gespeeld, dus de laag hoeft er niet eerst zwart overheen */
+.cp-seen .fl-loader{ display:none; }
 .fl-loader__mark{ color:var(--white); font-weight:600; font-size:clamp(28px,6vw,64px); letter-spacing:.02em; overflow:hidden; display:block; }
 .fl-loader__mark > span{ display:block; transform:translateY(110%); animation:fl-loadmark .7s var(--ease-fl) .08s forwards; }
 .fl-loader__mark em{ font-style:normal; color:var(--green); }
@@ -1297,6 +1304,10 @@ button.fl-downloads__item:hover .fl-downloads__icon{ border-color:var(--black); 
 @keyframes fl-faq-in{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
 
 /* ---------- footer watermark + back to top ---------- */
+/* het woord is pure decoratie (5% wit op zwart) en staat daarom als gegenereerde
+   inhoud in de CSS, niet als tekst in de pagina: een contrastcontrole hoort
+   decoratie niet als leestekst te beoordelen */
+.fl-footer__watermark::before{ content:attr(data-mark); }
 .fl-footer__watermark{ font-weight:600; font-size:clamp(90px,16vw,260px); line-height:.78; letter-spacing:-.02em;
   color:rgba(255,255,255,.05); user-select:none; overflow:hidden; white-space:nowrap; margin-bottom:clamp(24px,4vw,48px); }
 button.fl-totop{ width:48px; height:48px; border-radius:50%; border:1px solid var(--line-dark); color:var(--gray-a7);
@@ -2386,6 +2397,13 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
   #blog-progress{ transition:none; }
 }
 
+/* Netlify zet op het gratis abonnement zelf een "Powered by Netlify"-plaatje
+   rechtsonder in elke pagina (iframe #nl-badge-frame, via /.netlify/scripts/hud).
+   Het staat niet in onze bron en schuift over de chatknop heen. De nette
+   schakelaar zit in Netlify: Project configuration > General > Powered by
+   Netlify badge. Tot die uit staat verbergen we het hier. */
+#nl-badge-frame{ display:none !important; }
+
 /* ---------- cases ----------
    Home-sectie, index (/cases) en detailpagina (/cases/<slug>). De markup komt
    uit scripts/build-site.mjs (statisch, uit content/cases/*.json); de app doet
@@ -2834,7 +2852,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
 </section>
 <div id="home-cases"></div>
 
-<section class="fl-section fl-section--alt">
+<section class="fl-section" data-na-cases>
   <div class="fl-container">
     <div class="fl-clients__intro fl-reveal">
       <span class="fl-kicker" data-ck="home.who.kicker">Who we build for</span>
@@ -3947,7 +3965,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
 <footer class="fl-footer">
   <div class="fl-footer__glow" id="footer-glow" aria-hidden="true"></div>
   <div class="fl-container">
-    <div class="fl-footer__watermark" aria-hidden="true">CUSTOM+</div>
+    <div class="fl-footer__watermark" aria-hidden="true" data-mark="CUSTOM+"></div>
     <div class="fl-bp-tag" aria-hidden="true"><span>DWG CP+/2026</span><span>REV A</span><span>NOT TO SCALE</span></div>
 
     <div class="fl-footer__signup fl-reveal">

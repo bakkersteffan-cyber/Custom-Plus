@@ -485,7 +485,22 @@ const blogIndex = existsSync(blogIndexPath)
     + '<span class="fl-blog-card__title">' + escText(a.title) + '</span>'
     + '<span class="fl-blog-card__dek">' + escText(a.dek || '') + '</span>'
     + '</span></a>').join('');
-  pageBlocks.set('page-blog', fillContainer(pageBlocks.get('page-blog'), 'blog-list', cards));
+  /* De app bouwt bij het opstarten de filterrij en zet de lijst in een raster
+   * (.fl-blog-cards). Stond dat niet al in de HTML, dan schoof de lijst op een
+   * telefoon ~140px omlaag zodra het script klaar was (gemeten: CLS 0,056).
+   * Dezelfde opmaak als blogBuildFilterRail() en blogRenderIndex() in de app:
+   * houd de volgorde van de categorieën gelijk aan BLOG_CATS daar. */
+  const BLOG_CATS = ['ontwerp', 'sourcing', 'sampling', 'productie', 'kwaliteit', 'logistiek', 'ondernemen'];
+  const blogLabels = (CONTENT.blog && CONTENT.blog.labels) || {};
+  const chips = '<button class="fl-chip" type="button" aria-pressed="true">' + escText(nl(blogLabels.all || 'All')) + '</button>'
+    + BLOG_CATS.map((key, i) => '<button class="fl-chip" type="button" data-cat="' + key + '" aria-pressed="false">'
+      + '<span class="num" data-no-i18n>' + String(i + 1).padStart(2, '0') + '</span>'
+      + escText(nl((blogLabels.categories || {})[key] || key)) + '</button>').join('');
+  let blogBlock0 = fillContainer(pageBlocks.get('page-blog'), 'blog-list', cards);
+  blogBlock0 = fillContainer(blogBlock0, 'blog-filters', chips);
+  if (!blogBlock0.includes('class="fl-blog-list" id="blog-list"')) throw new Error('build-site: #blog-list heeft een andere class-volgorde dan verwacht');
+  blogBlock0 = blogBlock0.replace('class="fl-blog-list" id="blog-list"', 'class="fl-blog-list fl-blog-cards" id="blog-list"');
+  pageBlocks.set('page-blog', blogBlock0);
 }
 
 /* ------------------------------------------ 6c. pagina's zonder bronmarkup */
@@ -651,6 +666,23 @@ const CASES = caseFiles
   .filter((c) => c && c.slug && c.titel && c.gepubliceerd)
   .sort((a, b) => ((a.volgorde || 99) - (b.volgorde || 99)) || String(b.jaar || '').localeCompare(String(a.jaar || '')));
 
+/* Zonder gepubliceerde cases verdwijnt alles wat ernaar verwijst: de route
+ * /cases (en daarmee de sitemapregel), de home-sectie (homeCasesSection geeft
+ * dan niets terug) en de links in navigatie, mobiel menu en voettekst. De
+ * json-bestanden en foto's blijven in de repo; netlify.toml schermt
+ * /content/cases/* en /images/cases/* af zolang er niets gepubliceerd is.
+ * Eén case op "gepubliceerd": true zetten brengt alles terug (haal dan ook die
+ * twee regels uit netlify.toml weg). */
+if (!CASES.length) {
+  const at = ROUTES.findIndex((r) => r.page === 'page-cases');
+  if (at >= 0) ROUTES.splice(at, 1);
+  const zonderCasesLinks = (html) => html
+    .replace(/\s*<li><a href="\/cases"[^>]*>[^<]*<\/a><\/li>/g, '')
+    .replace(/\s*<a href="\/cases"[^>]*>[^<]*<\/a>/g, '');
+  shellHead = zonderCasesLinks(shellHead);
+  shellTail = zonderCasesLinks(shellTail);
+}
+
 const CASES_INTRO = {
   kicker: 'Cases',
   h2: 'Wat we maakten. En wat er tussendoor misging.',
@@ -713,7 +745,15 @@ function homeCasesSection() {
     + '    <div class="fl-cases__more fl-reveal"><a class="fl-btn fl-btn-glass" href="/cases" data-magnetic>Alle cases</a></div>\n'
     + '  </div>\n</section>\n';
 }
-pageBlocks.set('page-home', fillContainer(pageBlocks.get('page-home'), 'home-cases', homeCasesSection()));
+/* De sectie ná de cases ("Voor wie we bouwen") is wit zolang er geen cases
+ * staan en grijs zodra de (witte) cases-sectie ervoor komt: zo blijven wit en
+ * grijs om en om lopen in beide gevallen. */
+{
+  let home = fillContainer(pageBlocks.get('page-home'), 'home-cases', homeCasesSection());
+  if (!home.includes('<section class="fl-section" data-na-cases>')) throw new Error('build-site: de sectie met data-na-cases ontbreekt op de home');
+  if (CASES.length) home = home.replace('<section class="fl-section" data-na-cases>', '<section class="fl-section fl-section--alt" data-na-cases>');
+  pageBlocks.set('page-home', home);
+}
 
 function casesIndexBlock() {
   return '<div class="fl-page" id="page-cases">\n'
@@ -1173,33 +1213,20 @@ const LEGACY_HASH_SCRIPT = '<script>(function(){var m={"/services":"/diensten","
  * Blijft bewust klein: dit is geen kopie van de hele CSS, dus mag een paar
  * overbodige spaties bevatten (leesbaarheid weegt hier zwaarder dan de
  * laatste bytes). */
-const CRITICAL_CSS = `
-:root{ --black:#000; --white:#fff; --green:#1B6E45; --gray-a7:#a7a7a7; --ease-fl: cubic-bezier(.83,0,.17,1); }
-html{ -webkit-text-size-adjust:100%; }
-body{ margin:0; background:var(--white); }
-.fl{ font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif; background:var(--white); color:var(--black); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:clip; min-height:100vh; }
-.fl-container{ max-width:1600px; margin-inline:auto; padding-inline:clamp(20px,4vw,64px); }
-.fl-nav{ position:sticky; top:0; z-index:100; background:var(--white); transition:transform .5s var(--ease-fl), box-shadow .3s; margin-top:-8px; border-radius:8px 8px 0 0; }
-.fl-nav.is-hidden{ transform:translateY(-100%); }
-.fl-nav.is-stuck{ box-shadow:0 1px 0 rgba(0,0,0,.07); }
-.fl-nav .fl-container{ display:flex; align-items:center; justify-content:space-between; height:76px; gap:24px; }
-.fl-wordmark{ font-weight:600; font-size:19px; letter-spacing:.02em; display:flex; align-items:baseline; }
-.fl-wordmark em{ font-style:normal; color:var(--green); }
-.fl-pulse{ background:linear-gradient(rgba(0,0,0,.58),rgba(0,0,0,.7)), url('/images/pulse-band.jpg') center 30%/cover no-repeat, var(--black); color:var(--white); position:relative; overflow:hidden; height:clamp(320px,60vh,640px); }
-.fl-pulse__label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-a7); text-align:center; padding-inline:20px; pointer-events:none; }
-`.trim() + '\n' + `
-/* Blueprint-modus (dark-mode-insight): de knop die data-mode="blueprint" op
- * <html> zet zit in het grote appbundle-script, dat nu defer laadt en dus pas
- * ná deze kritieke CSS uitvoert. Zonder deze override zag een terugkerende
- * blueprint-gebruiker (localStorage cp_blueprint=1) eerst kort het lichte
- * thema voordat de deferred JS het attribuut zet: een zichtbare flits. Deze
- * waarden zijn letterlijk overgenomen uit custom-plus.html (:root[data-mode="blueprint"],
- * rond regel 58-66) — alleen het subset dat CRITICAL_CSS hierboven ook echt
- * gebruikt (--black/--white/--green/--gray-a7). Dit lost alleen de flits op;
- * de onderliggende "met de hand gekopieerde CSS" opzet van CRITICAL_CSS zelf
- * blijft ongewijzigd, dat is een apart punt. */
-:root[data-mode="blueprint"]{ --bp-surface:#0a1420; --bp-ink:#8fd8ea; --black:var(--bp-ink); --white:var(--bp-surface); --gray-a7:#6f9aa8; --green:#22d3ee; color-scheme:dark; }
-`.trim();
+/* Er is bewust geen inline "kritieke CSS" meer. Die hoorde bij het laden van de
+ * hoofd-stylesheet via preload+onload: de eerste weergave gebeurde dan met een
+ * handvol regels, en zodra de echte stylesheet binnenkwam versprong de hele
+ * pagina (live gemeten op de homepage: CLS 0,255; bezoekers zagen heel even
+ * een ongestileerde pagina met blauwe links en het uitgeklapte menu). De
+ * stylesheet is gzip ~28 KB en laadt nu gewoon vóór de eerste weergave. */
+const SEEN_SCRIPT = '<script>try{if(sessionStorage.getItem("cp_intro")==="1")document.documentElement.className+=" cp-seen"}catch(e){}</script>\n';
+
+/* De homepage toont direct onder de kop de fotoband (.fl-pulse); dat is daar
+ * het grootste element in beeld (LCP). Een CSS-achtergrond vindt de browser
+ * pas na het doorrekenen van de stijl, dus wijzen we hem hier alvast aan,
+ * met dezelfde twee bestanden en dezelfde grens als in custom-plus.html. */
+const PULSE_PRELOAD = '<link rel="preload" as="image" type="image/webp" href="/images/pulse-band-960.webp" media="(max-width:700px)" fetchpriority="high">\n'
+  + '<link rel="preload" as="image" type="image/webp" href="/images/pulse-band.webp" media="(min-width:701px)" fetchpriority="high">\n';
 
 const missingSeo = [];
 /* headFor() bouwt de <head> voor elke pagina, inclusief de performancefix
@@ -1249,15 +1276,20 @@ function headFor(route, extraLd) {
     + FAVICON + '\n'
     + '<link rel="alternate" type="application/rss+xml" title="CUSTOM+ Field notes" href="/feed.xml">\n'
     + LEGACY_HASH_SCRIPT
+    /* de laadlaag (.fl-loader) hoort alleen bij het eerste bezoek van een sessie;
+     * dit zet de klasse al vóór de eerste weergave, zodat een volgende pagina
+     * niet op het grote script hoeft te wachten om de zwarte laag weg te halen */
+    + SEEN_SCRIPT
+    /* koppen staan in 300, lopende tekst in 400: dat is wat boven de vouw het
+     * meest opvalt als het lettertype later inspringt */
+    + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-300.woff2" crossorigin>\n'
     + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-400.woff2" crossorigin>\n'
-    + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-600.woff2" crossorigin>\n'
-    + '<style>' + CRITICAL_CSS + '</style>\n'
-    /* render-blocking-insight (2810ms geschatte winst): beide stylesheets waren
-     * gewone blocking <link rel="stylesheet">-tags in <head>. Het preload+onload
-     * patroon laadt ze non-blocking en schakelt pas naar rel=stylesheet zodra ze
-     * binnen zijn; <noscript> is de terugval voor bezoekers/crawlers zonder JS. */
-    + '<link rel="preload" as="style" href="/assets/' + CSS_NAME + '" onload="this.onload=null;this.rel=\'stylesheet\'">\n'
-    + '<noscript><link rel="stylesheet" href="/assets/' + CSS_NAME + '"></noscript>\n'
+    + (route.path === '/' ? PULSE_PRELOAD : '')
+    /* De hoofd-stylesheet staat als gewone <link> in de head (zie de toelichting
+     * bij SEEN_SCRIPT hierboven: geen ongestileerde eerste weergave, geen
+     * verspringen). Alleen de chat-stylesheet laadt nog los van de weergave:
+     * de chatknop wordt pas door chat.js gemaakt. */
+    + '<link rel="stylesheet" href="/assets/' + CSS_NAME + '">\n'
     + '<link rel="preload" as="style" href="/chat/chat.css" onload="this.onload=null;this.rel=\'stylesheet\'">\n'
     + '<noscript><link rel="stylesheet" href="/chat/chat.css"></noscript>\n'
     /* zonder JavaScript zet niets .fl-reveal/.fl-clip op zichtbaar; op /ecommerce zou de

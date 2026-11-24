@@ -90,6 +90,22 @@
   status = 404
   force = true
 
+# De cases staan uit (alle content/cases/*.json op "gepubliceerd": false). De
+# teksten en foto's blijven in de repo, maar horen dan niet via een directe
+# link bereikbaar te zijn. Haal deze twee regels weg zodra er weer een case
+# gepubliceerd wordt, anders laden de foto's op de casepagina's niet.
+[[redirects]]
+  from = "/content/cases/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/images/cases/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # De oude Engelse paden uit de hashroute-tijd (#/services enz.) leven nog in
 # bladwijzers en gedeelde links. Het deel achter de # ziet de server niet (dat
 # vangt de pagina zelf op), maar wie ze zonder # gebruikt komt hier terecht.

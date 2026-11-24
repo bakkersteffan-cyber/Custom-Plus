@@ -41,7 +41,8 @@ const SHOT_WIDTH = parseInt(argValue('--shot-width', '375'), 10);
 const ROUTES = (argValue('--routes', '') || [
   '/', '/diensten/', '/ecommerce/', '/relatiegeschenken/', '/waarom-china/', '/faq/', '/over-ons/',
   '/begrippen/', '/hulpmiddelen/', '/contact/', '/blog/', '/privacy/', '/zoeken/', '/deze-pagina-bestaat-niet/',
-  '/cases/', '/cases/beelen-keychains/',
+  /* cases alleen als ze gepubliceerd (dus gebouwd) zijn, anders meet je een 404 */
+  ...(existsSync(join(HERE, '..', 'cases', 'index.html')) ? ['/cases/'] : []),
   '/blog/wat-een-sample-echt-kost/', '/blog/moq-is-een-gesprek/', '/blog/de-containerrekensom/', '/blog/aql-zonder-jargon/',
 ].join(',')).split(',').map((r) => r.trim()).filter(Boolean);
 

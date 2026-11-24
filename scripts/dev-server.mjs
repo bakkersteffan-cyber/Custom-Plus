@@ -21,6 +21,7 @@ import { createServer } from 'node:http';
 import { readFile, readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, normalize, extname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
 
 var ROOT = fileURLToPath(new URL('..', import.meta.url));
 var ARGS = process.argv.slice(2);
@@ -237,6 +238,13 @@ function send(res, status, pathname, file, extraHeaders) {
       return;
     }
     headers['Content-Type'] = MIME[extname(file)] || 'application/octet-stream';
+    /* Netlify comprimeert tekstbestanden; zonder dat meet Lighthouse hier 167 KB
+       stylesheet waar een bezoeker er 28 krijgt, en klopt geen enkele schatting */
+    if (res.__gzip && /^(text\/|application\/(json|xml)|image\/svg)/.test(headers['Content-Type']) && data.length > 1024) {
+      data = gzipSync(data);
+      headers['Content-Encoding'] = 'gzip';
+      headers['Vary'] = 'Accept-Encoding';
+    }
     res.writeHead(status, headers);
     res.end(data);
   });
@@ -260,6 +268,7 @@ function sendRuleTarget(res, pathname, status, to) {
 
 createServer(function (req, res) {
   var url = new URL(req.url, 'http://localhost:' + PORT);
+  res.__gzip = /\bgzip\b/.test(String(req.headers['accept-encoding'] || ''));
 
   /* serverless functies */
   /* ruim genoeg voor elke bestandsnaam die hierboven is ingelezen; een naam
