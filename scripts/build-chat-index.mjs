@@ -43,7 +43,7 @@ export const MAX_WORDS = 250;
 
 /* De routes zoals scripts/build-site.mjs ze bouwt. Een stuk mag alleen naar
  * een pad wijzen dat ook echt bestaat; de test controleert dat. */
-export const ROUTE_PATHS = ['/', '/diensten', '/ecommerce', '/relatiegeschenken', '/waarom-china',
+export const ROUTE_PATHS = ['/', '/diensten', '/ecommerce', '/relatiegeschenken', '/restpartijen', '/waarom-china',
   '/faq', '/over-ons', '/begrippen', '/hulpmiddelen', '/contact', '/blog', '/zoeken', '/privacy'];
 
 /* ------------------------------------------------------------ hulpfuncties */
@@ -343,6 +343,22 @@ function collectBlogArticle(a) {
   return out;
 }
 
+function collectRestpartijen(d) {
+  const out = [];
+  const url = '/restpartijen';
+  const k = d.kop || {};
+  out.push({ titel: 'Restpartijen uit Chinese overproductie', url, tekst: clean([k.hoofd, k.sub, k.lead].filter(Boolean).join(' ')) });
+  const h = d.herkomst || {};
+  out.push({ titel: 'Restpartijen: ' + (h.kicker || 'herkomst'), url, tekst: clean([h.kop].concat((h.items || []).map((i) => i.titel + ': ' + i.tekst)).filter(Boolean).join(' ')) });
+  const e = d.eerlijk || {};
+  out.push({ titel: 'Restpartijen: wat het wel en niet is', url, tekst: clean([e.kop, e.welTitel + ':'].concat(e.wel || [], [e.nietTitel + ':'], e.niet || []).filter(Boolean).join(' ')) });
+  const s = d.stappen || {};
+  out.push({ titel: 'Restpartijen: zo werkt het', url: url + '#zo-werkt-het', tekst: clean([s.kop].concat((s.items || []).map((i, n) => 'Stap ' + (n + 1) + ', ' + i.titel + ': ' + i.tekst)).filter(Boolean).join(' ')) });
+  const w = d.voorWie || {}, a = d.aanvraag || {};
+  out.push({ titel: 'Restpartijen: voor wie en hoe je de lijst opvraagt', url: url + '#lijst', tekst: clean([w.kop].concat((w.items || []).map((i) => i.titel + ': ' + i.tekst), [a.kop, a.lead, a.noot]).filter(Boolean).join(' ')) });
+  return out.filter((x) => x.tekst);
+}
+
 function collectCase(c) {
   const out = [];
   const url = '/cases/' + c.slug;
@@ -476,6 +492,10 @@ export function buildIndex(root = DEFAULT_ROOT) {
   /* cases: één stuk per hoofdstuk zodat "hebben jullie ooit een … gemaakt?"
      bij de juiste case uitkomt; een voorbeeldcase is geen echte referentie en
      wordt overgeslagen */
+  /* restpartijen: Nederlands, alleen in de generator (zoals de cases) */
+  const rest = readJson(join(root, 'content', 'restpartijen.json'));
+  if (rest) add('content/restpartijen.json', 'nl', chunkSections(collectRestpartijen(rest)));
+
   const casesDir = join(root, 'content', 'cases');
   const caseFiles = existsSync(casesDir) ? readdirSync(casesDir).filter((f) => f.endsWith('.json')).sort() : [];
   for (const f of caseFiles) {

@@ -39,7 +39,7 @@ const SHOTS = ARGS.indexOf('--no-shots') < 0;
 /* --shot-width: op welke breedte de schermafbeeldingen gemaakt worden (ook bruikbaar voor desktopcontrole, bv. 1280) */
 const SHOT_WIDTH = parseInt(argValue('--shot-width', '375'), 10);
 const ROUTES = (argValue('--routes', '') || [
-  '/', '/diensten/', '/ecommerce/', '/relatiegeschenken/', '/waarom-china/', '/faq/', '/over-ons/',
+  '/', '/diensten/', '/ecommerce/', '/relatiegeschenken/', '/restpartijen/', '/waarom-china/', '/faq/', '/over-ons/',
   '/begrippen/', '/hulpmiddelen/', '/contact/', '/blog/', '/privacy/', '/zoeken/', '/deze-pagina-bestaat-niet/',
   /* cases alleen als ze gepubliceerd (dus gebouwd) zijn, anders meet je een 404 */
   ...(existsSync(join(HERE, '..', 'cases', 'index.html')) ? ['/cases/'] : []),

@@ -201,12 +201,33 @@ button.fl-langswitch__btn{ font-size:12px; letter-spacing:.3px; text-transform:u
    1100. De contactknop blijft naast de burger staan tot 640px; pas op een telefoon
    is daar geen ruimte meer voor. */
 @media (max-width:1160px){ .fl-nav__links{ display:none; } }
-/* acht links in de balk (zeven zolang er geen cases gepubliceerd zijn, dan staat de
-   Cases-link er niet en blijft FAQ gewoon staan): nooit een woord afbreken; tussen 1160 en 1320px valt de FAQ-link
-   (staat ook in het menu en de voettekst) zodat de rest op één regel past */
+/* Zeven links passen vanaf 1160px (zie hierboven). Met een achtste link
+   (Restpartijen) heeft de volle rij ~1335px nodig; staan er ook cases, dan
+   zijn het er negen. Daarom, alleen als de balk acht of meer links heeft:
+   onder 1340px valt FAQ uit de balk (staat ook in het menu en de voettekst)
+   en schuiven de links iets op; onder 1270px neemt de menuknop het over.
+   Met negen links liggen beide grenzen 70px hoger. Nooit een woord afbreken. */
 .fl-nav__links a{ white-space:nowrap; }
 @media (max-width:1440px){ .fl-nav__links{ gap:20px; } }
-@media (max-width:1320px){ .fl-nav__links:has(a[href="/cases"]) a[href="/faq"]{ display:none; } }
+@media (max-width:1340px){
+  .fl-nav__links:has(a:nth-child(8)){ gap:16px; }
+  .fl-nav__links:has(a:nth-child(8)) a[href="/faq"]{ display:none; }
+}
+@media (max-width:1270px){
+  .fl-nav:has(.fl-nav__links a:nth-child(8)) .fl-nav__links,
+  .fl-nav:has(.fl-nav__links a:nth-child(8)) .fl-langswitch--nav{ display:none; }
+  .fl-nav:has(.fl-nav__links a:nth-child(8)) .fl-menu-btn{ display:inline-flex; }
+}
+@media (max-width:1500px){ .fl-nav__links:has(a:nth-child(9)){ gap:20px; } }
+@media (max-width:1410px){
+  .fl-nav__links:has(a:nth-child(9)){ gap:16px; }
+  .fl-nav__links:has(a:nth-child(9)) a[href="/faq"]{ display:none; }
+}
+@media (max-width:1320px){
+  .fl-nav:has(.fl-nav__links a:nth-child(9)) .fl-nav__links,
+  .fl-nav:has(.fl-nav__links a:nth-child(9)) .fl-langswitch--nav{ display:none; }
+  .fl-nav:has(.fl-nav__links a:nth-child(9)) .fl-menu-btn{ display:inline-flex; }
+}
 @media (max-width:640px){ .fl-nav__cta{ display:none; } }
 .fl-menu-btn{ display:none; font-size:12px; letter-spacing:.44px; text-transform:uppercase; font-weight:500;
   /* raakvlak 44x44 zonder groter label: de padding is onzichtbaar, de negatieve marge houdt de rechterkant op zijn plek */
@@ -2404,6 +2425,90 @@ h2.fl-blog-h2:hover .fl-blog-anchor, .fl-blog-anchor:focus-visible{ opacity:1; }
    Netlify badge. Tot die uit staat verbergen we het hier. */
 #nl-badge-frame{ display:none !important; }
 
+/* ---------- restpartijen ----------
+   Pagina /restpartijen en de sectie op de homepage. De markup komt uit
+   scripts/build-site.mjs (sectie 6e, tekst uit content/restpartijen.json); de
+   app doet alleen het versturen van het formulier. Marges op h3/p staan waar
+   nodig als .fl .fl-rest-…: de basisreset .fl p{margin:0} wint anders van één klasse. */
+
+/* homepage: tekst links, drie regels rechts */
+.fl-rest-teaser{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:clamp(32px,6vw,112px); align-items:center; }
+.fl-rest-teaser__btn{ margin-top:clamp(24px,3vw,36px); }
+.fl-rest-points{ border-top:1px solid var(--line); }
+.fl-rest-points li{ display:flex; justify-content:space-between; align-items:baseline; gap:20px; padding:18px 0; border-bottom:1px solid var(--line); }
+.fl-rest-points strong{ font-weight:500; font-size:15px; }
+.fl-rest-points span{ font-size:13.5px; color:var(--gray-69); text-align:right; }
+
+/* pagina */
+.fl .fl-rest-lead{ margin-top:clamp(20px,2.6vw,32px); }
+.fl-rest-ctas{ display:flex; gap:12px; flex-wrap:wrap; margin-top:clamp(24px,3vw,36px); }
+.fl-rest-intro{ max-width:62ch; margin-bottom:clamp(28px,4vw,48px); }
+.fl-rest-intro .fl-h2{ max-width:24ch; }
+
+.fl-rest-cards{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,1.6vw,22px); }
+.fl-rest-card{ background:var(--white); border:1px solid var(--line); border-radius:22px; padding:clamp(22px,2.4vw,32px); }
+.fl-rest-card h3{ font-weight:300; font-size:clamp(22px,1.2vw + 12px,28px); line-height:1.2; letter-spacing:-.01em; }
+.fl-rest-card p{ margin-top:12px; font-size:14.5px; line-height:1.65; color:var(--gray-69); }
+
+.fl-rest-two{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,6vw,112px); }
+.fl-rest-listtitle{ font-size:12px; font-weight:500; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-9); padding-bottom:14px; border-bottom:1px solid var(--line); }
+
+.fl-rest-steps{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:clamp(20px,2.6vw,40px); }
+.fl-rest-step{ border-top:1px solid var(--line-dark); padding-top:18px; }
+.fl-rest-step__num{ font-size:12px; letter-spacing:.44px; color:var(--gray-a7); font-variant-numeric:tabular-nums; }
+.fl-rest-step h3{ margin-top:14px; font-weight:400; font-size:18px; line-height:1.3; color:var(--white); }
+.fl-rest-step p{ margin-top:8px; font-size:14px; line-height:1.65; color:var(--gray-a7); }
+#zo-werkt-het, #lijst{ scroll-margin-top:calc(var(--nav-h, 76px) + 8px); }
+
+.fl-rest-who{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(20px,3vw,48px); }
+.fl-rest-who > div{ border-top:1px solid var(--line); padding-top:16px; display:flex; flex-direction:column; gap:4px; }
+.fl-rest-who strong{ font-weight:600; font-size:14.5px; }
+.fl-rest-who span{ font-size:13.5px; line-height:1.55; color:var(--gray-69); }
+.fl .fl-rest-anders{ margin-top:clamp(28px,4vw,48px); font-size:15px; color:var(--gray-33); display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; }
+.fl-rest-anders a.fl-inline-link{ margin-top:0; }
+
+/* de actuele lijst opvragen: zwarte band met het formulier */
+.fl-rest-ask{ display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:clamp(32px,6vw,112px); align-items:start; }
+.fl-rest-ask .fl-kicker, .fl-rest-ask .fl-rest-ask__lead{ color:var(--gray-a7); }
+.fl .fl-rest-ask__lead{ margin-top:18px; }
+.fl-rest-form{ display:flex; flex-direction:column; gap:24px; }
+.fl-rest-form label{ display:block; font-size:12px; letter-spacing:.44px; text-transform:uppercase; color:var(--gray-a7); margin-bottom:6px; }
+.fl .fl-rest-form input[type="email"], .fl .fl-rest-form textarea{ display:block; width:100%; border:0; border-bottom:1px solid var(--line-dark); border-radius:0;
+  background:transparent; color:var(--white); font:inherit; font-size:16px; line-height:1.5; padding:10px 0; min-height:48px; transition:border-color .25s ease; }
+.fl .fl-rest-form textarea{ min-height:96px; resize:vertical; }
+.fl .fl-rest-form input[type="email"]:focus, .fl .fl-rest-form textarea:focus{ outline:0; border-bottom-color:var(--white); }
+.fl .fl-rest-form input[type="email"]:focus-visible, .fl .fl-rest-form textarea:focus-visible{ outline:2px solid var(--white); outline-offset:6px; }
+.fl-rest-form ::placeholder{ color:var(--gray-9); opacity:1; }
+.fl-rest-form__row{ display:flex; align-items:center; flex-wrap:wrap; gap:14px 20px; }
+/* .fl button{font:inherit} zet een <button> terug op 16px; hier de maat van de andere pillen */
+.fl-rest-form button.fl-btn{ background:var(--white); color:var(--black); border:1px solid var(--white); min-height:48px; font-size:12px; font-weight:500; line-height:normal; }
+.fl-rest-form button.fl-btn:hover{ background:transparent; color:var(--white); }
+.fl-rest-form button.fl-btn:focus-visible{ outline:2px solid var(--white); outline-offset:4px; }
+.fl-rest-form__note{ font-size:13px; color:var(--gray-a7); }
+.fl .fl-rest-form__error{ margin-top:8px; font-size:13px; color:var(--critical,#d97654); }
+a.fl-rest-form__fail{ display:inline-flex; align-items:center; min-height:44px; font-size:14px; color:var(--white); text-decoration:underline; text-underline-offset:3px; }
+a.fl-rest-form__fail[hidden]{ display:none; }
+.fl-rest-done h3{ font-weight:300; font-size:clamp(26px,1.8vw + 12px,38px); line-height:1.15; }
+.fl-rest-done p{ margin-top:10px; font-size:16px; color:var(--gray-a7); }
+.fl-rest-done:focus{ outline:0; }
+.fl .fl-rest-mail{ margin-top:clamp(24px,3vw,36px); font-size:13.5px; color:var(--gray-a7); }
+.fl-rest-mail a{ color:var(--white); text-decoration:underline; text-underline-offset:3px; display:inline-block; padding-block:13px; }
+
+@media (max-width:1100px){
+  .fl-rest-steps{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:900px){
+  .fl-rest-teaser, .fl-rest-two, .fl-rest-ask{ grid-template-columns:1fr; gap:clamp(28px,6vw,40px); }
+  .fl-rest-cards, .fl-rest-who{ grid-template-columns:1fr; }
+}
+@media (max-width:640px){
+  .fl-rest-steps{ grid-template-columns:1fr; }
+  .fl-rest-ctas .fl-btn, .fl-rest-teaser__btn{ width:100%; }
+  .fl-rest-form button.fl-btn{ width:100%; }
+  .fl-rest-points li{ flex-direction:column; gap:2px; }
+  .fl-rest-points span{ text-align:left; }
+}
+
 /* ---------- cases ----------
    Home-sectie, index (/cases) en detailpagina (/cases/<slug>). De markup komt
    uit scripts/build-site.mjs (statisch, uit content/cases/*.json); de app doet
@@ -2695,6 +2800,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
       <a href="/diensten">Services</a>
       <a href="/ecommerce">Ecommerce</a>
       <a href="/relatiegeschenken">Gifting</a>
+      <a href="/restpartijen" data-no-i18n>Restpartijen</a>
       <a href="/waarom-china">Why China</a>
       <a href="/cases">Cases</a>
       <a href="/blog">Blog</a>
@@ -2720,6 +2826,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
     <a href="/diensten">Services</a>
     <a href="/ecommerce">Ecommerce</a>
     <a href="/relatiegeschenken">Corporate gifting</a>
+    <a href="/restpartijen" data-no-i18n>Restpartijen</a>
     <a href="/waarom-china">Why China</a>
     <a href="/cases">Cases</a>
     <a href="/blog">Blog</a>
@@ -2877,6 +2984,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
     </div>
   </div>
 </section>
+<div id="home-restpartijen"></div>
 
 <section class="fl-section fl-why">
   <div class="fl-container">
@@ -4001,7 +4109,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
       </div>
       <div class="fl-footer__col">
         <p class="fl-footer__col-title">Studio</p>
-        <ul><li><a href="/diensten">Services</a></li><li><a href="/ecommerce">Ecommerce</a></li><li><a href="/relatiegeschenken">Corporate gifting</a></li><li><a href="/waarom-china">Why China</a></li><li><a href="/cases">Cases</a></li><li><a href="/faq">FAQ</a></li><li><a href="/over-ons">About us</a></li><li><a href="/hulpmiddelen">Resources</a></li><li><a href="/begrippen">Glossary</a></li><li><a href="/blog">Blog</a></li></ul>
+        <ul><li><a href="/diensten">Services</a></li><li><a href="/ecommerce">Ecommerce</a></li><li><a href="/relatiegeschenken">Corporate gifting</a></li><li><a href="/restpartijen" data-no-i18n>Restpartijen</a></li><li><a href="/waarom-china">Why China</a></li><li><a href="/cases">Cases</a></li><li><a href="/faq">FAQ</a></li><li><a href="/over-ons">About us</a></li><li><a href="/hulpmiddelen">Resources</a></li><li><a href="/begrippen">Glossary</a></li><li><a href="/blog">Blog</a></li></ul>
       </div>
       <div class="fl-footer__col">
         <p class="fl-footer__col-title">Connect</p>
@@ -7143,7 +7251,7 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
     applyPageMeta(id, param);
     window.scrollTo(0, 0);
     if(progress){ progress.style.transform = 'scaleX(0)'; }
-    var navMap = { '/diensten':['page-services'], '/ecommerce':['page-ecommerce'], '/relatiegeschenken':['page-gifting'], '/waarom-china':['page-why'], '/faq':['page-faq'], '/over-ons':['page-trust'], '/blog':['page-blog'] };
+    var navMap = { '/diensten':['page-services'], '/ecommerce':['page-ecommerce'], '/relatiegeschenken':['page-gifting'], '/waarom-china':['page-why'], '/faq':['page-faq'], '/over-ons':['page-trust'], '/blog':['page-blog'], '/restpartijen':['page-restpartijen'] };
     document.querySelectorAll('.fl-nav__links a').forEach(function(a){
       var targets = navMap[a.getAttribute('href')] || [];
       if(targets.indexOf(id) >= 0){ a.setAttribute('aria-current','page'); } else { a.removeAttribute('aria-current'); }
@@ -7575,6 +7683,42 @@ a.fl-term-link{ padding-inline:9px; margin-inline:-9px; }
       });
     });
   }
+
+  /* ================= restpartijen: de actuele lijst opvragen =================
+     Het formulier staat statisch in de pagina (build-site, sectie 6e); hier
+     alleen het versturen, via dezelfde weg als het contactformulier. Mislukt
+     dat, dan toont cpWireSend de mailto-link eronder. */
+  (function(){
+    var btn = document.getElementById('rest-send');
+    if(!btn) return;
+    var formEl = document.getElementById('rest-form');
+    var emailEl = document.getElementById('rest-email');
+    var wantEl = document.getElementById('rest-want');
+    var errEl = document.getElementById('rest-error');
+    var doneEl = document.getElementById('rest-done');
+    var failEl = document.getElementById('rest-fail');
+    var subject = 'Restpartijen: actuele lijst';
+    cpWireSend(btn, function(){
+      var email = String(emailEl.value || '').replace(/^\s+|\s+$/g, '');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+        if(errEl){ errEl.hidden = false; }
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        return null;
+      }
+      if(errEl){ errEl.hidden = true; }
+      emailEl.removeAttribute('aria-invalid');
+      var want = String((wantEl && wantEl.value) || '').replace(/^\s+|\s+$/g, '');
+      return { subject: subject, email: email,
+        message: 'Aanvraag via customplus.nl/restpartijen\n\nZoekt naar: ' + (want || '(niet ingevuld: stuur de volledige lijst)') };
+    }, function(){
+      if(formEl){ formEl.hidden = true; }
+      if(doneEl){ doneEl.hidden = false; doneEl.focus(); }
+    }, failEl ? failEl.getAttribute('href') : '', failEl);
+    /* Enter in het mailveld klikt de knop al aan; dit houdt alleen een losse
+       submit tegen, zodat de pagina nooit herlaadt terwijl het script draait */
+    if(formEl){ formEl.addEventListener('submit', function(e){ e.preventDefault(); }); }
+  })();
 
   function cpShowNote(el, text, autoHideMs){
     if(!el) return;

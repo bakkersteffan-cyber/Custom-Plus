@@ -1,0 +1,106 @@
+{
+  "teaser": {
+    "kicker": "Restpartijen",
+    "kop": "Soms ligt het product er al.",
+    "lead": "Naast ontwikkeling verkopen we restpartijen uit Chinese overproductie: partijen die al gemaakt zijn en geen koper meer hebben. Wij controleren wat er ligt voordat jij betaalt.",
+    "knop": "Meer over restpartijen",
+    "punten": [
+      { "titel": "Overproductie", "tekst": "Meer gemaakt dan besteld" },
+      { "titel": "Geannuleerde orders", "tekst": "Klaar, maar de koper haakte af" },
+      { "titel": "Uitlopende series", "tekst": "Het model wordt vervangen" }
+    ]
+  },
+  "kop": {
+    "kicker": "Restpartijen",
+    "hoofd": "Restpartijen uit Chinese overproductie.",
+    "sub": "Al gemaakt, nog niet verkocht.",
+    "lead": "Fabrieken maken vrijwel altijd iets meer dan er besteld is, en soms haakt een koper af terwijl de partij al klaarstaat. Dat is goed product zonder eigenaar. Wij kennen die fabrieken, controleren wat er ligt en verkopen het per partij door aan Nederlandse bedrijven.",
+    "knop": "Vraag de actuele lijst op",
+    "knop2": "Zo werkt het"
+  },
+  "herkomst": {
+    "kicker": "Waar het vandaan komt",
+    "kop": "Drie manieren waarop goed product blijft liggen.",
+    "items": [
+      {
+        "titel": "Overproductie",
+        "tekst": "Een fabriek draait standaard iets meer dan de order, om uitval op te vangen. Valt er weinig uit, dan blijft er goed product over waar niemand op wacht."
+      },
+      {
+        "titel": "Geannuleerde order",
+        "tekst": "De koper trekt zich terug of rekent de laatste termijn niet af, terwijl de partij al ingepakt staat. De fabriek wil zijn geld en zijn ruimte terug."
+      },
+      {
+        "titel": "Uitlopende serie",
+        "tekst": "Een model wordt vervangen of het seizoen is voorbij. Wat er nog ligt, moet het magazijn uit om plaats te maken voor de volgende run."
+      }
+    ]
+  },
+  "eerlijk": {
+    "kicker": "Eerlijk vooraf",
+    "kop": "Wat een restpartij wel is, en wat niet.",
+    "welTitel": "Wat je krijgt",
+    "wel": [
+      "Product dat al bestaat: geen ontwikkeltijd, geen mal en geen samplerondes.",
+      "Een prijs voor de partij, afgesproken voordat je iets betaalt.",
+      "Foto's, een telling en een steekproef van de partij zelf, niet van een showroommodel.",
+      "De papieren die bij de partij horen, zoals testrapporten of een CE-verklaring. Ontbreken ze, dan staat dat erbij."
+    ],
+    "nietTitel": "Wat je niet krijgt",
+    "niet": [
+      "Keuze in kleur, maat of aantal. Het is wat er ligt.",
+      "Dezelfde partij nog een keer. Op is op.",
+      "Aanpassingen aan het product zelf. Wil je dat, dan is ontwikkeling de route.",
+      "Merkartikelen van anderen. Overproductie van andermans merk verkopen wij niet."
+    ]
+  },
+  "stappen": {
+    "kicker": "Zo werkt het",
+    "kop": "Van lijst tot levering in vier stappen.",
+    "items": [
+      {
+        "titel": "Je vraagt de lijst op",
+        "tekst": "Wat er ligt wisselt, dus er is geen vaste catalogus. Je krijgt wat er nu beschikbaar is, of je vertelt waar je naar zoekt en wij kijken mee."
+      },
+      {
+        "titel": "Wij leggen de partij voor",
+        "tekst": "Per partij zie je wat het is, hoeveel er ligt, in welke staat en wat het kost."
+      },
+      {
+        "titel": "Controle voordat je betaalt",
+        "tekst": "We tellen na en nemen een steekproef. Jij ziet de foto's en het rapport en beslist daarna pas."
+      },
+      {
+        "titel": "Verzending naar Nederland",
+        "tekst": "Transport en inklaring regelen wij, tot aan je magazijn."
+      }
+    ]
+  },
+  "voorWie": {
+    "kicker": "Voor wie dit werkt",
+    "kop": "Als snelheid en prijs zwaarder wegen dan een eigen ontwerp.",
+    "items": [
+      { "titel": "Webshops", "tekst": "Een product testen zonder eerst een ontwikkeltraject te betalen." },
+      { "titel": "Winkels en actiehandel", "tekst": "Een partij voor een actie of seizoen, zonder maanden vooruit te bestellen." },
+      { "titel": "Bedrijven", "tekst": "Geschenken of gebruiksartikelen in aantallen, direct leverbaar." }
+    ],
+    "anders": "Liever iets dat alleen van jou is?",
+    "andersLink": "Bekijk hoe ontwikkeling werkt"
+  },
+  "aanvraag": {
+    "kicker": "Actuele lijst",
+    "kop": "Wat ligt er nu?",
+    "lead": "Laat je mailadres achter en zeg waar je naar zoekt. Je krijgt de partijen die op dit moment beschikbaar zijn.",
+    "zoekLabel": "Waar zoek je naar?",
+    "zoekPlaceholder": "Bijvoorbeeld een productsoort, een aantal of een budget",
+    "mailLabel": "Je e-mailadres",
+    "mailPlaceholder": "naam@bedrijf.nl",
+    "knop": "Stuur mij de lijst",
+    "noot": "We reageren binnen één werkdag.",
+    "fout": "Vul een geldig e-mailadres in.",
+    "mislukt": "Versturen lukt niet. Mail het direct",
+    "klaarKop": "Aangekomen.",
+    "klaarTekst": "Je krijgt de actuele lijst in je mail.",
+    "liever": "Liever mailen?"
+  }
+}

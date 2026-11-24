@@ -93,6 +93,7 @@ const PAGES = [
   { name: 'faq', path: '/faq/', file: 'faq/index.html' },
   { name: 'begrippen', path: '/begrippen/', file: 'begrippen/index.html' },
   { name: 'hulpmiddelen', path: '/hulpmiddelen/', file: 'hulpmiddelen/index.html' },
+  { name: 'restpartijen', path: '/restpartijen/', file: 'restpartijen/index.html' },
   { name: 'cases', path: '/cases/', file: 'cases/index.html' },
 ];
 

@@ -73,5 +73,10 @@
     "crumb": "Cases",
     "title": "Cases: producten van vraag tot pallet | CUSTOM+",
     "description": "Per product de vraag waarmee het begon, hoe we het uitvoerden, wat er in de samplerondes misging en wat er nu op de pallet staat."
+  },
+  "page-restpartijen": {
+    "crumb": "Restpartijen",
+    "title": "Restpartijen uit China kopen | CUSTOM+",
+    "description": "Restpartijen uit Chinese overproductie: partijen die al gemaakt zijn, geteld en gecontroleerd voordat je betaalt. Vraag de actuele lijst op."
   }
 }

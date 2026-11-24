@@ -47,6 +47,8 @@ const ROUTES = [
   { path: '/diensten',          page: 'page-services',  seo: 'page-services',  prio: '0.9', changefreq: 'monthly', content: ['services'] },
   { path: '/ecommerce',         page: 'page-ecommerce', seo: 'page-ecommerce', prio: '0.8', changefreq: 'monthly', content: ['ecommerce', 'sectors'] },
   { path: '/relatiegeschenken', page: 'page-gifting',   seo: 'page-gifting',   prio: '0.8', changefreq: 'monthly', content: ['gifting'] },
+  /* /restpartijen bestaat alleen in de generator (sectie 6e), net als /privacy */
+  { path: '/restpartijen',      page: 'page-restpartijen', seo: 'page-restpartijen', prio: '0.8', changefreq: 'monthly', content: ['restpartijen'], staticPage: true },
   { path: '/waarom-china',      page: 'page-why',       seo: 'page-why',       prio: '0.8', changefreq: 'monthly', content: ['why-china'] },
   { path: '/faq',               page: 'page-faq',       seo: 'page-faq',       prio: '0.7', changefreq: 'monthly', content: ['faq'] },
   { path: '/over-ons',          page: 'page-trust',     seo: 'page-trust',     prio: '0.7', changefreq: 'monthly', content: ['trust'] },
@@ -771,6 +773,108 @@ function casesIndexBlock() {
 }
 pageBlocks.set('page-cases', casesIndexBlock());
 
+/* --------------------------------------------------------- 6e. restpartijen */
+
+/* /restpartijen bestaat alleen in de generator, net als /privacy: de tekst
+ * staat in het Nederlands in content/restpartijen.json en wordt hier statische
+ * HTML. De app doet er alleen het versturen van het aanvraagformulier bij
+ * (blok "restpartijen: de actuele lijst opvragen" in custom-plus.html), via
+ * dezelfde weg als het contactformulier. Zonder JavaScript gaat het formulier
+ * als gewone POST naar Netlify Forms; de veldnamen (form-name, subject, email,
+ * message, cp-hp) zijn die van het geregistreerde formulier bovenaan de body.
+ * Ook de sectie op de homepage (#home-restpartijen) komt uit dit bestand. */
+const REST = JSON.parse(readFileSync(join(ROOT, 'content', 'restpartijen.json'), 'utf8'));
+const REST_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12 l6 6 L20 6"/></svg>';
+const REST_CROSS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>';
+const REST_SUBJECT = 'Restpartijen: actuele lijst';
+
+function restpartijenBlock() {
+  const k = REST.kop || {}, h = REST.herkomst || {}, e = REST.eerlijk || {}, st = REST.stappen || {}, w = REST.voorWie || {}, a = REST.aanvraag || {};
+  const mail = companyInfo().email;
+  const mailto = 'mailto:' + mail + '?subject=' + encodeURIComponent(REST_SUBJECT);
+  const intro = (o) => '<div class="fl-rest-intro fl-reveal"><span class="fl-kicker">' + escText(o.kicker || '') + '</span>'
+    + '<h2 class="fl-h2">' + escText(o.kop || '') + '</h2></div>';
+  const lijst = (items, icon, cls) => '<ul class="fl-trust__no-list' + (cls ? ' ' + cls : '') + '">'
+    + (items || []).map((t) => '<li>' + icon + '<span>' + escText(t) + '</span></li>').join('') + '</ul>';
+
+  return '<div class="fl-page" id="page-restpartijen">\n'
+    /* 1. kop */
+    + '  <section class="fl-pagehead fl-container is-ready-target">\n'
+    + '    <span class="fl-kicker">' + escText(k.kicker || 'Restpartijen') + '</span>\n'
+    + '    <h1>\n      <span class="fl-clip"><span>' + escText(k.hoofd || '') + '</span></span>\n'
+    + '      <span class="fl-clip"><span class="sub">' + escText(k.sub || '') + '</span></span>\n    </h1>\n'
+    + '    <p class="fl-lead fl-reveal fl-rest-lead">' + escText(k.lead || '') + '</p>\n'
+    + '    <div class="fl-rest-ctas fl-reveal">'
+    + '<a class="fl-btn fl-btn-black" href="#lijst" data-magnetic>' + escText(k.knop || '') + '</a>'
+    + '<a class="fl-btn fl-btn-glass" href="#zo-werkt-het">' + escText(k.knop2 || '') + '</a></div>\n'
+    + '  </section>\n'
+    /* 2. waar het vandaan komt */
+    + '  <section class="fl-section fl-section--alt">\n    <div class="fl-container">' + intro(h)
+    + '<div class="fl-rest-cards fl-stagger">'
+    + (h.items || []).map((it) => '<article class="fl-rest-card"><h3>' + escText(it.titel || '') + '</h3><p>' + escText(it.tekst || '') + '</p></article>').join('')
+    + '</div></div>\n  </section>\n'
+    /* 3. wat het wel en niet is */
+    + '  <section class="fl-section">\n    <div class="fl-container">' + intro(e)
+    + '<div class="fl-rest-two">'
+    + '<div class="fl-reveal"><h3 class="fl-rest-listtitle">' + escText(e.welTitel || '') + '</h3>' + lijst(e.wel, REST_CHECK, 'fl-trust__no-list--check') + '</div>'
+    + '<div class="fl-reveal"><h3 class="fl-rest-listtitle">' + escText(e.nietTitel || '') + '</h3>' + lijst(e.niet, REST_CROSS, '') + '</div>'
+    + '</div></div>\n  </section>\n'
+    /* 4. zo werkt het: een echte volgorde, dus genummerd */
+    + '  <section class="fl-section fl-why" id="zo-werkt-het">\n    <div class="fl-container">'
+    + '<div class="fl-rest-intro fl-reveal"><span class="fl-kicker">' + escText(st.kicker || '') + '</span><h2 class="fl-h2">' + escText(st.kop || '') + '</h2></div>'
+    + '<ol class="fl-rest-steps fl-stagger">'
+    + (st.items || []).map((it, i) => '<li class="fl-rest-step"><span class="fl-rest-step__num" data-no-i18n>' + String(i + 1).padStart(2, '0') + '</span>'
+      + '<h3>' + escText(it.titel || '') + '</h3><p>' + escText(it.tekst || '') + '</p></li>').join('')
+    + '</ol></div>\n  </section>\n'
+    /* 5. voor wie */
+    + '  <section class="fl-section fl-section--alt fl-corner-seam">\n    <div class="fl-container">' + intro(w)
+    + '<div class="fl-rest-who fl-stagger">'
+    + (w.items || []).map((it) => '<div><strong>' + escText(it.titel || '') + '</strong><span>' + escText(it.tekst || '') + '</span></div>').join('')
+    + '</div>'
+    + (w.anders ? '<p class="fl-rest-anders fl-reveal">' + escText(w.anders) + ' <a class="fl-inline-link" href="/diensten">' + escText(w.andersLink || '') + CASE_ARROW_SVG + '</a></p>' : '')
+    + '</div>\n  </section>\n'
+    /* 6. de actuele lijst opvragen */
+    + '  <section class="fl-section fl-corner-seam fl-bp-darkband fl-rest-askband" id="lijst" style="background:var(--black); color:var(--white);">\n'
+    + '    <div class="fl-container fl-rest-ask">'
+    + '<div class="fl-reveal"><span class="fl-kicker">' + escText(a.kicker || '') + '</span><h2 class="fl-h2">' + escText(a.kop || '') + '</h2>'
+    + '<p class="fl-lead fl-rest-ask__lead">' + escText(a.lead || '') + '</p></div>'
+    + '<div class="fl-reveal">'
+    + '<form class="fl-rest-form" id="rest-form" method="POST" action="/restpartijen/">'
+    + '<input type="hidden" name="form-name" value="custom-plus-inquiry">'
+    + '<input type="hidden" name="subject" value="' + escAttr(REST_SUBJECT) + '">'
+    + '<p class="fl-vh" aria-hidden="true"><label>Niet invullen <input type="text" name="cp-hp" tabindex="-1" autocomplete="off"></label></p>'
+    + '<div><label for="rest-want">' + escText(a.zoekLabel || '') + '</label>'
+    + '<textarea id="rest-want" name="message" rows="3" placeholder="' + escAttr(a.zoekPlaceholder || '') + '"></textarea></div>'
+    + '<div><label for="rest-email">' + escText(a.mailLabel || '') + '</label>'
+    + '<input type="email" id="rest-email" name="email" autocomplete="email" required placeholder="' + escAttr(a.mailPlaceholder || '') + '">'
+    + '<p class="fl-rest-form__error" id="rest-error" role="alert" hidden>' + escText(a.fout || '') + '</p></div>'
+    + '<div class="fl-rest-form__row"><button type="submit" class="fl-btn" id="rest-send"><span data-send-label>' + escText(a.knop || '') + '</span></button>'
+    + '<span class="fl-rest-form__note">' + escText(a.noot || '') + '</span></div>'
+    + '<a class="fl-rest-form__fail" id="rest-fail" href="' + escAttr(mailto) + '" hidden>' + escText(a.mislukt || '') + '</a>'
+    + '</form>'
+    + '<div class="fl-rest-done" id="rest-done" role="status" tabindex="-1" hidden><h3>' + escText(a.klaarKop || '') + '</h3><p>' + escText(a.klaarTekst || '') + '</p></div>'
+    + '<p class="fl-rest-mail">' + escText(a.liever || '') + ' <a href="' + escAttr(mailto) + '">' + escText(mail) + '</a></p>'
+    + '</div></div>\n  </section>\n'
+    + '</div>\n';
+}
+pageBlocks.set('page-restpartijen', restpartijenBlock());
+
+/* De sectie op de homepage staat na "Voor wie we bouwen" en heeft de kleur die
+ * die sectie niet heeft: grijs zolang er geen cases staan, wit als er wel
+ * cases staan (zie data-na-cases hierboven). */
+function homeRestSection() {
+  const t = REST.teaser || {};
+  return '\n<section class="fl-section' + (CASES.length ? '' : ' fl-section--alt') + '">\n  <div class="fl-container fl-rest-teaser">\n'
+    + '    <div class="fl-reveal"><span class="fl-kicker">' + escText(t.kicker || '') + '</span>'
+    + '<h2 class="fl-h2">' + escText(t.kop || '') + '</h2>'
+    + '<p class="fl-lead" style="margin-top:18px;">' + escText(t.lead || '') + '</p>'
+    + '<a class="fl-btn fl-btn-black fl-rest-teaser__btn" href="/restpartijen" data-magnetic>' + escText(t.knop || '') + '</a></div>\n'
+    + '    <ul class="fl-rest-points fl-reveal">'
+    + (t.punten || []).map((p) => '<li><strong>' + escText(p.titel || '') + '</strong><span>' + escText(p.tekst || '') + '</span></li>').join('')
+    + '</ul>\n  </div>\n</section>\n';
+}
+pageBlocks.set('page-home', fillContainer(pageBlocks.get('page-home'), 'home-restpartijen', homeRestSection()));
+
 function caseBlock(c, others) {
   const facts = (c.feiten || []).filter((f) => f && f.label && f.waarde);
   const vraag = c.vraag || {};
@@ -1438,6 +1542,7 @@ const SERVICE_LD = {
   'page-services': { name: 'Productontwikkeling en productie in China', type: 'Productontwikkeling' },
   'page-ecommerce': { name: 'Productontwikkeling voor ecommerce merken', type: 'Productontwikkeling' },
   'page-gifting': { name: 'Relatiegeschenken op maat laten produceren', type: 'Relatiegeschenken' },
+  'page-restpartijen': { name: 'Restpartijen uit Chinese overproductie', type: 'Restpartijen' },
 };
 function serviceLd(route) {
   const spec = SERVICE_LD[route.page];
