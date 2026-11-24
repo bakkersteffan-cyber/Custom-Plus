@@ -1,0 +1,1771 @@
+{
+ "_uitleg": [
+  "Vertalingen van tekst die in het Nederlands is geschreven. De sleutel is de Nederlandse tekst precies zoals hij op de pagina staat (zonder spaties ervoor of erna); per sleutel de vier andere talen.",
+  "Het woordenboek in custom-plus.html (var I18N) is op de Engelse bron gesleuteld en dekt alles wat ooit in het Engels is geschreven. Dit bestand dekt de rest: de pagina's die alleen in de generator bestaan (restpartijen, privacy, 404), de paginatitels en omschrijvingen uit seo-nl.json, de stukken waarin een zin uiteenvalt rond een vetgedrukt woord of een begrippenlink, en zinnen met een plekhouder zoals {n} of {datum}.",
+  "scripts/build-site.mjs voegt beide samen tot /assets/i18n/<taal>.json. Staat een tekst in beide, dan wint dit bestand.",
+  "Nieuwe Nederlandse tekst op de site? Draai node scripts/i18n-live.mjs: dat meldt per pagina en per taal wat niet meevertaalt, met de sleutel die hier hoort.",
+  "\"zelfde\" is de lijst met namen, merken en vaktermen die in elke taal hetzelfde blijven."
+ ],
+ "zelfde": [
+  "Beelen.nl",
+  "Berghoef",
+  "Blog",
+  "CUSTOM+",
+  "Caliber",
+  "De Nederlandse Ondernemersgroep",
+  "FAQ",
+  "Field notes",
+  "Inter College Amsterdam",
+  "KVK",
+  "LinkedIn",
+  "Newomij",
+  "OGER",
+  "Steffan Bakker",
+  "golden sample",
+  "van Duuren",
+  "white label",
+  "© 2026 CUSTOM+"
+ ],
+ "teksten": {
+  "Restpartijen": {
+   "en": "Surplus stock",
+   "de": "Restposten",
+   "fr": "Lots de surplus",
+   "es": "Excedentes"
+  },
+  "Taal": {
+   "en": "Language",
+   "de": "Sprache",
+   "fr": "Langue",
+   "es": "Idioma"
+  },
+  "Nog niet zeker waar je moet beginnen?": {
+   "en": "Not sure where to start?",
+   "de": "Noch unsicher, wo Sie anfangen sollen?",
+   "fr": "Vous ne savez pas encore par où commencer ?",
+   "es": "¿Aún no sabe por dónde empezar?"
+  },
+  ": je product, waarom China, waarom nu. Dan vertellen we je wat het vraagt.": {
+   "en": ": your product, why China, why now. We'll tell you what it takes.",
+   "de": ": Ihr Produkt, warum China, warum jetzt. Dann sagen wir Ihnen, was es braucht.",
+   "fr": " : votre produit, pourquoi la Chine, pourquoi maintenant. Nous vous dirons ce qu'il faut.",
+   "es": ": su producto, por qué China, por qué ahora. Después le decimos qué hace falta."
+  },
+  "Soms ligt het product er al.": {
+   "en": "Sometimes the product already exists.",
+   "de": "Manchmal liegt das Produkt schon bereit.",
+   "fr": "Parfois, le produit existe déjà.",
+   "es": "A veces el producto ya está hecho."
+  },
+  "Naast ontwikkeling verkopen we restpartijen uit Chinese overproductie: partijen die al gemaakt zijn en geen koper meer hebben. Wij controleren wat er ligt voordat jij betaalt.": {
+   "en": "Alongside development, we sell surplus stock from Chinese overproduction: lots that are already made and no longer have a buyer. We check what's there before you pay.",
+   "de": "Neben der Entwicklung verkaufen wir Restposten aus chinesischer Überproduktion: Posten, die bereits produziert sind und keinen Käufer mehr haben. Wir prüfen, was dort liegt, bevor Sie zahlen.",
+   "fr": "En plus du développement, nous vendons des lots de surplus issus de la surproduction chinoise : des lots déjà fabriqués qui n'ont plus d'acheteur. Nous contrôlons ce qui est en stock avant que vous ne payiez.",
+   "es": "Además de desarrollar productos, vendemos lotes de excedentes de la sobreproducción china: lotes ya fabricados que se han quedado sin comprador. Comprobamos lo que hay antes de que usted pague."
+  },
+  "Meer over restpartijen": {
+   "en": "More about surplus stock",
+   "de": "Mehr über Restposten",
+   "fr": "En savoir plus sur les lots de surplus",
+   "es": "Más sobre los lotes de excedentes"
+  },
+  "Overproductie": {
+   "en": "Overproduction",
+   "de": "Überproduktion",
+   "fr": "Surproduction",
+   "es": "Sobreproducción"
+  },
+  "Meer gemaakt dan besteld": {
+   "en": "More made than ordered",
+   "de": "Mehr produziert als bestellt",
+   "fr": "Plus fabriqué que commandé",
+   "es": "Se fabricó más de lo pedido"
+  },
+  "Geannuleerde orders": {
+   "en": "Canceled orders",
+   "de": "Stornierte Aufträge",
+   "fr": "Commandes annulées",
+   "es": "Pedidos cancelados"
+  },
+  "Klaar, maar de koper haakte af": {
+   "en": "Finished, but the buyer pulled out",
+   "de": "Fertig, aber der Käufer sprang ab",
+   "fr": "Prêt, mais l'acheteur s'est retiré",
+   "es": "Listo, pero el comprador se echó atrás"
+  },
+  "Uitlopende series": {
+   "en": "Discontinued series",
+   "de": "Auslaufende Serien",
+   "fr": "Fins de série",
+   "es": "Fines de serie"
+  },
+  "Het model wordt vervangen": {
+   "en": "The model is being replaced",
+   "de": "Das Modell wird ersetzt",
+   "fr": "Le modèle est remplacé",
+   "es": "El modelo se sustituye"
+  },
+  "Product laten maken in China": {
+   "en": "Get your product made in China",
+   "de": "Produkt in China herstellen lassen",
+   "fr": "Faire fabriquer un produit en Chine",
+   "es": "Fabrique su producto en China"
+  },
+  "Wij ontwikkelen en produceren jouw eigen product in China: ontwerp, DFM, gescreende fabrieken, AQL keuring en transport. Van schets tot zeecontainer.": {
+   "en": "We develop and produce your own product in China: design, DFM, vetted factories, AQL inspection and shipping. From sketch to shipping container.",
+   "de": "Wir entwickeln und fertigen Ihr eigenes Produkt in China: Design, DFM, geprüfte Fabriken, AQL Prüfung und Transport. Von der Skizze bis zum Schiffscontainer.",
+   "fr": "Nous développons et fabriquons votre propre produit en Chine : design, DFM, usines validées, inspection AQL et transport. Du croquis au conteneur maritime.",
+   "es": "Desarrollamos y fabricamos su propio producto en China: diseño, DFM, fábricas verificadas, inspección AQL y transporte. Del boceto al contenedor marítimo."
+  },
+  "Plan een gesprek": {
+   "en": "Book a call",
+   "de": "Gespräch vereinbaren",
+   "fr": "Planifier un appel",
+   "es": "Agendar una llamada"
+  },
+  "06 · week 20 tot 24": {
+   "en": "06 · week 20 to 24",
+   "de": "06 · Woche 20 bis 24",
+   "fr": "06 · semaines 20 à 24",
+   "es": "06 · semanas 20 a 24"
+  },
+  "14 weken": {
+   "en": "14 weeks",
+   "de": "14 Wochen",
+   "fr": "14 semaines",
+   "es": "14 semanas"
+  },
+  "Productontwikkeling en sourcing in China": {
+   "en": "Product development and sourcing in China",
+   "de": "Produktentwicklung und Sourcing in China",
+   "fr": "Développement produit et sourcing en Chine",
+   "es": "Desarrollo de producto y sourcing en China"
+  },
+  "Van schets tot zeecontainer: industrieel ontwerp, DFM, fabrieksselectie, matrijzen en samples, massaproductie met AQL keuring, compliance en logistiek.": {
+   "en": "From sketch to shipping container: industrial design, DFM, factory selection, molds and samples, AQL inspected mass production, compliance and logistics.",
+   "de": "Von der Skizze bis zum Schiffscontainer: Industriedesign, DFM, Fabrikauswahl, Werkzeuge und Muster, Massenproduktion mit AQL Prüfung, Compliance, Logistik.",
+   "fr": "Du croquis au conteneur maritime : design industriel, DFM, choix d'usine, moules et échantillons, production de masse, inspection AQL, conformité, logistique.",
+   "es": "Del boceto al contenedor marítimo: diseño industrial, DFM, selección de fábrica, moldes y muestras, producción en masa con control AQL, normativa y logística."
+  },
+  "Check": {
+   "en": "Check",
+   "de": "Prüfen",
+   "fr": "Vérifier",
+   "es": "Comprobar"
+  },
+  "Produceren wij in jouw sector?": {
+   "en": "Do we produce in your sector?",
+   "de": "Produzieren wir in Ihrer Branche?",
+   "fr": "Produisons-nous dans votre secteur ?",
+   "es": "¿Fabricamos en su sector?"
+  },
+  "Zoek hieronder je sector. Staat hij in de lijst, dan weten we al hoe je daarin produceert.": {
+   "en": "Search your sector below. If it's on the list, we already know how to produce in it.",
+   "de": "Suchen Sie unten Ihre Branche. Steht sie in der Liste, wissen wir schon, wie man darin produziert.",
+   "fr": "Cherchez votre secteur ci-dessous. S'il est dans la liste, nous savons déjà comment y produire.",
+   "es": "Busque su sector abajo. Si está en la lista, ya sabemos cómo se fabrica en él."
+  },
+  "open": {
+   "en": "open",
+   "de": "offen",
+   "fr": "ouvert",
+   "es": "abierto"
+  },
+  "Sector gevonden": {
+   "en": "Sector found",
+   "de": "Branche gefunden",
+   "fr": "Secteur trouvé",
+   "es": "Sector encontrado"
+  },
+  "Begin je hier iets nieuws, of heb je eerst een vraag over deze sector? Hoe dan ook, begin nu het gesprek.": {
+   "en": "Starting something new here, or do you have a question about this sector first? Either way, start the conversation now.",
+   "de": "Starten Sie hier etwas Neues, oder haben Sie zuerst eine Frage zu dieser Branche? So oder so: Beginnen Sie jetzt das Gespräch.",
+   "fr": "Vous lancez quelque chose de nouveau ici, ou vous avez d'abord une question sur ce secteur ? Dans les deux cas, engagez la conversation dès maintenant.",
+   "es": "¿Empieza aquí algo nuevo, o tiene antes una pregunta sobre este sector? En cualquier caso, inicie ahora la conversación."
+  },
+  "Van de listing die je nu hebt tot de doos voor je deur: snel via ons white label netwerk of van nul af. Eerlijk over kosten, NNN vóór elk bestand, betalen per mijlpaal.": {
+   "en": "From today's listing to the box at your door: fast via our white label network or from scratch. Honest about cost, NNN before every file, milestone payments.",
+   "de": "Vom Listing bis zum Karton vor Ihrer Tür: schnell per White Label Netzwerk oder von Grund auf. Ehrliche Kosten, NNN vor jeder Datei, Zahlung je Meilenstein.",
+   "fr": "De votre fiche produit au colis devant votre porte : vite en marque blanche ou en partant de zéro. Coûts clairs, NNN avant tout fichier, paiement par jalons.",
+   "es": "Del listing actual a la caja en su puerta: rápido con nuestra red de marca blanca o desde cero. Costes claros, NNN antes de cada archivo, pago por hitos."
+  },
+  "Voor Shopify, Amazon en DTC merken": {
+   "en": "For Shopify, Amazon and DTC brands",
+   "de": "Für Shopify, Amazon und DTC Marken",
+   "fr": "Pour les marques Shopify, Amazon et DTC",
+   "es": "Para marcas de Shopify, Amazon y DTC"
+  },
+  "Eigen product voor je webshop laten maken": {
+   "en": "Get your own product made for your web store",
+   "de": "Eigenes Produkt für Ihren Onlineshop herstellen lassen",
+   "fr": "Faire fabriquer votre produit pour votre boutique en ligne",
+   "es": "Fabrique un producto propio para su tienda online"
+  },
+  "Iedereen kan jouw catalogus kopiëren.": {
+   "en": "Anyone can copy your catalog.",
+   "de": "Jeder kann Ihren Katalog kopieren.",
+   "fr": "N'importe qui peut copier votre catalogue.",
+   "es": "Cualquiera puede copiar su catálogo."
+  },
+  "Een eigen product is de enige echte gracht rond een webshop. Wij brengen het van de eerste briefing tot de doos voor je deur: snel via ons white label netwerk, of van nul af als het uniek moet zijn.": {
+   "en": "A product of your own is the only real moat around a web store. We take it from first brief to the box at your door: fast through our white label network, or from scratch when it has to be unique.",
+   "de": "Ein eigenes Produkt ist der einzige echte Burggraben um einen Onlineshop. Wir bringen es vom ersten Briefing bis zum Karton vor Ihrer Tür: schnell über unser White Label Netzwerk, oder von Grund auf, wenn es einzigartig sein soll.",
+   "fr": "Un produit à vous est le seul vrai rempart autour d'une boutique en ligne. Nous le menons du premier brief au colis devant votre porte : vite via notre réseau de marque blanche, ou en partant de zéro quand il doit être unique.",
+   "es": "Un producto propio es el único foso de verdad alrededor de una tienda online. Lo llevamos del primer brief a la caja en su puerta: rápido con nuestra red de marca blanca, o desde cero cuando tiene que ser único."
+  },
+  "Eén aanspreekpunt. Steffan leest elke briefing zelf.": {
+   "en": "One point of contact. Steffan reads every brief himself.",
+   "de": "Ein Ansprechpartner. Steffan liest jedes Briefing selbst.",
+   "fr": "Un seul interlocuteur. Steffan lit chaque brief lui-même.",
+   "es": "Un único interlocutor. Steffan lee personalmente cada brief."
+  },
+  "4,7 · 1.284 beoordelingen": {
+   "en": "4.7 · 1,284 reviews",
+   "de": "4,7 · 1.284 Bewertungen",
+   "fr": "4,7 · 1 284 avis",
+   "es": "4,7 · 1.284 valoraciones"
+  },
+  "Roestvrijstalen drinkfles 750 ml": {
+   "en": "Stainless steel water bottle 750 ml",
+   "de": "Trinkflasche aus Edelstahl, 750 ml",
+   "fr": "Gourde en acier inoxydable 750 ml",
+   "es": "Botella de acero inoxidable de 750 ml"
+  },
+  "In winkelwagen": {
+   "en": "Add to cart",
+   "de": "In den Warenkorb",
+   "fr": "Ajouter au panier",
+   "es": "Añadir al carrito"
+  },
+  "Ook te koop bij andere webshops": {
+   "en": "Also for sale at other web stores",
+   "de": "Auch in anderen Onlineshops erhältlich",
+   "fr": "Aussi en vente dans d'autres boutiques en ligne",
+   "es": "También a la venta en otras tiendas online"
+  },
+  "Voorbeeldproduct, geen klant": {
+   "en": "Example product, not a client",
+   "de": "Beispielprodukt, kein Kunde",
+   "fr": "Produit d'exemple, pas un client",
+   "es": "Producto de ejemplo, no un cliente"
+  },
+  "Twee routes": {
+   "en": "Two routes",
+   "de": "Zwei Wege",
+   "fr": "Deux voies",
+   "es": "Dos vías"
+  },
+  "Twee routes naar een eigen product.": {
+   "en": "Two routes to a product of your own.",
+   "de": "Zwei Wege zum eigenen Produkt.",
+   "fr": "Deux voies vers un produit à vous.",
+   "es": "Dos vías hacia un producto propio."
+  },
+  "Hoe ver je gaat, bepaal je zelf. Kies een route en de rest van de pagina past zich aan.": {
+   "en": "How far you go is up to you. Pick a route and the rest of the page adapts.",
+   "de": "Wie weit Sie gehen, entscheiden Sie selbst. Wählen Sie einen Weg, und der Rest der Seite passt sich an.",
+   "fr": "Jusqu'où vous allez, c'est vous qui décidez. Choisissez une voie et le reste de la page s'adapte.",
+   "es": "Usted decide hasta dónde llegar. Elija una vía y el resto de la página se adapta."
+  },
+  "Kies je route": {
+   "en": "Choose your route",
+   "de": "Wählen Sie Ihren Weg",
+   "fr": "Choisissez votre voie",
+   "es": "Elija su vía"
+  },
+  "Weken": {
+   "en": "Weeks",
+   "de": "Wochen",
+   "fr": "Semaines",
+   "es": "Semanas"
+  },
+  "Snel: white label": {
+   "en": "Fast: white label",
+   "de": "Schnell: White Label",
+   "fr": "Rapide : marque blanche",
+   "es": "Rápido: marca blanca"
+  },
+  "Maanden": {
+   "en": "Months",
+   "de": "Monate",
+   "fr": "Mois",
+   "es": "Meses"
+  },
+  "Van nul: eigen product": {
+   "en": "From scratch: your own product",
+   "de": "Von Grund auf: eigenes Produkt",
+   "fr": "De zéro : votre propre produit",
+   "es": "Desde cero: producto propio"
+  },
+  "De mal": {
+   "en": "The mold",
+   "de": "Die Gussform",
+   "fr": "Le moule",
+   "es": "El molde"
+  },
+  "Bestaat al": {
+   "en": "Already exists",
+   "de": "Gibt es schon",
+   "fr": "Existe déjà",
+   "es": "Ya existe"
+  },
+  "Voor jou gesneden, en van jou": {
+   "en": "Cut for you, and yours",
+   "de": "Für Sie gefertigt und Ihr Eigentum",
+   "fr": "Usiné pour vous, et à vous",
+   "es": "Hecho para usted, y suyo"
+  },
+  "Uniek?": {
+   "en": "Unique?",
+   "de": "Einzigartig?",
+   "fr": "Unique ?",
+   "es": "¿Único?"
+  },
+  "Jouw merk op een doorgelicht product": {
+   "en": "Your brand on a vetted product",
+   "de": "Ihre Marke auf einem geprüften Produkt",
+   "fr": "Votre marque sur un produit vérifié",
+   "es": "Su marca en un producto verificado"
+  },
+  "Een product dat niemand anders verkoopt": {
+   "en": "A product nobody else sells",
+   "de": "Ein Produkt, das sonst niemand verkauft",
+   "fr": "Un produit que personne d'autre ne vend",
+   "es": "Un producto que nadie más vende"
+  },
+  "Jij kiest": {
+   "en": "You choose",
+   "de": "Sie wählen",
+   "fr": "Vous choisissez",
+   "es": "Usted elige"
+  },
+  "Kleur, logo en verpakking": {
+   "en": "Color, logo and packaging",
+   "de": "Farbe, Logo und Verpackung",
+   "fr": "Couleur, logo et emballage",
+   "es": "Color, logo y embalaje"
+  },
+  "Alles, van schets tot specificatie": {
+   "en": "Everything, from sketch to spec",
+   "de": "Alles, von der Skizze bis zur Spezifikation",
+   "fr": "Tout, du croquis au cahier des charges",
+   "es": "Todo, del boceto a la especificación"
+  },
+  "Eerste stap": {
+   "en": "First step",
+   "de": "Erster Schritt",
+   "fr": "Première étape",
+   "es": "Primer paso"
+  },
+  "Kies een product uit ons netwerk": {
+   "en": "Pick a product from our network",
+   "de": "Wählen Sie ein Produkt aus unserem Netzwerk",
+   "fr": "Choisissez un produit dans notre réseau",
+   "es": "Elija un producto de nuestra red"
+  },
+  "Breng een schets of een referentie mee": {
+   "en": "Bring a sketch or a reference",
+   "de": "Bringen Sie eine Skizze oder eine Referenz mit",
+   "fr": "Apportez un croquis ou une référence",
+   "es": "Traiga un boceto o una referencia"
+  },
+  "Eerlijk: een product dat niemand anders verkoopt bestaat niet in weken. Kies wat zwaarder weegt.": {
+   "en": "Honest: a product nobody else sells does not exist in weeks. Choose what weighs more.",
+   "de": "Ehrlich: Ein Produkt, das sonst niemand verkauft, gibt es nicht in Wochen. Wählen Sie, was schwerer wiegt.",
+   "fr": "Soyons honnêtes : un produit que personne d'autre ne vend ne se fait pas en quelques semaines. Choisissez ce qui compte le plus.",
+   "es": "Siendo honestos: un producto que nadie más vende no existe en cuestión de semanas. Elija qué pesa más."
+  },
+  "Vertel wat je wilt maken.": {
+   "en": "Tell us what you want to make.",
+   "de": "Sagen Sie uns, was Sie herstellen möchten.",
+   "fr": "Dites-nous ce que vous voulez fabriquer.",
+   "es": "Cuéntenos qué quiere fabricar."
+  },
+  "Je krijgt direct een eerste beeld van materiaal, MOQ en de logische eerste stap. Geen offerte, geen prijs.": {
+   "en": "You get a first read on material, MOQ and the logical first step. No quote, no price.",
+   "de": "Sie bekommen sofort ein erstes Bild von Material, MOQ und dem logischen ersten Schritt. Kein Angebot, kein Preis.",
+   "fr": "Vous obtenez tout de suite une première lecture du matériau, du MOQ et de la première étape logique. Pas de devis, pas de prix.",
+   "es": "Recibe al momento una primera lectura del material, el MOQ y el primer paso lógico. Sin cotización, sin precio."
+  },
+  "is een gesprek, geen muur.": {
+   "en": "is a conversation, not a wall.",
+   "de": "ist ein Gespräch, keine Mauer.",
+   "fr": "est une discussion, pas un mur.",
+   "es": "es una conversación, no un muro."
+  },
+  "Twijfel je? Doe de scopecheck": {
+   "en": "Not sure? Run the scope check",
+   "de": "Unsicher? Machen Sie den Scope Check",
+   "fr": "Vous hésitez ? Faites le diagnostic de cadrage",
+   "es": "¿Tiene dudas? Haga la verificación de alcance"
+  },
+  "Van de listing die je hebt tot de doos voor je deur.": {
+   "en": "From the listing you have to the box at your door.",
+   "de": "Vom Listing, das Sie haben, bis zum Karton vor Ihrer Tür.",
+   "fr": "De la fiche produit que vous avez au colis devant votre porte.",
+   "es": "Del listing que tiene a la caja en su puerta."
+  },
+  "Zes fasen en één aanspreekpunt. Je betaalt per mijlpaal, en elke mijlpaal gaat pas open na bewijs.": {
+   "en": "Six stages and one point of contact. You pay per milestone, and every milestone opens only after proof.",
+   "de": "Sechs Phasen und ein Ansprechpartner. Sie zahlen nach Meilensteinen, und jeder Meilenstein öffnet sich erst nach dem Beweis.",
+   "fr": "Six étapes et un seul interlocuteur. Vous payez par jalon, et chaque jalon ne s'ouvre qu'après preuve.",
+   "es": "Seis etapas y un único interlocutor. Paga por hitos, y cada hito solo se abre tras la prueba."
+  },
+  "Betaalmijlpalen": {
+   "en": "Payment milestones",
+   "de": "Zahlungsmeilensteine",
+   "fr": "Jalons de paiement",
+   "es": "Hitos de pago"
+  },
+  "Inspectierapport akkoord": {
+   "en": "Inspection report approved",
+   "de": "Prüfbericht bestanden",
+   "fr": "Rapport d'inspection validé",
+   "es": "Informe de inspección aprobado"
+  },
+  "vergrendeld, wacht op bewijs": {
+   "en": "locked, waiting for proof",
+   "de": "gesperrt, wartet auf den Beweis",
+   "fr": "verrouillé, en attente de preuve",
+   "es": "bloqueado, a la espera de la prueba"
+  },
+  "Eerst bewijs, dan geld. Mijlpaal 3 gaat pas open na de steekproef.": {
+   "en": "Proof first, then money. Milestone 3 opens only after the sample check.",
+   "de": "Erst der Beweis, dann das Geld. Meilenstein 3 öffnet sich erst nach der Stichprobe.",
+   "fr": "La preuve d'abord, l'argent ensuite. Le jalon 3 ne s'ouvre qu'après le contrôle par échantillonnage.",
+   "es": "Primero la prueba, después el dinero. El hito 3 solo se abre tras el muestreo."
+  },
+  "Niet alles bekijken. Wel genoeg.": {
+   "en": "Not everything. But enough.",
+   "de": "Nicht alles prüfen. Aber genug.",
+   "fr": "On ne regarde pas tout. Mais on regarde assez.",
+   "es": "No se revisa todo. Sí lo suficiente."
+  },
+  "Bij duizenden stuks bekijk je niet elk exemplaar. Je trekt een steekproef volgens": {
+   "en": "With thousands of units you do not check every piece. You draw a sample according to",
+   "de": "Bei Tausenden Stück prüfen Sie nicht jedes Exemplar. Sie ziehen eine Stichprobe nach",
+   "fr": "Sur des milliers de pièces, on ne regarde pas chaque exemplaire. Vous tirez un échantillon selon la méthode",
+   "es": "Con miles de unidades no se revisa cada pieza. Se extrae una muestra según"
+  },
+  "en je weet vooraf hoeveel afwijkingen je accepteert. Wij inspecteren drie keer, en het rapport komt naar jou voordat je mijlpaal 3 betaalt.": {
+   "en": "and you know in advance how many deviations you accept. We inspect three times, and the report comes to you before you pay milestone 3.",
+   "de": "und wissen vorab, wie viele Abweichungen Sie akzeptieren. Wir inspizieren dreimal, und der Bericht geht an Sie, bevor Sie Meilenstein 3 bezahlen.",
+   "fr": "et vous savez à l'avance combien d'écarts vous acceptez. Nous inspectons trois fois, et le rapport vous parvient avant que vous ne payiez le jalon 3.",
+   "es": "y usted sabe de antemano cuántas desviaciones acepta. Inspeccionamos tres veces, y el informe le llega antes de que pague el hito 3."
+  },
+  "Trek nog een steekproef": {
+   "en": "Draw another sample",
+   "de": "Noch eine Stichprobe ziehen",
+   "fr": "Tirer un autre échantillon",
+   "es": "Extraer otra muestra"
+  },
+  "Steekproef getrokken. Rapport naar jou. Mijlpaal 3 open.": {
+   "en": "Sample drawn. Report to you. Milestone 3 open.",
+   "de": "Stichprobe gezogen. Bericht an Sie. Meilenstein 3 offen.",
+   "fr": "Échantillon tiré. Rapport chez vous. Jalon 3 ouvert.",
+   "es": "Muestra extraída. Informe para usted. Hito 3 abierto."
+  },
+  "Bij binnenkomst van materiaal": {
+   "en": "On incoming material",
+   "de": "Beim Materialeingang",
+   "fr": "À réception des matières",
+   "es": "A la entrada del material"
+  },
+  "akkoord": {
+   "en": "approved",
+   "de": "bestanden",
+   "fr": "validé",
+   "es": "aprobado"
+  },
+  "Tijdens productie": {
+   "en": "During production",
+   "de": "Während der Produktion",
+   "fr": "En cours de production",
+   "es": "Durante la producción"
+  },
+  "Voor verzending": {
+   "en": "Before shipment",
+   "de": "Vor dem Versand",
+   "fr": "Avant expédition",
+   "es": "Antes del envío"
+  },
+  "één afwijking gevonden, herstel gevraagd, herkeuring akkoord": {
+   "en": "one deviation found, rework requested, re-inspection approved",
+   "de": "eine Abweichung gefunden, Nacharbeit verlangt, Nachprüfung bestanden",
+   "fr": "un écart constaté, reprise demandée, nouvelle inspection validée",
+   "es": "una desviación encontrada, corrección solicitada, reinspección aprobada"
+  },
+  "Zo ziet een rapport eruit: ook de afwijking staat erin. Mijlpaal 3 wacht tot de herkeuring.": {
+   "en": "This is what a report looks like: the deviation is in it too. Milestone 3 waits for the re-inspection.",
+   "de": "So sieht ein Bericht aus: Auch die Abweichung steht darin. Meilenstein 3 wartet bis zur Nachprüfung.",
+   "fr": "Voici à quoi ressemble un rapport : l'écart y figure aussi. Le jalon 3 attend la nouvelle inspection.",
+   "es": "Así es un informe: la desviación también figura en él. El hito 3 espera a la reinspección."
+  },
+  "Bekijk elke fase in detail": {
+   "en": "See every stage in detail",
+   "de": "Jede Phase im Detail ansehen",
+   "fr": "Voir chaque étape en détail",
+   "es": "Ver cada etapa en detalle"
+  },
+  "Eerlijk over kosten": {
+   "en": "Honest about cost",
+   "de": "Ehrlich bei den Kosten",
+   "fr": "Honnêtes sur les coûts",
+   "es": "Honestos con los costes"
+  },
+  "De mal is het dure moment": {
+   "en": "The mold is the expensive moment",
+   "de": "Die Gussform ist der teure Moment",
+   "fr": "Le moule, c'est le moment qui coûte cher",
+   "es": "El molde es el momento caro"
+  },
+  "Een mal is staal, en staal kost geld. Daarom bouwen we eerst één": {
+   "en": "A mold is steel, and steel costs money. So we first build one",
+   "de": "Eine Gussform ist Stahl, und Stahl kostet Geld. Deshalb bauen wir zuerst ein",
+   "fr": "Un moule, c'est de l'acier, et l'acier coûte cher. C'est pourquoi nous fabriquons d'abord un",
+   "es": "Un molde es acero, y el acero cuesta dinero. Por eso primero fabricamos una"
+  },
+  "dat jij goedkeurt voordat er iets in serie gaat. Je betaalt per mijlpaal: bij orderbevestiging, en pas weer als je sample goed is. Nooit één aanbetaling en daarna stilte. Meer over de": {
+   "en": "that you approve before anything goes into series. You pay per milestone: at order confirmation, and only again once your sample is right. Never one deposit and then silence. More on",
+   "de": "für Ihre Freigabe, bevor etwas in Serie geht. Sie zahlen nach Meilensteinen: bei Auftragsbestätigung und erst wieder, wenn Ihr Muster stimmt. Nie eine Anzahlung und dann Funkstille. Mehr zum",
+   "fr": "que vous approuvez avant que quoi que ce soit ne parte en série. Vous payez par jalon : à la confirmation de commande, puis seulement quand votre échantillon est bon. Jamais un acompte suivi du silence. Plus de détails sur le",
+   "es": "que usted aprueba antes de que nada pase a producción en serie. Paga por hitos: al confirmar el pedido, y de nuevo solo cuando su muestra está bien. Nunca un depósito y luego silencio. Más sobre el"
+  },
+  "mal": {
+   "en": "tooling",
+   "de": "Werkzeugbau",
+   "fr": "moule",
+   "es": "molde"
+  },
+  "lees je bij fase 04.": {
+   "en": "in stage 04.",
+   "de": "lesen Sie bei Phase 04.",
+   "fr": "à l'étape 04.",
+   "es": "en la etapa 04."
+  },
+  "Geen mal voor jou: die bestaat al. Wel een golden sample onder jouw naam dat jij goedkeurt voordat er iets in serie gaat. Je betaalt per mijlpaal, nooit één aanbetaling en daarna stilte.": {
+   "en": "No mold for you: it already exists. But there is a golden sample under your name that you approve before anything goes into series. You pay per milestone, never one deposit and then silence.",
+   "de": "Keine Gussform für Sie: Die gibt es schon. Dafür ein Golden Sample unter Ihrem Namen, das Sie freigeben, bevor etwas in Serie geht. Sie zahlen nach Meilensteinen, nie eine Anzahlung und dann Funkstille.",
+   "fr": "Pas de moule pour vous : il existe déjà. En revanche, un golden sample à votre nom, que vous approuvez avant que quoi que ce soit ne parte en série. Vous payez par jalon, jamais un acompte suivi du silence.",
+   "es": "No hay molde para usted: ya existe. Sí hay una golden sample a su nombre que usted aprueba antes de que nada pase a producción en serie. Paga por hitos, nunca un depósito y luego silencio."
+  },
+  "NNN getekend voordat een bestand onze handen verlaat": {
+   "en": "NNN signed before a file leaves our hands",
+   "de": "NNN unterzeichnet, bevor eine Datei unsere Hände verlässt",
+   "fr": "NNN signé avant que le moindre fichier ne quitte nos mains",
+   "es": "NNN firmado antes de que un archivo salga de nuestras manos"
+  },
+  "Onze fee apart vermeld, nooit verstopt in de stukprijs": {
+   "en": "Our fee shown separately, never hidden in the unit price",
+   "de": "Unser Honorar separat ausgewiesen, nie im Stückpreis versteckt",
+   "fr": "Nos honoraires indiqués séparément, jamais cachés dans le prix unitaire",
+   "es": "Nuestra tarifa indicada aparte, nunca escondida en el precio unitario"
+  },
+  "CE, FCC, RoHS en REACH tests, daarna vracht en douane tot aan je deur": {
+   "en": "CE, FCC, RoHS and REACH tests, then freight and customs to your door",
+   "de": "CE, FCC, RoHS und REACH Prüfungen, danach Fracht und Zoll bis vor Ihre Tür",
+   "fr": "Tests CE, FCC, RoHS et REACH, puis fret et douane jusqu'à votre porte",
+   "es": "Pruebas CE, FCC, RoHS y REACH, y después flete y aduanas hasta su puerta"
+  },
+  "Hoe we je beschermen, de lange versie": {
+   "en": "How we protect you, the long version",
+   "de": "Wie wir Sie absichern, die Langfassung",
+   "fr": "Comment nous vous protégeons, la version longue",
+   "es": "Cómo le protegemos, la versión larga"
+  },
+  "Vuistregel. Prijs die je online ziet:": {
+   "en": "Rule of thumb. Price you see online:",
+   "de": "Faustregel. Preis, den Sie online sehen:",
+   "fr": "Règle simple. Prix que vous voyez en ligne :",
+   "es": "Regla práctica. Precio que ve en internet:"
+  },
+  "bijv. 4,50": {
+   "en": "e.g. 4.50",
+   "de": "z. B. 4,50",
+   "fr": "ex. 4,50",
+   "es": "p. ej. 4,50"
+  },
+  "Reken op ongeveer het dubbele aan je deur: vracht, invoerrechten, samples en inspectie staan nooit in de listing.": {
+   "en": "Count on roughly double at your door: freight, duties, samples and inspection are never in the listing.",
+   "de": "Rechnen Sie mit etwa dem Doppelten bis vor Ihre Tür: Fracht, Zölle, Muster und Inspektion stehen nie im Listing.",
+   "fr": "Comptez environ le double à votre porte : fret, droits de douane, échantillons et inspection ne figurent jamais dans la fiche produit.",
+   "es": "Cuente con aproximadamente el doble en su puerta: flete, aranceles, muestras e inspección nunca aparecen en el listing."
+  },
+  "Dezelfde listing. Nu je eigen product": {
+   "en": "The same listing. Now your own product",
+   "de": "Dasselbe Listing. Jetzt Ihr eigenes Produkt",
+   "fr": "La même fiche produit. Désormais votre propre produit",
+   "es": "El mismo listing. Ahora su propio producto"
+  },
+  "Breng ons de listing die je bent ontgroeid. Wij brengen de fabrieksvloer mee, en Steffan leest je briefing zelf.": {
+   "en": "Bring us the listing you have outgrown. We bring the factory floor, and Steffan reads your brief himself.",
+   "de": "Bringen Sie uns das Listing, dem Sie entwachsen sind. Wir bringen die Fabrikhalle mit, und Steffan liest Ihr Briefing selbst.",
+   "fr": "Apportez-nous la fiche produit que vous avez dépassée. Nous apportons l'usine, et Steffan lit votre brief lui-même.",
+   "es": "Tráiganos el listing que se le ha quedado pequeño. Nosotros ponemos la fábrica, y Steffan lee su brief personalmente."
+  },
+  "Fabrieken in Guangdong en Zhejiang": {
+   "en": "Factories in Guangdong and Zhejiang",
+   "de": "Fabriken in Guangdong und Zhejiang",
+   "fr": "Usines dans le Guangdong et le Zhejiang",
+   "es": "Fábricas en Guangdong y Zhejiang"
+  },
+  "NNN vóór elk bestand": {
+   "en": "NNN before every file",
+   "de": "NNN vor jeder Datei",
+   "fr": "NNN avant tout fichier",
+   "es": "NNN antes de cada archivo"
+  },
+  "IQC, IPQC en FQC met AQL steekproef": {
+   "en": "IQC, IPQC and FQC with AQL sampling",
+   "de": "IQC, IPQC und FQC mit AQL Stichprobe",
+   "fr": "IQC, IPQC et FQC avec échantillonnage AQL",
+   "es": "IQC, IPQC y FQC con muestreo AQL"
+  },
+  "Jouw eigen fles, alleen bij jou": {
+   "en": "Your own bottle, only at your store",
+   "de": "Ihre eigene Flasche, nur bei Ihnen",
+   "fr": "Votre propre gourde, uniquement chez vous",
+   "es": "Su propia botella, solo en su tienda"
+  },
+  "Alleen bij jouw webshop": {
+   "en": "Only at your web store",
+   "de": "Nur in Ihrem Onlineshop",
+   "fr": "Uniquement dans votre boutique en ligne",
+   "es": "Solo en su tienda online"
+  },
+  "Steffan Bakker, oprichter van CUSTOM+": {
+   "en": "Steffan Bakker, founder of CUSTOM+",
+   "de": "Steffan Bakker, Gründer von CUSTOM+",
+   "fr": "Steffan Bakker, fondateur de CUSTOM+",
+   "es": "Steffan Bakker, fundador de CUSTOM+"
+  },
+  "Productidee": {
+   "en": "Product idea",
+   "de": "Produktidee",
+   "fr": "Idée de produit",
+   "es": "Idea de producto"
+  },
+  "Waar wil je een sample van?": {
+   "en": "What do you want a sample of?",
+   "de": "Wovon möchten Sie ein Muster?",
+   "fr": "De quoi voulez-vous un échantillon ?",
+   "es": "¿De qué quiere una muestra?"
+  },
+  "Relatiegeschenken op maat laten maken": {
+   "en": "Get custom corporate gifts made",
+   "de": "Firmengeschenke nach Maß fertigen lassen",
+   "fr": "Faire fabriquer des cadeaux d'affaires sur mesure",
+   "es": "Regalos corporativos fabricados a medida"
+  },
+  "Bedrijfsgeschenken die echt van jou zijn: eindejaarsboxen, onboardingpakketten, eventgeschenken. Eerlijke minimumaantallen en AQL gekeurde assemblage.": {
+   "en": "Corporate gifts that are truly yours: end of year boxes, onboarding kits, event gifts. Honest minimums and AQL inspected assembly.",
+   "de": "Firmengeschenke, die wirklich Ihre eigenen sind: Jahresendboxen, Onboarding Kits, Eventgeschenke. Faire Mindestmengen und AQL geprüfte Konfektionierung.",
+   "fr": "Cadeaux d'entreprise vraiment à vous : coffrets de fin d'année, kits d'intégration, cadeaux événementiels. Minimums transparents et assemblage contrôlé AQL.",
+   "es": "Regalos de empresa que de verdad son suyos: cajas de fin de año, kits de incorporación, regalos de evento. Mínimos honestos y ensamblaje con inspección AQL."
+  },
+  "Restpartijen uit Chinese overproductie.": {
+   "en": "Surplus stock from Chinese overproduction.",
+   "de": "Restposten aus chinesischer Überproduktion.",
+   "fr": "Lots de surplus issus de la surproduction chinoise.",
+   "es": "Lotes de excedentes de la sobreproducción china."
+  },
+  "Al gemaakt, nog niet verkocht.": {
+   "en": "Already made, not yet sold.",
+   "de": "Schon produziert, noch nicht verkauft.",
+   "fr": "Déjà fabriqué, pas encore vendu.",
+   "es": "Ya fabricado, aún sin vender."
+  },
+  "Fabrieken maken vrijwel altijd iets meer dan er besteld is, en soms haakt een koper af terwijl de partij al klaarstaat. Dat is goed product zonder eigenaar. Wij kennen die fabrieken, controleren wat er ligt en verkopen het per partij door aan Nederlandse bedrijven.": {
+   "en": "Factories almost always make a little more than was ordered, and sometimes a buyer pulls out when the lot is already finished. That's good product without an owner. We know those factories, check what's there and sell it on by the lot to Dutch companies.",
+   "de": "Fabriken produzieren fast immer etwas mehr, als bestellt wurde, und manchmal springt ein Käufer ab, während der Posten schon bereitsteht. Das ist gute Ware ohne Besitzer. Wir kennen diese Fabriken, prüfen, was dort liegt, und verkaufen es postenweise an niederländische Unternehmen weiter.",
+   "fr": "Les usines fabriquent presque toujours un peu plus que la commande, et il arrive qu'un acheteur se retire alors que le lot est déjà prêt. C'est du bon produit sans propriétaire. Nous connaissons ces usines, nous contrôlons ce qui est en stock et nous le revendons par lot à des entreprises néerlandaises.",
+   "es": "Las fábricas casi siempre producen algo más de lo pedido, y a veces un comprador se echa atrás cuando el lote ya está listo. Eso es buen producto sin dueño. Conocemos esas fábricas, comprobamos lo que hay y lo revendemos por lotes a empresas neerlandesas."
+  },
+  "Vraag de actuele lijst op": {
+   "en": "Request the current list",
+   "de": "Aktuelle Liste anfordern",
+   "fr": "Demander la liste actuelle",
+   "es": "Pedir la lista actual"
+  },
+  "Zo werkt het": {
+   "en": "How it works",
+   "de": "So funktioniert es",
+   "fr": "Comment ça marche",
+   "es": "Cómo funciona"
+  },
+  "Waar het vandaan komt": {
+   "en": "Where it comes from",
+   "de": "Woher die Ware kommt",
+   "fr": "D'où ça vient",
+   "es": "De dónde viene"
+  },
+  "Drie manieren waarop goed product blijft liggen.": {
+   "en": "Three ways good product gets left behind.",
+   "de": "Drei Wege, wie gute Ware liegen bleibt.",
+   "fr": "Trois façons dont un bon produit reste sur les bras.",
+   "es": "Tres maneras en que un buen producto se queda sin salida."
+  },
+  "Een fabriek draait standaard iets meer dan de order, om uitval op te vangen. Valt er weinig uit, dan blijft er goed product over waar niemand op wacht.": {
+   "en": "A factory routinely runs a little more than the order, to cover rejects. If few units are rejected, good product is left over that nobody is waiting for.",
+   "de": "Eine Fabrik produziert standardmäßig etwas mehr als bestellt, um Ausschuss aufzufangen. Fällt wenig Ausschuss an, bleibt gute Ware übrig, auf die niemand wartet.",
+   "fr": "Une usine produit par défaut un peu plus que la commande, pour absorber le rebut. S'il y a peu de rebut, il reste du bon produit que personne n'attend.",
+   "es": "Una fábrica produce por norma algo más que el pedido, para cubrir la merma. Si la merma es baja, sobra buen producto que nadie espera."
+  },
+  "Geannuleerde order": {
+   "en": "Canceled order",
+   "de": "Stornierter Auftrag",
+   "fr": "Commande annulée",
+   "es": "Pedido cancelado"
+  },
+  "De koper trekt zich terug of rekent de laatste termijn niet af, terwijl de partij al ingepakt staat. De fabriek wil zijn geld en zijn ruimte terug.": {
+   "en": "The buyer pulls out or doesn't pay the final installment while the lot is already packed. The factory wants its money and its space back.",
+   "de": "Der Käufer zieht sich zurück oder zahlt die letzte Rate nicht, während der Posten schon verpackt bereitsteht. Die Fabrik will ihr Geld und ihren Platz zurück.",
+   "fr": "L'acheteur se retire ou ne règle pas la dernière échéance, alors que le lot est déjà emballé. L'usine veut récupérer son argent et sa place.",
+   "es": "El comprador se retira o no paga el último plazo, cuando el lote ya está embalado. La fábrica quiere recuperar su dinero y su espacio."
+  },
+  "Uitlopende serie": {
+   "en": "Discontinued series",
+   "de": "Auslaufende Serie",
+   "fr": "Fin de série",
+   "es": "Fin de serie"
+  },
+  "Een model wordt vervangen of het seizoen is voorbij. Wat er nog ligt, moet het magazijn uit om plaats te maken voor de volgende run.": {
+   "en": "A model is being replaced or the season is over. What's left has to leave the warehouse to make room for the next run.",
+   "de": "Ein Modell wird ersetzt, oder die Saison ist vorbei. Was noch da liegt, muss aus dem Lager, um Platz für den nächsten Produktionslauf zu machen.",
+   "fr": "Un modèle est remplacé ou la saison est terminée. Ce qui reste doit quitter l'entrepôt pour faire place à la série suivante.",
+   "es": "Un modelo se sustituye o la temporada ha terminado. Lo que queda tiene que salir del almacén para dejar sitio a la siguiente tanda."
+  },
+  "Eerlijk vooraf": {
+   "en": "Honest up front",
+   "de": "Ehrlich vorab",
+   "fr": "Honnêtes dès le départ",
+   "es": "Honestos desde el principio"
+  },
+  "Wat een restpartij wel is, en wat niet.": {
+   "en": "What surplus stock is, and what it isn't.",
+   "de": "Was ein Restposten ist, und was nicht.",
+   "fr": "Ce qu'est un lot de surplus, et ce qu'il n'est pas.",
+   "es": "Qué es un lote de excedentes y qué no."
+  },
+  "Wat je krijgt": {
+   "en": "What you get",
+   "de": "Was Sie bekommen",
+   "fr": "Ce que vous obtenez",
+   "es": "Lo que recibe"
+  },
+  "Product dat al bestaat: geen ontwikkeltijd, geen mal en geen samplerondes.": {
+   "en": "Product that already exists: no development time, no mold and no sample rounds.",
+   "de": "Ware, die es schon gibt: keine Entwicklungszeit, keine Gussform und keine Musterrunden.",
+   "fr": "Un produit qui existe déjà : pas de temps de développement, pas de moule et pas d'itérations d'échantillon.",
+   "es": "Producto que ya existe: sin tiempo de desarrollo, sin molde y sin rondas de muestras."
+  },
+  "Een prijs voor de partij, afgesproken voordat je iets betaalt.": {
+   "en": "A price for the lot, agreed before you pay anything.",
+   "de": "Ein Preis für den Posten, vereinbart, bevor Sie etwas zahlen.",
+   "fr": "Un prix pour le lot, convenu avant que vous ne payiez quoi que ce soit.",
+   "es": "Un precio por el lote, acordado antes de que pague nada."
+  },
+  "Foto's, een telling en een steekproef van de partij zelf, niet van een showroommodel.": {
+   "en": "Photos, a count and a sample check of the lot itself, not of a showroom model.",
+   "de": "Fotos, eine Zählung und eine Stichprobe vom Posten selbst, nicht von einem Ausstellungsstück.",
+   "fr": "Des photos, un comptage et un contrôle par échantillonnage du lot lui-même, pas d'un modèle d'exposition.",
+   "es": "Fotos, un recuento y un muestreo del propio lote, no de un modelo de exposición."
+  },
+  "De papieren die bij de partij horen, zoals testrapporten of een CE-verklaring. Ontbreken ze, dan staat dat erbij.": {
+   "en": "The paperwork that belongs to the lot, such as test reports or a CE declaration. If it's missing, we say so.",
+   "de": "Die Unterlagen, die zum Posten gehören, etwa Prüfberichte oder eine CE Erklärung. Fehlen sie, steht das dabei.",
+   "fr": "Les documents qui accompagnent le lot, comme des rapports de test ou une déclaration CE. S'ils manquent, c'est indiqué.",
+   "es": "La documentación que corresponde al lote, como informes de ensayo o una declaración CE. Si falta, se indica."
+  },
+  "Wat je niet krijgt": {
+   "en": "What you don't get",
+   "de": "Was Sie nicht bekommen",
+   "fr": "Ce que vous n'obtenez pas",
+   "es": "Lo que no recibe"
+  },
+  "Keuze in kleur, maat of aantal. Het is wat er ligt.": {
+   "en": "A choice of color, size or quantity. What's there is what you get.",
+   "de": "Auswahl bei Farbe, Größe oder Stückzahl. Es gibt, was da liegt.",
+   "fr": "Le choix de la couleur, de la taille ou de la quantité. C'est ce qui est en stock.",
+   "es": "Elección de color, tamaño o cantidad. Es lo que hay."
+  },
+  "Dezelfde partij nog een keer. Op is op.": {
+   "en": "The same lot a second time. When it's gone, it's gone.",
+   "de": "Denselben Posten noch einmal. Weg ist weg.",
+   "fr": "Le même lot une seconde fois. Une fois épuisé, c'est fini.",
+   "es": "El mismo lote otra vez. Cuando se acaba, se acaba."
+  },
+  "Aanpassingen aan het product zelf. Wil je dat, dan is ontwikkeling de route.": {
+   "en": "Changes to the product itself. If you want that, development is the route.",
+   "de": "Änderungen am Produkt selbst. Wenn Sie das möchten, ist die Entwicklung der richtige Weg.",
+   "fr": "Des modifications du produit lui-même. Si c'est ce que vous voulez, la voie à suivre est le développement.",
+   "es": "Cambios en el producto en sí. Si los quiere, la vía es el desarrollo."
+  },
+  "Merkartikelen van anderen. Overproductie van andermans merk verkopen wij niet.": {
+   "en": "Other companies' branded goods. We don't sell overproduction of someone else's brand.",
+   "de": "Markenartikel anderer. Überproduktion fremder Marken verkaufen wir nicht.",
+   "fr": "Des articles de marque appartenant à d'autres. Nous ne vendons pas la surproduction de la marque d'autrui.",
+   "es": "Artículos de marcas ajenas. No vendemos sobreproducción de la marca de otros."
+  },
+  "Van lijst tot levering in vier stappen.": {
+   "en": "From list to delivery in four steps.",
+   "de": "Von der Liste bis zur Lieferung in vier Schritten.",
+   "fr": "De la liste à la livraison en quatre étapes.",
+   "es": "De la lista a la entrega en cuatro pasos."
+  },
+  "Je vraagt de lijst op": {
+   "en": "You request the list",
+   "de": "Sie fordern die Liste an",
+   "fr": "Vous demandez la liste",
+   "es": "Usted pide la lista"
+  },
+  "Wat er ligt wisselt, dus er is geen vaste catalogus. Je krijgt wat er nu beschikbaar is, of je vertelt waar je naar zoekt en wij kijken mee.": {
+   "en": "The stock keeps changing, so there is no fixed catalog. You get what's available now, or you tell us what you're looking for and we'll help you look.",
+   "de": "Was dort liegt, wechselt, deshalb gibt es keinen festen Katalog. Sie bekommen, was jetzt verfügbar ist, oder Sie sagen uns, wonach Sie suchen, und wir suchen mit.",
+   "fr": "Le stock change, il n'y a donc pas de catalogue fixe. Vous recevez ce qui est disponible maintenant, ou vous nous dites ce que vous cherchez et nous cherchons avec vous.",
+   "es": "Lo que hay cambia, así que no existe un catálogo fijo. Recibe lo que está disponible ahora, o nos dice qué busca y lo buscamos con usted."
+  },
+  "Wij leggen de partij voor": {
+   "en": "We present the lot",
+   "de": "Wir stellen Ihnen den Posten vor",
+   "fr": "Nous vous présentons le lot",
+   "es": "Le presentamos el lote"
+  },
+  "Per partij zie je wat het is, hoeveel er ligt, in welke staat en wat het kost.": {
+   "en": "For each lot you see what it is, how much there is, what condition it's in and what it costs.",
+   "de": "Zu jedem Posten sehen Sie, was es ist, wie viel da liegt, in welchem Zustand und was es kostet.",
+   "fr": "Pour chaque lot, vous voyez ce que c'est, la quantité disponible, l'état et le prix.",
+   "es": "De cada lote ve qué es, cuánto hay, en qué estado está y cuánto cuesta."
+  },
+  "Controle voordat je betaalt": {
+   "en": "Checked before you pay",
+   "de": "Prüfung, bevor Sie zahlen",
+   "fr": "Contrôle avant paiement",
+   "es": "Control antes de pagar"
+  },
+  "We tellen na en nemen een steekproef. Jij ziet de foto's en het rapport en beslist daarna pas.": {
+   "en": "We count it again and run a sample check. You see the photos and the report, and only then do you decide.",
+   "de": "Wir zählen nach und ziehen eine Stichprobe. Sie sehen die Fotos und den Bericht und entscheiden erst danach.",
+   "fr": "Nous recomptons et contrôlons par échantillonnage. Vous voyez les photos et le rapport, et vous ne décidez qu'ensuite.",
+   "es": "Hacemos el recuento y tomamos una muestra. Usted ve las fotos y el informe, y solo entonces decide."
+  },
+  "Verzending naar Nederland": {
+   "en": "Shipping to the Netherlands",
+   "de": "Versand in die Niederlande",
+   "fr": "Expédition vers les Pays-Bas",
+   "es": "Envío a los Países Bajos"
+  },
+  "Transport en inklaring regelen wij, tot aan je magazijn.": {
+   "en": "We arrange transport and customs clearance, all the way to your warehouse.",
+   "de": "Transport und Verzollung übernehmen wir, bis zu Ihrem Lager.",
+   "fr": "Nous nous chargeons du transport et du dédouanement, jusqu'à votre entrepôt.",
+   "es": "Nos encargamos del transporte y del despacho aduanero, hasta su almacén."
+  },
+  "Voor wie dit werkt": {
+   "en": "Who this works for",
+   "de": "Für wen das passt",
+   "fr": "Pour qui ça marche",
+   "es": "Para quién funciona"
+  },
+  "Als snelheid en prijs zwaarder wegen dan een eigen ontwerp.": {
+   "en": "When speed and price matter more than a design of your own.",
+   "de": "Wenn Tempo und Preis schwerer wiegen als ein eigenes Design.",
+   "fr": "Quand la rapidité et le prix comptent plus qu'un design à vous.",
+   "es": "Cuando la rapidez y el precio pesan más que un diseño propio."
+  },
+  "Webshops": {
+   "en": "Web stores",
+   "de": "Onlineshops",
+   "fr": "Boutiques en ligne",
+   "es": "Tiendas online"
+  },
+  "Een product testen zonder eerst een ontwikkeltraject te betalen.": {
+   "en": "Test a product without paying for a development project first.",
+   "de": "Ein Produkt testen, ohne vorher ein Entwicklungsprojekt zu bezahlen.",
+   "fr": "Tester un produit sans financer d'abord un projet de développement.",
+   "es": "Probar un producto sin pagar antes un proyecto de desarrollo."
+  },
+  "Winkels en actiehandel": {
+   "en": "Stores and promotional retail",
+   "de": "Einzelhandel und Aktionsgeschäft",
+   "fr": "Magasins et discounters",
+   "es": "Tiendas y comercio de ofertas"
+  },
+  "Een partij voor een actie of seizoen, zonder maanden vooruit te bestellen.": {
+   "en": "A lot for a promotion or a season, without ordering months ahead.",
+   "de": "Ein Posten für eine Aktion oder eine Saison, ohne Monate im Voraus zu bestellen.",
+   "fr": "Un lot pour une promotion ou une saison, sans commander des mois à l'avance.",
+   "es": "Un lote para una promoción o una temporada, sin pedir con meses de antelación."
+  },
+  "Bedrijven": {
+   "en": "Companies",
+   "de": "Unternehmen",
+   "fr": "Entreprises",
+   "es": "Empresas"
+  },
+  "Geschenken of gebruiksartikelen in aantallen, direct leverbaar.": {
+   "en": "Gifts or everyday items in volume, available right away.",
+   "de": "Geschenke oder Gebrauchsartikel in Stückzahlen, sofort lieferbar.",
+   "fr": "Cadeaux ou articles utilitaires en quantité, disponibles immédiatement.",
+   "es": "Regalos o artículos de uso diario en cantidad, disponibles de inmediato."
+  },
+  "Liever iets dat alleen van jou is?": {
+   "en": "Prefer something that's yours alone?",
+   "de": "Lieber etwas, das nur Ihnen gehört?",
+   "fr": "Vous préférez quelque chose qui n'appartient qu'à vous ?",
+   "es": "¿Prefiere algo que sea solo suyo?"
+  },
+  "Bekijk hoe ontwikkeling werkt": {
+   "en": "See how development works",
+   "de": "Sehen Sie, wie die Entwicklung abläuft",
+   "fr": "Voir comment fonctionne le développement",
+   "es": "Vea cómo funciona el desarrollo"
+  },
+  "Actuele lijst": {
+   "en": "Current list",
+   "de": "Aktuelle Liste",
+   "fr": "Liste actuelle",
+   "es": "Lista actual"
+  },
+  "Wat ligt er nu?": {
+   "en": "What's available now?",
+   "de": "Was liegt jetzt bereit?",
+   "fr": "Qu'y a-t-il en stock en ce moment ?",
+   "es": "¿Qué hay ahora?"
+  },
+  "Laat je mailadres achter en zeg waar je naar zoekt. Je krijgt de partijen die op dit moment beschikbaar zijn.": {
+   "en": "Leave your email address and tell us what you're looking for. You get the lots that are available right now.",
+   "de": "Hinterlassen Sie Ihre Mailadresse und sagen Sie, wonach Sie suchen. Sie bekommen die Posten, die im Moment verfügbar sind.",
+   "fr": "Laissez votre adresse e-mail et dites ce que vous cherchez. Vous recevez les lots disponibles en ce moment.",
+   "es": "Deje su correo electrónico y díganos qué busca. Recibirá los lotes disponibles en este momento."
+  },
+  "Niet invullen": {
+   "en": "Do not fill in",
+   "de": "Nicht ausfüllen",
+   "fr": "Ne pas remplir",
+   "es": "No rellenar"
+  },
+  "Waar zoek je naar?": {
+   "en": "What are you looking for?",
+   "de": "Wonach suchen Sie?",
+   "fr": "Que cherchez-vous ?",
+   "es": "¿Qué busca?"
+  },
+  "Bijvoorbeeld een productsoort, een aantal of een budget": {
+   "en": "For example a product type, a quantity or a budget",
+   "de": "Zum Beispiel eine Produktart, eine Stückzahl oder ein Budget",
+   "fr": "Par exemple un type de produit, une quantité ou un budget",
+   "es": "Por ejemplo, un tipo de producto, una cantidad o un presupuesto"
+  },
+  "Stuur mij de lijst": {
+   "en": "Send me the list",
+   "de": "Schicken Sie mir die Liste",
+   "fr": "Envoyez-moi la liste",
+   "es": "Envíenme la lista"
+  },
+  "Versturen lukt niet. Mail het direct": {
+   "en": "Sending failed. Email it directly",
+   "de": "Das Senden klappt nicht. Schreiben Sie direkt per Mail",
+   "fr": "L'envoi a échoué. Envoyez-le directement par e-mail",
+   "es": "No se ha podido enviar. Escríbanos directamente"
+  },
+  "Aangekomen.": {
+   "en": "Received.",
+   "de": "Angekommen.",
+   "fr": "Bien reçu.",
+   "es": "Recibido."
+  },
+  "Je krijgt de actuele lijst in je mail.": {
+   "en": "You'll get the current list by email.",
+   "de": "Sie bekommen die aktuelle Liste per Mail.",
+   "fr": "Vous recevrez la liste actuelle par e-mail.",
+   "es": "Recibirá la lista actual en su correo."
+  },
+  "Liever mailen?": {
+   "en": "Prefer email?",
+   "de": "Lieber per Mail?",
+   "fr": "Vous préférez un e-mail ?",
+   "es": "¿Prefiere escribirnos?"
+  },
+  "Restpartijen uit China kopen": {
+   "en": "Buy surplus stock from China",
+   "de": "Restposten aus China kaufen",
+   "fr": "Acheter des lots de surplus en provenance de Chine",
+   "es": "Comprar lotes de excedentes de China"
+  },
+  "Restpartijen uit Chinese overproductie: partijen die al gemaakt zijn, geteld en gecontroleerd voordat je betaalt. Vraag de actuele lijst op.": {
+   "en": "Surplus stock from Chinese overproduction: lots that are already made, counted and checked before you pay. Request the current list.",
+   "de": "Restposten aus chinesischer Überproduktion: bereits produzierte Posten, gezählt und geprüft, bevor Sie zahlen. Fordern Sie die aktuelle Liste an.",
+   "fr": "Lots de surplus issus de la surproduction chinoise : des lots déjà fabriqués, comptés et contrôlés avant que vous ne payiez. Demandez la liste actuelle.",
+   "es": "Lotes de excedentes de la sobreproducción china: lotes ya fabricados, contados y comprobados antes de que usted pague. Pida la lista actual."
+  },
+  "Non disclosure, non use, non circumvention, opgesteld om afdwingbaar te zijn bij Chinese rechtbanken, getekend voordat er ook maar één bestand wordt gedeeld. Delen gebeurt gefaseerd: toolingpartners krijgen productiebestanden, niet je hele go to market plan.": {
+   "en": "Non disclosure, non use, non circumvention, drafted to be enforceable in Chinese courts, signed before a single file is shared. Sharing is staged: tooling partners get manufacturing files, not your whole go to market plan.",
+   "de": "Non disclosure, non use, non circumvention, formuliert für die Durchsetzbarkeit vor chinesischen Gerichten, unterzeichnet, bevor auch nur eine Datei geteilt wird. Die Weitergabe erfolgt gestaffelt: Werkzeugbaupartner erhalten Fertigungsdateien, nicht Ihren gesamten Markteinführungsplan.",
+   "fr": "Non disclosure, non use, non circumvention, rédigé pour être opposable devant les tribunaux chinois, signé avant qu'un seul fichier ne circule. Le partage se fait par étapes : les partenaires outillage reçoivent les fichiers de fabrication, pas votre plan de mise sur le marché.",
+   "es": "Non disclosure, non use, non circumvention, redactado para ser exigible ante los tribunales chinos, firmado antes de compartir un solo archivo. La información se comparte por etapas: los socios de utillaje reciben los archivos de fabricación, no todo su plan de salida al mercado."
+  },
+  "Apparatuur, vloercapaciteit en ervaring in jouw categorie worden ter plekke of door een derde partij geverifieerd voordat een fabriek op je shortlist komt.": {
+   "en": "Equipment, floor capacity and experience in your category are verified on site or by a third party before any factory reaches your shortlist.",
+   "de": "Ausstattung, Produktionskapazität und Erfahrung in Ihrer Kategorie werden vor Ort oder durch einen Dritten geprüft, bevor eine Fabrik auf Ihre Shortlist kommt.",
+   "fr": "Équipement, capacité de production et expérience dans votre catégorie sont vérifiés sur place ou par un tiers avant qu'une usine ne figure sur votre liste restreinte.",
+   "es": "Equipamiento, capacidad de planta y experiencia en su categoría se verifican in situ o mediante un tercero antes de que una fábrica llegue a su preselección."
+  },
+  "Produceren in China: risico en controle": {
+   "en": "Manufacturing in China: risk and control",
+   "de": "Produzieren in China: Risiko und Kontrolle",
+   "fr": "Produire en Chine : risques et contrôle",
+   "es": "Fabricar en China: riesgo y control"
+  },
+  "China is de diepste maakbasis ter wereld. Hoe wij fabrieken screenen, NNN contracten tekenen en elke run laten keuren voordat er iets de haven uit gaat.": {
+   "en": "China is the deepest manufacturing base in the world. How we vet factories, sign NNN contracts and have every run inspected before anything leaves the port.",
+   "de": "China ist die tiefste Fertigungsbasis der Welt. Wie wir Fabriken prüfen, NNN Verträge schließen und jeden Lauf abnehmen lassen, bevor Ware den Hafen verlässt.",
+   "fr": "La Chine, base industrielle la plus dense au monde. Comment nous validons les usines, signons des contrats NNN et faisons inspecter chaque série avant départ.",
+   "es": "China es la base de fabricación más profunda del mundo. Cómo verificamos fábricas, firmamos contratos NNN e inspeccionamos cada tanda antes del embarque."
+  },
+  "We tekenen een NDA voordat wij iets in detail delen. Zodra er een fabriek bij komt, wordt eerst een": {
+   "en": "We sign an NDA before we share anything in detail. Once a factory comes in, an",
+   "de": "Wir unterzeichnen eine NDA, bevor wir irgendetwas im Detail teilen. Sobald eine Fabrik dazukommt, wird zuerst eine",
+   "fr": "Nous signons un NDA avant toute divulgation détaillée de notre côté. Dès qu'une usine entre en jeu, un accord",
+   "es": "Firmamos un acuerdo de confidencialidad antes de compartir nada en detalle. En cuanto interviene una fábrica, se firma primero un acuerdo"
+  },
+  "overeenkomst gesloten voordat tekeningen of specificatiebladen worden gedeeld, en informatie wordt gefaseerd vrijgegeven zodat toolingpartners alleen zien wat ze nodig hebben om te produceren.": {
+   "en": "agreement is signed first, before drawings or spec sheets are shared, and information is released in stages so tooling partners only see what they need to manufacture.",
+   "de": "Vereinbarung geschlossen, bevor Zeichnungen oder Spezifikationsblätter geteilt werden, und Informationen werden gestaffelt freigegeben, sodass Werkzeugbaupartner nur sehen, was sie für die Fertigung brauchen.",
+   "fr": "est d'abord signé avant le partage des plans ou des cahiers des charges, et l'information est communiquée par étapes pour que les partenaires d'outillage ne voient que ce dont ils ont besoin pour fabriquer.",
+   "es": "antes de compartir planos u hojas de especificaciones, y la información se entrega por etapas para que los socios de utillaje solo vean lo que necesitan para fabricar."
+  },
+  "Dan wordt hij niet verscheept. Elke run wordt vóór vertrek uit de fabriek getoetst aan": {
+   "en": "Then it doesn't ship. Before it leaves the factory, every run is checked against",
+   "de": "Dann wird er nicht verschickt. Jeder Produktionslauf wird vor Verlassen der Fabrik nach",
+   "fr": "Elle n'est pas expédiée. Avant de quitter l'usine, chaque série est vérifiée selon les normes d'échantillonnage",
+   "es": "No se envía. Cada tanda se verifica según los estándares de muestreo"
+  },
+  "steekproefnormen; eenheden buiten de afgesproken defectdrempel worden hersteld of afgekeurd op kosten van de fabriek, volgens voorwaarden die zijn vastgelegd voordat de productie startte.": {
+   "en": "sampling standards; units outside the agreed defect threshold are reworked or rejected at the factory's cost, under terms set before production started.",
+   "de": "Stichprobennormen geprüft; Einheiten außerhalb der vereinbarten Mängelschwelle werden auf Kosten der Fabrik nachgebessert oder abgelehnt, gemäß Bedingungen, die vor Produktionsbeginn festgelegt wurden.",
+   "fr": "; les unités hors du seuil de défauts convenu sont reprises ou rejetées aux frais de l'usine, selon des conditions fixées avant le début de la production.",
+   "es": "antes de salir de la fábrica; las unidades que superan el umbral de defectos acordado se reprocesan o se rechazan a cargo de la fábrica, conforme a las condiciones fijadas antes de iniciar la producción."
+  },
+  ") dan CNC of plaatwerk, vanwege de afschrijving van de tooling. Ontwerp en engineering worden per fase begroot; productie en logistiek worden geprijsd op basis van de fabrieksoffertes die we namens jou onderhandelen, met onze fee apart vermeld, nooit verstopt in een opgehoogde stukprijs.": {
+   "en": ") than CNC or sheet metal parts, because of tooling amortization. Design and engineering are scoped per stage; production and logistics are priced against the factory quotes we negotiate on your behalf, with our fee shown separately, never hidden in a marked up unit price.",
+   "de": ") als bei CNC oder Blechteilen, wegen der Werkzeugabschreibung. Design und Engineering werden pro Phase budgetiert; Produktion und Logistik werden auf Basis der Fabrikangebote kalkuliert, die wir in Ihrem Namen verhandeln, mit unserem Honorar separat ausgewiesen, nie versteckt in einem aufgeschlagenen Stückpreis.",
+   "fr": ") plus élevée que pour les pièces usinées CNC ou en tôle, à cause de l'amortissement de l'outillage. La conception et l'ingénierie sont chiffrées par phase ; la production et la logistique sont tarifées sur la base des devis d'usine que nous négocions en votre nom, avec nos honoraires indiqués séparément, jamais dissimulés dans un coût unitaire majoré.",
+   "es": ") más alta que las piezas de CNC o chapa, por la amortización del utillaje. El diseño y la ingeniería se presupuestan por fase; la producción y la logística se valoran a partir de las cotizaciones de fábrica que negociamos en su nombre, con nuestra tarifa indicada aparte, nunca escondida en un precio unitario inflado."
+  },
+  "0 van 6 standaardwaarborgen tot nu toe bevestigd.": {
+   "en": "0 of 6 standard safeguards confirmed so far.",
+   "de": "0 von 6 Standardabsicherungen bisher bestätigt.",
+   "fr": "0 sur 6 mesures de protection standards confirmées jusqu'à présent.",
+   "es": "0 de 6 salvaguardas estándar confirmadas hasta ahora."
+  },
+  "Veelgestelde vragen over produceren in China": {
+   "en": "Frequently asked questions about manufacturing in China",
+   "de": "Häufige Fragen zur Produktion in China",
+   "fr": "Questions fréquentes sur la production en Chine",
+   "es": "Preguntas frecuentes sobre fabricar en China"
+  },
+  "Antwoorden over MOQ, kosten, doorlooptijd, bescherming van je ontwerp, afgekeurde runs en compliance. Wat je weten moet voordat je een product laat maken.": {
+   "en": "Answers on MOQ, cost, lead time, protecting your design, rejected runs and compliance. What you need to know before you have a product made.",
+   "de": "Antworten zu MOQ, Kosten, Durchlaufzeit, Designschutz, abgelehnten Läufen und Compliance. Was Sie wissen müssen, bevor Sie ein Produkt herstellen lassen.",
+   "fr": "Réponses sur le MOQ, les coûts, les délais, la protection de votre design, les séries rejetées et la conformité. À savoir avant de faire fabriquer un produit.",
+   "es": "Respuestas sobre MOQ, costes, plazos, protección de su diseño, tandas rechazadas y cumplimiento normativo. Lo que debe saber antes de fabricar un producto."
+  },
+  "Over ons: het team achter je product": {
+   "en": "About us: the team behind your product",
+   "de": "Über uns: das Team hinter Ihrem Produkt",
+   "fr": "À propos : l'équipe derrière votre produit",
+   "es": "Sobre nosotros: el equipo detrás de su producto"
+  },
+  "CUSTOM+ is Steffan Bakker plus een vast netwerk van gescreende fabrieken. Geen tussenhandel, geen doorverkoop: één verantwoordelijke van ontwerp tot levering.": {
+   "en": "CUSTOM+ is Steffan Bakker plus a fixed network of vetted factories. No middlemen, no reselling: one accountable person from design to delivery.",
+   "de": "CUSTOM+ ist Steffan Bakker und ein festes Netzwerk geprüfter Fabriken. Kein Zwischenhandel, kein Weiterverkauf: ein Verantwortlicher von Design bis Lieferung.",
+   "fr": "CUSTOM+, c'est Steffan Bakker et un réseau stable d'usines validées. Pas d'intermédiaires, pas de revente : un seul responsable, du design à la livraison.",
+   "es": "CUSTOM+ es Steffan Bakker más una red estable de fábricas verificadas. Sin intermediarios, sin reventa: un único responsable del diseño a la entrega."
+  },
+  "MOQ, DFM en AQL uitgelegd": {
+   "en": "MOQ, DFM and AQL explained",
+   "de": "MOQ, DFM und AQL erklärt",
+   "fr": "MOQ, DFM et AQL expliqués",
+   "es": "MOQ, DFM y AQL explicados"
+  },
+  "Wat betekenen MOQ, DFM, AQL, NNN, FOB, IQC en IPQC? De termen die je tegenkomt bij produceren in China, uitgelegd in gewone taal, met een voorbeeld erbij.": {
+   "en": "What do MOQ, DFM, AQL, NNN, FOB, IQC and IPQC mean? The terms you run into when manufacturing in China, explained in plain language, each with an example.",
+   "de": "Was bedeuten MOQ, DFM, AQL, NNN, FOB, IQC und IPQC? Die Begriffe, denen Sie bei der Produktion in China begegnen, in einfachen Worten erklärt, mit Beispiel.",
+   "fr": "Que signifient MOQ, DFM, AQL, NNN, FOB, IQC et IPQC ? Les termes que vous croisez en produisant en Chine, expliqués simplement, exemple à l'appui.",
+   "es": "¿Qué significan MOQ, DFM, AQL, NNN, FOB, IQC e IPQC? Los términos que encontrará al fabricar en China, explicados en lenguaje llano y con un ejemplo."
+  },
+  "Rekentools voor productie in China": {
+   "en": "Calculators for manufacturing in China",
+   "de": "Rechner für die Produktion in China",
+   "fr": "Outils de calcul pour produire en Chine",
+   "es": "Calculadoras para fabricar en China"
+  },
+  "Reken je containervulling, je kostprijs op de kade en je sampletraject door. Gratis hulpmiddelen om te zien of je product uitkan voor je een fabriek benadert.": {
+   "en": "Run the numbers on your container load, landed cost and sampling process. Free tools to see whether your product adds up before you approach a factory.",
+   "de": "Containerfüllung, Einstandspreis am Kai und Musterphase durchrechnen. Kostenlose Tools zeigen, ob sich Ihr Produkt rechnet, bevor Sie eine Fabrik ansprechen.",
+   "fr": "Remplissage du conteneur, coût rendu à quai, parcours d'échantillonnage : outils gratuits pour voir si votre produit est viable avant de contacter une usine.",
+   "es": "Calcule la carga del contenedor, el coste desembarcado y sus rondas de muestras. Herramientas gratuitas: vea si su producto es viable antes de buscar fábrica."
+  },
+  "Vraag een inschatting voor je product": {
+   "en": "Request an estimate for your product",
+   "de": "Einschätzung für Ihr Produkt anfragen",
+   "fr": "Demandez une estimation pour votre produit",
+   "es": "Pida una estimación para su producto"
+  },
+  "Vertel wat je wilt maken. Je krijgt een eerlijke inschatting van kosten, minimumaantallen en doorlooptijd, van iemand die het traject zelf begeleidt.": {
+   "en": "Tell us what you want to make. You get an honest estimate of cost, minimums and lead time, from someone who personally runs the project.",
+   "de": "Sagen Sie uns, was Sie herstellen möchten. Sie erhalten eine ehrliche Einschätzung zu Kosten, Mindestmengen und Dauer, von jemandem, der es selbst begleitet.",
+   "fr": "Dites ce que vous voulez fabriquer. Vous recevez une estimation honnête des coûts, des minimums et des délais, par quelqu'un qui pilote lui-même le projet.",
+   "es": "Cuéntenos qué quiere fabricar. Recibirá una estimación honesta de costes, mínimos y plazos, de alguien que acompaña el proyecto en persona."
+  },
+  "Hoi Steffan,": {
+   "en": "Hi Steffan,",
+   "de": "Hallo Steffan,",
+   "fr": "Bonjour Steffan,",
+   "es": "Hola, Steffan,"
+  },
+  "Field notes over produceren in China": {
+   "en": "Field notes on manufacturing in China",
+   "de": "Field notes zur Produktion in China",
+   "fr": "Field notes sur la production en Chine",
+   "es": "Field notes sobre fabricar en China"
+  },
+  "Eerlijke notities over kosten, samples, onderhandelen over MOQ, kwaliteitscontrole en zeevracht. Wat er echt gebeurt tussen een schets en een zeecontainer.": {
+   "en": "Honest notes on cost, samples, MOQ negotiation, quality control and sea freight. What really happens between a sketch and a shipping container.",
+   "de": "Ehrliche Notizen zu Kosten, Mustern, Verhandlungen über die MOQ, Qualitätskontrolle und Seefracht. Was zwischen Skizze und Schiffscontainer wirklich passiert.",
+   "fr": "Coûts, échantillons, négociation du MOQ, contrôle qualité, fret maritime : des notes honnêtes sur ce qui se passe vraiment entre un croquis et un conteneur.",
+   "es": "Notas honestas sobre costes, muestras, negociación del MOQ, control de calidad y flete marítimo. Lo que pasa de verdad entre un boceto y un contenedor."
+  },
+  "Wat we van je verwerken, en waarom.": {
+   "en": "What we process about you, and why.",
+   "de": "Was wir von Ihnen verarbeiten, und warum.",
+   "fr": "Ce que nous traitons vous concernant, et pourquoi.",
+   "es": "Qué datos suyos tratamos, y por qué."
+  },
+  "Deze site gebruikt geen cookies en geen trackers. Hieronder staat precies wat er wél gebeurt met wat je ons stuurt, welke partijen daarbij helpen en welke rechten je hebt.": {
+   "en": "This site uses no cookies and no trackers. Below is exactly what does happen with what you send us, which parties help with that and what rights you have.",
+   "de": "Diese Website verwendet keine Cookies und keine Tracker. Unten steht genau, was mit dem geschieht, was Sie uns senden, welche Dienstleister dabei helfen und welche Rechte Sie haben.",
+   "fr": "Ce site n'utilise ni cookies ni traceurs. Vous trouverez ci-dessous ce qu'il advient précisément de ce que vous nous envoyez, quels prestataires y contribuent et quels sont vos droits.",
+   "es": "Este sitio no utiliza cookies ni rastreadores. A continuación se explica con precisión qué ocurre con lo que usted nos envía, qué empresas intervienen y qué derechos tiene."
+  },
+  "Laatst bijgewerkt:": {
+   "en": "Last updated:",
+   "de": "Zuletzt aktualisiert:",
+   "fr": "Dernière mise à jour :",
+   "es": "Última actualización:"
+  },
+  "Wie is verantwoordelijk": {
+   "en": "Who is responsible",
+   "de": "Wer verantwortlich ist",
+   "fr": "Qui est responsable",
+   "es": "Quién es el responsable"
+  },
+  "CUSTOM+ is verantwoordelijk voor de verwerking van persoonsgegevens via deze website en het klantportaal. Heb je een vraag over je gegevens, mail dan naar": {
+   "en": "CUSTOM+ is responsible for the processing of personal data through this website and the client portal. If you have a question about your data, email",
+   "de": "CUSTOM+ ist verantwortlich für die Verarbeitung personenbezogener Daten über diese Website und das Kundenportal. Haben Sie eine Frage zu Ihren Daten, schreiben Sie an",
+   "fr": "CUSTOM+ est responsable du traitement des données personnelles via ce site web et le portail client. Pour toute question sur vos données, écrivez à",
+   "es": "CUSTOM+ es responsable del tratamiento de los datos personales a través de este sitio web y del portal de clientes. Si tiene alguna pregunta sobre sus datos, escriba a"
+  },
+  "Naam: CUSTOM+": {
+   "en": "Name: CUSTOM+",
+   "de": "Name: CUSTOM+",
+   "fr": "Nom : CUSTOM+",
+   "es": "Nombre: CUSTOM+"
+  },
+  "Mail:": {
+   "en": "Email:",
+   "de": "E-Mail:",
+   "fr": "E-mail :",
+   "es": "Correo:"
+  },
+  "In het kort": {
+   "en": "In short",
+   "de": "Kurz gefasst",
+   "fr": "En bref",
+   "es": "En resumen"
+  },
+  "Geen cookies, geen analytics, geen advertentiepixels en geen trackers van derden op de publieke site.": {
+   "en": "No cookies, no analytics, no advertising pixels and no third party trackers on the public site.",
+   "de": "Keine Cookies, keine Analysetools, keine Werbepixel und keine Tracker von Dritten auf der öffentlichen Website.",
+   "fr": "Pas de cookies, pas de mesure d'audience, pas de pixels publicitaires et pas de traceurs tiers sur le site public.",
+   "es": "Sin cookies, sin analítica, sin píxeles publicitarios y sin rastreadores de terceros en el sitio público."
+  },
+  "Je gegevens krijgen wij alleen als je ze zelf stuurt: via het contactformulier, per mail, via een geplande afspraak of in het klantportaal.": {
+   "en": "We only get your data when you send it yourself: through the contact form, by email, through a scheduled appointment or in the client portal.",
+   "de": "Ihre Daten erhalten wir nur, wenn Sie sie selbst senden: über das Kontaktformular, per Mail, über einen gebuchten Termin oder im Kundenportal.",
+   "fr": "Nous ne recevons vos données que si vous nous les envoyez vous-même : via le formulaire de contact, par e-mail, via un rendez-vous planifié ou dans le portail client.",
+   "es": "Solo recibimos sus datos si usted mismo nos los envía: mediante el formulario de contacto, por correo electrónico, al agendar una cita o en el portal de clientes."
+  },
+  "Wij verkopen geen gegevens en delen ze alleen met de partijen die nodig zijn om de site en het portaal te laten werken. Die staan hieronder met naam genoemd.": {
+   "en": "We do not sell data, and we only share it with the parties needed to make the site and the portal work. They are listed by name below.",
+   "de": "Wir verkaufen keine Daten und geben sie nur an die Dienstleister weiter, die nötig sind, damit die Website und das Portal funktionieren. Diese sind unten namentlich genannt.",
+   "fr": "Nous ne vendons aucune donnée et ne les partageons qu'avec les prestataires nécessaires au fonctionnement du site et du portail. Ils sont nommés ci-dessous.",
+   "es": "No vendemos datos y solo los compartimos con las empresas necesarias para que el sitio y el portal funcionen. Se indican más abajo por su nombre."
+  },
+  "Contactformulier en aanmelding voor Field notes": {
+   "en": "Contact form and signing up for Field notes",
+   "de": "Kontaktformular und Anmeldung für Field notes",
+   "fr": "Formulaire de contact et inscription aux Field notes",
+   "es": "Formulario de contacto y suscripción a Field notes"
+  },
+  "Op de contactpagina vul je een onderwerp, je mailadres en je bericht in. Die drie velden zijn alles wat het formulier verstuurt; een verborgen spamveld hoort er technisch bij, maar blijft leeg. De inzending wordt afgehandeld door Netlify Forms, onderdeel van onze hosting, en komt bij ons binnen op": {
+   "en": "On the contact page you enter a subject, your email address and your message. Those three fields are all the form sends; a hidden spam field is technically part of it, but stays empty. The submission is handled by Netlify Forms, part of our hosting, and reaches us at",
+   "de": "Auf der Kontaktseite geben Sie einen Betreff, Ihre Mailadresse und Ihre Nachricht ein. Diese drei Felder sind alles, was das Formular versendet; ein verborgenes Spamfeld gehört technisch dazu, bleibt aber leer. Die Einsendung wird von Netlify Forms verarbeitet, einem Teil unseres Hostings, und geht bei uns ein unter",
+   "fr": "Sur la page de contact, vous saisissez un objet, votre adresse e-mail et votre message. Ces trois champs sont tout ce que le formulaire envoie ; un champ antispam masqué en fait techniquement partie, mais il reste vide. L'envoi est traité par Netlify Forms, qui fait partie de notre hébergement, et nous parvient à l'adresse",
+   "es": "En la página de contacto usted indica un asunto, su correo electrónico y su mensaje. Esos tres campos son todo lo que envía el formulario; técnicamente incluye también un campo oculto contra el spam, pero queda vacío. El envío lo gestiona Netlify Forms, que forma parte de nuestro alojamiento, y nos llega a"
+  },
+  "Wij gebruiken je bericht alleen om je vraag te beantwoorden en, als er een opdracht uit volgt, om die voor te bereiden. Inzendingen blijven in het formulierenoverzicht bij Netlify staan totdat wij ze verwijderen; wij bewaren ze niet langer dan nodig is voor je aanvraag en de samenwerking die er eventueel uit volgt.": {
+   "en": "We use your message only to answer your question and, if a project follows from it, to prepare that project. Submissions stay in the forms overview at Netlify until we delete them; we keep them no longer than needed for your request and any collaboration that follows from it.",
+   "de": "Wir verwenden Ihre Nachricht nur, um Ihre Frage zu beantworten und, falls daraus ein Auftrag entsteht, um diesen vorzubereiten. Einsendungen bleiben in der Formularübersicht bei Netlify gespeichert, bis wir sie löschen; wir bewahren sie nicht länger auf, als es für Ihre Anfrage und die Zusammenarbeit nötig ist, die sich daraus möglicherweise ergibt.",
+   "fr": "Nous n'utilisons votre message que pour répondre à votre question et, si une mission en découle, pour la préparer. Les envois restent dans la liste des formulaires chez Netlify jusqu'à ce que nous les supprimions ; nous ne les conservons pas plus longtemps que nécessaire pour votre demande et pour la collaboration qui peut en découler.",
+   "es": "Utilizamos su mensaje únicamente para responder a su consulta y, si de ella surge un encargo, para prepararlo. Los envíos permanecen en el listado de formularios de Netlify hasta que los eliminamos; no los conservamos más tiempo del necesario para su solicitud y para la colaboración que, en su caso, se derive de ella."
+  },
+  "Meld je je onderaan de pagina aan voor Field notes, dan gaat je mailadres via datzelfde formulier naar ons. Er hangt geen nieuwsbriefsysteem aan: wij sturen af en toe zelf een mail. Afmelden kan altijd met een mail naar": {
+   "en": "If you sign up for Field notes at the bottom of the page, your email address reaches us through that same form. There is no newsletter system behind it: we send an email ourselves now and then. You can unsubscribe at any time by emailing",
+   "de": "Melden Sie sich unten auf der Seite für Field notes an, geht Ihre Mailadresse über dasselbe Formular an uns. Es hängt kein Newslettersystem daran: Wir schicken ab und zu selbst eine Mail. Abmelden können Sie sich jederzeit mit einer Mail an",
+   "fr": "Si vous vous inscrivez aux Field notes en bas de page, votre adresse e-mail nous parvient via ce même formulaire. Aucun système de newsletter n'y est relié : nous envoyons nous-mêmes un e-mail de temps en temps. Vous pouvez vous désinscrire à tout moment par un e-mail à",
+   "es": "Si se suscribe a Field notes al pie de la página, su correo electrónico nos llega a través de ese mismo formulario. No hay ningún sistema de boletines detrás: de vez en cuando enviamos nosotros mismos un correo. Puede darse de baja en cualquier momento con un correo a"
+  },
+  "Terwijl je het formulier invult, bewaart je browser een concept in de eigen opslag (zie verderop), zodat je niets kwijtraakt als je de pagina per ongeluk sluit. Dat concept verlaat je apparaat niet.": {
+   "en": "While you fill in the form, your browser keeps a draft in its own storage (see further down), so you lose nothing if you close the page by accident. That draft does not leave your device.",
+   "de": "Während Sie das Formular ausfüllen, speichert Ihr Browser einen Entwurf in seinem eigenen Speicher (siehe weiter unten), damit nichts verloren geht, wenn Sie die Seite versehentlich schließen. Dieser Entwurf verlässt Ihr Gerät nicht.",
+   "fr": "Pendant que vous remplissez le formulaire, votre navigateur conserve un brouillon dans son propre stockage (voir plus bas), pour que vous ne perdiez rien si vous fermez la page par erreur. Ce brouillon ne quitte pas votre appareil.",
+   "es": "Mientras rellena el formulario, su navegador guarda un borrador en su propio almacenamiento (véase más abajo), para que no pierda nada si cierra la página por accidente. Ese borrador no sale de su dispositivo."
+  },
+  "Een gesprek plannen via Cal.com": {
+   "en": "Scheduling a call through Cal.com",
+   "de": "Ein Gespräch über Cal.com vereinbaren",
+   "fr": "Planifier un appel via Cal.com",
+   "es": "Agendar una llamada a través de Cal.com"
+  },
+  "Wil je direct een gesprek inplannen, dan opent de agenda van Cal.com in een kader op onze site. Die agenda wordt pas geladen als je hem opent; tot dat moment wordt er niets van Cal.com opgehaald. Wat je in de agenda invult (naam, mailadres, gekozen tijd en eventuele toelichting) verwerkt Cal.com volgens zijn eigen privacybeleid, en Cal.com kan daarbij cookies plaatsen binnen dat kader. Wij ontvangen de afspraak in onze agenda en gebruiken je gegevens alleen voor dat gesprek.": {
+   "en": "If you want to schedule a call right away, the Cal.com calendar opens in a frame on our site. That calendar is only loaded when you open it; until then, nothing is retrieved from Cal.com. What you enter in the calendar (name, email address, chosen time and any notes) is processed by Cal.com under its own privacy policy, and Cal.com may place cookies within that frame. We receive the appointment in our calendar and use your data only for that call.",
+   "de": "Möchten Sie direkt ein Gespräch vereinbaren, öffnet sich der Kalender von Cal.com in einem Rahmen auf unserer Website. Dieser Kalender wird erst geladen, wenn Sie ihn öffnen; bis dahin wird nichts von Cal.com abgerufen. Was Sie im Kalender eingeben (Name, Mailadresse, gewählte Zeit und eventuelle Anmerkungen), verarbeitet Cal.com nach seiner eigenen Datenschutzerklärung, und Cal.com kann dabei innerhalb dieses Rahmens Cookies setzen. Wir erhalten den Termin in unserem Kalender und verwenden Ihre Daten nur für dieses Gespräch.",
+   "fr": "Si vous souhaitez planifier un appel tout de suite, l'agenda de Cal.com s'ouvre dans un cadre sur notre site. Cet agenda ne se charge que lorsque vous l'ouvrez ; jusque-là, rien n'est récupéré auprès de Cal.com. Ce que vous saisissez dans l'agenda (nom, adresse e-mail, créneau choisi et éventuelles précisions) est traité par Cal.com selon sa propre politique de confidentialité, et Cal.com peut à cette occasion déposer des cookies à l'intérieur de ce cadre. Nous recevons le rendez-vous dans notre agenda et n'utilisons vos données que pour cet appel.",
+   "es": "Si quiere agendar una llamada directamente, la agenda de Cal.com se abre en un marco dentro de nuestro sitio. Esa agenda solo se carga cuando usted la abre; hasta ese momento no se descarga nada de Cal.com. Lo que introduce en la agenda (nombre, correo electrónico, hora elegida y, en su caso, comentarios) lo trata Cal.com conforme a su propia política de privacidad, y Cal.com puede colocar cookies dentro de ese marco. Nosotros recibimos la cita en nuestra agenda y utilizamos sus datos únicamente para esa llamada."
+  },
+  "Mailcontact": {
+   "en": "Contact by email",
+   "de": "Kontakt per Mail",
+   "fr": "Contact par e-mail",
+   "es": "Contacto por correo"
+  },
+  "Mail je ons rechtstreeks, dan bewaren wij je bericht in onze mailbox zolang dat nodig is om je vraag te beantwoorden. Volgt er een opdracht, dan bewaren wij de correspondentie zolang de samenwerking loopt en zolang de wettelijke bewaartermijn voor onze administratie geldt.": {
+   "en": "If you email us directly, we keep your message in our mailbox for as long as needed to answer your question. If a project follows, we keep the correspondence for as long as the collaboration runs and for as long as the statutory retention period for our records applies.",
+   "de": "Schreiben Sie uns direkt eine Mail, bewahren wir Ihre Nachricht in unserem Postfach auf, solange das nötig ist, um Ihre Frage zu beantworten. Folgt ein Auftrag, bewahren wir die Korrespondenz auf, solange die Zusammenarbeit läuft und solange die gesetzliche Aufbewahrungsfrist für unsere Buchhaltung gilt.",
+   "fr": "Si vous nous écrivez directement, nous conservons votre message dans notre boîte mail aussi longtemps que nécessaire pour répondre à votre question. Si une mission s'ensuit, nous conservons la correspondance tant que dure la collaboration et tant que s'applique la durée légale de conservation de nos documents administratifs.",
+   "es": "Si nos escribe directamente, conservamos su mensaje en nuestro buzón mientras sea necesario para responder a su consulta. Si de ello surge un encargo, conservamos la correspondencia mientras dure la colaboración y mientras rija el plazo legal de conservación de nuestra contabilidad."
+  },
+  "AI productcheck": {
+   "en": "AI product check",
+   "de": "KI Produktcheck",
+   "fr": "Check produit IA",
+   "es": "Check de producto con IA"
+  },
+  "Op de pagina voor ecommerce kun je in een chatvenster beschrijven wat je wilt laten maken. Wat je daar typt, sturen wij via onze eigen server door naar Mistral AI om een antwoord te maken; het model kan daarbij openbare webbronnen raadplegen voor een indicatie van prijzen. Wij slaan die gesprekken zelf niet op. Zet er geen persoonsgegevens in: de check heeft alleen je productidee nodig.": {
+   "en": "On the ecommerce page you can describe in a chat window what you want to have made. What you type there is forwarded through our own server to Mistral AI to generate an answer; the model may consult public web sources for an indication of prices. We do not store those conversations ourselves. Do not put personal data in it: the check only needs your product idea.",
+   "de": "Auf der Seite für Ecommerce können Sie in einem Chatfenster beschreiben, was Sie herstellen lassen möchten. Was Sie dort eingeben, leiten wir über unseren eigenen Server an Mistral AI weiter, um eine Antwort zu erzeugen; das Modell kann dabei öffentliche Webquellen heranziehen, um Preise grob einzuschätzen. Wir selbst speichern diese Gespräche nicht. Geben Sie dort keine personenbezogenen Daten ein: Der Check braucht nur Ihre Produktidee.",
+   "fr": "Sur la page ecommerce, vous pouvez décrire dans une fenêtre de discussion ce que vous voulez faire fabriquer. Ce que vous y saisissez est transmis, via notre propre serveur, à Mistral AI pour générer une réponse ; le modèle peut à cette occasion consulter des sources publiques sur le web pour donner une indication de prix. Nous n'enregistrons pas ces conversations nous-mêmes. N'y mettez pas de données personnelles : le check n'a besoin que de votre idée de produit.",
+   "es": "En la página de ecommerce puede describir en una ventana de chat lo que quiere fabricar. Lo que escribe allí lo reenviamos, a través de nuestro propio servidor, a Mistral AI para generar una respuesta; el modelo puede consultar fuentes web públicas para dar una indicación de precios. Nosotros no guardamos esas conversaciones. No incluya datos personales: el check solo necesita su idea de producto."
+  },
+  "Wat je browser bewaart": {
+   "en": "What your browser stores",
+   "de": "Was Ihr Browser speichert",
+   "fr": "Ce que votre navigateur conserve",
+   "es": "Lo que guarda su navegador"
+  },
+  "De publieke site gebruikt geen cookies. Wel zet de site een paar voorkeuren in de eigen opslag van je browser (localStorage en sessionStorage). Die blijven op je apparaat, worden nooit naar ons of naar anderen verstuurd en kun je zelf wissen via de instellingen van je browser.": {
+   "en": "The public site uses no cookies. The site does put a few preferences in your browser's own storage (localStorage and sessionStorage). They stay on your device, are never sent to us or to anyone else, and you can clear them yourself in your browser settings.",
+   "de": "Die öffentliche Website verwendet keine Cookies. Sie legt aber einige Einstellungen im eigenen Speicher Ihres Browsers ab (localStorage und sessionStorage). Diese bleiben auf Ihrem Gerät, werden nie an uns oder an andere gesendet, und Sie können sie über die Einstellungen Ihres Browsers selbst löschen.",
+   "fr": "Le site public n'utilise pas de cookies. En revanche, il enregistre quelques préférences dans le stockage propre à votre navigateur (localStorage et sessionStorage). Elles restent sur votre appareil, ne sont jamais envoyées ni à nous ni à des tiers, et vous pouvez les effacer vous-même dans les réglages de votre navigateur.",
+   "es": "El sitio público no utiliza cookies. Sí guarda algunas preferencias en el almacenamiento propio de su navegador (localStorage y sessionStorage). Permanecen en su dispositivo, nunca se envían ni a nosotros ni a nadie más, y usted mismo puede borrarlas desde la configuración de su navegador."
+  },
+  "cp_lang: de taal die je op de site hebt gekozen.": {
+   "en": "cp_lang: the language you chose on the site.",
+   "de": "cp_lang: die Sprache, die Sie auf der Website gewählt haben.",
+   "fr": "cp_lang : la langue que vous avez choisie sur le site.",
+   "es": "cp_lang: el idioma que ha elegido en el sitio."
+  },
+  "cp_returning: dat je hier al eerder was, zodat de kennismakingspopup niet elke keer opnieuw verschijnt.": {
+   "en": "cp_returning: that you have been here before, so the welcome popup does not appear again every time.",
+   "de": "cp_returning: dass Sie schon einmal hier waren, damit das Begrüßungsfenster nicht jedes Mal erneut erscheint.",
+   "fr": "cp_returning : le fait que vous êtes déjà venu, pour que la fenêtre d'accueil ne réapparaisse pas à chaque visite.",
+   "es": "cp_returning: que ya ha estado aquí antes, para que la ventana emergente de bienvenida no aparezca cada vez."
+  },
+  "cp_blueprint: of je de blauwdrukweergave hebt aangezet.": {
+   "en": "cp_blueprint: whether you have turned on blueprint mode.",
+   "de": "cp_blueprint: ob Sie die Blaupausenansicht eingeschaltet haben.",
+   "fr": "cp_blueprint : si vous avez activé le mode plan.",
+   "es": "cp_blueprint: si ha activado el modo de plano."
+  },
+  "cp_form_state: het concept van je bericht op de contactpagina, maximaal dertig dagen.": {
+   "en": "cp_form_state: the draft of your message on the contact page, for thirty days at most.",
+   "de": "cp_form_state: der Entwurf Ihrer Nachricht auf der Kontaktseite, höchstens dreißig Tage.",
+   "fr": "cp_form_state : le brouillon de votre message sur la page de contact, pendant trente jours au maximum.",
+   "es": "cp_form_state: el borrador de su mensaje en la página de contacto, durante un máximo de treinta días."
+  },
+  "cpBlogRead: welke blogartikelen je hebt gelezen, voor het leesvinkje bij de artikelen.": {
+   "en": "cpBlogRead: which blog articles you have read, for the check mark that shows an article as read.",
+   "de": "cpBlogRead: welche Blogartikel Sie gelesen haben, für das Lesehäkchen bei den Artikeln.",
+   "fr": "cpBlogRead : les articles de blog que vous avez lus, pour la coche de lecture affichée sur les articles.",
+   "es": "cpBlogRead: qué artículos del blog ha leído, para la marca de leído junto a los artículos."
+  },
+  "cp_intro en cp_scope_seen: alleen voor de duur van je tabblad, zodat de intro en de scopecheck niet twee keer verschijnen.": {
+   "en": "cp_intro and cp_scope_seen: only for as long as your tab is open, so the intro and the scope check do not appear twice.",
+   "de": "cp_intro und cp_scope_seen: nur solange Ihr Tab geöffnet ist, damit das Intro und der Scope Check nicht zweimal erscheinen.",
+   "fr": "cp_intro et cp_scope_seen : uniquement pour la durée de votre onglet, afin que l'intro et le diagnostic de cadrage n'apparaissent pas deux fois.",
+   "es": "cp_intro y cp_scope_seen: solo mientras la pestaña está abierta, para que la introducción y la verificación de alcance no aparezcan dos veces."
+  },
+  "Hosting en technische gegevens": {
+   "en": "Hosting and technical data",
+   "de": "Hosting und technische Daten",
+   "fr": "Hébergement et données techniques",
+   "es": "Alojamiento y datos técnicos"
+  },
+  "De site en het klantportaal worden gehost door Netlify. Om pagina's te kunnen leveren en misbruik te weren verwerkt Netlify technische gegevens zoals je IP-adres, browsertype en het tijdstip van je bezoek in serverlogboeken. Wij gebruiken die gegevens niet om bezoekers te volgen of te profileren.": {
+   "en": "The site and the client portal are hosted by Netlify. To deliver pages and keep out abuse, Netlify processes technical data such as your IP address, browser type and the time of your visit in server logs. We do not use that data to track or profile visitors.",
+   "de": "Die Website und das Kundenportal werden von Netlify gehostet. Um Seiten ausliefern und Missbrauch abwehren zu können, verarbeitet Netlify technische Daten wie Ihre IP-Adresse, den Browsertyp und den Zeitpunkt Ihres Besuchs in Serverprotokollen. Wir verwenden diese Daten nicht, um Besucher zu verfolgen oder Profile zu erstellen.",
+   "fr": "Le site et le portail client sont hébergés par Netlify. Pour pouvoir servir les pages et empêcher les abus, Netlify traite des données techniques telles que votre adresse IP, le type de navigateur et l'heure de votre visite dans des journaux de serveur. Nous n'utilisons pas ces données pour suivre ou profiler les visiteurs.",
+   "es": "El sitio y el portal de clientes están alojados en Netlify. Para poder servir las páginas y evitar abusos, Netlify trata datos técnicos como su dirección IP, el tipo de navegador y la hora de su visita en registros del servidor. Nosotros no utilizamos esos datos para seguir a los visitantes ni para elaborar perfiles."
+  },
+  "Klantportaal": {
+   "en": "Client portal",
+   "de": "Kundenportal",
+   "fr": "Portail client",
+   "es": "Portal de clientes"
+  },
+  "Het klantportaal is alleen bereikbaar met een persoonlijke login. Je projectgegevens, berichten, documenten, foto's en facturen staan in een database en bestandsopslag bij Supabase. Elke klant ziet uitsluitend zijn eigen gegevens: die afscherming zit op databaseniveau (row level security) en niet alleen in het scherm. Downloadlinks voor documenten zijn persoonlijk en verlopen na korte tijd.": {
+   "en": "The client portal can only be reached with a personal login. Your project data, messages, documents, photos and invoices are held in a database and file storage at Supabase. Each client sees only their own data: that separation is enforced at database level (row level security) and not just in the interface. Download links for documents are personal and expire after a short time.",
+   "de": "Das Kundenportal ist nur mit einem persönlichen Login erreichbar. Ihre Projektdaten, Nachrichten, Dokumente, Fotos und Rechnungen liegen in einer Datenbank und einem Dateispeicher bei Supabase. Jeder Kunde sieht ausschließlich seine eigenen Daten: Diese Abschottung ist auf Datenbankebene umgesetzt (row level security) und nicht nur in der Oberfläche. Downloadlinks für Dokumente sind persönlich und laufen nach kurzer Zeit ab.",
+   "fr": "Le portail client n'est accessible qu'avec un identifiant personnel. Les données de votre projet, vos messages, documents, photos et factures sont stockés dans une base de données et un espace de stockage de fichiers chez Supabase. Chaque client voit uniquement ses propres données : ce cloisonnement est assuré au niveau de la base de données (row level security), et pas seulement à l'écran. Les liens de téléchargement des documents sont personnels et expirent rapidement.",
+   "es": "Al portal de clientes solo se accede con un inicio de sesión personal. Los datos de su proyecto, mensajes, documentos, fotos y facturas se guardan en una base de datos y un almacenamiento de archivos de Supabase. Cada cliente ve exclusivamente sus propios datos: esa separación se aplica en la propia base de datos (row level security) y no solo en la pantalla. Los enlaces de descarga de documentos son personales y caducan al poco tiempo."
+  },
+  "Meldingen en facturen uit het portaal worden per mail verzonden via Resend. Het portaal laadt daarnaast lettertypen van Google Fonts; daarbij ziet Google het IP-adres van je browser.": {
+   "en": "Notifications and invoices from the portal are sent by email through Resend. The portal also loads fonts from Google Fonts; in doing so, Google sees your browser's IP address.",
+   "de": "Benachrichtigungen und Rechnungen aus dem Portal werden per Mail über Resend versendet. Das Portal lädt außerdem Schriftarten von Google Fonts; dabei sieht Google die IP-Adresse Ihres Browsers.",
+   "fr": "Les notifications et les factures du portail sont envoyées par e-mail via Resend. Le portail charge par ailleurs des polices de Google Fonts ; à cette occasion, Google voit l'adresse IP de votre navigateur.",
+   "es": "Las notificaciones y las facturas del portal se envían por correo electrónico a través de Resend. Además, el portal carga tipografías de Google Fonts; al hacerlo, Google ve la dirección IP de su navegador."
+  },
+  "Bekijk je het portaal in de demomodus, zonder login, dan draait alles op voorbeelddata in je eigen browser en gaat er niets naar een server.": {
+   "en": "If you view the portal in demo mode, without a login, everything runs on sample data in your own browser and nothing goes to a server.",
+   "de": "Sehen Sie sich das Portal im Demomodus an, ohne Login, läuft alles mit Beispieldaten in Ihrem eigenen Browser, und nichts geht an einen Server.",
+   "fr": "Si vous consultez le portail en mode démo, sans identifiant, tout fonctionne avec des données d'exemple dans votre propre navigateur et rien n'est envoyé à un serveur.",
+   "es": "Si ve el portal en modo demo, sin iniciar sesión, todo funciona con datos de ejemplo en su propio navegador y no se envía nada a ningún servidor."
+  },
+  "Met wie we gegevens delen": {
+   "en": "Who we share data with",
+   "de": "Mit wem wir Daten teilen",
+   "fr": "Avec qui nous partageons des données",
+   "es": "Con quién compartimos datos"
+  },
+  "Wij schakelen alleen partijen in die nodig zijn om de site en het portaal te laten werken. Zij verwerken gegevens in onze opdracht en voor geen ander doel:": {
+   "en": "We only use parties that are needed to make the site and the portal work. They process data on our behalf and for no other purpose:",
+   "de": "Wir setzen nur Dienstleister ein, die nötig sind, damit die Website und das Portal funktionieren. Sie verarbeiten Daten in unserem Auftrag und zu keinem anderen Zweck:",
+   "fr": "Nous ne faisons appel qu'aux prestataires nécessaires au fonctionnement du site et du portail. Ils traitent des données pour notre compte et à aucune autre fin :",
+   "es": "Solo recurrimos a las empresas necesarias para que el sitio y el portal funcionen. Tratan los datos por encargo nuestro y sin ningún otro fin:"
+  },
+  "Netlify: hosting van de site en het portaal en afhandeling van het contactformulier.": {
+   "en": "Netlify: hosting of the site and the portal, and handling of the contact form.",
+   "de": "Netlify: Hosting der Website und des Portals sowie Verarbeitung des Kontaktformulars.",
+   "fr": "Netlify : hébergement du site et du portail, et traitement du formulaire de contact.",
+   "es": "Netlify: alojamiento del sitio y del portal, y gestión del formulario de contacto."
+  },
+  "Cal.com: het plannen van een gesprek, alleen als je de agenda opent.": {
+   "en": "Cal.com: scheduling a call, only if you open the calendar.",
+   "de": "Cal.com: die Terminvereinbarung für ein Gespräch, nur wenn Sie den Kalender öffnen.",
+   "fr": "Cal.com : la planification d'un appel, uniquement si vous ouvrez l'agenda.",
+   "es": "Cal.com: para agendar una llamada, solo si usted abre la agenda."
+  },
+  "Mistral AI: het antwoord van de AI productcheck.": {
+   "en": "Mistral AI: the answer from the AI product check.",
+   "de": "Mistral AI: die Antwort des KI Produktchecks.",
+   "fr": "Mistral AI : la réponse du check produit IA.",
+   "es": "Mistral AI: la respuesta del check de producto con IA."
+  },
+  "Supabase: database en bestandsopslag van het klantportaal.": {
+   "en": "Supabase: database and file storage for the client portal.",
+   "de": "Supabase: Datenbank und Dateispeicher des Kundenportals.",
+   "fr": "Supabase : base de données et stockage de fichiers du portail client.",
+   "es": "Supabase: base de datos y almacenamiento de archivos del portal de clientes."
+  },
+  "Resend: het verzenden van mail vanuit het klantportaal.": {
+   "en": "Resend: sending email from the client portal.",
+   "de": "Resend: der Mailversand aus dem Kundenportal.",
+   "fr": "Resend : l'envoi d'e-mails depuis le portail client.",
+   "es": "Resend: el envío de correos desde el portal de clientes."
+  },
+  "Google Fonts: lettertypen in het klantportaal.": {
+   "en": "Google Fonts: fonts in the client portal.",
+   "de": "Google Fonts: Schriftarten im Kundenportal.",
+   "fr": "Google Fonts : les polices du portail client.",
+   "es": "Google Fonts: tipografías del portal de clientes."
+  },
+  "Een aantal van deze partijen is gevestigd buiten de Europese Unie.": {
+   "en": "Some of these parties are based outside the European Union.",
+   "de": "Einige dieser Dienstleister haben ihren Sitz außerhalb der Europäischen Union.",
+   "fr": "Certains de ces prestataires sont établis en dehors de l'Union européenne.",
+   "es": "Algunas de estas empresas están establecidas fuera de la Unión Europea."
+  },
+  "Grondslag en bewaartermijn": {
+   "en": "Legal basis and retention period",
+   "de": "Rechtsgrundlage und Aufbewahrungsfrist",
+   "fr": "Base légale et durée de conservation",
+   "es": "Base jurídica y plazo de conservación"
+  },
+  "Wij verwerken je gegevens omdat dat nodig is om je vraag te beantwoorden of een overeenkomst met je voor te bereiden en uit te voeren, en vanuit het gerechtvaardigde belang om de site veilig en werkend te houden. Gegevens die wij wettelijk moeten bewaren, zoals facturen, bewaren wij zolang die wettelijke termijn geldt. Al het andere bewaren wij niet langer dan nodig is voor het doel waarvoor je het ons gaf.": {
+   "en": "We process your data because it is necessary to answer your question or to prepare and perform an agreement with you, and on the basis of our legitimate interest in keeping the site secure and working. Data we are legally required to keep, such as invoices, we keep for as long as that statutory period applies. Everything else we keep no longer than necessary for the purpose for which you gave it to us.",
+   "de": "Wir verarbeiten Ihre Daten, weil das nötig ist, um Ihre Frage zu beantworten oder einen Vertrag mit Ihnen vorzubereiten und zu erfüllen, und aufgrund des berechtigten Interesses, die Website sicher und funktionsfähig zu halten. Daten, die wir gesetzlich aufbewahren müssen, etwa Rechnungen, bewahren wir so lange auf, wie die gesetzliche Frist gilt. Alles andere bewahren wir nicht länger auf, als es für den Zweck nötig ist, zu dem Sie es uns gegeben haben.",
+   "fr": "Nous traitons vos données parce que c'est nécessaire pour répondre à votre question ou pour préparer et exécuter un contrat avec vous, et sur la base de notre intérêt légitime à maintenir le site sûr et opérationnel. Les données que la loi nous oblige à conserver, comme les factures, sont conservées aussi longtemps que court ce délai légal. Tout le reste n'est pas conservé plus longtemps que nécessaire au regard de la finalité pour laquelle vous nous l'avez confié.",
+   "es": "Tratamos sus datos porque es necesario para responder a su consulta o para preparar y ejecutar un contrato con usted, y por el interés legítimo de mantener el sitio seguro y en funcionamiento. Los datos que la ley nos obliga a conservar, como las facturas, los conservamos mientras rija ese plazo legal. Todo lo demás no lo conservamos más tiempo del necesario para el fin con el que usted nos lo facilitó."
+  },
+  "Je rechten": {
+   "en": "Your rights",
+   "de": "Ihre Rechte",
+   "fr": "Vos droits",
+   "es": "Sus derechos"
+  },
+  "Je hebt het recht om in te zien welke gegevens wij van je hebben, om ze te laten corrigeren of verwijderen, om de verwerking te laten beperken, om bezwaar te maken en om je gegevens in een gangbaar bestandsformaat te ontvangen. Mail je verzoek naar": {
+   "en": "You have the right to see which data we hold about you, to have it corrected or deleted, to have its processing restricted, to object, and to receive your data in a commonly used file format. Email your request to",
+   "de": "Sie haben das Recht zu erfahren, welche Daten wir von Ihnen haben, sie berichtigen oder löschen zu lassen, die Verarbeitung einschränken zu lassen, Widerspruch einzulegen und Ihre Daten in einem gängigen Dateiformat zu erhalten. Senden Sie Ihre Anfrage per Mail an",
+   "fr": "Vous avez le droit de consulter les données que nous détenons à votre sujet, de les faire rectifier ou supprimer, de faire limiter le traitement, de vous y opposer et de recevoir vos données dans un format de fichier courant. Envoyez votre demande par e-mail à",
+   "es": "Tiene derecho a acceder a los datos que tenemos sobre usted, a que se rectifiquen o se supriman, a que se limite su tratamiento, a oponerse a él y a recibir sus datos en un formato de archivo de uso común. Envíe su solicitud a"
+  },
+  "; wij reageren zo snel mogelijk en uiterlijk binnen een maand.": {
+   "en": "; we respond as soon as possible and within one month at the latest.",
+   "de": "; wir antworten so schnell wie möglich und spätestens innerhalb eines Monats.",
+   "fr": " ; nous répondons dès que possible et au plus tard dans un délai d'un mois.",
+   "es": "; respondemos lo antes posible y, como máximo, en el plazo de un mes."
+  },
+  "Ben je niet tevreden over hoe wij met je gegevens omgaan, dan kun je een klacht indienen bij de Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl).": {
+   "en": "If you are not satisfied with how we handle your data, you can file a complaint with the Autoriteit Persoonsgegevens (the Dutch Data Protection Authority, autoriteitpersoonsgegevens.nl).",
+   "de": "Sind Sie nicht zufrieden damit, wie wir mit Ihren Daten umgehen, können Sie bei der Autoriteit Persoonsgegevens (der niederländischen Datenschutzbehörde, autoriteitpersoonsgegevens.nl) Beschwerde einreichen.",
+   "fr": "Si vous n'êtes pas satisfait de la manière dont nous traitons vos données, vous pouvez déposer une réclamation auprès de l'Autoriteit Persoonsgegevens (l'autorité néerlandaise de protection des données, autoriteitpersoonsgegevens.nl).",
+   "es": "Si no está conforme con la forma en que tratamos sus datos, puede presentar una reclamación ante la Autoriteit Persoonsgegevens (la autoridad neerlandesa de protección de datos, autoriteitpersoonsgegevens.nl)."
+  },
+  "Wijzigingen": {
+   "en": "Changes",
+   "de": "Änderungen",
+   "fr": "Modifications",
+   "es": "Cambios"
+  },
+  "Verandert er iets aan de site of aan de partijen die wij inschakelen, dan passen wij deze verklaring aan. De datum bovenaan laat zien wanneer dat voor het laatst is gebeurd.": {
+   "en": "If anything changes about the site or the parties we use, we update this statement. The date at the top shows when that last happened.",
+   "de": "Ändert sich etwas an der Website oder an den Dienstleistern, die wir einsetzen, passen wir diese Erklärung an. Das Datum oben zeigt, wann das zuletzt geschehen ist.",
+   "fr": "Si le site ou les prestataires auxquels nous faisons appel changent, nous mettons cette déclaration à jour. La date en haut de page indique la dernière modification.",
+   "es": "Si cambia algo en el sitio o en las empresas a las que recurrimos, actualizamos esta declaración. La fecha de la parte superior indica cuándo se hizo por última vez."
+  },
+  "Vragen over je gegevens?": {
+   "en": "Questions about your data?",
+   "de": "Fragen zu Ihren Daten?",
+   "fr": "Des questions sur vos données ?",
+   "es": "¿Preguntas sobre sus datos?"
+  },
+  "Mail ons": {
+   "en": "Email us",
+   "de": "Schreiben Sie uns",
+   "fr": "Écrivez-nous",
+   "es": "Escríbanos"
+  },
+  "Privacyverklaring": {
+   "en": "Privacy statement",
+   "de": "Datenschutzerklärung",
+   "fr": "Déclaration de confidentialité",
+   "es": "Declaración de privacidad"
+  },
+  "Hoe CUSTOM+ omgaat met je gegevens: contactformulier, afspraken via Cal.com, AI productcheck, browseropslag, hosting en het klantportaal. Geen cookies, geen trackers.": {
+   "en": "How CUSTOM+ handles your data: contact form, Cal.com appointments, AI product check, browser storage, hosting and the client portal. No cookies, no trackers.",
+   "de": "Wie CUSTOM+ mit Ihren Daten umgeht: Kontaktformular, Cal.com Termine, KI Produktcheck, Browserspeicher, Hosting, Kundenportal. Keine Cookies, keine Tracker.",
+   "fr": "Vos données chez CUSTOM+ : formulaire de contact, rendez-vous Cal.com, check produit IA, stockage local, hébergement, portail client. Ni cookies ni traceurs.",
+   "es": "Cómo trata CUSTOM+ sus datos: formulario de contacto, citas con Cal.com, check con IA, datos del navegador, alojamiento y portal. Sin cookies ni rastreadores."
+  },
+  "Zoeken op de site": {
+   "en": "Search the site",
+   "de": "Suche auf der Website",
+   "fr": "Recherche sur le site",
+   "es": "Buscar en el sitio"
+  },
+  "Zoek door alle pagina's, veelgestelde vragen, begrippen en artikelen van CUSTOM+ over productontwikkeling en produceren in China.": {
+   "en": "Search all CUSTOM+ pages, frequently asked questions, glossary terms and articles on product development and manufacturing in China.",
+   "de": "Durchsuchen Sie alle Seiten, häufigen Fragen, Begriffe und Artikel von CUSTOM+ zu Produktentwicklung und Produktion in China.",
+   "fr": "Recherchez dans toutes les pages, questions fréquentes, définitions et articles de CUSTOM+ sur le développement produit et la production en Chine.",
+   "es": "Busque en todas las páginas, preguntas frecuentes, términos y artículos de CUSTOM+ sobre desarrollo de producto y fabricación en China."
+  },
+  "Fout 404": {
+   "en": "Error 404",
+   "de": "Fehler 404",
+   "fr": "Erreur 404",
+   "es": "Error 404"
+  },
+  "Deze pagina bestaat niet.": {
+   "en": "This page does not exist.",
+   "de": "Diese Seite gibt es nicht.",
+   "fr": "Cette page n'existe pas.",
+   "es": "Esta página no existe."
+  },
+  "De link is verhuisd of verkeerd overgetypt.": {
+   "en": "The link has moved or was mistyped.",
+   "de": "Der Link ist umgezogen oder falsch abgetippt.",
+   "fr": "Le lien a été déplacé ou mal recopié.",
+   "es": "El enlace se ha movido o está mal escrito."
+  },
+  "Geen zorgen, alles staat er nog. Kies waar je verder wilt:": {
+   "en": "No worries, everything is still here. Choose where you want to go next:",
+   "de": "Keine Sorge, alles ist noch da. Wählen Sie, wo es weitergehen soll:",
+   "fr": "Pas d'inquiétude, tout est encore là. Choisissez où continuer :",
+   "es": "No se preocupe, todo sigue en su sitio. Elija por dónde quiere seguir:"
+  },
+  "Naar de homepage": {
+   "en": "Go to the homepage",
+   "de": "Zur Startseite",
+   "fr": "Aller à l'accueil",
+   "es": "Ir a la página de inicio"
+  },
+  "Bekijk de diensten": {
+   "en": "See the services",
+   "de": "Leistungen ansehen",
+   "fr": "Voir les services",
+   "es": "Ver los servicios"
+  },
+  "Of zoek op de site": {
+   "en": "Or search the site",
+   "de": "Oder durchsuchen Sie die Website",
+   "fr": "Ou cherchez sur le site",
+   "es": "O busque en el sitio"
+  },
+  "Bijvoorbeeld MOQ, samples of AQL": {
+   "en": "For example MOQ, samples or AQL",
+   "de": "Zum Beispiel MOQ, Muster oder AQL",
+   "fr": "Par exemple MOQ, échantillons ou AQL",
+   "es": "Por ejemplo, MOQ, muestras o AQL"
+  },
+  "Zocht je iets specifieks?": {
+   "en": "Looking for something specific?",
+   "de": "Haben Sie etwas Bestimmtes gesucht?",
+   "fr": "Vous cherchiez quelque chose de précis ?",
+   "es": "¿Buscaba algo concreto?"
+  },
+  "Vraag het ons direct": {
+   "en": "Ask us directly",
+   "de": "Fragen Sie uns direkt",
+   "fr": "Nous demander directement",
+   "es": "Pregúntenos directamente"
+  },
+  "Pagina niet gevonden": {
+   "en": "Page not found",
+   "de": "Seite nicht gefunden",
+   "fr": "Page introuvable",
+   "es": "Página no encontrada"
+  },
+  "Deze pagina bestaat niet of is verhuisd. Ga naar de homepage, bekijk de diensten of neem contact op.": {
+   "en": "This page does not exist or has moved. Go to the homepage, see the services or get in touch.",
+   "de": "Diese Seite gibt es nicht oder sie ist umgezogen. Gehen Sie zur Startseite, sehen Sie sich die Leistungen an oder nehmen Sie Kontakt auf.",
+   "fr": "Cette page n'existe pas ou a été déplacée. Rendez-vous sur la page d'accueil, consultez les services ou contactez-nous.",
+   "es": "Esta página no existe o se ha movido. Vaya a la página de inicio, vea los servicios o póngase en contacto."
+  },
+  "min lezen": {
+   "en": "min read",
+   "de": "Min. Lesezeit",
+   "fr": "min de lecture",
+   "es": "min de lectura"
+  },
+  "AQL zonder jargon, in vijf minuten": {
+   "en": "AQL without jargon, in five minutes",
+   "de": "AQL ohne Fachjargon, in fünf Minuten",
+   "fr": "L'AQL sans jargon, en cinq minutes",
+   "es": "AQL sin jerga, en cinco minutos"
+  },
+  "Trek een steekproef": {
+   "en": "Draw a sample",
+   "de": "Stichprobe ziehen",
+   "fr": "Tirer un échantillon",
+   "es": "Extraer una muestra"
+  },
+  "Wat een sample echt kost": {
+   "en": "What a sample really costs",
+   "de": "Was ein Muster wirklich kostet",
+   "fr": "Ce que coûte vraiment un échantillon",
+   "es": "Lo que cuesta de verdad una muestra"
+  },
+  "Ja, wij produceren in {sector}. Toegevoegd aan je briefing.": {
+   "en": "Yes, we produce in {sector}. Added to your brief.",
+   "de": "Ja, wir produzieren im Bereich {sector}. Zu Ihrem Briefing hinzugefügt.",
+   "fr": "Oui, nous produisons dans le secteur {sector}. Ajouté à votre brief.",
+   "es": "Sí, fabricamos en {sector}. Añadido a su brief."
+  },
+  "eigen product": {
+   "en": "own product",
+   "de": "eigenes Produkt",
+   "fr": "votre propre produit",
+   "es": "producto propio"
+  },
+  "tot week": {
+   "en": "to week",
+   "de": "bis Woche",
+   "fr": "à semaine",
+   "es": "a la semana"
+  },
+  "≈ € {amount} aan je deur": {
+   "en": "≈ € {amount} at your door",
+   "de": "≈ {amount} € bis vor Ihre Tür",
+   "fr": "≈ {amount} € à votre porte",
+   "es": "≈ {amount} € en su puerta"
+  },
+  "{n} van {totaal} standaardwaarborgen tot nu toe bevestigd.": {
+   "en": "{n} of {totaal} standard safeguards confirmed so far.",
+   "de": "{n} von {totaal} Standardabsicherungen bisher bestätigt.",
+   "fr": "{n} sur {totaal} mesures de protection standards confirmées jusqu'à présent.",
+   "es": "{n} de {totaal} salvaguardas estándar confirmadas hasta ahora."
+  },
+  "week {a} tot {b}": {
+   "en": "week {a} to {b}",
+   "de": "Woche {a} bis {b}",
+   "fr": "semaines {a} à {b}",
+   "es": "semanas {a} a {b}"
+  },
+  "{a} en {b}": {
+   "en": "{a} and {b}",
+   "de": "{a} und {b}",
+   "fr": "{a} et {b}",
+   "es": "{a} y {b}"
+  },
+  "Chinees Nieuwjaar (rond {datum})": {
+   "en": "Chinese New Year (around {datum})",
+   "de": "dem Chinesischen Neujahr (um den {datum})",
+   "fr": "Nouvel An chinois (aux alentours du {datum})",
+   "es": "Año Nuevo Chino (alrededor del {datum})"
+  },
+  "Golden Week (1 tot 7 oktober {jaar})": {
+   "en": "Golden Week (1 to 7 October {jaar})",
+   "de": "der Goldenen Woche (1. bis 7. Oktober {jaar})",
+   "fr": "Golden Week (du 1er au 7 octobre {jaar})",
+   "es": "Semana Dorada (del 1 al 7 de octubre de {jaar})"
+  },
+  "mogelijk Chinees Nieuwjaar (de feestdagen in deze planner lopen tot en met {jaar}, controleer dit zelf)": {
+   "en": "possibly Chinese New Year (the holidays in this planner run through {jaar}, check this yourself)",
+   "de": "möglicherweise dem Chinesischen Neujahr (die Feiertage in diesem Planer reichen bis einschließlich {jaar}, bitte prüfen Sie das selbst)",
+   "fr": "peut-être le Nouvel An chinois (les jours fériés de ce planificateur vont jusqu'à {jaar} inclus, vérifiez par vous-même)",
+   "es": "posiblemente Año Nuevo Chino (los festivos de este planificador llegan hasta {jaar}, compruébelo usted mismo)"
+  },
+  "{n} weken": {
+   "en": "{n} weeks",
+   "de": "{n} Wochen",
+   "fr": "{n} semaines",
+   "es": "{n} semanas"
+  },
+  "Geen exacte match": {
+   "en": "No exact match",
+   "de": "Kein exakter Treffer",
+   "fr": "Aucune correspondance exacte",
+   "es": "Sin coincidencia exacta"
+  },
+  "Verzonden": {
+   "en": "Sent",
+   "de": "Gesendet",
+   "fr": "Envoyé",
+   "es": "Enviado"
+  },
+  "Je staat op de lijst.": {
+   "en": "You're on the list.",
+   "de": "Sie stehen auf der Liste.",
+   "fr": "Vous êtes sur la liste.",
+   "es": "Ya está en la lista."
+  },
+  "Bekijk waar we over schrijven": {
+   "en": "See what we write about",
+   "de": "Sehen Sie, worüber wir schreiben",
+   "fr": "Voir sur quoi nous écrivons",
+   "es": "Ver sobre qué escribimos"
+  },
+  "Wil je verder waar je gebleven was?": {
+   "en": "Want to pick up where you left off?",
+   "de": "Möchten Sie dort weitermachen, wo Sie aufgehört haben?",
+   "fr": "Vous voulez reprendre là où vous en étiez ?",
+   "es": "¿Quiere seguir donde lo dejó?"
+  },
+  "Ga verder met je briefing": {
+   "en": "Continue your brief",
+   "de": "Weiter mit Ihrem Briefing",
+   "fr": "Reprendre votre brief",
+   "es": "Continuar con su brief"
+  },
+  "Fijn dat je er weer bent.": {
+   "en": "Good to have you back.",
+   "de": "Schön, dass Sie wieder da sind.",
+   "fr": "Heureux de vous revoir.",
+   "es": "Nos alegra verle de nuevo."
+  },
+  "De scopecheck van twee minuten vertelt je wat ervoor nodig is.": {
+   "en": "The two minute scope check tells you what it takes.",
+   "de": "Der zweiminütige Scope Check sagt Ihnen, was dafür nötig ist.",
+   "fr": "Le diagnostic de cadrage de deux minutes vous dit ce qu'il faut.",
+   "es": "La verificación de alcance de dos minutos le dice qué hace falta."
+  },
+  "Wij hebben “{query}” niet bij naam in de lijst staan.": {
+   "en": "We don't have “{query}” on the list by name.",
+   "de": "Wir haben „{query}“ nicht namentlich in der Liste.",
+   "fr": "Nous n'avons pas “{query}” nommément dans la liste.",
+   "es": "No tenemos “{query}” en la lista con ese nombre."
+  },
+  "Ons bereik dekt meer dan 300 sectoren, en er niet bij naam in staan betekent niet dat wij je niet kunnen helpen. Vraag het ons gewoon, dan krijg je een eerlijk antwoord.": {
+   "en": "Our range covers more than 300 sectors, and not being listed by name doesn't mean we can't help you. Just ask us and you'll get an honest answer.",
+   "de": "Unser Spektrum umfasst mehr als 300 Branchen, und nicht namentlich aufgeführt zu sein heißt nicht, dass wir Ihnen nicht helfen können. Fragen Sie uns einfach, dann bekommen Sie eine ehrliche Antwort.",
+   "fr": "Notre périmètre couvre plus de 300 secteurs, et ne pas y figurer nommément ne veut pas dire que nous ne pouvons pas vous aider. Posez-nous simplement la question et vous aurez une réponse franche.",
+   "es": "Nuestro alcance cubre más de 300 sectores, y no aparecer por nombre no significa que no podamos ayudarle. Pregúntenos sin más y recibirá una respuesta honesta."
+  },
+  "Vraag het ons gewoon": {
+   "en": "Just ask us",
+   "de": "Fragen Sie uns einfach",
+   "fr": "Posez-nous la question",
+   "es": "Pregúntenos sin más"
+  },
+  "Ja, wij produceren in {sector}.": {
+   "en": "Yes, we produce in {sector}.",
+   "de": "Ja, wir produzieren im Bereich {sector}.",
+   "fr": "Oui, nous produisons dans le secteur {sector}.",
+   "es": "Sí, fabricamos en {sector}."
+  },
+  "Cases: producten van vraag tot pallet": {
+   "en": "Cases: products from question to pallet",
+   "de": "Fallstudien: Produkte von der Frage bis zur Palette",
+   "fr": "Études de cas : des produits, de la demande à la palette",
+   "es": "Casos: productos de la pregunta al palet"
+  },
+  "Per product de vraag waarmee het begon, hoe we het uitvoerden, wat er in de samplerondes misging en wat er nu op de pallet staat.": {
+   "en": "For each product: the question it started with, how we carried it out, what went wrong in the sample rounds and what is on the pallet now.",
+   "de": "Zu jedem Produkt die Frage, mit der es begann, wie wir es umgesetzt haben, was in den Musterrunden schiefging und was heute auf der Palette steht.",
+   "fr": "Par produit : la demande de départ, notre exécution, ce qui a mal tourné lors des itérations d'échantillon et ce qui se trouve aujourd'hui sur la palette.",
+   "es": "De cada producto, la pregunta con la que empezó, cómo lo ejecutamos, qué falló en las rondas de muestras y qué hay ahora en el palet."
+  },
+  "week": {
+   "en": "week",
+   "de": "Woche",
+   "fr": "semaine",
+   "es": "semana"
+  },
+  "Route: {route}": {
+   "en": "Route: {route}",
+   "de": "Route: {route}",
+   "fr": "Parcours : {route}",
+   "es": "Ruta: {route}"
+  },
+  "Sector: {sector}": {
+   "en": "Sector: {sector}",
+   "de": "Branche: {sector}",
+   "fr": "Secteur : {sector}",
+   "es": "Sector: {sector}"
+  },
+  "Sector:": {
+   "en": "Sector:",
+   "de": "Branche:",
+   "fr": "Secteur :",
+   "es": "Sector:"
+  },
+  "cp_lang_scroll: alleen op het moment dat je van taal wisselt, zodat je op dezelfde plek op de pagina blijft. Daarna wordt het meteen gewist.": {
+   "en": "cp_lang_scroll: only at the moment you switch language, so you stay at the same place on the page. It is deleted right after.",
+   "de": "cp_lang_scroll: nur in dem Moment, in dem Sie die Sprache wechseln, damit Sie an derselben Stelle der Seite bleiben. Danach wird es sofort gelöscht.",
+   "fr": "cp_lang_scroll : uniquement au moment où vous changez de langue, pour que vous restiez au même endroit de la page. Il est effacé juste après.",
+   "es": "cp_lang_scroll: solo en el momento en que cambia de idioma, para que siga en el mismo punto de la página. Se borra justo después."
+  }
+ }
+}

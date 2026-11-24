@@ -1,0 +1,321 @@
+{
+ "_uitleg": "Vertalingen van content/blog/moq-is-een-gesprek.json. Zelfde blokken in dezelfde volgorde als het origineel; alleen de tekst verschilt. \"bron\" is de vingerafdruk van de Nederlandse tekst waar deze vertaling bij hoort: de build waarschuwt als het origineel daarna is gewijzigd.",
+ "slug": "moq-is-een-gesprek",
+ "bron": "e6acf37136b0",
+ "en": {
+  "title": "MOQ is a conversation, not a law",
+  "dek": "That thousand unit minimum on the supplier page is an opening bid. Why an MOQ exists, where the give is, and what you're better off not trying.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "It's on almost every supplier page: MOQ 1,000 units. Many first timers read that as a law and drop out, or grudgingly order three times more than they can sell. A waste of money, and completely unnecessary. In practice a minimum order quantity is an opening bid, and like any opening bid it's open to discussion, as long as you understand where it comes from."
+   },
+   {
+    "type": "h2",
+    "text": "Why an MOQ exists"
+   },
+   {
+    "type": "p",
+    "text": "A factory doesn't make its money on units but on lines that keep running. Every order has fixed costs: changing over the line, ordering material, scheduling labor, setting up quality control. Those costs are almost as high at two hundred units as at two thousand. On top of that, raw materials have minimums of their own: a dye bath for fabric has a minimum bath size, a plastics supplier sells by the 25 kilo bag, a circuit board is made by the panel. The MOQ is the point where all of that adds up to an order the factory doesn't have to think about."
+   },
+   {
+    "type": "quote",
+    "text": "MOQ 1,000 usually means: from a thousand units up, I no longer have to do the math on my margin."
+   },
+   {
+    "type": "h2",
+    "text": "What the factory is really saying"
+   },
+   {
+    "type": "p",
+    "text": "That's exactly why there's give. The factory isn't saying eight hundred units is impossible. It's saying eight hundred units takes more thinking. If you take that thinking off its hands, for example by choosing standard materials, by being flexible on lead time, by sketching a credible picture of what comes next, you often get a lower threshold. If all you do is ask for fewer units at the same price, you get a no."
+   },
+   {
+    "type": "h2",
+    "text": "Five dials you can turn"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Pay a little more per unit. A smaller order at a higher unit price is often fine for the factory, and you're buying lower risk with it.",
+     "Choose standard materials and standard colors. The material minimum is often the real threshold, not the labor.",
+     "Combine variants on one base. Three colors of the same product on the same line count together toward the MOQ.",
+     "Offer a phased order: five hundred now, the rest in three months. Put the intention on paper, not as a promise but as a schedule.",
+     "Ask about spare capacity. Factories with a gap in their schedule are suddenly surprisingly flexible."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "15%",
+    "label": "higher unit price at half the MOQ, in exchange for half the capital and stock risk",
+    "source": "illustrative calculation, 500 instead of 1,000 units"
+   },
+   {
+    "type": "p",
+    "text": "That fifteen percent feels like a loss until you do the other side of the math. On a first production run there's a real chance you'll want to change something after the first sales. A thousand units of a product you still want to improve isn't stock, it's dead weight."
+   },
+   {
+    "type": "h2",
+    "text": "What not to do"
+   },
+   {
+    "type": "p",
+    "text": "Don't lie about your repeat orders. A factory that lowers the MOQ on the basis of an invented forecast finds out at order two, and from then on every negotiation starts from behind. And don't play factories off against each other with prices you don't have in writing. That world is smaller than you think: buyers and sellers know each other, and a reputation travels faster than a container."
+   },
+   {
+    "type": "h2",
+    "text": "Protect your design before the conversation"
+   },
+   {
+    "type": "p",
+    "text": "Negotiating an MOQ means sharing drawings, sometimes with several factories at once. Don't do that unprotected. An NNN agreement (non disclosure, non use, non circumvention) is enforceable in China if it's drafted under Chinese law, in Chinese, with the correct company name and the company seal. A Western style confidentiality agreement in English usually isn't. Arrange this before the conversation gets interesting, not after."
+   },
+   {
+    "type": "h2",
+    "text": "The short version"
+   },
+   {
+    "type": "p",
+    "text": "Treat an MOQ as the start of a conversation about sharing risk. The factory wants certainty about its fixed costs, and you don't want to drown in stock. There's almost always an outcome somewhere in between, and the factory that holds rigidly to a round number without explaining why is telling you something too."
+   }
+  ]
+ },
+ "de": {
+  "title": "Die MOQ ist ein Gespräch, kein Gesetz",
+  "dek": "Die tausend Stück Minimum auf der Webseite des Lieferanten sind ein Eröffnungsangebot. Warum es eine MOQ gibt, wo der Spielraum liegt und was Sie besser nicht versuchen.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "Auf fast jeder Webseite eines Lieferanten steht es: MOQ 1.000 Stück. Viele Einsteiger lesen das als Gesetz und steigen aus, oder sie bestellen widerwillig dreimal so viel, wie sie loswerden können. Schade ums Geld und völlig unnötig. Eine Mindestbestellmenge ist in der Praxis ein Eröffnungsangebot, und wie über jedes Eröffnungsangebot lässt sich darüber reden, wenn Sie verstehen, woher es kommt."
+   },
+   {
+    "type": "h2",
+    "text": "Warum es eine MOQ gibt"
+   },
+   {
+    "type": "p",
+    "text": "Eine Fabrik verdient nicht an Stückzahlen, sondern an laufenden Linien. Jeder Auftrag hat Fixkosten: die Linie umrüsten, Material bestellen, Personal einplanen, die Qualitätskontrolle aufsetzen. Diese Kosten sind bei zweihundert Stück fast so hoch wie bei zweitausend. Dazu haben Rohstoffe ihr eigenes Minimum: Ein Färbebad für Stoff hat eine Mindestgröße, ein Kunststofflieferant verkauft pro Sack von 25 Kilo, eine Leiterplatte wird pro Panel gefertigt. Die MOQ ist der Punkt, an dem sich das alles zu einem Auftrag summiert, über den die Fabrik nicht nachdenken muss."
+   },
+   {
+    "type": "quote",
+    "text": "MOQ 1.000 heißt meistens: Ab tausend Stück muss ich an meiner Marge nicht mehr herumrechnen."
+   },
+   {
+    "type": "h2",
+    "text": "Was die Fabrik eigentlich sagt"
+   },
+   {
+    "type": "p",
+    "text": "Genau deshalb gibt es Spielraum. Die Fabrik sagt nicht, dass achthundert Stück unmöglich sind. Sie sagt, dass achthundert Stück mehr Denkarbeit kosten. Wer ihr diese Denkarbeit abnimmt, zum Beispiel durch Standardmaterialien, durch Flexibilität bei der Lieferzeit, durch einen glaubwürdigen Ausblick auf das, was danach kommt, bekommt oft eine niedrigere Schwelle. Wer nur weniger Stück zum selben Preis verlangt, bekommt ein Nein."
+   },
+   {
+    "type": "h2",
+    "text": "Fünf Stellschrauben, an denen Sie drehen können"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Zahlen Sie etwas mehr pro Stück. Ein kleinerer Auftrag zu einem höheren Stückpreis ist für die Fabrik oft völlig in Ordnung. Sie kaufen sich damit weniger Risiko.",
+     "Wählen Sie Standardmaterialien und Standardfarben. Das Materialminimum ist oft die eigentliche Hürde, nicht die Arbeit.",
+     "Kombinieren Sie Varianten auf einer Basis. Drei Farben desselben Produkts auf derselben Linie zählen zusammen für die MOQ.",
+     "Bieten Sie eine gestaffelte Abnahme an: jetzt fünfhundert, in drei Monaten den Rest. Halten Sie die Absicht schriftlich fest, nicht als Zusage, sondern als Planung.",
+     "Fragen Sie nach freier Kapazität. Fabriken mit einer Lücke im Produktionsplan sind plötzlich überraschend flexibel."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "15%",
+    "label": "höherer Stückpreis bei der Hälfte der MOQ, im Tausch gegen halb so viel Kapital und Lagerrisiko",
+    "source": "illustratives Rechenbeispiel, 500 statt 1.000 Stück"
+   },
+   {
+    "type": "p",
+    "text": "Diese fünfzehn Prozent fühlen sich wie ein Verlust an, bis Sie die andere Seite der Rechnung aufmachen. Bei einer ersten Produktion ist die Chance real, dass Sie nach den ersten Verkäufen etwas anpassen wollen. Tausend Stück eines Produkts, das Sie noch verbessern wollen, sind kein Lagerbestand, sondern Ballast."
+   },
+   {
+    "type": "h2",
+    "text": "Was Sie besser lassen"
+   },
+   {
+    "type": "p",
+    "text": "Lügen Sie nicht über Ihre Folgeaufträge. Eine Fabrik, die die MOQ auf Basis einer erfundenen Prognose senkt, merkt das beim zweiten Auftrag, und danach beginnt jede Verhandlung mit einem Rückstand. Spielen Sie auch keine Fabriken gegeneinander aus mit Preisen, die Sie nicht schwarz auf weiß haben. Diese Welt ist kleiner, als Sie denken. Einkäufer und Verkäufer kennen sich, und ein Ruf reist schneller als ein Container."
+   },
+   {
+    "type": "h2",
+    "text": "Schützen Sie Ihr Design vor dem Gespräch"
+   },
+   {
+    "type": "p",
+    "text": "Über eine MOQ zu verhandeln heißt, Zeichnungen zu teilen, manchmal mit mehreren Fabriken gleichzeitig. Tun Sie das nicht ohne Absicherung. Eine NNN Vereinbarung (nicht weitergeben, nicht nutzen, Sie nicht umgehen) ist in China durchsetzbar, wenn sie nach chinesischem Recht aufgesetzt ist, auf Chinesisch, mit dem richtigen Firmennamen und dem Firmenstempel. Eine englischsprachige Geheimhaltungsvereinbarung nach westlichem Vorbild ist das meistens nicht. Regeln Sie das, bevor das Gespräch interessant wird, nicht danach."
+   },
+   {
+    "type": "h2",
+    "text": "Die Kurzfassung"
+   },
+   {
+    "type": "p",
+    "text": "Behandeln Sie eine MOQ als Beginn eines Gesprächs über die Verteilung des Risikos. Die Fabrik will Sicherheit für ihre Fixkosten, Sie wollen nicht auf Ihrer Ware sitzen bleiben. Dazwischen liegt fast immer eine Lösung, und eine Fabrik, die starr an einer runden Zahl festhält, ohne zu erklären warum, sagt Ihnen damit auch etwas."
+   }
+  ]
+ },
+ "fr": {
+  "title": "Le MOQ est une discussion, pas une loi",
+  "dek": "Ce minimum de mille pièces affiché sur la page du fournisseur est une offre de départ. Pourquoi un MOQ existe, où il y a du jeu, et ce qu'il vaut mieux ne pas tenter.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "On le lit sur presque toutes les pages de fournisseurs : MOQ 1 000 pièces. Beaucoup de débutants y voient une loi et abandonnent, ou commandent à contrecœur trois fois plus qu'ils ne peuvent écouler. De l'argent gaspillé, et sans aucune nécessité. En pratique, une quantité minimale de commande est une offre de départ et, comme toute offre de départ, elle se discute, à condition de comprendre d'où elle vient."
+   },
+   {
+    "type": "h2",
+    "text": "Pourquoi un MOQ existe"
+   },
+   {
+    "type": "p",
+    "text": "Une usine ne gagne pas d'argent avec des pièces, mais avec des lignes qui tournent. Chaque commande a des coûts fixes : reconfigurer la ligne, commander la matière, planifier la main-d'œuvre, mettre en place le contrôle qualité. Ces coûts sont presque aussi élevés pour deux cents pièces que pour deux mille. Les matières premières ont en plus leur propre minimum : un bain de teinture pour tissu a un volume minimal, un fournisseur de plastique vend par sac de 25 kilos, un circuit imprimé se fabrique par panneau. Le MOQ est le point où tout cela s'additionne pour donner une commande à laquelle l'usine n'a pas besoin de réfléchir."
+   },
+   {
+    "type": "quote",
+    "text": "MOQ 1 000 signifie le plus souvent : à partir de mille pièces, je n'ai plus à faire de calculs sur ma marge."
+   },
+   {
+    "type": "h2",
+    "text": "Ce que l'usine dit en réalité"
+   },
+   {
+    "type": "p",
+    "text": "C'est précisément pour cela qu'il y a du jeu. L'usine ne dit pas que huit cents pièces sont impossibles ; elle dit que huit cents pièces lui demandent plus de réflexion. Celui qui lui épargne cette réflexion, par exemple en choisissant des matériaux standard, en restant souple sur le délai de livraison, en esquissant une suite crédible, obtient souvent un seuil plus bas. Celui qui se contente de demander moins de pièces au même prix obtient un non."
+   },
+   {
+    "type": "h2",
+    "text": "Cinq leviers que vous pouvez actionner"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Payez un peu plus par pièce. Une commande plus petite à un prix unitaire plus élevé convient souvent très bien à l'usine ; de votre côté, vous achetez une réduction du risque.",
+     "Choisissez des matériaux et des couleurs standard. Le vrai seuil est souvent le minimum de matière, pas la main-d'œuvre.",
+     "Combinez des variantes sur une même base. Trois couleurs du même produit sur la même ligne s'additionnent pour atteindre le MOQ.",
+     "Proposez une commande échelonnée : cinq cents maintenant, le reste dans trois mois. Mettez l'intention par écrit, non comme une promesse mais comme un calendrier.",
+     "Demandez s'il reste de la capacité disponible. Les usines qui ont un trou dans leur planning deviennent soudain étonnamment souples."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "15%",
+    "label": "de hausse du prix unitaire pour la moitié du MOQ, en échange de moitié moins de capital et de risque de stock",
+    "source": "exemple de calcul illustratif, 500 pièces au lieu de 1 000"
+   },
+   {
+    "type": "p",
+    "text": "Ces quinze pour cent ressemblent à une perte, jusqu'à ce que vous fassiez l'autre moitié du calcul. Sur une première production, il y a de vraies chances que vous vouliez modifier quelque chose après les premières ventes. Mille pièces d'un produit que vous voulez encore améliorer, ce n'est pas du stock, c'est du lest."
+   },
+   {
+    "type": "h2",
+    "text": "Ce qu'il vaut mieux éviter"
+   },
+   {
+    "type": "p",
+    "text": "Ne mentez pas sur vos commandes à venir. Une usine qui abaisse le MOQ sur la foi de prévisions inventées s'en aperçoit dès la deuxième commande, et chaque négociation suivante démarre alors avec un handicap. Ne montez pas non plus les usines les unes contre les autres avec des prix que vous n'avez pas noir sur blanc. Ce monde est plus petit que vous ne le pensez ; acheteurs et vendeurs se connaissent, et une réputation voyage plus vite qu'un conteneur."
+   },
+   {
+    "type": "h2",
+    "text": "Protégez votre design avant la discussion"
+   },
+   {
+    "type": "p",
+    "text": "Négocier un MOQ, c'est partager des plans, parfois avec plusieurs usines à la fois. Ne le faites pas sans protection. Un accord NNN (non-divulgation, non-utilisation, non-contournement) est opposable en Chine s'il est rédigé selon le droit chinois, en chinois, avec la bonne raison sociale et le cachet de l'entreprise. Un accord de confidentialité en anglais sur le modèle occidental ne l'est généralement pas. Réglez cela avant que la discussion devienne intéressante, pas après."
+   },
+   {
+    "type": "h2",
+    "text": "La version courte"
+   },
+   {
+    "type": "p",
+    "text": "Traitez un MOQ comme le début d'une discussion sur le partage du risque. L'usine veut être sûre de couvrir ses coûts fixes, vous ne voulez pas crouler sous votre stock. Entre les deux, il y a presque toujours une issue, et l'usine qui s'accroche à un chiffre rond sans expliquer pourquoi vous apprend elle aussi quelque chose."
+   }
+  ]
+ },
+ "es": {
+  "title": "El MOQ es una conversación, no una ley",
+  "dek": "Ese mínimo de mil unidades en la página del proveedor es una oferta inicial. Por qué existe un MOQ, dónde hay margen de maniobra y qué es mejor no intentar.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "Aparece en casi todas las páginas de proveedores: MOQ 1.000 unidades. Muchos principiantes lo leen como una ley y se echan atrás, o piden a regañadientes el triple de lo que pueden vender. Es tirar el dinero, y no hace ninguna falta. En la práctica, una cantidad mínima de pedido es una oferta inicial y, como toda oferta inicial, se puede negociar si entiende de dónde viene."
+   },
+   {
+    "type": "h2",
+    "text": "Por qué existe un MOQ"
+   },
+   {
+    "type": "p",
+    "text": "Una fábrica no gana dinero con unidades, sino con líneas en marcha. Cada pedido tiene costes fijos: reconfigurar la línea, pedir material, planificar la mano de obra, montar el control de calidad. Esos costes son casi igual de altos con doscientas unidades que con dos mil. Además, las materias primas tienen su propio mínimo: un baño de tinte para tejido tiene un volumen mínimo, un proveedor de plástico vende por sacos de 25 kilos, una placa de circuito impreso se fabrica por paneles. El MOQ es el punto en el que todo eso suma un pedido que la fábrica no tiene que pararse a pensar."
+   },
+   {
+    "type": "quote",
+    "text": "MOQ 1.000 suele significar: a partir de mil unidades ya no tengo que hacer números con mi margen."
+   },
+   {
+    "type": "h2",
+    "text": "Lo que la fábrica dice en realidad"
+   },
+   {
+    "type": "p",
+    "text": "Precisamente por eso hay margen de maniobra. La fábrica no dice que ochocientas unidades sean imposibles; dice que ochocientas unidades le obligan a pensar más. Quien le ahorra ese esfuerzo, por ejemplo eligiendo materiales estándar, siendo flexible con el plazo de entrega o planteando una continuidad creíble, suele conseguir un umbral más bajo. Quien solo pide menos unidades por el mismo precio se lleva un no."
+   },
+   {
+    "type": "h2",
+    "text": "Cinco palancas que puede mover"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Pague algo más por unidad. Un pedido más pequeño a un precio unitario más alto suele ser perfectamente aceptable para la fábrica, y usted compra con ello una reducción de riesgo.",
+     "Elija materiales y colores estándar. El mínimo de material suele ser el verdadero umbral, no la mano de obra.",
+     "Combine variantes sobre una misma base. Tres colores del mismo producto en la misma línea suman juntos para el MOQ.",
+     "Proponga una compra por fases: quinientas ahora y el resto dentro de tres meses. Ponga la intención por escrito, no como promesa sino como planificación.",
+     "Pregunte por capacidad sobrante. Las fábricas con un hueco en la planificación se vuelven de pronto sorprendentemente flexibles."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "15%",
+    "label": "más de precio unitario con la mitad del MOQ, a cambio de la mitad de capital y de riesgo de stock",
+    "source": "ejemplo de cálculo ilustrativo, 500 unidades en lugar de 1.000"
+   },
+   {
+    "type": "p",
+    "text": "Ese quince por ciento parece una pérdida hasta que hace la otra mitad de la cuenta. En una primera producción hay una probabilidad real de que quiera cambiar algo tras las primeras ventas. Mil unidades de un producto que todavía quiere mejorar no son stock, son lastre."
+   },
+   {
+    "type": "h2",
+    "text": "Lo que es mejor no hacer"
+   },
+   {
+    "type": "p",
+    "text": "No mienta sobre sus próximos pedidos. Una fábrica que baja el MOQ por una previsión inventada lo descubre en el segundo pedido, y a partir de entonces usted empieza cada negociación en desventaja. Tampoco enfrente a unas fábricas con otras usando precios que no tiene por escrito. Ese mundo es más pequeño de lo que cree; compradores y vendedores se conocen, y una reputación viaja más rápido que un contenedor."
+   },
+   {
+    "type": "h2",
+    "text": "Proteja su diseño antes de la conversación"
+   },
+   {
+    "type": "p",
+    "text": "Negociar un MOQ implica compartir planos, a veces con varias fábricas a la vez. No lo haga a pecho descubierto. Un acuerdo NNN (no divulgar, no usar, no eludir) es exigible en China si está redactado conforme a la ley china, en chino, con la razón social correcta y el sello de la empresa. Un acuerdo de confidencialidad en inglés de modelo occidental normalmente no lo es. Resuélvalo antes de que la conversación se ponga interesante, no después."
+   },
+   {
+    "type": "h2",
+    "text": "La versión corta"
+   },
+   {
+    "type": "p",
+    "text": "Trate un MOQ como el inicio de una conversación sobre el reparto del riesgo. La fábrica quiere seguridad sobre sus costes fijos; usted no quiere ahogarse en stock. Entre una cosa y otra casi siempre hay una salida, y la fábrica que se aferra a una cifra redonda sin explicar por qué también le está diciendo algo."
+   }
+  ]
+ }
+}

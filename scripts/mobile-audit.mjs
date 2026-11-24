@@ -21,6 +21,8 @@
  *
  * Draaien:  node scripts/mobile-audit.mjs [--base http://localhost:8790]
  *           [--widths 320,375,390,430] [--routes /,/diensten/] [--no-shots]
+ *           [--lang de]   meet de pagina's in een andere taal (en, de, fr, es):
+ *                         vertaalde tekst is vaak langer dan de Nederlandse
  * Uitvoer:  scripts/.mobile-audit/<route>-375.jpg en report.json (gitignored)
  */
 
@@ -36,6 +38,7 @@ function argValue(name, fallback) { const i = ARGS.indexOf(name); return i >= 0 
 const BASE = argValue('--base', 'http://localhost:8790').replace(/\/$/, '');
 const WIDTHS = argValue('--widths', '320,375,390,430').split(',').map((w) => parseInt(w, 10)).filter(Boolean);
 const SHOTS = ARGS.indexOf('--no-shots') < 0;
+const LANG = argValue('--lang', '');
 /* --shot-width: op welke breedte de schermafbeeldingen gemaakt worden (ook bruikbaar voor desktopcontrole, bv. 1280) */
 const SHOT_WIDTH = parseInt(argValue('--shot-width', '375'), 10);
 const ROUTES = (argValue('--routes', '') || [
@@ -199,6 +202,10 @@ async function main() {
     cdp = new Cdp(target.webSocketDebuggerUrl);
     await cdp.connect();
     await cdp.send('Page.enable'); await cdp.send('Runtime.enable');
+    if (LANG) {
+      /* dezelfde sleutel waarin de site de taalkeuze van een bezoeker bewaart */
+      await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'try{localStorage.setItem("cp_lang",' + JSON.stringify(LANG) + ');sessionStorage.setItem("cp_intro","1")}catch(e){}' });
+    }
     for (const route of ROUTES) {
       const page = { route, results: {} };
       for (const width of WIDTHS) {
@@ -206,7 +213,7 @@ async function main() {
         const loaded = cdp.once('Page.loadEventFired');
         await cdp.send('Page.navigate', { url: BASE + route });
         await Promise.race([loaded, new Promise((r) => setTimeout(r, 15000))]);
-        await new Promise((r) => setTimeout(r, 900));
+        await new Promise((r) => setTimeout(r, LANG ? 2200 : 900));
         const ev = await cdp.send('Runtime.evaluate', { expression: MEASURE, awaitPromise: true, returnByValue: true });
         const data = JSON.parse(ev.result.value);
         page.results[width] = data;

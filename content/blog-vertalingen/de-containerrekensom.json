@@ -1,0 +1,353 @@
+{
+ "_uitleg": "Vertalingen van content/blog/de-containerrekensom.json. Zelfde blokken in dezelfde volgorde als het origineel; alleen de tekst verschilt. \"bron\" is de vingerafdruk van de Nederlandse tekst waar deze vertaling bij hoort: de build waarschuwt als het origineel daarna is gewijzigd.",
+ "slug": "de-containerrekensom",
+ "bron": "bb65504e62b3",
+ "en": {
+  "title": "The container math",
+  "dek": "The factory's unit price isn't your landed cost. What gets added along the way, why your box matters more than your freight rate, and the math you do up front.",
+  "series": "From sketch to shipping container",
+  "body": [
+   {
+    "type": "p",
+    "text": "The prettiest price in this business is the factory price. Three euros per unit, in black and white. The problem: that's not what the product costs you. Between the factory gate and your warehouse sits a string of costs that easily add up to a fifth of the factory price, and anyone who only finds that out when the invoices roll in has built their selling price on quicksand."
+   },
+   {
+    "type": "p",
+    "text": "This is part 2 of the series From sketch to shipping container. Part 1 was about what a sample really costs. Part 3 is coming."
+   },
+   {
+    "type": "h2",
+    "text": "From unit price to total landed cost"
+   },
+   {
+    "type": "p",
+    "text": "These are the costs that get added in a normal project:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Transport in China: from the factory to the port, including documentation and export.",
+     "Sea freight: the container rate itself, plus surcharges that move with the season.",
+     "Insurance: a small amount, a big difference when something goes wrong.",
+     "Import duties: depending on your product's commodity code, from zero to more than ten percent.",
+     "Import VAT: businesses can reclaim it, but you do have to pay it up front first.",
+     "Handling and transport in the Netherlands: port, customs broker, the truck to your warehouse.",
+     "Rejects: a small percentage of units you will never be able to sell, however good the inspection was."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "22%",
+    "label": "on top of the factory price before a product is in the warehouse, ready to sell",
+    "source": "illustrative calculation, 5,000 units per shipping container to Rotterdam"
+   },
+   {
+    "type": "h2",
+    "text": "The box matters more than you think"
+   },
+   {
+    "type": "p",
+    "text": "Sea freight isn't charged by the unit but by the cubic meter. That makes your packaging a cost driver of the first order. An export carton that doesn't quite stack efficiently in a container means shipping air, and air costs the same rate as product. This is DFM for your packaging: design the box around the container dimensions, not the other way around. Shaving two centimeters off a box sounds like fussing, until you run it across a whole container."
+   },
+   {
+    "type": "stat",
+    "value": "7%",
+    "label": "more units in the same container by making the export carton two centimeters lower",
+    "source": "illustrative calculation, carton size 40 by 30 by 28 down to 40 by 30 by 26 centimeters"
+   },
+   {
+    "type": "h2",
+    "text": "Shared container or full container"
+   },
+   {
+    "type": "p",
+    "text": "Below roughly fifteen cubic meters, you share a container with other shippers. That's called LCL, and per cubic meter it's more expensive, slower and more prone to damage and delays, because your cargo gets handled two extra times. Above that point, a container of your own quickly becomes cheaper, and calmer too. If you're just under it, run the numbers on both options: sometimes a slightly larger order is cheaper per unit, purely because of the freight. That's also an argument in your MOQ conversation with the factory."
+   },
+   {
+    "type": "quote",
+    "text": "The cheapest cubic meter of freight is the one you don't ship."
+   },
+   {
+    "type": "h2",
+    "text": "Incoterms in plain English"
+   },
+   {
+    "type": "p",
+    "text": "Three abbreviations decide who pays for what and who is responsible for what. EXW: you pick it up at the factory gate and everything after that is your problem. FOB: the factory puts it on board at the Chinese port, and from there it's yours. For most importers that's the best starting point, because you then buy the sea freight yourself from a party that represents you. DDP: the supplier arranges everything to your door. Sounds easy, but you're buying a black box of costs and you have no grip on an import that happens in your name."
+   },
+   {
+    "type": "h2",
+    "text": "The math you do up front"
+   },
+   {
+    "type": "p",
+    "text": "Before you order, make one simple table: factory price, plus every cost above, divided by the number of sellable units. That number, not the factory price, is what you set against your selling price. Then run one pessimistic scenario: a freight rate one and a half times as high, three percent rejects, a four week delay. If you can take that, you have a plan. If you can't, you know it now, and not when the container is already at sea."
+   },
+   {
+    "type": "p",
+    "text": "Next time in this series: what happens between an approved sample and a full container, and why that's the stretch where most projects still fall over."
+   }
+  ]
+ },
+ "de": {
+  "title": "Die Containerrechnung",
+  "dek": "Der Stückpreis ab Fabrik ist nicht Ihr Einstandspreis. Was unterwegs dazukommt, warum Ihr Karton mehr entscheidet als Ihre Frachtrate, und die Rechnung, die Sie vorher aufmachen.",
+  "series": "Von der Skizze bis zum Schiffscontainer",
+  "body": [
+   {
+    "type": "p",
+    "text": "Der schönste Preis in dieser Branche ist der Fabrikpreis. Drei Euro pro Stück, schwarz auf weiß. Das Problem: Das ist nicht, was das Produkt Sie kostet. Zwischen dem Fabriktor und Ihrem Lager liegt eine Reihe von Kostenpositionen, die sich zusammen leicht auf ein Fünftel des Fabrikpreises summieren. Wer das erst merkt, wenn die Rechnungen eintreffen, hat seinen Verkaufspreis auf Sand gebaut."
+   },
+   {
+    "type": "p",
+    "text": "Dies ist Teil 2 der Serie Von der Skizze bis zum Schiffscontainer. In Teil 1 ging es darum, was ein Muster wirklich kostet. Teil 3 folgt."
+   },
+   {
+    "type": "h2",
+    "text": "Vom Stückpreis zu den Gesamtkosten"
+   },
+   {
+    "type": "p",
+    "text": "Diese Posten kommen in einem normalen Projekt hinzu:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Transport in China: von der Fabrik zum Hafen, einschließlich Dokumentation und Export.",
+     "Seefracht: die Containerrate selbst, plus Zuschläge, die je nach Saison schwanken.",
+     "Versicherung: kleiner Betrag, großer Unterschied, wenn etwas schiefgeht.",
+     "Einfuhrzölle: abhängig von der Zolltarifnummer Ihres Produkts, von null bis gut zehn Prozent.",
+     "Einfuhrumsatzsteuer: für Unternehmen als Vorsteuer abziehbar, aber Sie müssen sie erst einmal vorstrecken.",
+     "Abfertigung und Transport in den Niederlanden: Hafen, Zollagent, der Lkw zu Ihrem Lager.",
+     "Ausschuss: ein kleiner Prozentsatz an Stücken, die Sie nie verkaufen können, so gut die Kontrolle auch war."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "22%",
+    "label": "Aufschlag auf den Fabrikpreis, bevor ein Produkt verkaufsfertig im Lager liegt",
+    "source": "illustratives Rechenbeispiel, 5.000 Stück pro Schiffscontainer nach Rotterdam"
+   },
+   {
+    "type": "h2",
+    "text": "Der Karton entscheidet mehr, als Sie denken"
+   },
+   {
+    "type": "p",
+    "text": "Seefracht zahlen Sie nicht pro Stück, sondern pro Kubikmeter. Das macht Ihre Verpackung zu einem Kostenfaktor ersten Ranges. Ein Exportkarton, der sich im Container knapp nicht effizient stapeln lässt, heißt Luft verschiffen, und Luft kostet dieselbe Rate wie Ware. Das ist DFM für Ihre Verpackung: Entwerfen Sie den Karton um das Containermaß herum, nicht umgekehrt. Zwei Zentimeter von einem Karton wegzunehmen klingt nach Kleinkram, bis Sie es auf einen ganzen Container hochrechnen."
+   },
+   {
+    "type": "stat",
+    "value": "7%",
+    "label": "mehr Stück im selben Container, wenn der Exportkarton zwei Zentimeter niedriger wird",
+    "source": "illustratives Rechenbeispiel, Kartonmaß von 40 mal 30 mal 28 auf 40 mal 30 mal 26 Zentimeter"
+   },
+   {
+    "type": "h2",
+    "text": "Sammelcontainer oder ganzer Container"
+   },
+   {
+    "type": "p",
+    "text": "Unter etwa fünfzehn Kubikmetern teilen Sie sich einen Container mit anderen Verladern. Das heißt LCL und ist pro Kubikmeter teurer, langsamer und anfälliger für Schäden und Verzögerungen, weil Ihre Ladung zweimal zusätzlich umgeladen wird. Oberhalb dieser Schwelle wird ein eigener Container schnell günstiger und entspannter. Liegen Sie knapp darunter, rechnen Sie beide Varianten durch: Manchmal ist eine etwas größere Bestellung pro Stück günstiger, allein durch die Fracht. Das ist auch ein Argument, wenn Sie mit der Fabrik über die MOQ sprechen."
+   },
+   {
+    "type": "quote",
+    "text": "Der günstigste Kubikmeter Fracht ist der, den Sie nicht verschiffen."
+   },
+   {
+    "type": "h2",
+    "text": "Incoterms im Klartext"
+   },
+   {
+    "type": "p",
+    "text": "Drei Abkürzungen legen fest, wer was bezahlt und wer wofür verantwortlich ist. EXW: Sie holen die Ware am Fabriktor ab, und alles danach ist Ihr Problem. FOB: Die Fabrik bringt die Ware im chinesischen Hafen an Bord, ab da ist sie Ihre Sache. Für die meisten Importeure ist das der beste Ausgangspunkt, weil Sie die Seefracht dann selbst einkaufen, bei einem Partner, der Sie vertritt. DDP: Der Lieferant regelt alles bis vor Ihre Tür. Klingt bequem, aber Sie kaufen eine Blackbox an Kosten und haben keinen Einfluss auf die Einfuhr, die auf Ihren Namen läuft."
+   },
+   {
+    "type": "h2",
+    "text": "Die Rechnung, die Sie vorher aufmachen"
+   },
+   {
+    "type": "p",
+    "text": "Erstellen Sie vor der Bestellung eine einfache Tabelle: Fabrikpreis, plus jeder Posten von oben, geteilt durch die Zahl der verkaufbaren Stücke. Diese Zahl, nicht den Fabrikpreis, stellen Sie Ihrem Verkaufspreis gegenüber. Rechnen Sie danach ein pessimistisches Szenario durch: Frachtrate anderthalbmal so hoch, drei Prozent Ausschuss, vier Wochen Verzögerung. Verkraften Sie das, haben Sie einen Plan. Verkraften Sie es nicht, wissen Sie das jetzt, und nicht erst, wenn der Container schon auf dem Wasser ist."
+   },
+   {
+    "type": "p",
+    "text": "Beim nächsten Mal in dieser Serie: was zwischen freigegebenem Muster und vollem Container passiert, und warum genau auf dieser Strecke die meisten Projekte doch noch scheitern."
+   }
+  ]
+ },
+ "fr": {
+  "title": "Le calcul du conteneur",
+  "dek": "Le prix unitaire de l'usine n'est pas votre coût de revient. Ce qui s'y ajoute en chemin, pourquoi votre carton compte plus que votre tarif de fret, et le calcul à faire à l'avance.",
+  "series": "Du croquis au conteneur maritime",
+  "body": [
+   {
+    "type": "p",
+    "text": "Le plus beau prix de ce métier, c'est le prix d'usine. Trois euros la pièce, noir sur blanc. Le problème : ce n'est pas ce que le produit vous coûte. Entre la sortie d'usine et votre entrepôt s'aligne une série de postes de coût qui, ensemble, ajoutent facilement un cinquième au prix d'usine, et celui qui ne le découvre qu'à l'arrivée des factures a bâti son prix de vente sur du sable."
+   },
+   {
+    "type": "p",
+    "text": "Voici la partie 2 de la série Du croquis au conteneur maritime. La partie 1 portait sur ce que coûte vraiment un échantillon ; la partie 3 suivra."
+   },
+   {
+    "type": "h2",
+    "text": "Du prix unitaire au coût de revient total"
+   },
+   {
+    "type": "p",
+    "text": "Voici les postes qui s'ajoutent dans un projet normal :"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Transport en Chine : de l'usine au port, documents et formalités d'export compris.",
+     "Fret maritime : le tarif du conteneur lui-même, plus des surcharges qui varient selon la saison.",
+     "Assurance : petit montant, grande différence si quelque chose tourne mal.",
+     "Droits de douane : selon le code douanier de votre produit, de zéro à plus de dix pour cent.",
+     "TVA à l'importation : récupérable pour les entreprises, mais vous devez d'abord l'avancer.",
+     "Manutention et transport aux Pays-Bas : port, commissionnaire en douane, camion jusqu'à votre entrepôt.",
+     "Rebut : un petit pourcentage de pièces que vous ne pourrez jamais vendre, aussi bon qu'ait été le contrôle."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "22%",
+    "label": "en plus du prix d'usine avant qu'un produit soit en entrepôt, prêt à la vente",
+    "source": "exemple de calcul illustratif, 5 000 pièces par conteneur maritime vers Rotterdam"
+   },
+   {
+    "type": "h2",
+    "text": "Le carton compte plus que vous ne le pensez"
+   },
+   {
+    "type": "p",
+    "text": "Le fret maritime ne se paie pas à la pièce mais au mètre cube. Votre emballage devient ainsi un poste de coût de premier ordre. Un carton d'export qui s'empile juste un peu mal dans un conteneur, c'est de l'air que vous expédiez, et l'air se paie au même tarif que le produit. C'est du DFM appliqué à votre emballage : concevez le carton autour des dimensions du conteneur, pas l'inverse. Rogner deux centimètres sur un carton ressemble à du chipotage, jusqu'à ce que vous fassiez le calcul sur un conteneur entier."
+   },
+   {
+    "type": "stat",
+    "value": "7%",
+    "label": "de pièces en plus dans le même conteneur en abaissant le carton d'export de deux centimètres",
+    "source": "exemple de calcul illustratif, carton passé de 40 par 30 par 28 à 40 par 30 par 26 centimètres"
+   },
+   {
+    "type": "h2",
+    "text": "Groupage ou conteneur complet"
+   },
+   {
+    "type": "p",
+    "text": "En dessous d'une quinzaine de mètres cubes, vous partagez un conteneur avec d'autres chargeurs. C'est ce qu'on appelle le LCL : plus cher au mètre cube, plus lent et plus exposé aux dommages et aux retards, parce que votre marchandise subit deux manutentions de plus. Au-delà de ce seuil, un conteneur rien que pour vous devient vite à la fois moins cher et plus tranquille. Si vous êtes juste en dessous, calculez les deux options : parfois, une commande un peu plus grosse revient moins cher à la pièce, uniquement grâce au fret. C'est aussi un argument dans votre discussion sur le MOQ avec l'usine."
+   },
+   {
+    "type": "quote",
+    "text": "Le mètre cube de fret le moins cher est celui que vous n'expédiez pas."
+   },
+   {
+    "type": "h2",
+    "text": "Les Incoterms en langage clair"
+   },
+   {
+    "type": "p",
+    "text": "Trois sigles déterminent qui paie quoi et qui est responsable de quoi. EXW : vous venez chercher la marchandise à la porte de l'usine et tout ce qui suit est votre problème. FOB : l'usine la met à bord dans le port chinois, ensuite elle est à vous. Pour la plupart des importateurs, c'est le meilleur point de départ, parce que vous achetez alors vous-même le fret maritime auprès d'un prestataire qui vous représente. DDP : le fournisseur s'occupe de tout jusqu'à votre porte. Cela paraît simple, mais vous achetez une boîte noire de coûts et vous n'avez aucune prise sur l'importation effectuée en votre nom."
+   },
+   {
+    "type": "h2",
+    "text": "Le calcul à faire à l'avance"
+   },
+   {
+    "type": "p",
+    "text": "Avant de commander, dressez un tableau simple : le prix d'usine, plus chacun des postes ci-dessus, le tout divisé par le nombre de pièces vendables. C'est ce chiffre, et non le prix d'usine, que vous mettez en face de votre prix de vente. Calculez ensuite un scénario pessimiste : un tarif de fret une fois et demie plus élevé, trois pour cent de rebut, quatre semaines de retard. Si vous pouvez l'encaisser, vous avez un plan. Si vous ne le pouvez pas, vous le savez maintenant, et pas quand le conteneur est déjà en mer."
+   },
+   {
+    "type": "p",
+    "text": "La prochaine fois dans cette série : ce qui se passe entre l'échantillon approuvé et le conteneur plein, et pourquoi c'est sur ce tronçon que la plupart des projets finissent malgré tout par s'effondrer."
+   }
+  ]
+ },
+ "es": {
+  "title": "Las cuentas del contenedor",
+  "dek": "El precio unitario de fábrica no es su precio de coste. Qué se suma por el camino, por qué su caja influye más que la tarifa del flete y las cuentas que hay que hacer antes.",
+  "series": "Del boceto al contenedor marítimo",
+  "body": [
+   {
+    "type": "p",
+    "text": "El precio más bonito de este oficio es el precio de fábrica. Tres euros por unidad, negro sobre blanco. El problema: eso no es lo que le cuesta el producto. Entre la puerta de la fábrica y su almacén hay una fila de partidas de coste que juntas añaden fácilmente una quinta parte al precio de fábrica, y quien lo descubre cuando empiezan a llegar las facturas ha construido su precio de venta sobre arenas movedizas."
+   },
+   {
+    "type": "p",
+    "text": "Esta es la parte 2 de la serie Del boceto al contenedor marítimo. La parte 1 trató de lo que cuesta de verdad una muestra; la parte 3 está en camino."
+   },
+   {
+    "type": "h2",
+    "text": "Del precio unitario al coste total"
+   },
+   {
+    "type": "p",
+    "text": "Estas son las partidas que se suman en un proyecto normal:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Transporte en China: de la fábrica al puerto, con documentación y exportación incluidas.",
+     "Flete marítimo: la tarifa del contenedor en sí, más recargos que varían según la temporada.",
+     "Seguro: un importe pequeño, una gran diferencia si algo sale mal.",
+     "Aranceles: dependen del código arancelario de su producto, de cero a algo más del diez por ciento.",
+     "IVA a la importación: deducible para las empresas, pero primero tiene que adelantarlo.",
+     "Gestión y transporte en los Países Bajos: puerto, agente de aduanas, el camión hasta su almacén.",
+     "Merma: un pequeño porcentaje de unidades que nunca podrá vender, por bueno que haya sido el control."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "22%",
+    "label": "sobre el precio de fábrica antes de que un producto esté en el almacén listo para vender",
+    "source": "ejemplo de cálculo ilustrativo, 5.000 unidades por contenedor marítimo a Róterdam"
+   },
+   {
+    "type": "h2",
+    "text": "La caja decide más de lo que cree"
+   },
+   {
+    "type": "p",
+    "text": "El flete marítimo no se paga por unidad, sino por metro cúbico. Eso convierte su embalaje en una partida de coste de primer orden. Un cartón de exportación que no acaba de apilarse bien en un contenedor significa enviar aire, y el aire paga la misma tarifa que el producto. Esto es DFM aplicado al embalaje: diseñe la caja en función de las medidas del contenedor, no al revés. Quitarle dos centímetros a una caja parece una minucia, hasta que hace la cuenta para un contenedor entero."
+   },
+   {
+    "type": "stat",
+    "value": "7%",
+    "label": "más unidades en el mismo contenedor al rebajar dos centímetros la altura del cartón de exportación",
+    "source": "ejemplo de cálculo ilustrativo, caja de 40 por 30 por 28 centímetros reducida a 40 por 30 por 26"
+   },
+   {
+    "type": "h2",
+    "text": "Grupaje o contenedor completo"
+   },
+   {
+    "type": "p",
+    "text": "Por debajo de unos quince metros cúbicos, usted comparte contenedor con otros cargadores. Eso se llama LCL, y por metro cúbico es más caro, más lento y más propenso a daños y retrasos, porque su carga pasa por dos trasbordos más. Por encima de ese punto, un contenedor propio pronto resulta más barato y también más tranquilo. Si se queda justo por debajo, calcule las dos opciones: a veces un pedido algo mayor sale más barato por unidad, solo por el flete. Eso también es un argumento en su conversación sobre el MOQ con la fábrica."
+   },
+   {
+    "type": "quote",
+    "text": "El metro cúbico de flete más barato es el que no se envía."
+   },
+   {
+    "type": "h2",
+    "text": "Los Incoterms en lenguaje llano"
+   },
+   {
+    "type": "p",
+    "text": "Tres siglas determinan quién paga qué y quién responde de qué. EXW: usted recoge la mercancía en la puerta de la fábrica y todo lo que venga después es problema suyo. FOB: la fábrica pone la mercancía a bordo en el puerto chino y, a partir de ahí, es cosa suya. Para la mayoría de los importadores es el mejor punto de partida, porque así es usted quien contrata el flete marítimo, con una empresa que le representa a usted. DDP: el proveedor se encarga de todo hasta su puerta. Suena cómodo, pero compra una caja negra de costes y no tiene control sobre una importación que se hace a su nombre."
+   },
+   {
+    "type": "h2",
+    "text": "Las cuentas que hay que hacer antes"
+   },
+   {
+    "type": "p",
+    "text": "Antes de pedir, haga una tabla sencilla: precio de fábrica, más cada una de las partidas anteriores, dividido entre el número de unidades vendibles. Esa cifra, y no el precio de fábrica, es la que debe comparar con su precio de venta. Después calcule un escenario pesimista: una tarifa de flete un cincuenta por ciento más alta, un tres por ciento de merma, cuatro semanas de retraso. Si puede asumirlo, tiene un plan. Si no puede, lo sabe ahora, y no cuando el contenedor ya está navegando."
+   },
+   {
+    "type": "p",
+    "text": "En la próxima entrega de esta serie: qué ocurre entre la muestra aprobada y el contenedor lleno, y por qué ese es el tramo en el que la mayoría de los proyectos acaban cayéndose."
+   }
+  ]
+ }
+}

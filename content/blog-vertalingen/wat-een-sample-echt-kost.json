@@ -1,0 +1,381 @@
+{
+ "_uitleg": "Vertalingen van content/blog/wat-een-sample-echt-kost.json. Zelfde blokken in dezelfde volgorde als het origineel; alleen de tekst verschilt. \"bron\" is de vingerafdruk van de Nederlandse tekst waar deze vertaling bij hoort: de build waarschuwt als het origineel daarna is gewijzigd.",
+ "slug": "wat-een-sample-echt-kost",
+ "bron": "900b045fa302",
+ "en": {
+  "title": "What a sample really costs",
+  "dek": "Four hundred euros for one piece feels off when the unit price will soon be three euros. Yet that invoice is usually right: here's the breakdown, plus when you get the money back.",
+  "series": "From sketch to shipping container",
+  "body": [
+   {
+    "type": "p",
+    "text": "The first number in a quote that makes you flinch is rarely the unit price. It's the sample. Four hundred euros for one piece, when you'll soon be paying a few euros per unit. That feels off. Yet it's almost always right, and once you understand why, you'll negotiate a good deal better."
+   },
+   {
+    "type": "p",
+    "text": "This is part 1 of the series From sketch to shipping container: the whole road from idea to delivery, with honest math. Part 2 is about what shipping really costs."
+   },
+   {
+    "type": "h2",
+    "text": "A sample is not a product off the line"
+   },
+   {
+    "type": "p",
+    "text": "A production unit rolls out of a process that's already running. A sample means building that process. The factory buys material in small quantities, often at a much higher price per meter or per kilo than in bulk. A technician changes over a machine, writes a work plan, mixes a color and finishes by hand what the line will later do automatically. For one piece. All the fixed costs that you spread across five thousand units on an order of five thousand now land on that one piece."
+   },
+   {
+    "type": "p",
+    "text": "That's why the price of a sample doesn't predict your unit price. They're two different products that happen to look the same."
+   },
+   {
+    "type": "h2",
+    "text": "Where the money goes"
+   },
+   {
+    "type": "p",
+    "text": "A sample invoice of around five hundred euros usually breaks down like this:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Labor: an experienced technician spends a day or two on it, not a line worker twenty seconds.",
+     "Setup: setting machines, writing cutting patterns or programs, doing test runs.",
+     "Material in tiny quantities: one meter of fabric or one bar of plastic is bought at the highest price there is.",
+     "Courier: a sample flies, and express freight from China easily costs fifty to a hundred euros per shipment."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "70%",
+    "label": "of an average sample invoice is labor and setup, not material",
+    "source": "illustrative calculation, sample invoice of 500 euros"
+   },
+   {
+    "type": "p",
+    "text": "Watch the courier. If you do three sample rounds with a separate shipment each time, you sometimes pay more for plane tickets for boxes than for the sample itself. Combining rounds where you can saves real money."
+   },
+   {
+    "type": "h2",
+    "text": "Tooling is a separate conversation"
+   },
+   {
+    "type": "p",
+    "text": "For injection molding or cast parts, a mold comes on top, and then you're talking thousands of euros instead of hundreds. That mold should be yours, so put that in writing before you pay, and after that it lasts for tens to hundreds of thousands of units. Before the mold is cut, a good factory does a DFM round: can this design even come out of the mold cleanly, or will those corners not release? Every change after the mold costs many times what the same change costs before it. That's not a factory sales pitch, that's steel."
+   },
+   {
+    "type": "quote",
+    "text": "A cheap sample that proves nothing costs more than an honest sample that proves everything."
+   },
+   {
+    "type": "h2",
+    "text": "Count on more than one round"
+   },
+   {
+    "type": "p",
+    "text": "The first sample is rarely right the first time, and that's fine. Two to three rounds is normal. The first round proves form and function, the second proves material and finish, and the last approved piece becomes your reference sample: the piece all of production will be measured against. Keep that piece, photograph it, and have the factory keep an identical one."
+   },
+   {
+    "type": "p",
+    "text": "Put those rounds in your timeline too. Each round takes two to four weeks including shipping. If you want to be in stores in October and you order the first sample in August, you don't have a plan, you have a gamble."
+   },
+   {
+    "type": "h2",
+    "text": "When the money comes back"
+   },
+   {
+    "type": "p",
+    "text": "Many factories credit the sample costs against your first order. That's custom, not a right. So ask before you pay and put it in the email: sample costs are credited on an order above the MOQ. Most factories are fine with that. To them a sample is an investment in a new customer, not a way to make money. A factory that wants to earn on samples is usually not a factory but a middleman."
+   },
+   {
+    "type": "h2",
+    "text": "The short version"
+   },
+   {
+    "type": "p",
+    "text": "Pay for a good sample without grumbling, negotiate the credit up front, and be wary of a sample that's suspiciously cheap. Something is being cut somewhere, and you only find out what in mass production. The sample is the cheapest moment in the whole process to find mistakes. Every stop after that, mold, production, container, customer, adds a zero to the cost of the same mistake."
+   }
+  ]
+ },
+ "de": {
+  "title": "Was ein Muster wirklich kostet",
+  "dek": "Vierhundert Euro für ein einziges Stück wirken schief, wenn der Stückpreis später bei drei Euro liegt. Trotzdem stimmt diese Rechnung meistens: Hier ist die Aufschlüsselung, und wann Sie das Geld wiedersehen.",
+  "series": "Von der Skizze bis zum Schiffscontainer",
+  "body": [
+   {
+    "type": "p",
+    "text": "Der erste Betrag, der in einem Angebot erschreckt, ist selten der Stückpreis. Es ist das Muster. Vierhundert Euro für ein einziges Stück, während Sie später ein paar Euro pro Stück zahlen. Das wirkt schief. Trotzdem stimmt es fast immer, und wenn Sie verstehen warum, verhandeln Sie danach deutlich besser."
+   },
+   {
+    "type": "p",
+    "text": "Dies ist Teil 1 der Serie Von der Skizze bis zum Schiffscontainer: der ganze Weg von der Idee bis zur Lieferung, ehrlich durchgerechnet. In Teil 2 geht es darum, was das Verschiffen wirklich kostet."
+   },
+   {
+    "type": "h2",
+    "text": "Ein Muster ist kein Produkt vom Band"
+   },
+   {
+    "type": "p",
+    "text": "Ein Serienstück kommt aus einem Prozess, der schon läuft. Ein Muster heißt, diesen Prozess erst aufzubauen. Die Fabrik kauft Material in kleinen Mengen ein, oft zu einem viel höheren Meterpreis oder Kilopreis als bei Großmengen. Ein Techniker rüstet eine Maschine um, schreibt einen Arbeitsplan, mischt eine Farbe und erledigt von Hand, was die Linie später automatisch macht. Für ein einziges Stück. Alle Fixkosten, die sich bei fünftausend Stück auf fünftausend Stück verteilen, landen jetzt auf diesem einen Exemplar."
+   },
+   {
+    "type": "p",
+    "text": "Deshalb ist der Preis eines Musters keine Vorhersage Ihres Stückpreises. Es sind zwei verschiedene Produkte, die zufällig gleich aussehen."
+   },
+   {
+    "type": "h2",
+    "text": "Wohin das Geld fließt"
+   },
+   {
+    "type": "p",
+    "text": "Eine Rechnung über rund fünfhundert Euro für ein Muster setzt sich meist so zusammen:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Arbeit: Ein erfahrener Techniker ist ein bis zwei Tage damit beschäftigt, nicht ein Arbeiter am Band zwanzig Sekunden.",
+     "Einrichtung: Maschinen einstellen, Schnittmuster oder Programme schreiben, Testläufe fahren.",
+     "Material in Kleinstmengen: Einen Meter Stoff oder eine Stange Kunststoff kaufen Sie zum höchsten Preis, den es gibt.",
+     "Kurier: Ein Muster fliegt, und Expressfracht aus China kostet schnell fünfzig bis hundert Euro pro Sendung."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "70%",
+    "label": "einer durchschnittlichen Rechnung für ein Muster sind Arbeit und Einrichtung, nicht Material",
+    "source": "illustratives Rechenbeispiel, Rechnung über 500 Euro für ein Muster"
+   },
+   {
+    "type": "p",
+    "text": "Achten Sie auf den Kurier. Wer drei Musterrunden mit jeweils einer eigenen Sendung macht, zahlt manchmal mehr für Flugtickets für Kartons als für das Muster selbst. Runden zusammenzulegen, wo es geht, spart wirklich Geld."
+   },
+   {
+    "type": "h2",
+    "text": "Werkzeugbau ist ein Kapitel für sich"
+   },
+   {
+    "type": "p",
+    "text": "Bei Spritzguss oder gegossenen Teilen kommt eine Form hinzu, und dann reden Sie über Tausende Euro statt Hunderte. Diese Form sollte Ihnen gehören, halten Sie das schriftlich fest, bevor Sie zahlen, und sie hält danach Zehntausende bis Hunderttausende Stück. Eine gute Fabrik macht vor dem Schneiden der Form eine DFM Prüfung: Kommt dieses Design überhaupt sauber aus dem Werkzeug, oder lassen sich diese Ecken nicht entformen? Jede Änderung nach der Form kostet ein Vielfaches derselben Änderung davor. Das ist kein Verkaufsargument der Fabrik, das ist Stahl."
+   },
+   {
+    "type": "quote",
+    "text": "Ein billiges Muster, das nichts beweist, ist teurer als ein ehrliches Muster, das alles beweist."
+   },
+   {
+    "type": "h2",
+    "text": "Rechnen Sie mit mehr als einer Runde"
+   },
+   {
+    "type": "p",
+    "text": "Das erste Muster passt selten auf Anhieb, und das ist nicht schlimm. Zwei bis drei Runden sind normal. Die erste Runde beweist Form und Funktion, die zweite Material und Verarbeitung, und das letzte freigegebene Stück wird Ihr Referenzmuster: das Stück, an dem später die gesamte Produktion gemessen wird. Bewahren Sie dieses Stück auf, fotografieren Sie es, und lassen Sie die Fabrik ein identisches Exemplar behalten."
+   },
+   {
+    "type": "p",
+    "text": "Planen Sie diese Runden auch in Ihren Zeitplan ein. Jede Runde kostet zwei bis vier Wochen inklusive Versand. Wer im Oktober im Laden liegen will und im August das erste Muster bestellt, hat keinen Plan, sondern eine Wette."
+   },
+   {
+    "type": "h2",
+    "text": "Wann das Geld zurückkommt"
+   },
+   {
+    "type": "p",
+    "text": "Viele Fabriken verrechnen die Musterkosten mit Ihrer ersten Bestellung. Das ist üblich, aber kein Anspruch. Fragen Sie also, bevor Sie zahlen, und halten Sie es in der E-Mail fest: Die Musterkosten werden bei einer Bestellung oberhalb der MOQ gutgeschrieben. Die meisten Fabriken sind damit einverstanden. Für sie ist ein Muster eine Investition in einen neuen Kunden, kein Geschäftsmodell. Eine Fabrik, die an Mustern verdienen will, ist meistens keine Fabrik, sondern ein Zwischenhändler."
+   },
+   {
+    "type": "h2",
+    "text": "Die Kurzfassung"
+   },
+   {
+    "type": "p",
+    "text": "Zahlen Sie ohne Murren für ein gutes Muster, verhandeln Sie die Verrechnung im Voraus, und misstrauen Sie einem Muster, das verdächtig billig ist. Irgendwo wird dann gespart, und woran, erfahren Sie erst in der Massenproduktion. Das Muster ist der günstigste Zeitpunkt im ganzen Projekt, um Fehler zu finden. Jede Station danach, Form, Produktion, Container, Kunde, macht denselben Fehler um eine Null teurer."
+   }
+  ]
+ },
+ "fr": {
+  "title": "Ce que coûte vraiment un échantillon",
+  "dek": "Quatre cents euros pour une seule pièce, cela paraît disproportionné quand le prix unitaire sera ensuite de trois euros. Pourtant, cette facture est généralement juste : en voici le détail, et le moment où vous revoyez cet argent.",
+  "series": "Du croquis au conteneur maritime",
+  "body": [
+   {
+    "type": "p",
+    "text": "Le premier montant qui fait sursauter dans un devis est rarement le prix unitaire. C'est l'échantillon. Quatre cents euros pour une seule pièce, alors que vous paierez ensuite quelques euros la pièce. Cela paraît disproportionné. Pourtant, c'est presque toujours justifié, et une fois que vous comprenez pourquoi, vous négociez nettement mieux."
+   },
+   {
+    "type": "p",
+    "text": "Voici la partie 1 de la série Du croquis au conteneur maritime : tout le parcours, de l'idée à la livraison, avec des calculs honnêtes. La partie 2 porte sur ce que coûte vraiment l'expédition."
+   },
+   {
+    "type": "h2",
+    "text": "Un échantillon n'est pas un produit sorti de la ligne"
+   },
+   {
+    "type": "p",
+    "text": "Une pièce de série sort d'un processus qui tourne déjà. Un échantillon, c'est construire ce processus. L'usine achète la matière en petites quantités, souvent à un prix au mètre ou au kilo bien plus élevé qu'en gros. Un technicien reconfigure une machine, rédige un mode opératoire, mélange une couleur et finit à la main ce que la ligne fera plus tard automatiquement. Pour une seule pièce. Tous les coûts fixes que vous étalez sur cinq mille pièces quand vous en commandez cinq mille retombent ici sur ce seul exemplaire."
+   },
+   {
+    "type": "p",
+    "text": "C'est pourquoi le prix d'un échantillon ne prédit en rien votre prix unitaire. Ce sont deux produits différents qui se trouvent avoir la même apparence."
+   },
+   {
+    "type": "h2",
+    "text": "Où va l'argent"
+   },
+   {
+    "type": "p",
+    "text": "Une facture d'échantillon d'environ cinq cents euros se décompose généralement ainsi :"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Main-d'œuvre : un technicien expérimenté y passe un jour ou deux, pas un opérateur de ligne vingt secondes.",
+     "Mise en route : régler les machines, préparer les patrons de coupe ou écrire les programmes, lancer des essais.",
+     "Matière en quantités minuscules : un mètre de tissu ou une barre de plastique s'achète au prix le plus élevé qui existe.",
+     "Transport express : un échantillon voyage en avion, et le fret express depuis la Chine coûte vite cinquante à cent euros par envoi."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "70%",
+    "label": "d'une facture d'échantillon moyenne part en main-d'œuvre et en mise en route, pas en matière",
+    "source": "exemple de calcul illustratif, facture d'échantillon de 500 euros"
+   },
+   {
+    "type": "p",
+    "text": "Gardez un œil sur le transport express. Celui qui enchaîne trois itérations d'échantillon avec un envoi séparé à chaque fois paie parfois plus en billets d'avion pour des cartons que pour l'échantillon lui-même. Regrouper les itérations quand c'est possible fait économiser de vraies sommes."
+   },
+   {
+    "type": "h2",
+    "text": "L'outillage, c'est une autre discussion"
+   },
+   {
+    "type": "p",
+    "text": "Pour les pièces moulées par injection ou coulées, il faut en plus un moule, et l'on parle alors de milliers d'euros plutôt que de centaines. Ce moule doit vous appartenir, faites-le écrire noir sur blanc avant de payer, et il dure ensuite des dizaines à des centaines de milliers de pièces. Une bonne usine fait une revue DFM avant d'usiner le moule : ce design peut-il seulement sortir proprement du moule, ou ces angles ne se démoulent-ils pas ? Toute modification après le moule coûte plusieurs fois ce qu'aurait coûté la même modification avant. Ce n'est pas un discours commercial de l'usine, c'est de l'acier."
+   },
+   {
+    "type": "quote",
+    "text": "Un échantillon bon marché qui ne prouve rien coûte plus cher qu'un échantillon honnête qui prouve tout."
+   },
+   {
+    "type": "h2",
+    "text": "Comptez plus d'une itération"
+   },
+   {
+    "type": "p",
+    "text": "Le premier échantillon est rarement bon du premier coup, et ce n'est pas grave. Deux à trois itérations, c'est normal. La première valide la forme et la fonction, la deuxième la matière et la finition, et la dernière pièce approuvée devient votre échantillon de référence : la pièce à laquelle toute la production sera ensuite comparée. Conservez-la, photographiez-la, et faites en sorte que l'usine en garde un exemplaire identique."
+   },
+   {
+    "type": "p",
+    "text": "Intégrez aussi ces itérations à votre calendrier. Chacune prend deux à quatre semaines, expédition comprise. Celui qui veut être en magasin en octobre et commande son premier échantillon en août n'a pas un planning, mais un pari."
+   },
+   {
+    "type": "h2",
+    "text": "Quand l'argent revient"
+   },
+   {
+    "type": "p",
+    "text": "Beaucoup d'usines déduisent les frais d'échantillon de votre première commande. C'est un usage, pas un droit. Demandez-le donc avant de payer et écrivez-le dans l'e-mail : les frais d'échantillon sont crédités sur toute commande supérieure au MOQ. La plupart des usines n'y voient aucun inconvénient. Pour elles, un échantillon est un investissement dans un nouveau client, pas une source de revenus. Une usine qui veut gagner de l'argent sur les échantillons n'est en général pas une usine, mais un intermédiaire."
+   },
+   {
+    "type": "h2",
+    "text": "La version courte"
+   },
+   {
+    "type": "p",
+    "text": "Payez sans rechigner pour un bon échantillon, négociez la déduction à l'avance, et méfiez-vous d'un échantillon étrangement bon marché. Dans ce cas, on a économisé quelque part, et vous ne découvrirez où qu'au moment de la production de masse. L'échantillon est le moment le moins cher de tout le parcours pour trouver des erreurs. Chaque étape suivante, moule, production, conteneur, client, ajoute un zéro au coût de la même erreur."
+   }
+  ]
+ },
+ "es": {
+  "title": "Lo que cuesta de verdad una muestra",
+  "dek": "Cuatrocientos euros por una sola unidad parecen desproporcionados cuando el precio unitario será después de tres euros. Aun así, esa factura suele ser correcta: aquí está el desglose, y cuándo recupera el dinero.",
+  "series": "Del boceto al contenedor marítimo",
+  "body": [
+   {
+    "type": "p",
+    "text": "La primera cifra que asusta en una cotización rara vez es el precio unitario. Es la muestra. Cuatrocientos euros por una sola unidad, cuando después va a pagar unos pocos euros por cada una. Parece desproporcionado. Sin embargo, casi siempre es correcto, y si entiende por qué, negociará bastante mejor."
+   },
+   {
+    "type": "p",
+    "text": "Esta es la parte 1 de la serie Del boceto al contenedor marítimo: todo el recorrido de la idea a la entrega, con cuentas honestas. La parte 2 trata de lo que cuesta de verdad el envío."
+   },
+   {
+    "type": "h2",
+    "text": "Una muestra no es un producto salido de la línea"
+   },
+   {
+    "type": "p",
+    "text": "Una unidad de producción sale de un proceso que ya está en marcha. Una muestra consiste en construir ese proceso. La fábrica compra material en pequeñas cantidades, a menudo a un precio por metro o por kilo mucho más alto que al por mayor. Un técnico reconfigura una máquina, redacta un plan de trabajo, mezcla un color y termina a mano lo que después la línea hará de forma automática. Para una sola unidad. Todos los costes fijos que con cinco mil unidades se reparten entre cinco mil recaen ahora sobre ese único ejemplar."
+   },
+   {
+    "type": "p",
+    "text": "Por eso el precio de una muestra no predice su precio unitario. Son dos productos distintos que casualmente tienen el mismo aspecto."
+   },
+   {
+    "type": "h2",
+    "text": "A dónde va el dinero"
+   },
+   {
+    "type": "p",
+    "text": "Una factura de muestra de unos quinientos euros suele repartirse así:"
+   },
+   {
+    "type": "ul",
+    "items": [
+     "Mano de obra: un técnico con experiencia le dedica uno o dos días, no un operario de línea veinte segundos.",
+     "Puesta a punto: ajustar máquinas, preparar patrones de corte o programas, hacer tandas de prueba.",
+     "Material en cantidades mínimas: un metro de tela o una barra de plástico se compran al precio más alto que existe.",
+     "Mensajería: una muestra viaja en avión, y el transporte exprés desde China cuesta fácilmente entre cincuenta y cien euros por envío."
+    ]
+   },
+   {
+    "type": "stat",
+    "value": "70%",
+    "label": "de una factura de muestra media es mano de obra y puesta a punto, no material",
+    "source": "ejemplo de cálculo ilustrativo, factura de muestra de 500 euros"
+   },
+   {
+    "type": "p",
+    "text": "Ojo con la mensajería. Quien hace tres rondas de muestras con un envío aparte cada vez paga a veces más en billetes de avión para cajas que por la propia muestra. Combinar rondas siempre que se pueda ahorra dinero de verdad."
+   },
+   {
+    "type": "h2",
+    "text": "El utillaje es una conversación aparte"
+   },
+   {
+    "type": "p",
+    "text": "Para el moldeo por inyección o las piezas fundidas se añade un molde, y entonces se habla de miles de euros en lugar de cientos. Ese molde debe ser suyo: déjelo por escrito antes de pagar. Después aguanta decenas o cientos de miles de unidades. Una buena fábrica hace una revisión DFM antes de mecanizar el molde: ¿puede este diseño salir bien del molde, o esos ángulos no desmoldean? Cada cambio después del molde cuesta varias veces más que el mismo cambio antes. No es un argumento de venta de la fábrica, es acero."
+   },
+   {
+    "type": "quote",
+    "text": "Una muestra barata que no demuestra nada sale más cara que una muestra honesta que lo demuestra todo."
+   },
+   {
+    "type": "h2",
+    "text": "Cuente con más de una ronda"
+   },
+   {
+    "type": "p",
+    "text": "La primera muestra rara vez sale bien a la primera, y no pasa nada. Lo normal son dos o tres rondas. La primera ronda demuestra forma y función, la segunda material y acabado, y la última unidad aprobada se convierte en su muestra de referencia: la pieza con la que después se medirá toda la producción. Guarde esa pieza, fotografíela y haga que la fábrica conserve un ejemplar idéntico."
+   },
+   {
+    "type": "p",
+    "text": "Incluya también esas rondas en su calendario. Cada ronda lleva de dos a cuatro semanas, envío incluido. Quien quiere estar en tienda en octubre y pide la primera muestra en agosto no tiene un plan, tiene una apuesta."
+   },
+   {
+    "type": "h2",
+    "text": "Cuándo vuelve el dinero"
+   },
+   {
+    "type": "p",
+    "text": "Muchas fábricas descuentan el coste de la muestra de su primer pedido. Es una costumbre, no un derecho. Así que pregúntelo antes de pagar y déjelo escrito en el correo: el coste de la muestra se descontará de un pedido superior al MOQ. A la mayoría de las fábricas les parece bien. Para ellas, una muestra es una inversión en un cliente nuevo, no un modelo de negocio. Una fábrica que quiere ganar dinero con las muestras no suele ser una fábrica, sino un intermediario."
+   },
+   {
+    "type": "h2",
+    "text": "La versión corta"
+   },
+   {
+    "type": "p",
+    "text": "Pague sin rechistar por una buena muestra, negocie de antemano que se la descuenten del pedido y desconfíe de una muestra sospechosamente barata. En algo se está ahorrando, y no descubrirá en qué hasta la producción en masa. La muestra es el momento más barato de todo el recorrido para encontrar errores. Cada etapa posterior (molde, producción, contenedor, cliente) le añade un cero al coste del mismo error."
+   }
+  ]
+ }
+}

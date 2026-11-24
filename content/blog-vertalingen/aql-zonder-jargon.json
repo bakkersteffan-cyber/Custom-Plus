@@ -1,0 +1,265 @@
+{
+ "_uitleg": "Vertalingen van content/blog/aql-zonder-jargon.json. Zelfde blokken in dezelfde volgorde als het origineel; alleen de tekst verschilt. \"bron\" is de vingerafdruk van de Nederlandse tekst waar deze vertaling bij hoort: de build waarschuwt als het origineel daarna is gewijzigd.",
+ "slug": "aql-zonder-jargon",
+ "bron": "815e9f25aa08",
+ "en": {
+  "title": "AQL without jargon",
+  "dek": "How do you know five thousand units look like the one sample you approved? There's a system for that. What AQL does and doesn't promise, explained without the table wizardry.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "You approved one sample. Now the factory is making five thousand. Nobody is going to look at those five thousand units one by one, because that would take longer than production itself and it would double the price. So for seventy years the world has inspected a random sample instead, under a system called AQL. It's less complicated than the tables suggest, and you only need to understand three things about it."
+   },
+   {
+    "type": "h2",
+    "text": "What AQL really is"
+   },
+   {
+    "type": "p",
+    "text": "AQL is an agreement made up front: how many defects you accept in a batch before you reject the whole batch. That agreement plus the order size gives you a sample size and a limit: this many defects are allowed in the random sample, and above that the batch is rejected. So it's not a promise that every unit is perfect. It's a yardstick that pins down what the two of you call an acceptable batch, before there's a chance to argue about it."
+   },
+   {
+    "type": "quote",
+    "text": "AQL doesn't say there are zero defects. It says how many defects you declared acceptable up front."
+   },
+   {
+    "type": "h2",
+    "text": "Critical, major, minor"
+   },
+   {
+    "type": "p",
+    "text": "Not every defect is equally bad, so AQL works with three classes. A critical defect makes the product unsafe or unsellable: a sharp edge, a broken plug, a missing part. The standard for those is zero. A major defect is one the customer sees, and it leads to a return: a scratch on the visible side, a crooked print, a zipper that catches. A minor defect is one the customer probably won't even notice: a loose thread on the inside, a scratch on the underside. You decide for yourself, ideally with photos, which defect falls into which class for your product. That list is half the work."
+   },
+   {
+    "type": "h2",
+    "text": "What an inspection looks like in practice"
+   },
+   {
+    "type": "p",
+    "text": "An inspector comes to the factory once the order is finished and packed, picks boxes at random from the stack (not the boxes set out by the door) and checks the prescribed number of units from them against your defect list and your reference sample. This is called FQC, the final inspection. There are earlier checkpoints too: IQC checks incoming material and IPQC watches over production as it runs, which is worth the money above all on a first order with a new factory. Defects you catch during the run can still be fixed. Defects found at the final inspection can only be sorted out of the batch."
+   },
+   {
+    "type": "stat",
+    "value": "200",
+    "label": "units sampled on an order of 5,000, at general inspection level II",
+    "source": "ISO 2859, sampling table, general level II"
+   },
+   {
+    "type": "h2",
+    "text": "Which level to choose"
+   },
+   {
+    "type": "p",
+    "text": "The usual choice for consumer products is AQL 2.5 for major defects and 4.0 for minor ones, with zero tolerance for critical defects. You can always go stricter, for example 1.5 or even 0.65 for major defects, but strict isn't free: a tighter limit means more rejected batches, more rounds of rework and, in the end, a higher unit price. For a ten euro product, 2.5 is almost always sensible. For something worn on the skin or something a child plays with, stricter is fair. Choose on purpose instead of accepting the default because it was there."
+   },
+   {
+    "type": "h2",
+    "text": "What you take care of yourself"
+   },
+   {
+    "type": "p",
+    "text": "Three things, all up front. One: put the AQL level and your defect list in the order itself, not in a separate email afterward. Two: leave the reference sample sealed at the factory and keep an identical one yourself, so that a discussion about color or finish happens next to a physical piece and not next to a memory. Three: tie your final payment to a passed inspection. Not as a threat, but as the order of things: a factory that makes a fuss about that is telling you something."
+   },
+   {
+    "type": "p",
+    "text": "An independent inspection costs a few hundred euros a day. On an order worth tens of thousands of euros, that's the cheapest insurance there is. Not because factories want to cheat, but because making five thousand units without a single defect simply doesn't happen, and you want to have decided up front what happens then."
+   }
+  ]
+ },
+ "de": {
+  "title": "AQL ohne Fachjargon",
+  "dek": "Woher wissen Sie, ob fünftausend Stück dem einen Muster entsprechen, das Sie freigegeben haben? Dafür gibt es ein System. Was AQL verspricht und was nicht, erklärt ohne Tabellenzauber.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "Sie haben ein Muster freigegeben. Die Fabrik fertigt jetzt fünftausend davon. Niemand sieht sich diese fünftausend Stück einzeln an, denn das würde länger dauern als die Produktion selbst und den Preis verdoppeln. Deshalb prüft die Welt seit siebzig Jahren per Stichprobe, nach einem System namens AQL. Es ist weniger kompliziert, als die Tabellen vermuten lassen, und Sie müssen nur drei Dinge davon verstehen."
+   },
+   {
+    "type": "h2",
+    "text": "Was AQL wirklich ist"
+   },
+   {
+    "type": "p",
+    "text": "AQL ist eine Vereinbarung im Voraus darüber, wie viele Abweichungen Sie in einer Charge akzeptieren, bevor Sie die ganze Charge ablehnen. Aus dieser Vereinbarung und der Bestellmenge ergeben sich ein Stichprobenumfang und eine Grenze: So viele Mängel darf die Stichprobe enthalten, darüber ist die Charge abgelehnt. Es ist also kein Versprechen, dass jedes Stück perfekt ist. Es ist ein Maßstab, der festlegt, was beide Seiten eine annehmbare Charge nennen, bevor darüber Streit entstehen kann."
+   },
+   {
+    "type": "quote",
+    "text": "AQL sagt nicht, dass es null Mängel gibt. AQL sagt, wie viele Mängel Sie vorab für annehmbar erklärt haben."
+   },
+   {
+    "type": "h2",
+    "text": "Kritischer Mangel, Hauptmangel, Nebenmangel"
+   },
+   {
+    "type": "p",
+    "text": "Nicht jeder Mangel wiegt gleich schwer, deshalb arbeitet AQL mit drei Klassen. Ein kritischer Mangel macht das Produkt unsicher oder unverkäuflich: eine scharfe Kante, ein defekter Stecker, ein fehlendes Teil. Dafür gilt die Vorgabe null. Einen Hauptmangel sieht der Kunde, und er führt zur Retoure: ein Kratzer auf der Sichtseite, ein schiefer Druck, ein Reißverschluss, der hakt. Einen Nebenmangel bemerkt der Kunde wahrscheinlich nicht einmal: ein Fädchen auf der Innenseite, ein Kratzer auf der Unterseite. Sie legen selbst fest, am besten mit Fotos, welcher Mangel bei Ihrem Produkt in welche Klasse fällt. Diese Liste ist die halbe Arbeit."
+   },
+   {
+    "type": "h2",
+    "text": "Wie eine Inspektion in der Praxis abläuft"
+   },
+   {
+    "type": "p",
+    "text": "Ein Inspektor kommt in die Fabrik, wenn die Bestellung fertig und verpackt ist, wählt zufällig Kartons aus dem Stapel (nicht die Kartons, die an der Tür bereitstehen) und prüft daraus die vorgeschriebene Stückzahl gegen Ihre Mängelliste und Ihr Referenzmuster. Das heißt FQC, die Endkontrolle. Es gibt auch frühere Zeitpunkte: IQC prüft das eingehende Material und IPQC begleitet die laufende Produktion, was sich vor allem bei einer ersten Bestellung bei einer neuen Fabrik bezahlt macht. Mängel, die Sie während des Produktionslaufs entdecken, lassen sich noch beheben. Mängel in der Endkontrolle können Sie nur noch aussortieren."
+   },
+   {
+    "type": "stat",
+    "value": "200",
+    "label": "Stück Stichprobe bei einer Bestellung von 5.000, bei allgemeiner Inspektionsstufe II",
+    "source": "ISO 2859, Stichprobentabelle, allgemeine Inspektionsstufe II"
+   },
+   {
+    "type": "h2",
+    "text": "Welche Stufe Sie wählen"
+   },
+   {
+    "type": "p",
+    "text": "Üblich für Konsumgüter ist AQL 2,5 für Hauptmängel und 4,0 für Nebenmängel, mit null Toleranz bei kritischen Mängeln. Strenger geht immer, zum Beispiel 1,5 oder sogar 0,65 für Hauptmängel, aber streng ist nicht gratis: Eine strengere Grenze bedeutet mehr abgelehnte Chargen, mehr Nacharbeitsrunden und am Ende einen höheren Stückpreis. Für ein Zehn-Euro-Produkt ist 2,5 fast immer vernünftig. Bei etwas, das auf der Haut getragen wird oder mit dem ein Kind spielt, darf es strenger sein. Entscheiden Sie bewusst, statt den Standardwert zu übernehmen, nur weil er schon dastand."
+   },
+   {
+    "type": "h2",
+    "text": "Was Sie selbst regeln"
+   },
+   {
+    "type": "p",
+    "text": "Drei Dinge, alle im Voraus. Erstens: Schreiben Sie die AQL Stufe und Ihre Mängelliste in die Bestellung selbst, nicht nachträglich in eine separate E-Mail. Zweitens: Lassen Sie das Referenzmuster versiegelt bei der Fabrik und behalten Sie selbst ein identisches Exemplar, damit eine Diskussion über Farbe oder Verarbeitung an einem physischen Stück geführt wird und nicht an einer Erinnerung. Drittens: Knüpfen Sie Ihre letzte Zahlung an eine bestandene Inspektion. Nicht als Drohung, sondern als Reihenfolge: Eine Fabrik, die sich damit schwertut, sagt Ihnen damit etwas."
+   },
+   {
+    "type": "p",
+    "text": "Eine unabhängige Inspektion kostet ein paar hundert Euro pro Tag. Bei einer Bestellung über Zehntausende Euro ist das die günstigste Versicherung, die es gibt. Nicht weil Fabriken tricksen wollen, sondern weil es fünftausend Stück ohne eine einzige Abweichung schlicht nicht gibt, und Sie vorher festgelegt haben wollen, was dann passiert."
+   }
+  ]
+ },
+ "fr": {
+  "title": "L'AQL sans jargon",
+  "dek": "Comment savoir si cinq mille pièces ressemblent à l'unique échantillon que vous avez approuvé ? Il existe un système pour cela. Ce que l'AQL promet, et ce qu'il ne promet pas, expliqué sans jongler avec des tables de chiffres.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "Vous avez approuvé un seul échantillon. L'usine en fabrique maintenant cinq mille. Personne ne va examiner ces cinq mille pièces une par une : cela prendrait plus de temps que la production elle-même et doublerait le prix. Alors, depuis soixante-dix ans, le monde entier contrôle par échantillonnage, selon un système appelé AQL. C'est moins compliqué que les tables ne le laissent penser, et il suffit d'en comprendre trois choses."
+   },
+   {
+    "type": "h2",
+    "text": "Ce qu'est vraiment l'AQL"
+   },
+   {
+    "type": "p",
+    "text": "L'AQL est un accord passé à l'avance : combien d'écarts acceptez-vous dans un lot avant de rejeter le lot entier. De cet accord et de la taille de la commande découlent un nombre de pièces à prélever et une limite : tant de défauts admis parmi les pièces prélevées, au-delà le lot est rejeté. Ce n'est donc pas la promesse que chaque pièce sera parfaite. C'est un mètre étalon qui fixe ce que vous et l'usine appelez ensemble un lot acceptable, avant qu'une dispute ne puisse naître."
+   },
+   {
+    "type": "quote",
+    "text": "L'AQL ne dit pas qu'il y a zéro défaut. Il dit combien de défauts vous avez déclarés acceptables à l'avance."
+   },
+   {
+    "type": "h2",
+    "text": "Critique, majeur, mineur"
+   },
+   {
+    "type": "p",
+    "text": "Tous les défauts ne se valent pas, l'AQL distingue donc trois classes. Un défaut critique rend le produit dangereux ou invendable : une arête coupante, une prise cassée, une pièce manquante. Pour ceux-là, la norme est zéro. Un défaut majeur, le client le voit et il entraîne un retour : une rayure sur la face visible, une impression de travers, une fermeture éclair qui accroche. Un défaut mineur, le client ne le remarque probablement même pas : un fil qui dépasse à l'intérieur, une rayure sur le dessous. C'est vous qui décidez, de préférence photos à l'appui, quel défaut entre dans quelle classe pour votre produit. Cette liste, c'est la moitié du travail."
+   },
+   {
+    "type": "h2",
+    "text": "À quoi ressemble une inspection en pratique"
+   },
+   {
+    "type": "p",
+    "text": "Un inspecteur se rend à l'usine quand la commande est terminée et emballée, choisit des cartons au hasard dans la pile (pas ceux qui attendent tout prêts près de la porte) et y contrôle le nombre de pièces prescrit, en les comparant à votre liste de défauts et à votre échantillon de référence. C'est ce qu'on appelle le FQC, le contrôle final. Il existe aussi des étapes plus précoces : l'IQC vérifie les matières à réception et l'IPQC suit la production en cours, ce qui vaut la dépense, surtout pour une première commande avec une nouvelle usine. Un défaut repéré pendant la série peut encore être corrigé ; un défaut repéré au contrôle final ne peut plus qu'être écarté au tri."
+   },
+   {
+    "type": "stat",
+    "value": "200",
+    "label": "pièces prélevées pour une commande de 5 000, au niveau d'inspection général II",
+    "source": "ISO 2859, table d'échantillonnage, niveau général II"
+   },
+   {
+    "type": "h2",
+    "text": "Quel niveau choisir"
+   },
+   {
+    "type": "p",
+    "text": "Le choix courant pour les produits de consommation est un AQL de 2,5 pour les défauts majeurs et de 4,0 pour les défauts mineurs, avec une tolérance zéro pour les défauts critiques. On peut toujours être plus strict, par exemple 1,5 ou même 0,65 pour les défauts majeurs, mais la sévérité n'est pas gratuite : une limite plus stricte, c'est davantage de lots rejetés, davantage de reprises et, au bout du compte, un prix unitaire plus élevé. Pour un produit à dix euros, 2,5 est presque toujours raisonnable ; pour un article porté à même la peau ou avec lequel joue un enfant, il est légitime d'être plus strict. Choisissez en connaissance de cause, au lieu d'accepter la valeur par défaut simplement parce qu'elle était déjà inscrite."
+   },
+   {
+    "type": "h2",
+    "text": "Ce que vous réglez vous-même"
+   },
+   {
+    "type": "p",
+    "text": "Trois choses, toutes à l'avance. Un : inscrivez le niveau AQL et votre liste de défauts dans la commande elle-même, pas dans un e-mail envoyé après coup. Deux : laissez l'échantillon de référence sous scellé à l'usine et gardez un exemplaire identique chez vous, pour qu'une discussion sur la couleur ou la finition se tienne devant une pièce physique, pas devant un souvenir. Trois : liez votre dernier paiement à une inspection réussie. Pas comme une menace, mais comme un ordre logique : une usine qui rechigne sur ce point vous apprend quelque chose."
+   },
+   {
+    "type": "p",
+    "text": "Une inspection indépendante coûte quelques centaines d'euros par jour. Sur une commande de plusieurs dizaines de milliers d'euros, c'est l'assurance la moins chère qui existe. Non pas parce que les usines veulent tricher, mais parce que fabriquer cinq mille pièces sans le moindre écart, cela n'existe tout simplement pas, et vous voulez avoir décidé à l'avance de ce qui se passe dans ce cas."
+   }
+  ]
+ },
+ "es": {
+  "title": "AQL sin jerga",
+  "dek": "¿Cómo saber si cinco mil unidades se parecen a la única muestra que usted aprobó? Para eso existe un sistema. Qué promete el AQL y qué no, explicado sin malabarismos con tablas.",
+  "series": "",
+  "body": [
+   {
+    "type": "p",
+    "text": "Usted ha aprobado una sola muestra. Ahora la fábrica va a producir cinco mil. Nadie va a revisar esas cinco mil unidades una por una, porque llevaría más tiempo que la propia producción y duplicaría el precio. Por eso el mundo lleva setenta años inspeccionando por muestreo, con un sistema que se llama AQL. Es menos complicado de lo que hacen pensar las tablas, y solo tiene que entender tres cosas."
+   },
+   {
+    "type": "h2",
+    "text": "Qué es realmente el AQL"
+   },
+   {
+    "type": "p",
+    "text": "El AQL es un acuerdo previo: cuántas desviaciones acepta usted en un lote antes de rechazar el lote entero. De ese acuerdo y del tamaño del pedido salen el tamaño de la muestra de inspección y un límite: tantos defectos puede contener esa muestra; por encima, el lote queda rechazado. No es, por tanto, una promesa de que cada unidad sea perfecta. Es una vara de medir que fija lo que ambas partes llaman un lote aceptable, antes de que pueda surgir una discusión."
+   },
+   {
+    "type": "quote",
+    "text": "El AQL no dice que haya cero defectos. Dice cuántos defectos ha declarado usted aceptables de antemano."
+   },
+   {
+    "type": "h2",
+    "text": "Crítico, mayor, menor"
+   },
+   {
+    "type": "p",
+    "text": "No todos los defectos son igual de graves, así que el AQL trabaja con tres clases. Un defecto crítico hace que el producto sea inseguro o invendible: un borde afilado, un enchufe roto, una pieza que falta. Para esos, la norma es cero. Un defecto mayor es el que el cliente ve y acaba en devolución: un arañazo en la cara visible, una impresión torcida, una cremallera que se atasca. Un defecto menor es el que el cliente probablemente ni ve: un hilo suelto por dentro, un arañazo en la base. Usted decide, a ser posible con fotos, qué defecto entra en qué clase para su producto. Esa lista es la mitad del trabajo."
+   },
+   {
+    "type": "h2",
+    "text": "Cómo es una inspección en la práctica"
+   },
+   {
+    "type": "p",
+    "text": "Un inspector va a la fábrica cuando el pedido está terminado y embalado, elige cajas al azar de la pila (no las que esperan preparadas junto a la puerta) y revisa de ellas el número de unidades prescrito, comparándolas con su lista de defectos y con su muestra de referencia. Esto se llama FQC, el control final. También hay momentos anteriores: IQC revisa el material que entra e IPQC supervisa durante la producción, algo que compensa sobre todo en un primer pedido con una fábrica nueva. Los defectos que se detectan durante la producción aún se pueden corregir; los que aparecen en el control final ya solo se pueden apartar."
+   },
+   {
+    "type": "stat",
+    "value": "200",
+    "label": "unidades inspeccionadas en un pedido de 5.000, con nivel general de inspección II",
+    "source": "ISO 2859, tabla de muestreo, nivel general II"
+   },
+   {
+    "type": "h2",
+    "text": "Qué nivel elegir"
+   },
+   {
+    "type": "p",
+    "text": "La elección habitual para productos de consumo es AQL 2,5 para defectos mayores y 4,0 para menores, con tolerancia cero para los críticos. Siempre se puede ser más estricto, por ejemplo 1,5 o incluso 0,65 para defectos mayores, pero la exigencia no sale gratis: un límite más estricto significa más lotes rechazados, más rondas de corrección y, al final, un precio unitario más alto. Para un producto de diez euros, 2,5 es casi siempre lo sensato; para algo que se lleva sobre la piel o con lo que juega un niño, tiene sentido ser más estricto. Elija a conciencia, en lugar de aceptar el valor estándar solo porque ya venía puesto."
+   },
+   {
+    "type": "h2",
+    "text": "Lo que le toca a usted"
+   },
+   {
+    "type": "p",
+    "text": "Tres cosas, todas por adelantado. Una: incluya el nivel AQL y su lista de defectos en el propio pedido, no en un correo suelto a posteriori. Dos: deje la muestra de referencia precintada en la fábrica y conserve usted un ejemplar idéntico, para que cualquier discusión sobre color o acabado se tenga delante de una pieza física y no de un recuerdo. Tres: vincule su último pago a una inspección aprobada. No como amenaza, sino como orden de los pasos: una fábrica que pone pegas a eso le está diciendo algo."
+   },
+   {
+    "type": "p",
+    "text": "Una inspección independiente cuesta unos cientos de euros al día. En un pedido de decenas de miles de euros, es el seguro más barato que existe. No porque las fábricas quieran hacer trampas, sino porque fabricar cinco mil unidades sin una sola desviación sencillamente no existe, y a usted le interesa haber decidido de antemano qué pasa entonces."
+   }
+  ]
+ }
+}

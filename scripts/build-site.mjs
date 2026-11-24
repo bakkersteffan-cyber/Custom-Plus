@@ -216,7 +216,63 @@ for (const code of ['de', 'fr', 'es']) {
   }
   dicts[code] = d;
 }
+
+/* Nederlands geschreven tekst. Het woordenboek hierboven komt uit de app en is
+ * op de Engelse bron gesleuteld; dat dekt alleen wat ooit in het Engels is
+ * geschreven. Alles wat daarna rechtstreeks in het Nederlands is gemaakt (de
+ * pagina's uit sectie 6c tot 6e, de titels in seo-nl.json, de losse stukken
+ * waarin een zin uiteenvalt rond een vetgedrukt woord of een begrippenlink)
+ * heeft geen Engelse sleutel en bleef in elke taal Nederlands staan.
+ * content/vertalingen.json geeft per Nederlandse tekst de vier vertalingen.
+ * Staat een tekst in beide bronnen, dan wint dit bestand: het is de plek waar
+ * een vertaling bewust is nagekeken. */
+const VERT_FILE = join(ROOT, 'content', 'vertalingen.json');
+const VERT_ALL = existsSync(VERT_FILE) ? JSON.parse(readFileSync(VERT_FILE, 'utf8')) : {};
+const VERT = VERT_ALL.teksten || {};
+const TARGETS = ['en', 'de', 'fr', 'es'];
+for (const [nl, per] of Object.entries(VERT)) {
+  for (const code of TARGETS) {
+    const v = per && per[code];
+    if (typeof v !== 'string' || !v) continue;
+    if (v === nl) delete dicts[code][nl]; else dicts[code][nl] = v;
+  }
+}
+/* Literalen uit de code gaan in het Engels door i18nT() (zie hierboven). Heeft
+ * zo'n literal wel een Nederlandse vertaling maar geen Duitse, Franse of
+ * Spaanse, dan vinden we die via zijn Nederlandse tekst in vertalingen.json. */
+for (const lit of jsLiterals) {
+  const per = NL[lit] != null ? VERT[NL[lit]] : null;
+  if (!per) continue;
+  for (const code of ['de', 'fr', 'es']) {
+    if (dicts[code][lit] == null && typeof per[code] === 'string' && per[code]) dicts[code][lit] = per[code];
+  }
+}
+/* Titel, intro en serienaam van een blogartikel komen ook buiten het artikel
+ * voor: als link op /ecommerce, in de vooraf uitgeschreven kaarten van de
+ * blogindex, in de zoekresultaten. Hun vertaling staat al bij het artikel
+ * (content/blog-vertalingen/); hier gaan ze ook het woordenboek in, zodat er
+ * maar één plek is waar een titel vertaald wordt. */
+{
+  const dir = join(ROOT, 'content', 'blog-vertalingen');
+  const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')) : [];
+  for (const f of files) {
+    const srcFile = join(ROOT, 'content', 'blog', f);
+    if (!existsSync(srcFile)) continue;
+    const art = JSON.parse(readFileSync(srcFile, 'utf8'));
+    const all = JSON.parse(readFileSync(join(dir, f), 'utf8'));
+    for (const code of TARGETS) {
+      const loc = all[code];
+      if (!loc) continue;
+      for (const k of ['title', 'dek', 'series']) {
+        if (art[k] && typeof loc[k] === 'string' && loc[k] && loc[k] !== art[k]) dicts[code][art[k]] = loc[k];
+      }
+    }
+  }
+}
 for (const [code, d] of Object.entries(dicts)) out('assets/i18n/' + code + '.json', JSON.stringify(d));
+/* vertaalt één Nederlandse tekst; valt terug op het Nederlands. Voor wat de
+ * build zelf per taal wegschrijft (de blog, sectie 8b). */
+const vertaal = (nl, code) => (code === 'nl' ? nl : (dicts[code] && dicts[code][nl]) || nl);
 
 /* ------------------------------------------------------- 4. content inlezen */
 
@@ -478,12 +534,16 @@ const blogIndex = existsSync(blogIndexPath)
   : [];
 {
   const pad3 = (n) => String(n).padStart(3, '0');
+  /* de naam van de categorie zoals de app hem toont, niet de sleutel uit het bestand */
+  const blogCats0 = ((CONTENT.blog && CONTENT.blog.labels) || {}).categories || {};
+  const blogCatNl = (key) => { const v = blogCats0[key]; return typeof v === 'string' && v ? (NL[v] || v) : (key || ''); };
   const cards = blogIndex.map((a, i) => '<a class="fl-blog-card fl-bp-darkband" href="/blog/' + escAttr(a.slug) + '">'
     + '<span class="fl-blog-card__head">'
     + '<span class="fl-blog-card__num" data-no-i18n>' + pad3(i + 1) + '</span>'
-    + '<span class="fl-blog-card__read" data-no-i18n>' + escText(String(a.readMin || '')) + ' min lezen</span>'
+    /* het getal apart: " min lezen" is dan een eigen tekstnode die meevertaalt */
+    + '<span class="fl-blog-card__read"><span data-no-i18n>' + escText(String(a.readMin || '')) + '</span> min lezen</span>'
     + '</span><span class="fl-blog-card__stack">'
-    + '<span class="fl-blog-card__meta"><span>' + escText(a.category || '') + '</span></span>'
+    + '<span class="fl-blog-card__meta"><span>' + escText(blogCatNl(a.category)) + '</span></span>'
     + '<span class="fl-blog-card__title">' + escText(a.title) + '</span>'
     + '<span class="fl-blog-card__dek">' + escText(a.dek || '') + '</span>'
     + '</span></a>').join('');
@@ -1149,16 +1209,16 @@ function rewriteJs(source) {
     + "      .then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });\n"
     + "  }");
 
-  swap('setLang loader',
-    "  function setLang(code){\n    if(!LANGS.some(function(l){ return l.code === code; })) return;\n    currentLang = code;",
-    "  function setLang(code){\n"
-    + "    if(!LANGS.some(function(l){ return l.code === code; })) return;\n"
+  /* setLang() herlaadt de pagina en komt dan via het blok hierboven aan zijn
+     woordenboek. Alleen de terugval zonder browseropslag (setLangInPlace)
+     zet nog ter plekke om en moet het bestand dus zelf ophalen. */
+  swap('setLangInPlace loader',
+    "  function setLangInPlace(code){\n    currentLang = code;",
+    "  function setLangInPlace(code){\n"
     + "    if(code !== 'nl' && !I18N[code]){\n"
-    + "      /* woordenboeken staan als los bestand naast de pagina en worden pas\n"
-    + "         opgehaald als iemand daadwerkelijk van taal wisselt */\n"
     + "      fetch('/assets/i18n/' + code + '.json').then(function(r){ return r.ok ? r.json() : {}; })\n"
-    + "        .then(function(d){ I18N[code] = d || {}; setLang(code); })\n"
-    + "        .catch(function(){ I18N[code] = {}; setLang(code); });\n"
+    + "        .then(function(d){ I18N[code] = d || {}; setLangInPlace(code); })\n"
+    + "        .catch(function(){ I18N[code] = {}; setLangInPlace(code); });\n"
     + "      return;\n"
     + "    }\n"
     + "    currentLang = code;");
@@ -1325,6 +1385,17 @@ const LEGACY_HASH_SCRIPT = '<script>(function(){var m={"/services":"/diensten","
  * stylesheet is gzip ~28 KB en laadt nu gewoon vóór de eerste weergave. */
 const SEEN_SCRIPT = '<script>try{if(sessionStorage.getItem("cp_intro")==="1")document.documentElement.className+=" cp-seen"}catch(e){}</script>\n';
 
+/* De HTML is Nederlands; een andere taal komt er in de browser overheen. Wie
+ * Duits had gekozen zag dus bij elke pagina eerst Nederlands en daarna pas
+ * Duits. Dit regeltje draait vóór de eerste weergave: het zet de taal op
+ * <html>, haalt het woordenboek alvast op (de app vraagt hetzelfde bestand
+ * op en krijgt het dan uit de preload) en verbergt de pagina tot de app de
+ * vertaling heeft neergezet (.cp-lang-wait, custom-plus.html). De app haalt
+ * de klasse weg aan het eind van zijn opstart; lukt dat niet, dan doet de
+ * timer hier het na drie seconden, zodat niemand naar een lege pagina blijft
+ * kijken. Voor Nederlands gebeurt er niets. */
+const LANG_SCRIPT = '<script>try{var l=localStorage.getItem("cp_lang");if(l==="en"||l==="de"||l==="fr"||l==="es"){var h=document.documentElement;h.className+=" cp-lang-wait";h.lang=l;var k=document.createElement("link");k.rel="preload";k.as="fetch";k.crossOrigin="anonymous";k.href="/assets/i18n/"+l+".json";document.head.appendChild(k);setTimeout(function(){h.className=h.className.replace(" cp-lang-wait","")},3000)}}catch(e){}</script>\n';
+
 /* De homepage toont direct onder de kop de fotoband (.fl-pulse); dat is daar
  * het grootste element in beeld (LCP). Een CSS-achtergrond vindt de browser
  * pas na het doorrekenen van de stijl, dus wijzen we hem hier alvast aan,
@@ -1384,6 +1455,7 @@ function headFor(route, extraLd) {
      * dit zet de klasse al vóór de eerste weergave, zodat een volgende pagina
      * niet op het grote script hoeft te wachten om de zwarte laag weg te halen */
     + SEEN_SCRIPT
+    + LANG_SCRIPT
     /* koppen staan in 300, lopende tekst in 400: dat is wat boven de vouw het
      * meest opvalt als het lettertype later inspringt */
     + '<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/hanken-grotesk-300.woff2" crossorigin>\n'
@@ -1603,6 +1675,54 @@ const articles = blogFiles
   .map((f) => JSON.parse(readFileSync(join(blogDir, f), 'utf8')))
   .filter((a) => a && a.slug && a.title)
   .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+
+/* Vertaalde kopieën van de blog. content/blog-vertalingen/<slug>.json houdt
+ * per artikel de vier vertalingen bij (title, dek, series en body met dezelfde
+ * blokken als het origineel). Hier wordt daar per taal een volledig artikel
+ * van gemaakt plus een index, zodat de app precies dezelfde vorm ophaalt als
+ * voor het Nederlands (blogFetchLocal in custom-plus.html). Klopt een
+ * vertaling niet met het origineel (ander aantal blokken, ander bloktype) of
+ * ontbreekt hij, dan krijgt die taal het Nederlandse artikel en meldt de
+ * build het. "bron" is een vingerafdruk van de Nederlandse tekst op het
+ * moment van vertalen: wijkt die af, dan is het origineel daarna gewijzigd. */
+const blogVertDir = join(ROOT, 'content', 'blog-vertalingen');
+const blogBron = (art) => createHash('sha256')
+  .update(JSON.stringify([art.title || '', art.dek || '', art.series || '', art.body || []])).digest('hex').slice(0, 12);
+const blogIndexFile = join(ROOT, 'content', 'blog-index.json');
+const blogIndexSrc = existsSync(blogIndexFile) ? JSON.parse(readFileSync(blogIndexFile, 'utf8')) : { articles: [] };
+const blogGaten = [];
+const blogVerouderd = [];
+for (const code of TARGETS) {
+  const perSlug = {};
+  for (const art of articles) {
+    const f = join(blogVertDir, art.slug + '.json');
+    const all = existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : {};
+    const t = all[code];
+    const src = art.body || [];
+    const past = !!(t && t.title && Array.isArray(t.body) && t.body.length === src.length
+      && t.body.every((b, i) => b && src[i] && b.type === src[i].type
+        && (b.type !== 'ul' || (Array.isArray(b.items) && b.items.length === (src[i].items || []).length))));
+    if (!past) blogGaten.push(code + ':' + art.slug);
+    else if (all.bron && all.bron !== blogBron(art) && blogVerouderd.indexOf(art.slug) < 0) blogVerouderd.push(art.slug);
+    const loc = past
+      ? Object.assign({}, art, { title: t.title, dek: t.dek || art.dek, series: art.series ? (t.series || art.series) : '', body: t.body })
+      : Object.assign({}, art);
+    /* lang is de taal waarin de bezoeker kijkt: blogFilterByLang() toont
+       anders alleen de artikelen die toevallig al vertaald zijn */
+    loc.lang = code;
+    perSlug[art.slug] = loc;
+    out('content/blog-i18n/' + code + '/' + art.slug + '.json', JSON.stringify(loc));
+  }
+  out('content/blog-i18n/' + code + '/index.json', JSON.stringify({
+    generated: blogIndexSrc.generated,
+    articles: (blogIndexSrc.articles || []).map((e) => {
+      const loc = perSlug[e.slug];
+      return Object.assign({}, e, loc ? { title: loc.title, dek: loc.dek, series: loc.series } : {}, { lang: code });
+    }),
+  }));
+}
+if (blogGaten.length) console.warn('build-site: LET OP blogvertaling ontbreekt of past niet: ' + blogGaten.join(', '));
+if (blogVerouderd.length) console.warn('build-site: LET OP blogartikel gewijzigd na het vertalen: ' + blogVerouderd.join(', '));
 
 function slugifyHeading(text, used) {
   let id = String(text).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')

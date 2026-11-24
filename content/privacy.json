@@ -3,7 +3,7 @@
     "kicker": "Privacy",
     "heading": "Wat we van je verwerken, en waarom."
   },
-  "updated": "2026-09-20",
+  "updated": "2026-11-24",
   "intro": "Deze site gebruikt geen cookies en geen trackers. Hieronder staat precies wat er wél gebeurt met wat je ons stuurt, welke partijen daarbij helpen en welke rechten je hebt.",
   "sections": [
     {
@@ -65,7 +65,8 @@
         "cp_blueprint: of je de blauwdrukweergave hebt aangezet.",
         "cp_form_state: het concept van je bericht op de contactpagina, maximaal dertig dagen.",
         "cpBlogRead: welke blogartikelen je hebt gelezen, voor het leesvinkje bij de artikelen.",
-        "cp_intro en cp_scope_seen: alleen voor de duur van je tabblad, zodat de intro en de scopecheck niet twee keer verschijnen."
+        "cp_intro en cp_scope_seen: alleen voor de duur van je tabblad, zodat de intro en de scopecheck niet twee keer verschijnen.",
+        "cp_lang_scroll: alleen op het moment dat je van taal wisselt, zodat je op dezelfde plek op de pagina blijft. Daarna wordt het meteen gewist."
       ]
     },
     {

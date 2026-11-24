@@ -26,6 +26,23 @@
     - downloads.json#nnnTemplate/dfmChecklist/aqlChecklist (lange juridische/
       technische documenten — bewuste beslissing, geen automatische vertaling)
 
+  Twee bronnen van vertalingen (sinds 2026-11):
+    - `var I18N` in custom-plus.html: gesleuteld op de ENGELSE brontekst.
+    - content/vertalingen.json: gesleuteld op de NEDERLANDSE tekst, voor alles
+      wat rechtstreeks in het Nederlands is geschreven en voor de stukken
+      waarin een zin uiteenvalt (rond ** of een begrippenlink). Een Engelse
+      bronstring telt ook als gedekt wanneer zijn Nederlandse vertaling daar
+      een regel heeft.
+  Dit script controleert daarnaast vertalingen.json zelf: elke regel heeft
+  alle vier de talen, dezelfde {plekhouders} als de sleutel en geen lange
+  streepjes.
+
+  Niet in deze controle (wel in scripts/i18n-live.mjs, dat in een echte
+  browser meet wat er op elke pagina in elke taal blijft staan):
+    - content/privacy.json, restpartijen.json en seo-nl.json: Nederlands
+      geschreven, door de generator in stukken op de pagina gezet
+    - tekst die het script uit delen samenstelt
+
   Exit code 0 = geen gaten. Exit code 1 = gaten gevonden (bruikbaar in CI).
   Met --json schrijft dit script het volledige rapport ook als JSON naar
   stdout (na de leesbare samenvatting op stderr), voor verdere verwerking.
@@ -36,7 +53,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 var ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-var LANGS = ['nl', 'de', 'fr', 'es'];
+var LANGS = ['nl', 'en', 'de', 'fr', 'es'];
+var TARGETS = ['en', 'de', 'fr', 'es'];
 var WANT_JSON = process.argv.includes('--json');
 
 var VOID_TAGS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
@@ -153,7 +171,8 @@ var TECH_KEYS = new Set([
   'contextHref', 'scopeCheckLink', 'breakdownLink', 'readMoreLink', 'placeholder',
   'toggle', 'loadingLabel',
 ]);
-var EXCLUDE_FILES = new Set(['blog-index.json', 'sectors.json']);
+var EXCLUDE_FILES = new Set(['blog-index.json', 'sectors.json', 'vertalingen.json',
+  'privacy.json', 'restpartijen.json', 'seo-nl.json']);
 var EXCLUDE_EXACT_PATHS = new Set(['nnnTemplate', 'dfmChecklist', 'aqlChecklist']);
 
 var URLISH = /^(#|https?:\/\/|mailto:|images\/|\/)/i;
@@ -244,35 +263,98 @@ contentCandidates.forEach((c) => add(c.text, 'content-json:' + c.file + '#' + c.
 i18ntCalls.forEach((str) => add(str, 'i18nT-call'));
 makeCalls.forEach((str) => add(str, 'make-literal'));
 
+/* ---------- 6b. Nederlands geschreven tekst: content/vertalingen.json ---------- */
+var vertPath = path.join(ROOT, 'content', 'vertalingen.json');
+var VERT_ALL = fs.existsSync(vertPath) ? JSON.parse(readFile(vertPath)) : {};
+var VERT = VERT_ALL.teksten || {};
+/* namen, merken en vaktermen die in elke taal hetzelfde blijven */
+var SAME = new Set((VERT_ALL.zelfde || []).map((t) => String(t).replace(/\s+/g, ' ').trim()));
+function squeeze(str) { return String(str).replace(/\s+/g, ' ').trim(); }
+/* Nederlandse tekst -> zijn Engelse bron (de eerste, zoals de build het doet) */
+var enOfNl = {};
+Object.keys(I18N.nl).forEach((en) => { var nl = squeeze(I18N.nl[en]); if (!(nl in enOfNl)) enOfNl[nl] = en; });
+
+/* Kan deze Nederlandse tekst in `lang` getoond worden? De pagina is bij het
+   draaien Nederlands; een vertaling komt uit vertalingen.json of, via de
+   Engelse bron, uit het woordenboek in custom-plus.html. */
+function nlCovered(nlText, lang) {
+  var key = squeeze(nlText);
+  var per = VERT[key];
+  if (per && typeof per[lang] === 'string' && per[lang]) return true;
+  var en = enOfNl[key];
+  if (en === undefined) return false;
+  if (lang === 'en') return true;
+  return !!(I18N[lang] && I18N[lang][en]);
+}
+/* renderRich() knipt een waarde met ** in losse tekstnodes; de vertaalslag
+   ziet dus de stukken, nooit de hele zin */
+function pieces(text) {
+  if (text.indexOf('**') < 0) return [text];
+  return text.split('**').map(squeeze).filter(looksTranslatable);
+}
+function missingLangs(text) {
+  var out = [];
+  if (SAME.has(squeeze(text))) return out;
+  if (Object.prototype.hasOwnProperty.call(I18N.nl, text)) {
+    /* Engelse bron: Nederlands is er, de rest per stuk nagaan */
+    var nl = I18N.nl[text];
+    var rich = nl.indexOf('**') >= 0;
+    TARGETS.forEach((lang) => {
+      var ok;
+      if (rich) ok = pieces(nl).every((p) => nlCovered(p, lang));
+      else ok = lang === 'en' || !!(I18N[lang] && I18N[lang][text]) || nlCovered(nl, lang);
+      if (!ok) out.push(lang);
+    });
+    return out;
+  }
+  /* geen Engelse bron: dan moet het een Nederlandse tekst uit vertalingen.json zijn */
+  var parts = pieces(text);
+  if (!parts.length) return out;
+  if (!parts.some((p) => VERT[squeeze(p)] || enOfNl[squeeze(p)] !== undefined)) return LANGS.slice();
+  TARGETS.forEach((lang) => { if (!parts.every((p) => nlCovered(p, lang))) out.push(lang); });
+  return out;
+}
+
 var missing = {};
 LANGS.forEach((lang) => { missing[lang] = []; });
 candidates.forEach((sources, text) => {
-  LANGS.forEach((lang) => {
-    if (!Object.prototype.hasOwnProperty.call(I18N[lang], text)) missing[lang].push(text);
-  });
+  missingLangs(text).forEach((lang) => { missing[lang].push(text); });
 });
 
 var missingSets = {};
 LANGS.forEach((lang) => { missingSets[lang] = new Set(missing[lang]); });
-var all4 = [...missingSets.nl].filter((t) => missingSets.de.has(t) && missingSets.fr.has(t) && missingSets.es.has(t));
+var all4 = [...missingSets.nl].filter((t) => TARGETS.every((l) => missingSets[l].has(t)));
 var anyMissing = new Set();
 LANGS.forEach((lang) => missing[lang].forEach((t) => anyMissing.add(t)));
 var all4Set = new Set(all4);
 var partial = [...anyMissing].filter((t) => !all4Set.has(t));
+
+/* vertalingen.json zelf: volledig, plekhouders intact, geen lange streepjes */
+var vertProblems = [];
+Object.keys(VERT).forEach((nl) => {
+  var per = VERT[nl] || {};
+  var want = (nl.match(/\{[a-z]+\}/g) || []).sort().join(' ');
+  TARGETS.forEach((lang) => {
+    var v = per[lang];
+    if (typeof v !== 'string' || !v.trim()) { vertProblems.push(lang + ' ontbreekt: ' + JSON.stringify(nl.slice(0, 70))); return; }
+    if (((v.match(/\{[a-z]+\}/g) || []).sort().join(' ')) !== want) vertProblems.push(lang + ' andere plekhouders: ' + JSON.stringify(nl.slice(0, 70)));
+    if (/[–—]/.test(v)) vertProblems.push(lang + ' bevat een lang streepje: ' + JSON.stringify(nl.slice(0, 70)));
+  });
+});
 
 /* ---------- 7. rapport ---------- */
 console.error('CUSTOM+ i18n-audit — ' + candidates.size + ' unieke kandidaatstrings gevonden.\n');
 LANGS.forEach((lang) => {
   console.error('  ' + lang + ': ' + missing[lang].length + ' ontbrekend');
 });
-console.error('\n  ontbreekt in ALLE 4 talen: ' + all4.length);
+console.error('\n  zonder enige vertaling: ' + all4.length);
 console.error('  ontbreekt inconsistent (in sommige, niet alle talen): ' + partial.length);
 if (flaggedTemplates.length) {
   console.error('\n  bewust buiten scope (juridische/technische templates): ' + flaggedTemplates.length);
 }
 
 if (all4.length) {
-  console.error('\n=== ontbreekt in alle 4 talen ===');
+  console.error('\n=== zonder enige vertaling (geen Engelse bron en geen regel in content/vertalingen.json) ===');
   all4.sort().forEach((t) => console.error('  - ' + JSON.stringify(t.length > 90 ? t.slice(0, 90) + '…' : t)));
 }
 if (partial.length) {
@@ -284,7 +366,12 @@ if (partial.length) {
   });
 }
 
-var clean = all4.length === 0 && partial.length === 0;
+if (vertProblems.length) {
+  console.error('\n=== content/vertalingen.json ===');
+  vertProblems.forEach((m) => console.error('  - ' + m));
+}
+
+var clean = all4.length === 0 && partial.length === 0 && vertProblems.length === 0;
 console.error('\n' + (clean ? 'Geen vertaalgaten gevonden.' : 'Er zijn vertaalgaten — zie hierboven.'));
 
 if (WANT_JSON) {
@@ -298,6 +385,7 @@ if (WANT_JSON) {
       missing: LANGS.filter((l) => missingSets[l].has(t)),
     })),
     flaggedTemplates: flaggedTemplates,
+    vertalingen: vertProblems,
   };
   process.stdout.write(JSON.stringify(out, null, 2) + '\n');
 }
